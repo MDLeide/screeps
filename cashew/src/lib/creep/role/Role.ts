@@ -35,7 +35,6 @@ export abstract class Role {
         } else {
             throw new Error('invalid operation');
         }
-
     }
 
     /** True if null or empty activity. */

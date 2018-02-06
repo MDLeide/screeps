@@ -35,6 +35,7 @@
   <ItemGroup>
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="src\lib\colony\state\INestState.ts" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +165,12 @@
     <TypeScriptCompile Include="src\lib\colony\ColonyOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\state\IColonyOperationState.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\state\IColonyPlanState.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\state\IColonyState.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -231,7 +238,7 @@
     <TypeScriptCompile Include="src\lib\spawn\Population.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\spawn\SpawnCondition.ts">
+    <TypeScriptCompile Include="src\lib\spawn\SpawnDefinition.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\spawn\Spawner.ts">
