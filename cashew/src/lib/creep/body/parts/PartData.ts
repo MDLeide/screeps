@@ -1,23 +1,70 @@
-﻿import { PartData } from "./PartData";
-import { PartType } from "./PartType";
-import { ActionType } from "../../../lib/creep/action/ActionType";
+import { PartDescription } from "./PartDescription";
+import { ActionType } from "../../action/ActionType";
 
 
-export class PartDataHelper {
-    public static attack(): PartData {
-        return new PartData(
+export class PartData {
+    private static _attack: PartDescription;
+    private static _carry: PartDescription;
+    private static _claim: PartDescription;
+    private static _heal: PartDescription;
+    private static _move: PartDescription;
+    private static _rangedAttack: PartDescription;
+    private static _tough: PartDescription;
+    private static _work: PartDescription;
+
+    public static getPartDescription(part: BodyPartConstant): PartDescription {
+        switch (part) {
+            case ATTACK:
+                if (!PartData._attack)
+                    PartData._attack = PartData.makeAttack();
+                return PartData._attack;
+            case CARRY:
+                if (!PartData._carry)
+                    PartData._carry = PartData.makeCarry();
+                return PartData._carry;
+            case CLAIM:
+                if (!PartData._claim)
+                    PartData._claim = PartData.makeClaim();
+                return PartData._claim;
+            case HEAL:
+                if (!PartData._heal)
+                    PartData._heal = PartData.makeHeal();
+                return PartData._heal;
+            case MOVE:
+                if (!PartData._move)
+                    PartData._move = PartData.makeMove();
+                return PartData._move;
+            case RANGED_ATTACK:
+                if (!PartData._rangedAttack)
+                    PartData._rangedAttack = PartData.makeRangedAttack();
+                return PartData._rangedAttack;
+            case TOUGH:
+                if (!PartData._tough)
+                    PartData._tough = PartData.makeTough();
+                return PartData._tough;
+            case WORK:
+                if (!PartData._work)
+                    PartData._work = PartData.makeWork();
+                return PartData._work;
+            default:
+                throw Error("Arg out of range");
+        }
+    }
+
+    private static makeAttack(): PartDescription {
+        return new PartDescription(
             'ATTACK',
-            PartType.ATTACK,
+            ATTACK,
             80,
             ['Attacks another creep/structure with 30 hits per tick in a short-ranged attack.'],
             [ActionType.ATTACK]
         );
     }
 
-    public static carry(): PartData {
-        return new PartData(
+    private static makeCarry(): PartDescription {
+        return new PartDescription(
             'CARRY',
-            PartType.CARRY,
+            CARRY,
             50,
             ['Can contain up to 50 resource units.'],
             [
@@ -28,10 +75,10 @@ export class PartDataHelper {
         );
     }
 
-    public static claim(): PartData {
-        return new PartData(
+    private static makeClaim(): PartDescription {
+        return new PartDescription(
             'CLAIM',
-            PartType.CLAIM,
+            CLAIM,
             600,
             [
                 'Claims a neutral room controller.',
@@ -47,10 +94,10 @@ export class PartDataHelper {
         );
     }
 
-    public static heal(): PartData {
-        return new PartData(
+    private static makeHeal(): PartDescription {
+        return new PartDescription(
             'HEAL',
-            PartType.HEAL,
+            HEAL,
             250,
             ['Heals self or another creep restoring 12 hits per tick in short range or 4 hits per tick at a distance.'],
             [
@@ -60,20 +107,20 @@ export class PartDataHelper {
         );
     }
 
-    public static move(): PartData {
-        return new PartData(
+    private static makeMove(): PartDescription {
+        return new PartDescription(
             'MOVE',
-            PartType.MOVE,
+            MOVE,
             50,
             ['Decreases fatigue by 2 points per tick.'],
             [ActionType.MOVE]
         );
     }
 
-    public static rangedAttack(): PartData {
-        return new PartData(
+    private static makeRangedAttack(): PartDescription {
+        return new PartDescription(
             'RANGED_ATTACK',
-            PartType.RANGED_ATTACK,
+            RANGED_ATTACK,
             150,
             [
                 'Attacks another single creep/ structure with 10 hits per tick in a long- range attack up to 3 squares long.',
@@ -86,20 +133,20 @@ export class PartDataHelper {
         );
     }
 
-    public static tough(): PartData {
-        return new PartData(
+    private static makeTough(): PartDescription {
+        return new PartDescription(
             'TOUGH',
-            PartType.TOUGH,
+            TOUGH,
             10,
             ["No effect, just additional hit points to the creep's body.Can be boosted to resist damage."],
             []
         );
     }
 
-    public static work(): PartData {
-        return new PartData(
+    private static makeWork(): PartDescription {
+        return new PartDescription(
             'WORK',
-            PartType.WORK,
+            WORK,
             100,
             [
                 'Harvests 2 energy units from a source per tick.',

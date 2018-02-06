@@ -58,7 +58,8 @@
     <Folder Include="src\lib\creep\activity\" />
     <Folder Include="src\lib\creep\activity\state\" />
     <Folder Include="src\lib\creep\body\" />
-    <Folder Include="src\lib\creep\body\state\" />
+    <Folder Include="src\lib\creep\body\parts\" />
+    <Folder Include="src\yagni\body\state\" />
     <Folder Include="src\lib\creep\role\" />
     <Folder Include="src\lib\creep\role\state\" />
     <Folder Include="src\lib\extend\" />
@@ -67,8 +68,10 @@
     <Folder Include="src\lib\colony\" />
     <Folder Include="src\lib\util\" />
     <Folder Include="src\lib\util\logger\" />
+    <Folder Include="src\yagni\" />
     <Folder Include="src\utils\" />
     <Folder Include="src\util\" />
+    <Folder Include="src\yagni\body\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\imp\creep\activity\AttackingNearestEnemy.ts" />
@@ -191,16 +194,22 @@
     <TypeScriptCompile Include="src\lib\creep\activity\state\PhaseState.ts" />
     <TypeScriptCompile Include="src\lib\creep\activity\state\TargetedActivityState.ts" />
     <TypeScriptCompile Include="src\lib\creep\activity\TargetedActivity.ts" />
-    <TypeScriptCompile Include="src\lib\creep\body\Body.ts" />
-    <TypeScriptCompile Include="src\lib\creep\body\Part.ts" />
-    <TypeScriptCompile Include="src\lib\creep\body\PartData.ts" />
-    <TypeScriptCompile Include="src\lib\creep\body\PartDataHelper.ts" />
-    <TypeScriptCompile Include="src\lib\creep\body\PartDataStorageHelper.ts" />
+    <TypeScriptCompile Include="src\lib\creep\body\Body.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\creep\body\parts\PartDescription.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\yagni\body\Body.ts" />
+    <TypeScriptCompile Include="src\yagni\body\Part.ts" />
+    <TypeScriptCompile Include="src\yagni\body\PartData.ts" />
+    <TypeScriptCompile Include="src\lib\creep\body\parts\PartData.ts" />
+    <TypeScriptCompile Include="src\yagni\body\PartDataStorageHelper.ts" />
     <TypeScriptCompile Include="src\lib\creep\body\PartType.ts" />
-    <TypeScriptCompile Include="src\lib\creep\body\state\BodyState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\body\state\IBodyState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\body\state\IPartState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\body\state\PartState.ts" />
+    <TypeScriptCompile Include="src\yagni\body\state\BodyState.ts" />
+    <TypeScriptCompile Include="src\yagni\body\state\IBodyState.ts" />
+    <TypeScriptCompile Include="src\yagni\body\state\IPartState.ts" />
+    <TypeScriptCompile Include="src\yagni\body\state\PartState.ts" />
     <TypeScriptCompile Include="src\lib\creep\role\EmptyRole.ts" />
     <TypeScriptCompile Include="src\lib\creep\role\IRoleBuilder.ts" />
     <TypeScriptCompile Include="src\lib\creep\role\Role.ts" />
