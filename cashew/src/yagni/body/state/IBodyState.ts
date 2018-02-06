@@ -1,5 +1,5 @@
-﻿import { IPartState } from "./IPartState";
+//import { IPartState } from "./IPartState";
 
-export interface IBodyState {
-    parts: IPartState[];
-}
+//export interface IBodyState {
+//    parts: IPartState[];
+//}

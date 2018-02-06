@@ -1,6 +1,6 @@
-﻿import { PartType } from "../PartType";
+//import { PartType } from "../PartType";
 
-export interface IPartState {
-    type: PartType;
-    quantity: number;
-}
+//export interface IPartState {
+//    type: PartType;
+//    quantity: number;
+//}
