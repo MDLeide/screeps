@@ -1,4 +1,4 @@
-﻿import { TargetedActivity } from "./TargetedActivity";
+import { TargetedActivity } from "./TargetedActivity";
 import { TargetedActivityState } from "./state/TargetedActivityState";
 import { MultiTargetActivityState } from "./state/MultiTargetActivityState";
 import { ITargetedActivityState } from "./state/ITargetedActivityState";
@@ -80,7 +80,8 @@ export abstract class MultiTargetActivity<TTargetType extends { id: string }> ex
                 for (var i = 0; i < this.state.targetArrayIds.length; i++) {
                     var t = Game.getObjectById<TTargetType>(this.state.targetArrayIds[i]);
                     if (t === null) {
-                        throw new Error("Could not load a member of the target array.");
+                        this.invalidate();
+                        return [];
                     }
                     this._targetArray.push(t);
                 }
