@@ -30,7 +30,7 @@ export class Spawner {
 
             //todo say and console
 
-            var result = s.spawnCreep(egg.body.spawnArray, egg.name,
+            var result = s.spawnCreep(egg.body.parts, egg.name,
                 {
                     memory: {
                         homeSpawnId: s.id,

@@ -1,6 +1,5 @@
 
 import { Body } from "../../lib/creep/body/Body";
-import { Part } from "../../lib/creep/body/Part";
 import { PartType } from "../../lib/creep/body/PartType";
 
 export class BodyFactory {
@@ -14,8 +13,16 @@ export class BodyFactory {
                 if (availableEnergy < 250) {
                     return null;
                 }
-                var partCount = Math.floor(availableEnergy / 250);                
-                var parts = [new Part(PartType.MOVE, partCount * 2), new Part(PartType.WORK, partCount), new Part(PartType.CARRY, partCount)];
+                var partCount = Math.floor(availableEnergy / 250);
+                var parts: BodyPartConstant[] = [];
+
+                for (var i = 0; i < partCount; i++) {
+                    parts.push(WORK);
+                    parts.push(MOVE);
+                    parts.push(CARRY);
+                    parts.push(MOVE);
+                }
+                
                 return new Body(parts);
 
             case "heavyHarvester":
@@ -23,9 +30,18 @@ export class BodyFactory {
                     return null;
                 }
 
-                var work = (availableEnergy - 100) / 100;
-                work = Math.min(work, 5);
-                var parts = [new Part(PartType.WORK, work), new Part(PartType.CARRY, 1), new Part(PartType.MOVE, 1)];
+                var partCount = Math.floor((availableEnergy - 100) / 100);
+                partCount = Math.min(partCount, 5);                
+
+                var parts: BodyPartConstant[] = [];
+
+                for (var i = 0; i < partCount; i++) {
+                    parts.push(WORK);
+                }
+
+                parts.push(CARRY);                    
+                parts.push(MOVE);
+
                 return new Body(parts);
 
             case "heavyUpgrader":
@@ -33,8 +49,17 @@ export class BodyFactory {
                     return null;
                 }
 
-                var work = (availableEnergy - 100) / 100;                
-                var parts = [new Part(PartType.WORK, work), new Part(PartType.CARRY, 1), new Part(PartType.MOVE, 1)];
+                var partCount = Math.floor((availableEnergy - 100) / 100);
+
+                var parts: BodyPartConstant[] = [];
+
+                for (var i = 0; i < partCount; i++) {
+                    parts.push(WORK);
+                }
+
+                parts.push(CARRY);
+                parts.push(MOVE);
+
                 return new Body(parts);
                 
             case "transporter":
@@ -43,17 +68,31 @@ export class BodyFactory {
                     return null;
                 }
 
-                var count = availableEnergy / 100;
-                var parts = [new Part(PartType.CARRY, count), new Part(PartType.MOVE, count)];
+                var partCount = Math.floor(availableEnergy / 100);
+
+                var parts: BodyPartConstant[] = [];
+
+                for (var i = 0; i < partCount; i++) {
+                    parts.push(CARRY);
+                    parts.push(MOVE);
+                }
+
                 return new Body(parts);
 
             case "warrior":
                 if (availableEnergy < 100) {
                     return null;
                 }
+                
+                var partCount = Math.floor(availableEnergy / 130);
 
-                var count = Math.floor(availableEnergy / 130);
-                var parts = [new Part(PartType.ATTACK, count), new Part(PartType.MOVE, count)];
+                var parts: BodyPartConstant[] = [];
+
+                for (var i = 0; i < partCount; i++) {
+                    parts.push(ATTACK);
+                    parts.push(MOVE);
+                }
+
                 return new Body(parts);
         }
         return null;
