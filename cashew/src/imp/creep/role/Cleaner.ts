@@ -62,7 +62,7 @@ export class Cleaner extends Role {
             if (tower && tower.length > 0) {
                 for (var i = 0; i < tower.length; i++) {
                     var t = tower[i];
-                    if (t.energy / t.energyCapacity <= .8) // todo: move the value to a settings file
+                    if (t.energy / t.energyCapacity <= .75) // todo: move the value to a settings file
                         return new ChargingTower(this.creep);
                 }
             }

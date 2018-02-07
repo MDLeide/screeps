@@ -59,10 +59,11 @@ export class Transporter extends Role {
 
             var tower = this.creep.room.find<StructureTower>(FIND_MY_STRUCTURES,
                 { filter: (struct: Structure) => { return struct.structureType == STRUCTURE_TOWER; } });
+            
             if (tower && tower.length > 0) {
                 for (var i = 0; i < tower.length; i++) {
                     var t = tower[i];
-                    if (t.energy / t.energyCapacity <= .8) // todo: move the value to a settings file
+                    if (t.energy / t.energyCapacity <= .75) // todo: move the value to a settings file
                         return new ChargingTower(this.creep);
                 }
             }
