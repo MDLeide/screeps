@@ -8,7 +8,7 @@ import { ActionResult } from "../../../lib/creep/action/ActionResult";
 import { ActionType } from "../../../lib/creep/action/ActionType";
 import { IActionResponse } from "../../../lib/creep/action/IActionResponse";
 
-export class WithdrawingEnergy extends MultiTargetActivity<StructureContainer> {
+export class WithdrawingEnergy extends MultiTargetActivity<StructureContainer | StructureStorage> {
     public static readonly id: string = "withdrawingEnergy";
 
     private _invalidating: boolean;
@@ -65,7 +65,7 @@ export class WithdrawingEnergy extends MultiTargetActivity<StructureContainer> {
         return true;
     }
     
-    protected targetIsValidForAssignment(target: StructureContainer): boolean {
+    protected targetIsValidForAssignment(target: StructureContainer | StructureStorage): boolean {
         return target.store[RESOURCE_ENERGY] > 0;
     }
 
@@ -74,7 +74,7 @@ export class WithdrawingEnergy extends MultiTargetActivity<StructureContainer> {
             return false;        
         }
 
-        return this.target.store[RESOURCE_ENERGY] > 0;
+        return this.target.store[RESOURCE_ENERGY] > 50;
     }
     
     protected onReset(): void {
@@ -87,12 +87,14 @@ export class WithdrawingEnergy extends MultiTargetActivity<StructureContainer> {
 
         this.canFindNewTargetArray = false;
 
-        var targets = this.creep.room.find<StructureContainer>(FIND_STRUCTURES,
+        var targets: (StructureStorage | StructureContainer)[];
+
+        targets = this.creep.room.find<StructureContainer>(FIND_STRUCTURES,
             {
                 filter: (cont: StructureContainer): boolean => {
                     return cont.structureType == STRUCTURE_CONTAINER &&
                         cont.nut.tag != "controller" &&
-                        cont.store[RESOURCE_ENERGY] > 25;
+                        cont.store[RESOURCE_ENERGY] > 50;
                 }
             });
 
@@ -101,7 +103,18 @@ export class WithdrawingEnergy extends MultiTargetActivity<StructureContainer> {
         }
         
         targets.sort((a, b) => { return b.store.energy - a.store.energy });
-        
+
+        var storage = this.creep.room.find<StructureStorage>(FIND_MY_STRUCTURES,
+            {
+                filter: (storage: StructureStorage): boolean => {
+                    return storage.structureType == STRUCTURE_STORAGE &&
+                        storage.store.energy > 50;
+                }
+            })
+
+        if (storage.length)
+            targets.push(storage[0]);
+
         this.setTargetArray(targets);
         return true;
     }
