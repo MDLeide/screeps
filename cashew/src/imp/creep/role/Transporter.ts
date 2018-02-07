@@ -10,6 +10,7 @@ import { SupplyingSpawn } from "../activity/SupplyingSpawn";
 import { SupplyingController } from "../activity/SupplyingController";
 import { ChargingTower } from "../activity/ChargingTower";
 import { PickingEnergy } from "../activity/PickingEnergy";
+import { SupplyingStorage } from "../activity/SupplyingStorage";
 
 export class Transporter extends Role {
     public static readonly id: string = "transporter";
@@ -68,7 +69,21 @@ export class Transporter extends Role {
                 }
             }
 
-            return new SupplyingController(this.creep);
+            var controllerContainers: StructureContainer[] = this.creep.room.find<StructureContainer>(FIND_STRUCTURES,
+                {
+                    filter: function (cont: StructureContainer) {
+                        return cont && cont.structureType == STRUCTURE_CONTAINER && cont.nut.tag == "controller";
+                    }
+                }
+            );
+
+            if (controllerContainers.length == 1) {
+                if (_.sum(controllerContainers[0].store) < controllerContainers[0].storeCapacity * .9)
+                    return new SupplyingController(this.creep);
+            }
+
+            return new SupplyingStorage(this.creep);
+            
         } else {
             //var dropped = this.creep.room.find(FIND_DROPPED_RESOURCES);
             //if (dropped.length) {

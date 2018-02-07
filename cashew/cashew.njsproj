@@ -79,6 +79,7 @@
     <TypeScriptCompile Include="src\imp\creep\activity\RepairingRoads.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\RepairingWalls.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\PickingEnergy.ts" />
+    <TypeScriptCompile Include="src\imp\creep\activity\SupplyingStorage.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\UpgradeWithdrawingEnergy.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\Cobbler.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\Cleaner.ts" />
