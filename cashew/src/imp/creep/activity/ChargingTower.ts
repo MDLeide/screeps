@@ -29,10 +29,11 @@ export class ChargingTower extends TargetedActivity<StructureTower> {
         } else if (transferResponse === ActionResult.ERR_NOT_IN_RANGE) {
             return this.moveAndReturn(this.target, actions);
         } else if (transferResponse == ActionResult.ERR_INVALID_TARGET) {
+            var target = (this.target == null || this.target == undefined) ? "null" : this.target.structureType;
             return new ActivityResponse(
                 ActivityResult.ERROR,
                 ActivityStatus.NO_VALID_TARGETS,
-                "invalid target");
+                `invalid target: ${target}`);
         } else {
             return new ActivityResponse(
                 ActivityResult.ERROR,
