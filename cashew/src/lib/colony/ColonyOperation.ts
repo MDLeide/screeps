@@ -5,26 +5,39 @@ import { SpawnDefinition } from "../spawn/SpawnDefinition";
 import { IdArray } from "../../util/IdArray";
 import { Guid } from "../../util/GUID";
 
-export abstract class ColonyOperation {
-    private _id: string;
+export abstract class ColonyOperation {    
     private _creepRequirement: SpawnDefinition[];
 
-    constructor() {
-        this._id = Guid.newGuid();
+    constructor(name: string) {
+        this.state = {
+            id: Guid.newGuid(),
+            name: name,
+            initialized: false,
+            started: false,
+            finished: false,
+            spawnDefinitionIds: [],
+            assignedIds: []
+        }        
     }
 
-    public get id(): string {
-        return this._id;
-    }
+    public state: ColonyOperationMemory;
 
-    public name: string;
+    public get id(): string { return this.state.id; }
 
-    public initialized: boolean;
-    public started: boolean;
-    public finished: boolean;
+    public get name(): string { return this.state.name; }
 
-    public spawned: SpawnDefinition[] = [];
-    public assigned: IdArray<Creep>;
+    public get initialized(): boolean { return this.state.initialized; }
+    public set initialized(val: boolean) { this.state.initialized = val; }
+
+    public get started(): boolean { return this.state.started; }
+    public set started(val: boolean) { this.state.started = val; }
+
+    public get finished(): boolean { return this.state.finished; }
+    public set finished(val: boolean) { this.state.finished = val; }
+
+    /** Spawn Def Ids of spawned creeps. */
+    public spawned: IdArray<SpawnDefinition> = new IdArray<SpawnDefinition>(this.state.spawnDefinitionIds);
+    public assigned: IdArray<Creep> = new IdArray<Creep>(this.state.assignedIds);
     
 
     /** Provides early-tick opportunity to update state. Will be called on all colonies and operations prior to Execute being called. */
@@ -71,7 +84,7 @@ export abstract class ColonyOperation {
 
     /** Informs the operation that a creep it needs has started to spawn. */
     public creepIsSpawning(spawnDefinition: SpawnDefinition) {
-        this.spawned.push(spawnDefinition);
+        this.spawned.push(spawnDefinition.id);
     }
 
     /** Assigns a creep to this operation. */

@@ -35,7 +35,6 @@
   <ItemGroup>
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <Content Include="src\lib\colony\state\INestState.ts" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
@@ -54,7 +53,6 @@
     <Folder Include="src\lib\" />
     <Folder Include="src\imp\" />
     <Folder Include="src\lib\colony\repo\" />
-    <Folder Include="src\lib\colony\state\" />
     <Folder Include="src\lib\creep\" />
     <Folder Include="src\lib\creep\action\" />
     <Folder Include="src\lib\creep\activity\" />
@@ -177,12 +175,6 @@
     <TypeScriptCompile Include="src\lib\colony\repo\NestRepository.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\colony\state\IColonyOperationState.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\colony\state\IColonyState.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\creep\action\ActionData.ts" />
     <TypeScriptCompile Include="src\lib\creep\action\IActionResponse.ts" />
     <TypeScriptCompile Include="src\lib\creep\action\ActionResult.ts" />
@@ -219,7 +211,14 @@
     <TypeScriptCompile Include="src\lib\empire\ColonyFinder.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\memory\IRepository.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\memory\Repository.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\spawn\BodyFactory.ts" />
+    <TypeScriptCompile Include="src\lib\spawn\CreepNamer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\body\Body.ts" />

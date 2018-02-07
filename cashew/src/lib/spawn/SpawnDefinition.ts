@@ -1,29 +1,36 @@
-import { Body } from "../creep/body/Body";
 import { Spawner } from "./Spawner";
+import { CreepNamer } from "./CreepNamer";
+import { BodyFactory } from "./BodyFactory";
+
+import { Body } from "../creep/body/Body";
+
+import { Guid } from "../../util/GUID";
 
 export class SpawnDefinition {
-    private _bodyDelegate: (energy: number) => Body;
-    private _nameDelegate: (spawner: Spawner) => string;
-
-    constructor(roleId: string, minEnergy: number, maxEnergy: number, bodyDelegate: (energy: number) => Body, nameDelegate: (spawner: Spawner) => string) {
-        this.roleId = roleId;
-        this.minimumEnergy = minEnergy;
-        this.maximumEnergy = maxEnergy;
-
-        this._bodyDelegate = bodyDelegate;
-        this._nameDelegate = nameDelegate;
+    constructor(name: string, roleId: string, minEnergy: number, maxEnergy: number) {
+        this.state = {
+            id: Guid.newGuid(),
+            name: name,
+            roleId: roleId,
+            minEnergy: minEnergy,
+            maxEnergy: maxEnergy
+        };    
     }
 
-    public roleId: string;    
-    public minimumEnergy: number;
-    public maximumEnergy: number;
+    public state: SpawnDefinitionMemory;
+
+    public get id(): string { return this.state.id; }
+    public get name(): string { return this.state.name; }
+    public get roleId(): string { return this.state.roleId; }
+    public get minimumEnergy(): number { return this.state.minEnergy; }
+    public get maximumEnergy(): number { return this.state.maxEnergy; }
 
     public getBody(energy: number): Body {
-        return this._bodyDelegate(energy);
+        return BodyFactory.getBody(this, energy);
     }
 
     public getName(spawner: Spawner): string {
-        return this._nameDelegate(spawner);
+        return CreepNamer.getCreepName(this, spawner);
     }
 
     public isEqual(def: SpawnDefinition): boolean {

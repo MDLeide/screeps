@@ -1,20 +1,27 @@
 import { Colony } from "./Colony";
 
-import { INestState } from "./state/INestState";
-
 import { Spawner } from "../spawn/Spawner";
 import { SpawnDefinition } from "../spawn/SpawnDefinition";
 
 export class Nest {
     private spawners: Spawner[];
+    private _room: Room;
 
-    constructor() {
 
+    constructor(room: Room) {
+        this.state.id = room.name;
     }
 
-    public get id(): string { return this.room.name; }
-    public state: INestState;
-    public room: Room;
+
+    public state: NestMemory;
+
+    public get id(): string { return this.room.name; }    
+    public get room(): Room {
+        if (!this._room) {
+            this._room = Game.getObjectById<Room>(this.state.id);
+        }
+        return this._room;
+    }
 
     public canSpawn(spawnDefinition: SpawnDefinition): boolean {
         return _.any(this.spawners, (p) => p.canSpawn(spawnDefinition));

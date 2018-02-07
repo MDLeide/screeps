@@ -1,9 +1,11 @@
-export abstract class Repository<T extends { id: string, state: any }> {
+import { IRepository } from "./IRepository";
+
+export abstract class Repository<T extends { id: string, state: any }> implements IRepository<T> {
     private hydrate: (state: any) => T;
     private mem: { [id: string]: T };
 
 
-    constructor(memoryObject: { [id: string]: T }, hydrate: (state: any) => T) {
+    constructor(memoryObject: { [id: string]: any }, hydrate: (state: any) => T) {
         this.mem = memoryObject;
         this.hydrate = hydrate;
     }

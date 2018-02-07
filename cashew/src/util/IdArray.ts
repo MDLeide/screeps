@@ -1,6 +1,6 @@
 export class IdArray<T extends { id: string }> extends Array<T> {
     private stateObject: string[];
-    constructor(stateObject: string[], items: T[]) {
+    constructor(stateObject: string[], items?: T[]) {
         super(...items);
         this.stateObject = stateObject;
     }

@@ -46,7 +46,11 @@ declare global {
         containers: { [containerId: string]: ContainerMemory };
         controllers: { [controllerId: string]: ControllerMemory };
         sources: { [sourceId: string]: SourceMemory };
+
+        colonies: { [colonyId: string]: ColonyMemory };
         nests: { [nestId: string]: NestMemory };
+        plans: { [planId: string]: ColonyPlanMemory };
+        operations: { [operationId: string]: ColonyOperationMemory };
     }
 
 
@@ -56,6 +60,7 @@ declare global {
         roleId: string;
         role: IRoleState | null;
         homeSpawnId: string;
+        spawnDefId: string;
     }
 
     interface ContainerMemory {
@@ -88,15 +93,46 @@ declare global {
         containerId: string;
     }
 
-    interface NestMemory {
+    interface EmpireMemory {
 
+    }
+
+    interface NestMemory {
+        id: string;        
     }
 
     interface ColonyMemory {
+        id: string;
+        name: string;
+        nestId: string;
+        planId: string;
+    }
 
+    interface ColonyPlanMemory {
+        id: string;
+        name: string;
+        milestoneIndex: number;
+        operationsThisMilestone: string[];
+        operationsLastMilestone: string[];
+        initializedOps: string[];
+        runningOps: string[];
     }
 
     interface ColonyOperationMemory {
+        id: string;
+        name: string;
+        initialized: boolean;
+        started: boolean;
+        finished: boolean;
+        spawnDefinitionIds: string[];
+        assignedIds: string[];
+    }
 
+    interface SpawnDefinitionMemory {
+        id: string;
+        name: string;
+        roleId: string;
+        minEnergy: number;
+        maxEnergy: number;
     }
 }

@@ -1,26 +1,70 @@
+import { Guid } from "../../util/GUID";
 import { Colony } from "./Colony"
 import { Milestone } from "./Milestone";
 import { ColonyOperation } from "./ColonyOperation"
+import { ColonyOperationRepository } from "./repo/ColonyOperationRepository";
 
 export class ColonyPlan {
-    private _milestoneIndex: number = 0;
+    private get _milestoneIndex(): number { return this.state.milestoneIndex; }
+    private set _milestoneIndex(val: number) { this.state.milestoneIndex = val; }
+    private _initializedOperations: { [opId: string]: ColonyOperation } = {};
+    private _runningOperations: { [opId: string]: ColonyOperation } = {};
     private _getOperations: (milestone: Milestone) => ColonyOperation[];
-
-    public id: string;
-    public name: string;
-    public description: string;
-    public milestones: Milestone[];
-    public get mostRecentMilestone(): Milestone { return this.milestones[this._milestoneIndex]; }
-
-    public operationNamesCompletedThisMilestone: string[] = [];
-    public operationNamesCompletedLastMilestone: string[] = [];
-
-    public milestoneOperations: ColonyOperation[] = [];
-
-    public initializedOperations: { [opId: string]: ColonyOperation } = {};
-    public runningOperations: { [opId: string]: ColonyOperation } = {};
+    private _colonyOperationRepository: ColonyOperationRepository;
 
     
+    constructor(name: string, description: string, milestones: Milestone[], getOperations: (milestone: Milestone) => ColonyOperation[]) {
+        this.state = {
+            id: Guid.newGuid(),
+            name: name,
+            milestoneIndex: 0,
+            operationsThisMilestone: [],
+            operationsLastMilestone: [],
+            initializedOps: [],
+            runningOps: []
+        };
+        
+        this.milestones = milestones;
+        this.description = description;
+        this._getOperations = getOperations;
+    }
+
+
+    public state: ColonyPlanMemory;
+
+    public get id(): string { return this.state.id; }
+    public get name(): string { return this.state.name; }
+    public get mostRecentMilestone(): Milestone { return this.milestones[this._milestoneIndex]; }
+
+    public get operationNamesCompletedThisMilestone(): string[] { return this.state.operationsThisMilestone; }
+    public set operationNamesCompletedThisMilestone(val: string[]) { this.state.operationsThisMilestone = val; }
+
+    public get operationNamesCompletedLastMilestone(): string[] { return this.state.operationsLastMilestone; }
+    public set operationNamesCompletedLastMilestone(val: string[]) { this.state.operationsLastMilestone = val; }
+
+    public get initializedOperations(): { [opId: string]: ColonyOperation } {
+        if (!this._initializedOperations) {
+            this._initializedOperations = {}
+            for (var i = 0; i < this.state.initializedOps.length; i++) {
+                this._initializedOperations[this.state.initializedOps[i]] = this._colonyOperationRepository.get(this.state.initializedOps[i]);
+            }
+        }
+        return this._initializedOperations;
+    }
+    public get runningOperations(): { [opId: string]: ColonyOperation } {
+        if (!this._runningOperations) {
+            this._runningOperations = {}
+            for (var i = 0; i < this.state.runningOps.length; i++) {
+                this._runningOperations[this.state.runningOps[i]] = this._colonyOperationRepository.get(this.state.runningOps[i]);
+            }
+        }
+        return this._runningOperations;
+    }
+    
+    public description: string;
+    public milestones: Milestone[];
+    public milestoneOperations: ColonyOperation[] = [];
+
 
     /** Updates the plan, checks for a new milestone, updates all operations. */
     public update(colony: Colony): void {
