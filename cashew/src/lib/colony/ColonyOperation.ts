@@ -1,10 +1,13 @@
 import { Colony } from "./Colony";
-import { SpawnCondition } from "../spawn/SpawnCondition";
+
+import { SpawnDefinition } from "../spawn/SpawnDefinition";
+
 import { IdArray } from "../../util/IdArray";
 import { Guid } from "../../util/GUID";
 
 export abstract class ColonyOperation {
     private _id: string;
+    private _creepRequirement: SpawnDefinition[];
 
     constructor() {
         this._id = Guid.newGuid();
@@ -15,11 +18,14 @@ export abstract class ColonyOperation {
     }
 
     public name: string;
-    public assigned: IdArray<Creep>;
+
     public initialized: boolean;
     public started: boolean;
     public finished: boolean;
 
+    public spawned: SpawnDefinition[] = [];
+    public assigned: IdArray<Creep>;
+    
 
     /** Provides early-tick opportunity to update state. Will be called on all colonies and operations prior to Execute being called. */
     public update(colony: Colony): void {
@@ -63,6 +69,11 @@ export abstract class ColonyOperation {
         this.onFinish(colony);
     }
 
+    /** Informs the operation that a creep it needs has started to spawn. */
+    public creepIsSpawning(spawnDefinition: SpawnDefinition) {
+        this.spawned.push(spawnDefinition);
+    }
+
     /** Assigns a creep to this operation. */
     public assignCreep(creep: Creep): void {
         this.assigned.push(creep);
@@ -81,6 +92,48 @@ export abstract class ColonyOperation {
         if (index >= 0) {
             this.assigned.splice(index);
         }
+    }
+
+    /** Gets the total spawn requirements for the operation. */
+    public getTotalCreepRequirement(colony: Colony): SpawnDefinition[] {
+        if (!this._creepRequirement)
+            this._creepRequirement = this.onGetCreepRequirement(colony);
+        return this._creepRequirement;
+    }
+
+    /** Gets the remaining spawn requirements for the operation. */
+    public getRemainingCreepRequirements(colony: Colony): SpawnDefinition[] {
+        var req = this.getTotalCreepRequirement(colony);
+        var remaining: SpawnDefinition[] = [];
+        var skip: number[] = []; // used to make sure we don't compare against an existing spawn twice
+        // for instnace, if two identical defitions are included, we want to avoid one of them blocking
+        // the others spawn
+
+        for (var i = 0; i < req.length; i++) {
+            var found = false;
+
+            for (var j = 0; j < this.spawned.length; j++) {
+                var doSkip = false;
+                for (var k = 0; k < skip.length; k++) {
+                    if (j == skip[k]) {
+                        doSkip = true;
+                        break;
+                    }
+                }
+                if (doSkip)
+                    continue;
+
+                if (req[i].isEqual(this.spawned[j])) {
+                    found = true;
+                    skip.push(j)
+                    break;
+                }    
+            }
+
+            if (!found)
+                remaining.push(req[i]);
+        }
+        return remaining;
     }
 
     public abstract canInit(colony: Colony): boolean;
@@ -102,6 +155,6 @@ export abstract class ColonyOperation {
     protected abstract onCleanup(colony: Colony): void;
 
     /** Gets the creeps that this operation wants. */
-    public abstract getCreepRequirement(colony: Colony): SpawnCondition[];
+    protected abstract onGetCreepRequirement(colony: Colony): SpawnDefinition[];
 }
 

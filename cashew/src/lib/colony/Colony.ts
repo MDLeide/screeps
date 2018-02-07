@@ -1,6 +1,7 @@
 import { Nest } from "./Nest";
 import { ColonyPlan } from "./ColonyPlan";
 
+import { Spawner } from "../spawn/Spawner";
 import { SpawnDefinition } from "../spawn/SpawnDefinition";
 import { Empire } from "../empire/Empire";
 
@@ -21,7 +22,8 @@ export class Colony  {
         return this.nest.canSpawn(spawnDefinition)
     }
 
-    public spawnCreep(spawnDefinition: SpawnDefinition): boolean {
+    /** Returns the Spawner used if successful, otherwise null */
+    public spawnCreep(spawnDefinition: SpawnDefinition): Spawner | null {
         return this.nest.spawnCreep(spawnDefinition);
     }
 

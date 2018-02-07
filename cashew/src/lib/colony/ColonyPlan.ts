@@ -15,8 +15,12 @@ export class ColonyPlan {
     public operationNamesCompletedThisMilestone: string[] = [];
     public operationNamesCompletedLastMilestone: string[] = [];
 
-    public runningOperations: { [opId: string]: ColonyOperation } = {};
     public milestoneOperations: ColonyOperation[] = [];
+
+    public initializedOperations: { [opId: string]: ColonyOperation } = {};
+    public runningOperations: { [opId: string]: ColonyOperation } = {};
+
+    
 
     /** Updates the plan, checks for a new milestone, updates all operations. */
     public update(colony: Colony): void {
@@ -34,6 +38,7 @@ export class ColonyPlan {
         for (var i = 0; i < this.milestoneOperations.length; i++) {
             if (this.milestoneOperations[i].canInit(colony)) {
                 this.milestoneOperations[i].init(colony);
+                this.initializedOperations[this.milestoneOperations[i].id] = this.milestoneOperations[i];
             }
         }
 
@@ -41,11 +46,22 @@ export class ColonyPlan {
             if (this.milestoneOperations[i].canStart(colony)) {
                 this.milestoneOperations[i].start(colony);
                 this.runningOperations[this.milestoneOperations[i].id] = this.milestoneOperations[i];
+                delete this.initializedOperations[this.milestoneOperations[i].id];
             }
         }
     }
 
     public execute(colony: Colony): void {
+        //todo: spawning code, figure out how to keep track of newly spawned creeps
+        // chec the colony operation
+        for (var key in this.initializedOperations) {
+            this.spawnCreepsForOperation(this.initializedOperations[key], colony)
+        }
+
+        for (var key in this.runningOperations) {
+            this.spawnCreepsForOperation(this.initializedOperations[key], colony)
+        }
+
         for (var key in this.runningOperations) {
             this.runningOperations[key].execute(colony);
         }
@@ -66,4 +82,16 @@ export class ColonyPlan {
             }
         }
     }
+
+
+    private spawnCreepsForOperation(op: ColonyOperation, colony: Colony) {
+        var req = op.getRemainingCreepRequirements(colony);
+        for (var i = 0; i < req.length; i++) {
+            var response = colony.spawnCreep(req[i]);
+            if (response) {
+                op.creepIsSpawning(req[i]);
+            }
+        }
+    }
+
 }
