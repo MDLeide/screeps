@@ -22,6 +22,14 @@ export class RC2SpawnStrategy extends SpawnStrategy {
                 (spawn) => {
                     return BodyFactory.getBody("transporter", spawn.nut.totalEnergyAvailable());
                 }));
+
+        this.addCondition(
+            new SpawnCondition(
+                "transporter",
+                800,
+                (spawn) => {
+                    return BodyFactory.getBody("transporter", spawn.nut.totalEnergyAvailable());
+                }));
         
         this.addCondition(
             new SpawnCondition(
