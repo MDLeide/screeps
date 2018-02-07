@@ -40,11 +40,16 @@ declare global {
     }
 
 
+
+
     interface Memory {
         containers: { [containerId: string]: ContainerMemory };
         controllers: { [controllerId: string]: ControllerMemory };
         sources: { [sourceId: string]: SourceMemory };
+        nests: { [nestId: string]: NestMemory };
     }
+
+
 
 
     interface CreepMemory {
@@ -81,5 +86,17 @@ declare global {
     interface ControllerMemory {
         id: string;
         containerId: string;
+    }
+
+    interface NestMemory {
+
+    }
+
+    interface ColonyMemory {
+
+    }
+
+    interface ColonyOperationMemory {
+
     }
 }

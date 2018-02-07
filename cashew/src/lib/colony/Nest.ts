@@ -1,11 +1,19 @@
 import { Colony } from "./Colony";
 
+import { INestState } from "./state/INestState";
+
 import { Spawner } from "../spawn/Spawner";
 import { SpawnDefinition } from "../spawn/SpawnDefinition";
 
 export class Nest {
     private spawners: Spawner[];
 
+    constructor() {
+
+    }
+
+    public get id(): string { return this.room.name; }
+    public state: INestState;
     public room: Room;
 
     public canSpawn(spawnDefinition: SpawnDefinition): boolean {

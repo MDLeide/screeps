@@ -1,6 +1,8 @@
 import { Nest } from "./Nest";
 import { ColonyPlan } from "./ColonyPlan";
 
+import { IColonyState } from "./state/IColonyState";
+
 import { Spawner } from "../spawn/Spawner";
 import { SpawnDefinition } from "../spawn/SpawnDefinition";
 import { Empire } from "../empire/Empire";
@@ -8,15 +10,19 @@ import { Empire } from "../empire/Empire";
 import { Guid } from "../../util/GUID";
 
 export class Colony  {
+
     constructor(nest: Nest, name: string) {
         this.nest = nest;
-        this.id = Guid.newGuid();
+        this.state.id = Guid.newGuid();
+        this.state.name = name;
     }
 
-    public id: string;
-    public name: string;
+    public get id(): string { return this.state.id; }
+    public get name(): string { return this.state.name; };
     public nest: Nest;
     public plan: ColonyPlan;
+
+    public state: IColonyState;
 
     public canSpawn(spawnDefinition: SpawnDefinition): boolean {
         return this.nest.canSpawn(spawnDefinition)

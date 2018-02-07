@@ -53,6 +53,7 @@
     <Folder Include="src\imp\spawn\" />
     <Folder Include="src\lib\" />
     <Folder Include="src\imp\" />
+    <Folder Include="src\lib\colony\repo\" />
     <Folder Include="src\lib\colony\state\" />
     <Folder Include="src\lib\creep\" />
     <Folder Include="src\lib\creep\action\" />
@@ -60,6 +61,7 @@
     <Folder Include="src\lib\creep\activity\state\" />
     <Folder Include="src\lib\creep\body\" />
     <Folder Include="src\lib\creep\body\parts\" />
+    <Folder Include="src\lib\memory\" />
     <Folder Include="src\yagni\body\state\" />
     <Folder Include="src\lib\creep\role\" />
     <Folder Include="src\lib\creep\role\state\" />
@@ -156,6 +158,10 @@
     <TypeScriptCompile Include="src\lib\colony\ColonyPlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\repo\ColonyPlanRepository.ts" />
+    <TypeScriptCompile Include="src\lib\colony\repo\ColonyRepository.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\Milestone.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -165,10 +171,13 @@
     <TypeScriptCompile Include="src\lib\colony\ColonyOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\colony\state\IColonyOperationState.ts">
+    <TypeScriptCompile Include="src\lib\colony\repo\ColonyOperationRepository.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\colony\state\IColonyPlanState.ts">
+    <TypeScriptCompile Include="src\lib\colony\repo\NestRepository.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\state\IColonyOperationState.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\state\IColonyState.ts">
@@ -205,6 +214,12 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\creep\body\parts\PartDescription.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\empire\ColonyFinder.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\memory\Repository.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\body\Body.ts" />
