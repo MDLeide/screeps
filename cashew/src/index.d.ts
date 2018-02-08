@@ -51,6 +51,7 @@ declare global {
         nests: { [nestId: string]: NestMemory };
         plans: { [planId: string]: ColonyPlanMemory };
         operations: { [operationId: string]: ColonyOperationMemory };
+        //definitions: { [defId: string]: SpawnDefinitionMemory };
     }
 
 
@@ -94,7 +95,7 @@ declare global {
     }
 
     interface EmpireMemory {
-
+        
     }
 
     interface NestMemory {
@@ -124,7 +125,7 @@ declare global {
         initialized: boolean;
         started: boolean;
         finished: boolean;
-        spawnDefinitionIds: string[];
+        spawned: SpawnDefinitionMemory[];
         assignedIds: string[];
     }
 

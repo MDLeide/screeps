@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />
+    <Folder Include="src\imp\colony\plans\" />
     <Folder Include="src\imp\creep\" />
     <Folder Include="src\imp\creep\activity\" />
     <Folder Include="src\imp\creep\activity\state\" />
@@ -48,6 +49,7 @@
     <Folder Include="src\imp\extend\" />
     <Folder Include="src\imp\extend\nut\" />
     <Folder Include="src\imp\extend\seed\" />
+    <Folder Include="src\imp\colony\" />
     <Folder Include="src\imp\tower\" />
     <Folder Include="src\imp\spawn\" />
     <Folder Include="src\lib\" />
@@ -75,6 +77,9 @@
     <Folder Include="src\yagni\body\" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\imp\colony\plans\StandardPlan.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\activity\AttackingNearestEnemy.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\RepairingStructures.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\RepairingRoads.ts" />

@@ -1,10 +1,20 @@
 import { Colony } from "../colony/Colony";
+import { ColonyRepository } from "../colony/repo/ColonyRepository"
 
 export class Empire {
     private _colonies: Colony[];
+    private _colonyRepo: ColonyRepository = new ColonyRepository();
 
 
-    public colonies: Colony[];
+    public get colonies(): Colony[] {
+        if (!this._colonies) {
+            this._colonies = [];
+            for (var key in Memory.colonies) {
+                this._colonies.push(this._colonyRepo.get(key));
+            }
+        }
+        return this._colonies;
+    }
 
     public update(): void {
         for (var i = 0; i < this.colonies.length; i++) {
@@ -26,6 +36,7 @@ export class Empire {
 
     public addColony(colony: Colony): void {
         this.colonies.push(colony);
+        Memory.colonies[colony.id] = colony.state;
     }
 
     public removeColony(colony: Colony): void {
@@ -38,6 +49,7 @@ export class Empire {
         }
 
         if (removeAt >= 0) {
+            delete Memory.colonies[colony[removeAt]];
             this.colonies.splice(removeAt);
         }
     }

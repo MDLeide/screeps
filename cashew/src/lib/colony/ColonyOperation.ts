@@ -2,11 +2,14 @@ import { Colony } from "./Colony";
 
 import { SpawnDefinition } from "../spawn/SpawnDefinition";
 
+import { StatefulArray } from "../../util/StatefulArray";
 import { IdArray } from "../../util/IdArray";
 import { Guid } from "../../util/GUID";
 
 export abstract class ColonyOperation {    
     private _creepRequirement: SpawnDefinition[];
+    private _spawned: StatefulArray<SpawnDefinitionMemory, SpawnDefinition>;
+    private _assigned: IdArray<Creep>;
 
     constructor(name: string) {
         this.state = {
@@ -15,7 +18,7 @@ export abstract class ColonyOperation {
             initialized: false,
             started: false,
             finished: false,
-            spawnDefinitionIds: [],
+            spawned: [],
             assignedIds: []
         }        
     }
@@ -36,8 +39,29 @@ export abstract class ColonyOperation {
     public set finished(val: boolean) { this.state.finished = val; }
 
     /** Spawn Def Ids of spawned creeps. */
-    public spawned: IdArray<SpawnDefinition> = new IdArray<SpawnDefinition>(this.state.spawnDefinitionIds);
-    public assigned: IdArray<Creep> = new IdArray<Creep>(this.state.assignedIds);
+    public get spawned(): StatefulArray<SpawnDefinitionMemory, SpawnDefinition> {
+        if (!this._spawned) {
+            var defs: SpawnDefinition[] = [];
+            for (var i = 0; i < this.state.spawned.length; i++) {
+                var def = Object.create(StatefulArray.prototype);
+                def.state = this.state.spawned[i];
+                defs.push(def);
+            }
+            this._spawned = new StatefulArray<SpawnDefinitionMemory, SpawnDefinition>(this.state.spawned, defs);
+        }
+        return this._spawned;
+    }
+
+    public get assigned(): IdArray<Creep> {
+        if (!this._assigned) {
+            var creeps: Creep[] = [];
+            for (var i = 0; i < this.state.assignedIds.length; i++) {
+                creeps.push(Game.getObjectById<Creep>(this.state.assignedIds[i]));
+            }
+            this._assigned = new IdArray<Creep>(this.state.assignedIds, creeps);
+        }
+        return this._assigned;
+    }
     
 
     /** Provides early-tick opportunity to update state. Will be called on all colonies and operations prior to Execute being called. */
@@ -84,7 +108,7 @@ export abstract class ColonyOperation {
 
     /** Informs the operation that a creep it needs has started to spawn. */
     public creepIsSpawning(spawnDefinition: SpawnDefinition) {
-        this.spawned.push(spawnDefinition.id);
+        this.spawned.push(spawnDefinition);
     }
 
     /** Assigns a creep to this operation. */
