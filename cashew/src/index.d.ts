@@ -51,6 +51,7 @@ declare global {
         nests: { [nestId: string]: NestMemory };
         plans: { [planId: string]: ColonyPlanMemory };
         operations: { [operationId: string]: ColonyOperationMemory };
+        mapBlocks: { [mapBlockId: string]: MapBlockMemory };
         //definitions: { [defId: string]: SpawnDefinitionMemory };
     }
 
@@ -107,6 +108,7 @@ declare global {
         name: string;
         nestId: string;
         planId: string;
+        harvestBlockIds: string[];
     }
 
     interface ColonyPlanMemory {
@@ -115,6 +117,14 @@ declare global {
         milestoneIndex: number;
         operationsThisMilestone: string[];
         operationsLastMilestone: string[];
+        initializedOps: string[];
+        runningOps: string[];
+    }
+
+    interface ColonyMaintenanceMemory {
+        id: string;
+        name: string;
+        pendingOps: string[];
         initializedOps: string[];
         runningOps: string[];
     }
@@ -135,5 +145,32 @@ declare global {
         roleId: string;
         minEnergy: number;
         maxEnergy: number;
+    }
+
+    export interface LayerMemory {
+        height: number;
+        width: number;
+        array: any[][];
+    }
+
+    interface MapBlockMemory {
+        id: string;
+        height: number;
+        width: number;
+        roads: LayerMemory;
+        structures: LayerMemory;
+        ramparts: LayerMemory;
+        special: LayerMemory
+    }
+
+    interface MapMemory {
+        id: string;
+        height: number;
+        width: number;
+        terrain: LayerMemory;
+        roads: LayerMemory;
+        structures: LayerMemory;
+        ramparts: LayerMemory;
+        special: LayerMemory
     }
 }

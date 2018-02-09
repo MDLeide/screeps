@@ -4,6 +4,10 @@ import { Milestone } from "./Milestone";
 import { ColonyOperation } from "./ColonyOperation"
 import { ColonyOperationRepository } from "./repo/ColonyOperationRepository";
 
+/**
+ This class describes the long-term plan for a colony. Using milestones, it determines what operations
+ should occur, and when. It also manages the lifecycle of those operations.
+ */
 export class ColonyPlan {
     private get _milestoneIndex(): number { return this.state.milestoneIndex; }
     private set _milestoneIndex(val: number) { this.state.milestoneIndex = val; }
@@ -30,6 +34,7 @@ export class ColonyPlan {
     }
 
 
+
     public state: ColonyPlanMemory;
 
     public get id(): string { return this.state.id; }
@@ -41,7 +46,7 @@ export class ColonyPlan {
 
     public get operationNamesCompletedLastMilestone(): string[] { return this.state.operationsLastMilestone; }
     public set operationNamesCompletedLastMilestone(val: string[]) { this.state.operationsLastMilestone = val; }
-
+    
     public get initializedOperations(): { [opId: string]: ColonyOperation } {
         if (!this._initializedOperations) {
             this._initializedOperations = {}
@@ -66,6 +71,8 @@ export class ColonyPlan {
     public milestoneOperations: ColonyOperation[] = [];
 
 
+    //## update loop
+
     /** Updates the plan, checks for a new milestone, updates all operations. */
     public update(colony: Colony): void {
         if (this._milestoneIndex + 1 < this.milestones.length && this.milestones[this._milestoneIndex + 1].isMet(colony)) {
@@ -74,11 +81,13 @@ export class ColonyPlan {
             this.operationNamesCompletedThisMilestone = [];
             this.milestoneOperations = this._getOperations(this.mostRecentMilestone);
         }
-                
+
+        // update ops
         for (var i = 0; i < this.milestoneOperations.length; i++) {
             this.milestoneOperations[i].update(colony);
         }
 
+        // check to init ops
         for (var i = 0; i < this.milestoneOperations.length; i++) {
             if (this.milestoneOperations[i].canInit(colony)) {
                 this.milestoneOperations[i].init(colony);
@@ -86,6 +95,7 @@ export class ColonyPlan {
             }
         }
 
+        // check to start ops
         for (var i = 0; i < this.milestoneOperations.length; i++) {
             if (this.milestoneOperations[i].canStart(colony)) {
                 this.milestoneOperations[i].start(colony);
@@ -127,11 +137,13 @@ export class ColonyPlan {
         }
     }
 
+    //## end update loop
 
+    /** Spawns creeps required for an operation. */
     private spawnCreepsForOperation(op: ColonyOperation, colony: Colony) {
         var req = op.getRemainingCreepRequirements(colony);
         for (var i = 0; i < req.length; i++) {
-            var response = colony.spawnCreep(req[i]);
+            var response = colony.spawnCreep(req[i]);            
             if (response) {
                 op.creepIsSpawning(req[i]);
             }

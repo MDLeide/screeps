@@ -5,8 +5,7 @@ export class Spawner {
     private _updated: boolean;
     private _cleanedup: boolean;
 
-    private _spawn: StructureSpawn;
-    private _currentlySpawning: Creep;
+    private _spawn: StructureSpawn;    
     private _currentSpawnTotalGestation: number;
     private _startedThisTick: string;    
 
@@ -15,7 +14,7 @@ export class Spawner {
     }
 
     public get spawn(): StructureSpawn { return this._spawn; }
-    public get currentlySpawning(): Creep { return this._currentlySpawning; }
+    public get currentlySpawning(): { name: string, remainingTime: number, needTime: number } { return this.spawn.spawning; }
     /** If a creep started spawning this tick, this property will contain its name. */
     public get startedThisTick(): string { return this._startedThisTick; }
 
@@ -45,6 +44,7 @@ export class Spawner {
             {
                 memory: {
                     homeSpawnId: this.spawn.id,
+                    spawnDefId: spawnDefinition.id,
                     roleId: spawnDefinition.roleId,
                     role: null
                 }
@@ -66,7 +66,7 @@ export class Spawner {
 
     public update(): void {
         this._cleanedup = false;
-        this._updated = true;
+        this._updated = true;        
         this._startedThisTick = null;
     }
 

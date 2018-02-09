@@ -2,8 +2,15 @@ import { Colony } from "../colony/Colony";
 import { ColonyRepository } from "../colony/repo/ColonyRepository"
 
 export class Empire {
+    private static _instance: Empire;
+
     private _colonies: Colony[];
     private _colonyRepo: ColonyRepository = new ColonyRepository();
+
+
+    private constructor() {
+
+    }
 
 
     public get colonies(): Colony[] {
@@ -16,6 +23,8 @@ export class Empire {
         return this._colonies;
     }
 
+    //## update loop
+    
     public update(): void {
         for (var i = 0; i < this.colonies.length; i++) {
             this.colonies[i].update(this);
@@ -34,11 +43,16 @@ export class Empire {
         }
     }
 
+    //## end update loop
+
+
+    /** Adds a colony to the empire. */
     public addColony(colony: Colony): void {
         this.colonies.push(colony);
         Memory.colonies[colony.id] = colony.state;
     }
 
+    /** Removes a colony from the empire. */
     public removeColony(colony: Colony): void {
         var removeAt = -1;
         for (var i = 0; i < this.colonies.length; i++) {

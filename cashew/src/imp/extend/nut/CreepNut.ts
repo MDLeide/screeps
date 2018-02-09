@@ -36,7 +36,7 @@ export class CreepNut extends StatefulNut<Creep, CreepSeed, CreepMemory> {
         }
         return this._role;
     }
-    
+        
     public get carryTotal(): number {
         return _.sum(this.creep.carry);
     }

@@ -116,14 +116,19 @@ export abstract class ColonyOperation {
         this.assigned.push(creep);
     }
 
-    /** Removes a creep from this operation. */
-    public removeCreep(creep: Creep): void {
+    /** Removes a creep from this operation. */    
+    public removeCreep(creepName: string)
+    {
         var index = -1;
         for (var i = 0; i < this.assigned.length; i++) {
             if (this.assigned[i].id == creep.id) {
                 index = i;
                 break;
             }
+        }
+
+        for (var i = 0; i < this.spawned.length; i++) {
+            if (this.spawned[i].id == creep.nut.spa)
         }
 
         if (index >= 0) {
