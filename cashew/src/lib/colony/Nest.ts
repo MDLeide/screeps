@@ -29,11 +29,12 @@ export class Nest {
     }
 
     /** Returns the Spawner used if successful, otherwise null */
-    public spawnCreep(spawnDefinition: SpawnDefinition): Spawner | null {
+    public spawnCreep(spawnDefinition: SpawnDefinition): { name: string, spawner: Spawner }  | null {
         for (var i = 0; i < this.spawners.length; i++) {
             if (this.spawners[i].canSpawn(spawnDefinition)) {
-                if (this.spawners[i].spawnCreep(spawnDefinition))
-                    return this.spawners[i];
+                var name = this.spawners[i].spawnCreep(spawnDefinition); 
+                if (name) 
+                    return { name: name, spawner: this.spawners[i] };
             }
         }
         return null;

@@ -22,13 +22,13 @@ export class Spawner {
         return (!this.spawn.spawning && !this.startedThisTick && this.spawn.energy >= spawnDefinition.minimumEnergy);
     }
 
-    public spawnCreep(spawnDefinition: SpawnDefinition): boolean {
+    public spawnCreep(spawnDefinition: SpawnDefinition): string | null {
         if (!this._updated || this._cleanedup) {
             throw new Error("Only call spawner.spawnCreep() during the execute phase.");
         }
 
         if (!this.canSpawn(spawnDefinition)) {
-            return false;
+            return null;
         }
 
         console.log(
@@ -40,13 +40,18 @@ export class Spawner {
             spawnDefinition.roleId +
             "</span>");
 
-        var result = this.spawn.spawnCreep(spawnDefinition.getBody(this.spawn.energy).parts, name,
+        var name = spawnDefinition.getName(this);
+        var result = this.spawn.spawnCreep(
+            spawnDefinition.getBody(this.spawn.energy).parts,
+            name,
             {
                 memory: {
                     homeSpawnId: this.spawn.id,
                     spawnDefId: spawnDefinition.id,
                     roleId: spawnDefinition.roleId,
-                    role: null
+                    role: null,
+                    birthTick: Game.time + 1,
+                    deathTick: 0
                 }
             });
 
@@ -58,9 +63,9 @@ export class Spawner {
                 " failed to spawn creep: " +
                 result.toString() +
                 "</span>");
-            return false;
+            return null;
         } else {
-            return true;
+            return name;
         }
     }
 

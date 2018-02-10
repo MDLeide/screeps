@@ -125,59 +125,40 @@ export abstract class ColonyOperation {
             this._creepRequirement = this.onGetCreepRequirement(colony);
         return this._creepRequirement;
     }
-
+    
     /** Gets the remaining spawn requirements for the operation. */
     public getRemainingCreepRequirements(colony: Colony): SpawnDefinition[] {
         var req = this.getTotalCreepRequirement(colony);
+        var remaining: SpawnDefinition[] = [];        
+        var toSkip: number[] = []; // used to make sure a single assigned creep does not count
+        // for multiples when comparing assigned vs required
 
-        var reqRoles: { [roleId: string]: number } = {};
-
-        for (var i = 0; i < req.length; i++) {
-            var r = req[i].roleId;
-            if (!reqRoles[r])
-                reqRoles[r] = 0;
-            reqRoles[r]++;
-        }
-
-        var existingRoles: { [roleId: string]: number } = {};
-
-        for (var key in reqRoles) {
-            existingRoles[key] = 0;
-        }
-
-
-
-
-        var remaining: SpawnDefinition[] = [];
-        var skip: number[] = []; // used to make sure we don't compare against an existing spawn twice
-        // for instnace, if two identical defitions are included, we want to avoid one of them blocking
-        // the others spawn
-
+        // we will check each requirement against the list of assigned creeps
         for (var i = 0; i < req.length; i++) {
             var found = false;
-
-            for (var j = 0; j < this.spawned.length; j++) {
-                var doSkip = false;
-                for (var k = 0; k < skip.length; k++) {
-                    if (j == skip[k]) {
-                        doSkip = true;
-                        break;
-                    }
-                }
-                if (doSkip)
+            for (var j = 0; j < this.assigned.length; j++) {
+                if (this.doSkip(j, toSkip))
                     continue;
 
-                if (req[i].isEqual(this.spawned[j])) {
+                var assignedCreepRole = Memory.creeps[this.assigned[j]].roleId;
+                if (req[i].roleId == assignedCreepRole) {
+                    toSkip.push(j);
                     found = true;
-                    skip.push(j)
                     break;
-                }    
+                }
             }
-
-            if (!found)
+            if (!found) {
                 remaining.push(req[i]);
+            }
         }
         return remaining;
+    }
+    // helper
+    private doSkip(index: number, array: number[]): boolean {
+        for (var i = 0; i < array.length; i++)
+            if (array[i] == index)
+                return true;
+        return false;
     }
 
     public abstract canInit(colony: Colony): boolean;

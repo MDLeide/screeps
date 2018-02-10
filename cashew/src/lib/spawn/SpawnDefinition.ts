@@ -20,7 +20,7 @@ export class SpawnDefinition {
     public state: SpawnDefinitionMemory;
 
     public get id(): string { return this.state.id; }
-    public get name(): string { return this.state.name; }
+    public get spawnDefinitionName(): string { return this.state.name; }
     public get roleId(): string { return this.state.roleId; }
     public get minimumEnergy(): number { return this.state.minEnergy; }
     public get maximumEnergy(): number { return this.state.maxEnergy; }

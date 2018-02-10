@@ -91,7 +91,7 @@ export class Colony  {
     }
 
     /** Returns the Spawner used if successful, otherwise null */
-    public spawnCreep(spawnDefinition: SpawnDefinition): Spawner | null {
+    public spawnCreep(spawnDefinition: SpawnDefinition): {name: string, spawner: Spawner} | null {
         return this.nest.spawnCreep(spawnDefinition);
     }
 }

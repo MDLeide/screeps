@@ -49,10 +49,12 @@ declare global {
 
         colonies: { [colonyId: string]: ColonyMemory };
         nests: { [nestId: string]: NestMemory };
-        plans: { [planId: string]: ColonyPlanMemory };
+        
+        operationGroups: { [opGroupId: string]: OperationGroupMemory };
         operations: { [operationId: string]: ColonyOperationMemory };
+        plans: { [planId: string]: ColonyPlanMemory };
+
         mapBlocks: { [mapBlockId: string]: MapBlockMemory };
-        //definitions: { [defId: string]: SpawnDefinitionMemory };
     }
 
 
@@ -113,15 +115,6 @@ declare global {
         harvestBlockIds: string[];
     }
 
-    interface ColonyPlanMemory {
-        id: string;
-        name: string;
-        milestoneIndex: number;
-        operationsThisMilestone: string[];
-        operationsLastMilestone: string[];
-        initializedOps: string[];
-        runningOps: string[];
-    }
 
     interface ColonyMaintenanceMemory {
         id: string;
@@ -129,16 +122,6 @@ declare global {
         pendingOps: string[];
         initializedOps: string[];
         runningOps: string[];
-    }
-
-    interface ColonyOperationMemory {
-        id: string;
-        name: string;
-        initialized: boolean;
-        started: boolean;
-        finished: boolean;
-        spawned: SpawnDefinitionMemory[];
-        assignedIds: string[];
     }
 
     interface SpawnDefinitionMemory {
@@ -174,5 +157,32 @@ declare global {
         structures: LayerMemory;
         ramparts: LayerMemory;
         special: LayerMemory
+    }
+
+    interface ColonyOperationMemory {
+        id: string;
+        name: string;
+        initialized: boolean;
+        started: boolean;
+        finished: boolean;
+        spawned: SpawnDefinitionMemory[];
+        assignedIds: string[];
+    }
+
+    interface ColonyPlanMemory {
+        id: string;
+        name: string;
+        milestoneIndex: number;
+        currentOps: string;
+        lastOps: string;
+
+    }
+
+    interface OperationGroupMemory {
+        operations: string[];
+        initializedOps: string[];
+        runningOps: string[];
+        completedOps: string[];
+        id: string;
     }
 }

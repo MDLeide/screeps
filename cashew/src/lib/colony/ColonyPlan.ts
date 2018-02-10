@@ -2,7 +2,9 @@ import { Guid } from "../../util/GUID";
 import { Colony } from "./Colony"
 import { Milestone } from "./Milestone";
 import { ColonyOperation } from "./ColonyOperation"
+import { OperationGroup } from "./OperationGroup";
 import { ColonyOperationRepository } from "./repo/ColonyOperationRepository";
+import { OperationGroupRepo } from "./repo/OperationGroupRepo";
 
 /**
  This class describes the long-term plan for a colony. Using milestones, it determines what operations
@@ -11,29 +13,25 @@ import { ColonyOperationRepository } from "./repo/ColonyOperationRepository";
 export class ColonyPlan {
     private get _milestoneIndex(): number { return this.state.milestoneIndex; }
     private set _milestoneIndex(val: number) { this.state.milestoneIndex = val; }
-    private _initializedOperations: { [opId: string]: ColonyOperation } = {};
-    private _runningOperations: { [opId: string]: ColonyOperation } = {};
     private _getOperations: (milestone: Milestone) => ColonyOperation[];
-    private _colonyOperationRepository: ColonyOperationRepository;
+    private _operationGroupRepo: OperationGroupRepo = new OperationGroupRepo();
+    private _currentOps: OperationGroup;
+    private _lastOps: OperationGroup;
 
-    
+
     constructor(name: string, description: string, milestones: Milestone[], getOperations: (milestone: Milestone) => ColonyOperation[]) {
         this.state = {
             id: Guid.newGuid(),
             name: name,
             milestoneIndex: 0,
-            operationsThisMilestone: [],
-            operationsLastMilestone: [],
-            initializedOps: [],
-            runningOps: []
+            operationsThisMilestone: "",
+            operationsLastMilestone: ""
         };
-        
+
         this.milestones = milestones;
         this.description = description;
         this._getOperations = getOperations;
     }
-
-
 
     public state: ColonyPlanMemory;
 
@@ -41,34 +39,22 @@ export class ColonyPlan {
     public get name(): string { return this.state.name; }
     public get mostRecentMilestone(): Milestone { return this.milestones[this._milestoneIndex]; }
 
-    public get operationNamesCompletedThisMilestone(): string[] { return this.state.operationsThisMilestone; }
-    public set operationNamesCompletedThisMilestone(val: string[]) { this.state.operationsThisMilestone = val; }
+    public get operationNamesCompletedThisMilestone(): string[] { return this.currentOperations.completedOperationNames; }
+    public get operationNamesCompletedLastMilestone(): string[] { return this.lastMilestoneOperations.completedOperationNames; }
 
-    public get operationNamesCompletedLastMilestone(): string[] { return this.state.operationsLastMilestone; }
-    public set operationNamesCompletedLastMilestone(val: string[]) { this.state.operationsLastMilestone = val; }
-    
-    public get initializedOperations(): { [opId: string]: ColonyOperation } {
-        if (!this._initializedOperations) {
-            this._initializedOperations = {}
-            for (var i = 0; i < this.state.initializedOps.length; i++) {
-                this._initializedOperations[this.state.initializedOps[i]] = this._colonyOperationRepository.get(this.state.initializedOps[i]);
-            }
-        }
-        return this._initializedOperations;
-    }
-    public get runningOperations(): { [opId: string]: ColonyOperation } {
-        if (!this._runningOperations) {
-            this._runningOperations = {}
-            for (var i = 0; i < this.state.runningOps.length; i++) {
-                this._runningOperations[this.state.runningOps[i]] = this._colonyOperationRepository.get(this.state.runningOps[i]);
-            }
-        }
-        return this._runningOperations;
-    }
-    
     public description: string;
     public milestones: Milestone[];
-    public milestoneOperations: ColonyOperation[] = [];
+    public get lastMilestoneOperations(): OperationGroup
+    {
+        if (!this._lastOps)
+            this._lastOps = this._operationGroupRepo.get(this.state.lastOps);
+        return this._lastOps;
+    }
+    public get currentOperations(): OperationGroup {
+        if (!this._currentOps)
+            this._currentOps = this._operationGroupRepo.get(this.state.currentOps);
+        return this._currentOps;
+    }
 
 
     //## update loop
@@ -77,77 +63,25 @@ export class ColonyPlan {
     public update(colony: Colony): void {
         if (this._milestoneIndex + 1 < this.milestones.length && this.milestones[this._milestoneIndex + 1].isMet(colony)) {
             this._milestoneIndex++;
-            this.operationNamesCompletedLastMilestone = this.operationNamesCompletedThisMilestone;
-            this.operationNamesCompletedThisMilestone = [];
-            this.milestoneOperations = this._getOperations(this.mostRecentMilestone);
+            this._lastOps = this.currentOperations;
+            this.state.lastOps = this._lastOps.id;
+            this._currentOps = new OperationGroup(this._getOperations(this.mostRecentMilestone));
+            this.state.currentOps = this._currentOps.id;
         }
-
-        // update ops
-        for (var i = 0; i < this.milestoneOperations.length; i++) {
-            this.milestoneOperations[i].update(colony);
-        }
-
-        // check to init ops
-        for (var i = 0; i < this.milestoneOperations.length; i++) {
-            if (this.milestoneOperations[i].canInit(colony)) {
-                this.milestoneOperations[i].init(colony);
-                this.initializedOperations[this.milestoneOperations[i].id] = this.milestoneOperations[i];
-            }
-        }
-
-        // check to start ops
-        for (var i = 0; i < this.milestoneOperations.length; i++) {
-            if (this.milestoneOperations[i].canStart(colony)) {
-                this.milestoneOperations[i].start(colony);
-                this.runningOperations[this.milestoneOperations[i].id] = this.milestoneOperations[i];
-                delete this.initializedOperations[this.milestoneOperations[i].id];
-            }
-        }
+        this.currentOperations.update(colony);
     }
 
     public execute(colony: Colony): void {
-        //todo: spawning code, figure out how to keep track of newly spawned creeps
-        // chec the colony operation
-        for (var key in this.initializedOperations) {
-            this.spawnCreepsForOperation(this.initializedOperations[key], colony)
-        }
-
-        for (var key in this.runningOperations) {
-            this.spawnCreepsForOperation(this.initializedOperations[key], colony)
-        }
-
-        for (var key in this.runningOperations) {
-            this.runningOperations[key].execute(colony);
-        }
+        this.currentOperations.execute(colony);
     }
 
     public cleanup(colony: Colony): void {
-        var ops = this.milestoneOperations[this.mostRecentMilestone.id];
-        for (var i = 0; i < ops.length; i++) {
-            ops[i].cleanup(colony);
-        }
-
-        for (var key in this.runningOperations) {
-            var op = this.runningOperations[key];
-            if (op.isFinished(colony)) {
-                op.finish(colony);
-                this.operationNamesCompletedThisMilestone.push(op.name);
-                delete this.runningOperations[key];
-            }
-        }
+        this.currentOperations.cleanup(colony);
     }
 
     //## end update loop
 
-    /** Spawns creeps required for an operation. */
-    private spawnCreepsForOperation(op: ColonyOperation, colony: Colony) {
-        var req = op.getRemainingCreepRequirements(colony);
-        for (var i = 0; i < req.length; i++) {
-            var response = colony.spawnCreep(req[i]);            
-            if (response) {
-                op.creepIsSpawning(req[i]);
-            }
-        }
-    }
+   
+   
 
 }
