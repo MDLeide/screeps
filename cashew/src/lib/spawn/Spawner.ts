@@ -35,7 +35,10 @@ export class Spawner {
                     memory: {
                         homeSpawnId: s.id,
                         roleId: egg.role,
-                        role: null
+                        role: null,
+                        spawnTick: 0,
+                        birthTick: 0,
+                        deathTick: 0
                     }
                 });
 
