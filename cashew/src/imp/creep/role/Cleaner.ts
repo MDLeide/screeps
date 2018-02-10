@@ -10,6 +10,7 @@ import { SupplyingSpawn } from "../activity/SupplyingSpawn";
 import { SupplyingController } from "../activity/SupplyingController";
 import { ChargingTower } from "../activity/ChargingTower";
 import { PickingEnergy } from "../activity/PickingEnergy";
+import { SupplyingStorage } from "../activity/SupplyingStorage";
 
 export class Cleaner extends Role {
     public static readonly id: string = "cleaner";
@@ -62,12 +63,25 @@ export class Cleaner extends Role {
             if (tower && tower.length > 0) {
                 for (var i = 0; i < tower.length; i++) {
                     var t = tower[i];
-                    if (t.energy / t.energyCapacity <= .8) // todo: move the value to a settings file
+                    if (t.energy / t.energyCapacity <= .75) // todo: move the value to a settings file
                         return new ChargingTower(this.creep);
                 }
             }
 
-            return new SupplyingController(this.creep);
+            var controllerContainers: StructureContainer[] = this.creep.room.find<StructureContainer>(FIND_STRUCTURES,
+                {
+                    filter: function (cont: StructureContainer) {
+                        return cont && cont.structureType == STRUCTURE_CONTAINER && cont.nut.tag == "controller";
+                    }
+                }
+            );
+
+            if (controllerContainers.length == 1) {
+                if (_.sum(controllerContainers[0].store) < controllerContainers[0].storeCapacity * .9)
+                    return new SupplyingController(this.creep);
+            }
+
+            return new SupplyingStorage(this.creep);
         } else {
             var dropped = this.creep.room.find(FIND_DROPPED_RESOURCES);
             if (dropped.length) {

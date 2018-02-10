@@ -30,15 +30,7 @@ export class RC2SpawnStrategy extends SpawnStrategy {
                 (spawn) => {
                     return BodyFactory.getBody("transporter", spawn.nut.totalEnergyAvailable());
                 }));
-
-        this.addCondition(
-            new SpawnCondition(
-                "cleaner",
-                800,
-                (spawn) => {
-                    return BodyFactory.getBody("cleaner", spawn.nut.totalEnergyAvailable());
-                }));
-
+        
         this.addCondition(
             new SpawnCondition(
                 "cleaner",
@@ -56,6 +48,14 @@ export class RC2SpawnStrategy extends SpawnStrategy {
                 }));
 
         
+        this.addCondition(
+            new SpawnCondition(
+                "heavyUpgrader",
+                800,
+                (spawn) => {
+                    return BodyFactory.getBody("heavyUpgrader", spawn.nut.totalEnergyAvailable());
+                }));
+
         this.addCondition(
             new SpawnCondition(
                 "heavyUpgrader",

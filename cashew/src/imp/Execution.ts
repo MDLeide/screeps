@@ -33,6 +33,7 @@ import { PickingEnergy } from "./creep/activity/PickingEnergy";
 import { RepairingWalls } from "./creep/activity/RepairingWalls";
 import { RepairingRoads } from "./creep/activity/RepairingRoads";
 import { RepairingStructures } from "./creep/activity/RepairingStructures";
+import { SupplyingStorage } from "./creep/activity/SupplyingStorage";
 
 import { SilentEmptyActivity } from "../lib/creep/activity/SilentEmptyActivity";
 import { EmptyActivity } from "../lib/creep/activity/EmptyActivity";
@@ -187,7 +188,7 @@ export class Execute {
         });
 
         
-    }
+    } 
         
     private registerActivities(): void {
         ActivityRepo.RegisterActivity(EmptyActivity.id, (state) => {
@@ -202,6 +203,12 @@ export class Execute {
             return instance;
         });
 
+
+        ActivityRepo.RegisterActivity(SupplyingStorage.id, (state) => {
+            var instance = Object.create(SupplyingStorage.prototype);
+            instance.state = state;
+            return instance;
+        });
 
         ActivityRepo.RegisterActivity(RepairingWalls.id, (state) => {
             var instance = Object.create(RepairingWalls.prototype);
