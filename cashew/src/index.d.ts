@@ -63,6 +63,8 @@ declare global {
         role: IRoleState | null;
         homeSpawnId: string;
         spawnDefId: string;
+        birthTick: number;
+        deathTick: number;
     }
 
     interface ContainerMemory {

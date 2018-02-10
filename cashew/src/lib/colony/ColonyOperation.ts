@@ -2,14 +2,13 @@ import { Colony } from "./Colony";
 
 import { SpawnDefinition } from "../spawn/SpawnDefinition";
 
-import { StatefulArray } from "../../util/StatefulArray";
-import { IdArray } from "../../util/IdArray";
+//import { StatefulArray } from "../../util/StatefulArray";
+//import { IdArray } from "../../util/IdArray";
 import { Guid } from "../../util/GUID";
 
 export abstract class ColonyOperation {    
-    private _creepRequirement: SpawnDefinition[];
-    private _spawned: StatefulArray<SpawnDefinitionMemory, SpawnDefinition>;
-    private _assigned: IdArray<Creep>;
+    private _creepRequirement: SpawnDefinition[];    
+    private _assigned: string[];
 
     constructor(name: string) {
         this.state = {
@@ -37,36 +36,29 @@ export abstract class ColonyOperation {
 
     public get finished(): boolean { return this.state.finished; }
     public set finished(val: boolean) { this.state.finished = val; }
-
-    /** Spawn Def Ids of spawned creeps. */
-    public get spawned(): StatefulArray<SpawnDefinitionMemory, SpawnDefinition> {
-        if (!this._spawned) {
-            var defs: SpawnDefinition[] = [];
-            for (var i = 0; i < this.state.spawned.length; i++) {
-                var def = Object.create(StatefulArray.prototype);
-                def.state = this.state.spawned[i];
-                defs.push(def);
-            }
-            this._spawned = new StatefulArray<SpawnDefinitionMemory, SpawnDefinition>(this.state.spawned, defs);
-        }
-        return this._spawned;
-    }
-
-    public get assigned(): IdArray<Creep> {
-        if (!this._assigned) {
-            var creeps: Creep[] = [];
-            for (var i = 0; i < this.state.assignedIds.length; i++) {
-                creeps.push(Game.getObjectById<Creep>(this.state.assignedIds[i]));
-            }
-            this._assigned = new IdArray<Creep>(this.state.assignedIds, creeps);
-        }
+    
+    public get assigned(): string[] {
         return this._assigned;
     }
     
 
     /** Provides early-tick opportunity to update state. Will be called on all colonies and operations prior to Execute being called. */
     public update(colony: Colony): void {
+        this.cleanDeadCreeps(colony);
         this.onUpdate(colony);
+    }
+
+    /** Ensures we don't have any dead creeps assigned to the operation. */
+    private cleanDeadCreeps(colony: Colony) {
+        var toRemove: number[] = [];
+        for (var i = 0; i < this.assigned.length; i++) {
+            if (colony.population.didDieRecently(this.assigned[i]))
+                toRemove.push(i);
+        }
+
+        for (var i = toRemove.length - 1; i >= 0; i--) {
+            this.assigned.splice(toRemove[i]);
+        }
     }
 
     /** Main operation logic should execute here. */
@@ -105,15 +97,10 @@ export abstract class ColonyOperation {
     public finish(colony: Colony): void {
         this.onFinish(colony);
     }
-
-    /** Informs the operation that a creep it needs has started to spawn. */
-    public creepIsSpawning(spawnDefinition: SpawnDefinition) {
-        this.spawned.push(spawnDefinition);
-    }
-
+    
     /** Assigns a creep to this operation. */
-    public assignCreep(creep: Creep): void {
-        this.assigned.push(creep);
+    public assignCreep(creepName: string): void {
+        this.assigned.push(creepName);
     }
 
     /** Removes a creep from this operation. */    
@@ -121,16 +108,12 @@ export abstract class ColonyOperation {
     {
         var index = -1;
         for (var i = 0; i < this.assigned.length; i++) {
-            if (this.assigned[i].id == creep.id) {
+            if (this.assigned[i] == creepName) {
                 index = i;
                 break;
             }
         }
-
-        for (var i = 0; i < this.spawned.length; i++) {
-            if (this.spawned[i].id == creep.nut.spa)
-        }
-
+        
         if (index >= 0) {
             this.assigned.splice(index);
         }
@@ -146,6 +129,25 @@ export abstract class ColonyOperation {
     /** Gets the remaining spawn requirements for the operation. */
     public getRemainingCreepRequirements(colony: Colony): SpawnDefinition[] {
         var req = this.getTotalCreepRequirement(colony);
+
+        var reqRoles: { [roleId: string]: number } = {};
+
+        for (var i = 0; i < req.length; i++) {
+            var r = req[i].roleId;
+            if (!reqRoles[r])
+                reqRoles[r] = 0;
+            reqRoles[r]++;
+        }
+
+        var existingRoles: { [roleId: string]: number } = {};
+
+        for (var key in reqRoles) {
+            existingRoles[key] = 0;
+        }
+
+
+
+
         var remaining: SpawnDefinition[] = [];
         var skip: number[] = []; // used to make sure we don't compare against an existing spawn twice
         // for instnace, if two identical defitions are included, we want to avoid one of them blocking

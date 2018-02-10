@@ -251,6 +251,9 @@
     <TypeScriptCompile Include="src\lib\spawn\CreepNamer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\scratch.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\body\Body.ts" />
     <TypeScriptCompile Include="src\yagni\body\Part.ts" />
     <TypeScriptCompile Include="src\yagni\body\PartData.ts" />

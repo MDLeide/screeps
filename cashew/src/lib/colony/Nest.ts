@@ -3,8 +3,7 @@ import { Colony } from "./Colony";
 import { Spawner } from "../spawn/Spawner";
 import { SpawnDefinition } from "../spawn/SpawnDefinition";
 
-export class Nest {
-    private spawners: Spawner[];
+export class Nest {    
     private _room: Room;
 
 
@@ -12,9 +11,11 @@ export class Nest {
         this.state.id = room.name;
     }
 
+    
 
     public state: NestMemory;
 
+    public spawners: Spawner[];    
     public get id(): string { return this.room.name; }    
     public get room(): Room {
         if (!this._room) {

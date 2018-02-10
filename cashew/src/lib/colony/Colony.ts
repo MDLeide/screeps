@@ -1,5 +1,6 @@
 import { Nest } from "./Nest";
 import { ColonyPlan } from "./ColonyPlan";
+import { Population } from "./Population";
 
 import { NestRepository } from "./repo/NestRepository";
 import { ColonyPlanRepository } from "./repo/ColonyPlanRepository";
@@ -21,6 +22,7 @@ export class Colony  {
 
     private _nest: Nest;
     private _plan: ColonyPlan;
+    private _population: Population;
 
     constructor(nest: Nest, name: string) {
         this._nest = nest;
@@ -33,6 +35,11 @@ export class Colony  {
 
 
     public state: ColonyMemory;
+    public get population(): Population {
+        if (!this._population)
+            this._population = new Population(this);
+        return this._population;
+    }
     public get id(): string { return this.state.id; }
     public get name(): string { return this.state.name; };
     public get nest(): Nest {
