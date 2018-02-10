@@ -51,6 +51,9 @@ declare global {
         roleId: string;
         role: IRoleState | null;
         homeSpawnId: string;
+        spawnTick: number;
+        birthTick: number;
+        deathTick: number;
     }
 
     interface ContainerMemory {
@@ -81,5 +84,10 @@ declare global {
     interface ControllerMemory {
         id: string;
         containerId: string;
+    }
+
+    interface PopulationMemory {
+        diedRecently: string[];
+        deathTicks: number[];
     }
 }

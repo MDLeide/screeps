@@ -165,6 +165,9 @@
     <TypeScriptCompile Include="src\lib\colony\ColonyOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\Population.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\state\IColonyState.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

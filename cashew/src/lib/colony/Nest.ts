@@ -1,7 +1,8 @@
 import { Spawner } from "../spawn/Spawner";
 
 export class Nest {
-    private spawner: Spawner;
+    public spawner: Spawner;
 
     public room: Room;
+    public spawns: StructureSpawn[];
 }
