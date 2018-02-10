@@ -39,8 +39,9 @@ declare global {
         nut: ControllerNut;
     }
 
-
-
+    //**        **//
+    /*** MEMORY ***/
+    //**        **//
 
     interface Memory {
         containers: { [containerId: string]: ContainerMemory };
@@ -58,7 +59,7 @@ declare global {
     }
 
 
-
+    /** SCREEPS OBJECTS **/
 
     interface CreepMemory {
         roleId: string;
@@ -89,64 +90,35 @@ declare global {
     interface SpawnMemory {
 
     }
-
-    interface QueenMemory {
-
-    }
-
+       
     interface ControllerMemory {
         id: string;
         containerId: string;
     }
 
+    /** END SCREEPS OBJECTS **/
+
+    /** MANAGEMENT UNITS **/
+
     interface EmpireMemory {
         
     }
 
-    interface NestMemory {
-        id: string;        
-    }
-
     interface ColonyMemory {
-        id: string;
+        id: string; // room name of the colony's nest
         name: string;
-        nestId: string;
+        nestId: string; // id of the nest
         planId: string;
         harvestBlockIds: string[];
     }
 
-
-    interface ColonyMaintenanceMemory {
+    interface NestMemory {
         id: string;
-        name: string;
-        pendingOps: string[];
-        initializedOps: string[];
-        runningOps: string[];
     }
 
-    interface SpawnDefinitionMemory {
-        id: string;
-        name: string;
-        roleId: string;
-        minEnergy: number;
-        maxEnergy: number;
-    }
+    /**  END MANAGEMENT UNITS **/
 
-    export interface LayerMemory {
-        height: number;
-        width: number;
-        array: any[][];
-    }
-
-    interface MapBlockMemory {
-        id: string;
-        height: number;
-        width: number;
-        roads: LayerMemory;
-        structures: LayerMemory;
-        ramparts: LayerMemory;
-        special: LayerMemory
-    }
+    /** MAPS **/
 
     interface MapMemory {
         id: string;
@@ -159,6 +131,26 @@ declare global {
         special: LayerMemory
     }
 
+    interface MapBlockMemory {
+        id: string;
+        height: number;
+        width: number;
+        roads: LayerMemory;
+        structures: LayerMemory;
+        ramparts: LayerMemory;
+        special: LayerMemory
+    }
+
+    export interface LayerMemory {
+        height: number;
+        width: number;
+        array: any[][];
+    }
+
+    /** END MAPS **/
+
+    /** OPERATIONS **/
+
     interface ColonyOperationMemory {
         id: string;
         name: string;
@@ -167,6 +159,14 @@ declare global {
         finished: boolean;
         spawned: SpawnDefinitionMemory[];
         assignedIds: string[];
+    }
+
+    interface OperationGroupMemory {
+        operations: string[];
+        initializedOps: string[];
+        runningOps: string[];
+        completedOps: string[];
+        id: string;
     }
 
     interface ColonyPlanMemory {
@@ -178,11 +178,17 @@ declare global {
 
     }
 
-    interface OperationGroupMemory {
-        operations: string[];
-        initializedOps: string[];
-        runningOps: string[];
-        completedOps: string[];
+    /** END OPERATIONS **/
+
+    /** MISC / UNUSED **/
+
+    interface SpawnDefinitionMemory {
         id: string;
+        name: string;
+        roleId: string;
+        minEnergy: number;
+        maxEnergy: number;
     }
+
+    /** END MISC / UNUSED **/
 }

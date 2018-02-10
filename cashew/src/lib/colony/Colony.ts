@@ -28,10 +28,9 @@ export class Colony  {
         this._nest = nest;
         this.state.nestId = nest.id;
 
-        this.state.id = Guid.newGuid();
+        this.state.id = nest.id;
         this.state.name = name;
     }
-
 
 
     public state: ColonyMemory;
@@ -40,7 +39,7 @@ export class Colony  {
             this._population = new Population(this);
         return this._population;
     }
-    public get id(): string { return this.state.id; }
+    public get id(): string { return this.nest.id; }
     public get name(): string { return this.state.name; };
     public get nest(): Nest {
         if (!this._nest) {
