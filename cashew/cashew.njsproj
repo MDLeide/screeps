@@ -170,6 +170,7 @@
     <TypeScriptCompile Include="src\lib\colony\ColonyPlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\Population.ts" />
     <TypeScriptCompile Include="src\lib\colony\repo\ColonyPlanRepository.ts" />
     <TypeScriptCompile Include="src\lib\colony\repo\ColonyRepository.ts">
       <SubType>Code</SubType>
