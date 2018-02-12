@@ -39,9 +39,7 @@ export class Extender {
             console.log("already extended.");            
             return;
         }
-
-        console.log("Extending prototypes.");
-
+        
         //container
         Object.defineProperties(StructureContainer.prototype, {
             'memory': {
@@ -73,7 +71,7 @@ export class Extender {
                 }
             }
         });
-
+        
         //controller
         Object.defineProperties(StructureController.prototype, {
             'memory': {
@@ -104,7 +102,7 @@ export class Extender {
                 }
             }
         });
-
+                
         //creep
         Object.defineProperties(Creep.prototype, {
             'nut': {
@@ -116,7 +114,7 @@ export class Extender {
                 }
             }
         });
-
+                
         //room
         Object.defineProperties(Room.prototype, {
             'nut': {
@@ -128,7 +126,7 @@ export class Extender {
                 }
             }
         });
-
+        
         //source
         Object.defineProperties(Source.prototype, {
             'memory': {
@@ -158,9 +156,7 @@ export class Extender {
                 }
             }
         });
-
-        
-
+               
         //spawn
         Object.defineProperties(StructureSpawn.prototype , {
             'nut': {
@@ -172,9 +168,7 @@ export class Extender {
                 }
             }
         });
-
-        console.log("Prototypes extended.");
-
+        
         this._extended = true;
     }    
 }

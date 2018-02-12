@@ -1,20 +1,20 @@
 import { SpawnSeed } from '../Seed/SpawnSeed';
 import { StatefulNut } from '../../../lib/extend/StatefulNut';
-import { Population } from "../../../lib/spawn/Population";
+//import { Population } from "../../../lib/spawn/Population";
 
 export class SpawnNut extends StatefulNut<StructureSpawn, SpawnSeed, SpawnMemory>{
-    private _population: Population;
+    //private _population: Population;
 
     constructor(seed: SpawnSeed, state: SpawnMemory) {
         super(seed, state);
     }
 
-    public get population() {
-        if (!this._population) {
-            this._population = new Population(this.spawn);
-        }
-        return this._population;
-    }
+    //public get population() {
+    //    if (!this._population) {
+    //        this._population = new Population(this.spawn);
+    //    }
+    //    return this._population;
+    //}
 
     public get spawn(): StructureSpawn {
         return this.seed.spawn;

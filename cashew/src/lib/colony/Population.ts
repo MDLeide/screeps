@@ -13,10 +13,15 @@ export class Population {
     private _deathLength: number = 50; // number of ticks to keep dead creeps
 
     constructor(colony: Colony) {
-
+        this.colony = colony;
     }
 
     public colony: Colony;
+
+    public update(): void {
+        if (this.shouldFill())
+            this.fill();
+    }
 
     public get alive(): string[] {
         if (this.shouldFill())

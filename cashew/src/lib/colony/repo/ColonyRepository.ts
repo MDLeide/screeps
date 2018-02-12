@@ -3,7 +3,7 @@ import { Repository } from "../../memory/Repository"
 
 export class ColonyRepository extends Repository<Colony> {
     constructor() {
-        super(Memory.colonies, ColonyRepository.hydrate)
+        super("colonies", ColonyRepository.hydrate)
     }
 
     private static hydrate(state: any): Colony {

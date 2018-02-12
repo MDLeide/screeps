@@ -1,22 +1,22 @@
-import { Colony } from "../../../lib/colony/Colony";
-import { ColonyOperation } from "../../../lib/colony/ColonyOperation";
-import { SpawnDefinition } from "../../../lib/spawn/SpawnDefinition";
-import { MapBlock } from "../../../lib/map/MapBlock";
-import { MapBlockRepo } from "../../../lib/map/repo/MapBlockRepo";
+import { Colony } from "../../../../lib/colony/Colony";
+import { ColonyOperation } from "../../../../lib/colony/ColonyOperation";
+import { SpawnDefinition } from "../../../../lib/spawn/SpawnDefinition";
+import { MapBlock } from "../../../../lib/map/MapBlock";
+import { MapBlockRepo } from "../../../../lib/map/repo/MapBlockRepo";
 
-export class HarvestInfrastructureOperation extends ColonyOperation {    
+export class HarvestInfrastructureOperation extends ColonyOperation {
     private _source: Source;
     private _sourceBlock: MapBlock;
     private _mapBlockRepo: MapBlockRepo = new MapBlockRepo();
 
-    constructor(source: Source, sourceBlock: MapBlock) {
+    constructor(source: Source, heavyHarvestBlock: MapBlock) {
         super("harvestInfrastructure");
 
         this.state.sourceId = source.id;
-        this.state.blockId = sourceBlock.id;
+        this.state.blockId = heavyHarvestBlock.id;
 
         this._source = source;
-        this._sourceBlock = sourceBlock;
+        this._sourceBlock = heavyHarvestBlock;
     }
 
     public state: HarvestInfrastructureOperationMemory;
@@ -29,7 +29,7 @@ export class HarvestInfrastructureOperation extends ColonyOperation {
 
     public get sourceBlock(): MapBlock {
         if (!this._sourceBlock)
-            this._sourceBlock = this._mapBlockRepo.get(this.state.blockId);
+            this._sourceBlock = this._mapBlockRepo.find(this.state.blockId);
         return this._sourceBlock;
     }
 
@@ -40,9 +40,7 @@ export class HarvestInfrastructureOperation extends ColonyOperation {
     }
 
     public canStart(colony: Colony): boolean {
-        return this.assigned.length == 1 &&
-            this.assigned[0].nut.role.id == "builder";
-
+        return this.assigned.length >= 1;
     }
 
 
@@ -58,15 +56,14 @@ export class HarvestInfrastructureOperation extends ColonyOperation {
 
 
 
-    protected onInit(colony: Colony): boolean {
+    protected onInit(colony: Colony): boolean {        
         for (var x = 0; x < this.sourceBlock.width; x++) {
             for (var y = 0; y < this.sourceBlock.height; y++) {
                 if (this.sourceBlock.getSpecialAt(x, y) == 2) {// container/stand location
-                    this.state.standX = x;
-                    this.state.standY = y;
+                    this.state.standX = x + this.source.pos.x - 1; // assumes source is centered and map is 3x3
+                    this.state.standY = y + this.source.pos.y - 1;
 
-                    this.source.room.createConstructionSite(x, y, STRUCTURE_CONTAINER);
-
+                    this.source.room.createConstructionSite(this.state.standX, this.state.standY, STRUCTURE_CONTAINER);                    
                     return true;
                 }
             }
@@ -79,6 +76,13 @@ export class HarvestInfrastructureOperation extends ColonyOperation {
     }
 
     protected onFinish(colony: Colony): boolean {
+        var container = this.source.room.lookForAt<LOOK_STRUCTURES>(LOOK_STRUCTURES, this.state.standX, this.state.standY);
+        for (var i = 0; i < container.length; i++) {
+            if (container[i].structureType == STRUCTURE_CONTAINER) {
+                (container[i] as StructureContainer).nut.tag = "source";
+                (container[i] as StructureContainer).nut.tagId = this.source.id;
+            }
+        }
         return true;
     }
     
@@ -94,7 +98,7 @@ export class HarvestInfrastructureOperation extends ColonyOperation {
     }
 
     protected onGetCreepRequirement(colony: Colony): SpawnDefinition[] {
-        var builder = new SpawnDefinition("builder", "builder", 150, 300);
+        var builder = new SpawnDefinition("lightMiner", "lightMiner", 250, 300);
         return [builder];
     }
 }

@@ -8,8 +8,13 @@ export class OperationGroup {
     private _operations: { [opId: string]: ColonyOperation };
     private _initializedOperations: { [opId: string]: ColonyOperation };
     private _runningOperations: { [opId: string]: ColonyOperation };    
-    
-    private _colonyOperationRepository: ColonyOperationRepository = new ColonyOperationRepository();
+
+    private _colonyOperationRepository: ColonyOperationRepository;
+    private get colonyOperationRepository(): ColonyOperationRepository {
+        if (!this._colonyOperationRepository)
+            this._colonyOperationRepository = new ColonyOperationRepository();
+        return this._colonyOperationRepository;
+    }
 
 
     constructor(operations: ColonyOperation[]) {
@@ -25,6 +30,7 @@ export class OperationGroup {
         for (var i = 0; i < operations.length; i++) {
             this.state.operations.push(operations[i].id);
             this._operations[operations[i].id] = operations[i];
+            this.colonyOperationRepository.add(operations[i]);
         }
     }
 
@@ -36,7 +42,7 @@ export class OperationGroup {
         if (!this._operations) {
             this._operations = {}
             for (var i = 0; i < this.state.operations.length; i++) {
-                this._operations[this.state.operations[i]] = this._colonyOperationRepository.get(this.state.operations[i]);
+                this._operations[this.state.operations[i]] = this.colonyOperationRepository.find(this.state.operations[i]);
             }
         }
         return this._operations;
@@ -45,7 +51,7 @@ export class OperationGroup {
         if (!this._initializedOperations) {
             this._initializedOperations = {}
             for (var i = 0; i < this.state.initializedOps.length; i++) {
-                this._initializedOperations[this.state.initializedOps[i]] = this._colonyOperationRepository.get(this.state.initializedOps[i]);
+                this._initializedOperations[this.state.initializedOps[i]] = this.colonyOperationRepository.find(this.state.initializedOps[i]);
             }
         }
         return this._initializedOperations;
@@ -54,7 +60,7 @@ export class OperationGroup {
         if (!this._runningOperations) {
             this._runningOperations = {}
             for (var i = 0; i < this.state.runningOps.length; i++) {
-                this._runningOperations[this.state.runningOps[i]] = this._colonyOperationRepository.get(this.state.runningOps[i]);
+                this._runningOperations[this.state.runningOps[i]] = this.colonyOperationRepository.find(this.state.runningOps[i]);
             }
         }
         return this._runningOperations;
@@ -111,7 +117,7 @@ export class OperationGroup {
                 op.finish(colony);
                 this.completedOperationNames.push(op.name);
                 delete this.runningOperations[key];
-                this._colonyOperationRepository.delete(op);
+                this.colonyOperationRepository.delete(op);
             }
         }
     }
@@ -120,7 +126,12 @@ export class OperationGroup {
     private spawnCreepsForOperation(op: ColonyOperation, colony: Colony) {
         var req = op.getRemainingCreepRequirements(colony);
         for (var i = 0; i < req.length; i++) {
-            var response = colony.spawnCreep(req[i]);
+            if (!req[i]) //todo: figure this out
+                continue;
+            if (!colony.canSpawn(req[i]))
+                break;
+
+            var response = colony.spawnCreep(req[i]);            
             if (response) {
                 op.assignCreep(response.name);
             }

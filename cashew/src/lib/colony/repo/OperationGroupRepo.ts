@@ -3,7 +3,7 @@ import { OperationGroup } from "../OperationGroup";
 
 export class OperationGroupRepo extends Repository<OperationGroup> {
     constructor() {
-        super(Memory.operationGroups, OperationGroupRepo.hydrate)
+        super("operationGroups", OperationGroupRepo.hydrate)
     }
 
     private static hydrate(state: any): OperationGroup {

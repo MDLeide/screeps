@@ -5,18 +5,20 @@ import { Repository } from "../../memory/Repository";
 import { IdArray } from "../../../util/IdArray";
 
 export class ColonyOperationRepository extends Repository<ColonyOperation> {
-    private static delegates: { [name: string]: (state: any) => ColonyOperation };
+    private static delegates: { [name: string]: (state: any) => ColonyOperation } = {};
 
     constructor() {
-        super(Memory.colonies, ColonyOperationRepository.hydrate)
+        super("operations", ColonyOperationRepository.hydrate)        
     }
 
-    public static register(name: string, hydrate: (state: any) => ColonyOperation) : void {
+    public static register(name: string, hydrate: (state: any) => ColonyOperation): void {
+        if (!ColonyOperationRepository.delegates)
+            ColonyOperationRepository.delegates = {};
         ColonyOperationRepository.delegates[name] = hydrate;
     }
 
     private static hydrate(state: any): ColonyOperation {
-        var op = this.delegates[state.name](state);
+        var op = ColonyOperationRepository.delegates[state.name](state);
         op.state = state;
         return op;
     }

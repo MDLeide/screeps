@@ -11,6 +11,8 @@ import { TowerController } from "./imp/tower/TowerController";
 
 
 declare global {
+    const global: any;
+
     interface StructureTower {
         controller: TowerController | null | undefined;
     }
@@ -32,7 +34,7 @@ declare global {
     }
 
     interface StructureContainer {
-        nut: ContainerNut;
+        nut: ContainerNut;        
     }
 
     interface StructureController {
@@ -94,6 +96,24 @@ declare global {
     interface ControllerMemory {
         id: string;
         containerId: string;
+    }
+
+    interface FlagMemory {
+        colonyData?: ColonyFlagMemory;
+        playbackData?: PlaybackFlagMemory;
+    }
+
+    interface ColonyFlagMemory {
+        name: string;
+        plan: string;
+    }
+
+    interface PlaybackFlagMemory {
+        doOutput: boolean;
+        outputColor: string;
+
+        playbackState: string;
+        lastPlaybackState: string;        
     }
 
     /** END SCREEPS OBJECTS **/
@@ -175,7 +195,6 @@ declare global {
         milestoneIndex: number;
         currentOps: string;
         lastOps: string;
-
     }
 
     /** END OPERATIONS **/

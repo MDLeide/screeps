@@ -35,11 +35,13 @@
   <ItemGroup>
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="src\imp\map\HeavyHarvestBlock.ts" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />
     <Folder Include="src\imp\colony\operations\" />
+    <Folder Include="src\imp\colony\operations\economy\" />
     <Folder Include="src\imp\colony\plans\" />
     <Folder Include="src\imp\creep\" />
     <Folder Include="src\imp\creep\activity\" />
@@ -51,6 +53,7 @@
     <Folder Include="src\imp\extend\nut\" />
     <Folder Include="src\imp\extend\seed\" />
     <Folder Include="src\imp\colony\" />
+    <Folder Include="src\imp\map\" />
     <Folder Include="src\imp\tower\" />
     <Folder Include="src\imp\spawn\" />
     <Folder Include="src\lib\" />
@@ -65,6 +68,7 @@
     <Folder Include="src\lib\map\repo\" />
     <Folder Include="src\lib\memory\" />
     <Folder Include="src\lib\map\" />
+    <Folder Include="src\lib\debug\" />
     <Folder Include="src\yagni\body\state\" />
     <Folder Include="src\lib\creep\role\" />
     <Folder Include="src\lib\creep\role\state\" />
@@ -80,7 +84,18 @@
     <Folder Include="src\yagni\body\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="src\imp\colony\operations\HarvestInfrastructureOperation.ts">
+    <TypeScriptCompile Include="src\imp\BodyRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\ColonyOperationRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\ColonyPlanRegistration.ts" />
+    <TypeScriptCompile Include="src\imp\colony\operations\economy\HarvestInfrastructureOperation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\colony\operations\economy\OperationTemplate.ts" />
+    <TypeScriptCompile Include="src\imp\colony\operations\economy\HarvestOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\colony\plans\StandardPlan.ts">
@@ -133,6 +148,10 @@
     <TypeScriptCompile Include="src\imp\extend\seed\ControllerSeed.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\ActivityRegistration.ts" />
+    <TypeScriptCompile Include="src\imp\RoleRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\spawn\BodyFactory.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -148,11 +167,20 @@
     <TypeScriptCompile Include="src\imp\extend\seed\SourceSeed.ts" />
     <TypeScriptCompile Include="src\imp\extend\seed\SpawnSeed.ts" />
     <TypeScriptCompile Include="src\imp\extend\seed\StructureSeed.ts" />
-    <TypeScriptCompile Include="src\imp\spawn\RC2SpawnStrategy.ts" />
-    <TypeScriptCompile Include="src\imp\spawn\RC1SpawnStrategy.ts">
+    <TypeScriptCompile Include="src\lib\debug\Playback.ts" />
+    <TypeScriptCompile Include="src\lib\debug\Cleaner.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\spawn\StrategyFactory.ts">
+    <TypeScriptCompile Include="src\lib\map\NestMap.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\memory\Manager.ts" />
+    <TypeScriptCompile Include="src\lib\Settings.ts" />
+    <TypeScriptCompile Include="src\yagni\RC2SpawnStrategy.ts" />
+    <TypeScriptCompile Include="src\yagni\RC1SpawnStrategy.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\yagni\StrategyFactory.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\tower\TowerController.ts">
@@ -286,7 +314,7 @@
     <TypeScriptCompile Include="src\lib\spawn\Egg.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\spawn\Population.ts">
+    <TypeScriptCompile Include="src\yagni\Population.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\spawn\SpawnDefinition.ts">
@@ -295,7 +323,7 @@
     <TypeScriptCompile Include="src\lib\spawn\Spawner.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\spawn\SpawnStrategy.ts">
+    <TypeScriptCompile Include="src\yagni\SpawnStrategy.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\logger\Config.ts" />

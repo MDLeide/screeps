@@ -38,6 +38,8 @@ export abstract class ColonyOperation {
     public set finished(val: boolean) { this.state.finished = val; }
     
     public get assigned(): string[] {
+        if (!this._assigned)
+            this._assigned = [];
         return this._assigned;
     }
     
@@ -63,6 +65,11 @@ export abstract class ColonyOperation {
 
     /** Main operation logic should execute here. */
     public execute(colony: Colony): void {
+        for (var i = 0; i < this.assigned.length; i++) {
+            var creep = Game.creeps[this.assigned[i]];
+            if (!creep.spawning)
+                creep.nut.role.execute();
+        }
         this.onExecute(colony);
     }
 

@@ -1,4 +1,5 @@
 import { Colony } from "../colony/Colony";
+
 import { ColonyRepository } from "../colony/repo/ColonyRepository"
 
 export class Empire {
@@ -9,7 +10,14 @@ export class Empire {
 
 
     private constructor() {
+    }
 
+
+    public static getEmpireInstance(): Empire {
+        if (!Empire._instance) {
+            Empire._instance = new Empire();
+        }
+        return Empire._instance;
     }
 
 
@@ -17,15 +25,17 @@ export class Empire {
         if (!this._colonies) {
             this._colonies = [];
             for (var key in Memory.colonies) {
-                this._colonies.push(this._colonyRepo.get(key));
+                this._colonies.push(this._colonyRepo.find(key));
             }
         }
         return this._colonies;
     }
 
+
+
     //## update loop
     
-    public update(): void {
+    public update(): void {        
         for (var i = 0; i < this.colonies.length; i++) {
             this.colonies[i].update(this);
         }
@@ -44,12 +54,11 @@ export class Empire {
     }
 
     //## end update loop
-
-
-    /** Adds a colony to the empire. */
+    
+    /** Adds a colony to the empire and memory. */
     public addColony(colony: Colony): void {
         this.colonies.push(colony);
-        Memory.colonies[colony.id] = colony.state;
+        this._colonyRepo.add(colony);
     }
 
     /** Removes a colony from the empire. */
@@ -63,9 +72,8 @@ export class Empire {
         }
 
         if (removeAt >= 0) {
-            delete Memory.colonies[colony[removeAt]];
+            this._colonyRepo.delete(colony);
             this.colonies.splice(removeAt);
         }
     }
-
 }

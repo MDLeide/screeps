@@ -26,6 +26,15 @@ export class MapBlock {
 
     public state: MapBlockMemory;
 
+    public get id(): string { return this.state.id; }
+    public set id(val: string) { this.state.id = val; }
+
+    public get height(): number { return this.state.height; }
+    public set height(val: number) { this.state.height = val; }
+
+    public get width(): number { return this.state.width; }
+    public set width(val: number) { this.state.width = val; }
+
     public get roads(): Layer<boolean> {
         if (!this._roads)
             this._roads = Layer.LoadFromState<boolean>(this.state.roads);
@@ -62,13 +71,4 @@ export class MapBlock {
     public getSpecialAt(x: number, y: number): number {
         return this.special.getAt(x, y);
     }
-
-    public get id(): string { return this.state.id; }
-    public set id(val: string) { this.state.id = val; }
-
-    public get height(): number { return this.state.height; }
-    public set height(val: number) { this.state.height = val; }
-
-    public get width(): number { return this.state.width; }
-    public set width(val: number) { this.state.width = val;}
 }

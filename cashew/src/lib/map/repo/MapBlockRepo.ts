@@ -3,7 +3,7 @@ import { Repository } from "../../memory/Repository";
 
 export class MapBlockRepo extends Repository<MapBlock>{
     constructor() {
-        super(Memory.mapBlocks, MapBlockRepo.hydrate)
+        super("mapBlocks", MapBlockRepo.hydrate)
     }
 
     private static hydrate(state: any): MapBlock {

@@ -3,32 +3,42 @@ import { Colony } from "./Colony";
 import { Spawner } from "../spawn/Spawner";
 import { SpawnDefinition } from "../spawn/SpawnDefinition";
 
-export class Nest {    
-    private _room: Room;
+export class Nest {
+    private _spawners: Spawner[];
 
-
-    constructor(room: Room) {
-        this.state.id = room.name;
+    constructor(roomName: string) {
+        this.state = {
+            id: roomName
+        }
     }
 
-    
 
     public state: NestMemory;
 
-    public spawners: Spawner[];    
-    public get id(): string { return this.room.name; }    
-    public get room(): Room {
-        if (!this._room) {
-            this._room = Game.getObjectById<Room>(this.state.id);
+
+    public get spawners(): Spawner[] {
+        if (!this._spawners) {
+            this._spawners = [];
+            var spawns = this.room.nut.seed.findMySpawns();
+            for (var i = 0; i < spawns.length; i++) {
+                this._spawners.push(new Spawner(spawns[i]));
+            }
         }
-        return this._room;
+        return this._spawners;
     }
+    public get id(): string { return this.room.name; }    
+    public get room(): Room { return Game.rooms[this.state.id]; }
+
 
     public canSpawn(spawnDefinition: SpawnDefinition): boolean {
-        return _.any(this.spawners, (p) => p.canSpawn(spawnDefinition));
+        for (var i = 0; i < this.spawners.length; i++) {
+            if (this.spawners[i].canSpawn(spawnDefinition))
+                return true;
+        }
+        return false;
     }
 
-    /** Returns the Spawner used if successful, otherwise null */
+    /** Returns the name and spawner used if successful, otherwise null */
     public spawnCreep(spawnDefinition: SpawnDefinition): { name: string, spawner: Spawner }  | null {
         for (var i = 0; i < this.spawners.length; i++) {
             if (this.spawners[i].canSpawn(spawnDefinition)) {
@@ -41,6 +51,7 @@ export class Nest {
     }
 
     public update(colony: Colony): void {
+        this._spawners = null;
         for (var i = 0; i < this.spawners.length; i++) {
             this.spawners[i].update();
         }

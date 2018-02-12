@@ -10,7 +10,7 @@ export class Layer<T> {
         for (var i = 0; i < width; i++) {
             this.state.array.push([]);
 
-            for (var i = 0; i < height; i++) {
+            for (var j = 0; j < height; j++) {
                 this.state.array[i].push(defaultValue);
             }
         }

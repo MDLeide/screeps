@@ -4,17 +4,65 @@ import { Layer } from "./Layer";
  * All maps are 50x50
  */
 export class Map {
-    constructor(terrain: Layer<Terrain>, roads: Layer<boolean>, structures: Layer<StructureConstant>, ramparts: Layer<boolean>) {
-        this.terrain = terrain;
-        this.roads = roads;
-        this.structures = structures;
-        this.ramparts = ramparts;
+    private _terrain: Layer<Terrain>;
+    private _roads: Layer<boolean>;
+    private _structures: Layer<StructureConstant>;
+    private _ramparts: Layer<boolean>;
+    private _special: Layer<number>;
+
+
+    constructor(terrain: Layer<Terrain>, roads: Layer<boolean>, structures: Layer<StructureConstant>, ramparts: Layer<boolean>, special: Layer<number>) {
+        this.state.terrain = terrain.state;
+        this.state.roads = roads.state;
+        this.state.structures = structures.state;
+        this.state.ramparts = structures.state;
+        this.state.special = special.state;
+
+        this._terrain = terrain;
+        this._roads = roads;
+        this._structures = structures;
+        this._ramparts = ramparts;
+        this._special = special;
     }
 
-    public terrain: Layer<Terrain>;
-    public roads: Layer<boolean>;    
-    public structures: Layer<StructureConstant>;
-    public ramparts: Layer<boolean>;
+
+    public state: MapMemory;
+
+    public get terrain(): Layer<Terrain> {
+        if (!this._terrain) {
+            this._terrain = Object.create(Layer.prototype);
+            this._terrain.state = this.state.terrain;
+        }
+        return this._terrain;
+    }
+    public get roads(): Layer<boolean> {
+        if (!this._roads) {
+            this._roads = Object.create(Layer.prototype);
+            this._roads.state = this.state.roads;
+        }
+        return this._roads;
+    }
+    public get structures(): Layer<StructureConstant> {
+        if (!this._structures) {
+            this._structures = Object.create(Layer.prototype);
+            this._structures.state = this.state.structures;            
+        }
+        return this._structures;
+    }
+    public get ramparts(): Layer<boolean> {
+        if (!this._ramparts) {
+            this._ramparts = Object.create(Layer.prototype);
+            this._ramparts.state = this.state.ramparts;
+        }
+        return this._ramparts
+    }
+    public get special(): Layer<number> {
+        if (!this._special) {
+            this._special = Object.create(Layer.prototype);
+            this._special.state = this.state.special;
+        }
+        return this._special;
+    }
 
     public getRoadAt(x: number, y: number): boolean {
         return this.roads.getAt(x, y);

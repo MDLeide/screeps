@@ -18,7 +18,7 @@ export class Spawner {
     /** If a creep started spawning this tick, this property will contain its name. */
     public get startedThisTick(): string { return this._startedThisTick; }
 
-    public canSpawn(spawnDefinition: SpawnDefinition): boolean {
+    public canSpawn(spawnDefinition: SpawnDefinition): boolean {        
         return (!this.spawn.spawning && !this.startedThisTick && this.spawn.energy >= spawnDefinition.minimumEnergy);
     }
 
@@ -65,6 +65,7 @@ export class Spawner {
                 "</span>");
             return null;
         } else {
+            this._startedThisTick = name;
             return name;
         }
     }

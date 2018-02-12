@@ -15,25 +15,39 @@ import { Guid } from "../../util/GUID";
 import { IdArray } from "../../util/IdArray";
 
 export class Colony  {
-    private _nestRepository: NestRepository = new NestRepository();
-    private _planRepository: ColonyPlanRepository = new ColonyPlanRepository();
-    private _harvestBlocks: IdArray<MapBlock>;
-    private _mapBlockRepo: MapBlockRepo = new MapBlockRepo();
+    private _nestRepository: NestRepository;
+    private get nestRepository(): NestRepository {
+        if (!this._nestRepository)
+            this._nestRepository = new NestRepository();
+        return this._nestRepository;
+    }
 
+    private _planRepository: ColonyPlanRepository;
+    private get planRepository(): ColonyPlanRepository {
+        if (!this._planRepository)
+            this._planRepository = new ColonyPlanRepository();
+        return this._planRepository;
+    }
+    
     private _nest: Nest;
     private _plan: ColonyPlan;
     private _population: Population;
-
-    constructor(nest: Nest, name: string) {
+    
+    constructor(nest: Nest, name: string, plan: ColonyPlan) {
         this._nest = nest;
-        this.state.nestId = nest.id;
 
-        this.state.id = nest.id;
-        this.state.name = name;
+        this.state = {
+            id: nest.id,
+            name: name,
+            nestId: nest.id,
+            planId: plan.id,
+            harvestBlockIds: []
+        }
     }
 
 
     public state: ColonyMemory;
+
     public get population(): Population {
         if (!this._population)
             this._population = new Population(this);
@@ -43,32 +57,23 @@ export class Colony  {
     public get name(): string { return this.state.name; };
     public get nest(): Nest {
         if (!this._nest) {
-            this._nest = this._nestRepository.get(this.state.nestId);
+            this._nest = this.nestRepository.find(this.state.nestId);
         }
         return this._nest;
     }
     public get plan(): ColonyPlan {
         if (!this._plan) {
-            this._plan = this._planRepository.get(this.state.planId);
+            this._plan = this.planRepository.find(this.state.planId);
         }
         return this._plan;
     }
-    public get harvestBlocks(): IdArray<MapBlock> {
-        if (!this._harvestBlocks) {
-            var blocks = []
-            for (var i = 0; i < this.state.harvestBlockIds.length; i++) {
-                blocks.push(this._mapBlockRepo.get(this.state.harvestBlockIds[i]));
-            }
-            this._harvestBlocks = new IdArray<MapBlock>(this.state.harvestBlockIds, blocks);
-        }
-        return this._harvestBlocks;
-    }
-
+    
 
 
     //## update loop
 
     public update(empire: Empire): void {
+        this.population.update();
         this.plan.update(this);
         this.nest.update(this);
     }
