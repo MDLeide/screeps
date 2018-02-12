@@ -65,6 +65,8 @@
     <Folder Include="src\lib\creep\activity\state\" />
     <Folder Include="src\lib\creep\body\" />
     <Folder Include="src\lib\creep\body\parts\" />
+    <Folder Include="src\lib\map\base\" />
+    <Folder Include="src\lib\map\blocks\" />
     <Folder Include="src\lib\map\repo\" />
     <Folder Include="src\lib\memory\" />
     <Folder Include="src\lib\map\" />
@@ -175,10 +177,29 @@
     <TypeScriptCompile Include="src\lib\debug\Cleaner.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\blocks\ControllerBlock.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\blocks\LabBlock.ts" />
+    <TypeScriptCompile Include="src\lib\map\blocks\ExtensionBlock.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\blocks\HarvestBlock.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\blocks\MainBlock.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\map\ColonyMap.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\IBlockProvider.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\map\NestMap.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\NestMapBuilder.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\memory\Manager.ts" />
@@ -268,13 +289,13 @@
     <TypeScriptCompile Include="src\lib\empire\EmpireOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\map\Layer.ts">
+    <TypeScriptCompile Include="src\lib\map\base\Layer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\map\Map.ts">
+    <TypeScriptCompile Include="src\lib\map\base\Map.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\map\MapBlock.ts">
+    <TypeScriptCompile Include="src\lib\map\base\MapBlock.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\map\repo\MapBlockRepo.ts">

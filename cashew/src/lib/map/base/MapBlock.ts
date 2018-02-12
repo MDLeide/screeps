@@ -1,5 +1,5 @@
 import { Layer } from "./Layer";
-import { Guid } from "../../util/GUID";
+import { Guid } from "../../../util/GUID";
 
 export class MapBlock {
     private _roads: Layer<boolean>;
