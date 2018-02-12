@@ -7,7 +7,7 @@ export class MapBlock {
     private _ramparts: Layer<boolean>;
     private _special: Layer<number>;
 
-    constructor(height: number, width: number) {
+    constructor(height: number, width: number, offsetX: number, offsetY: number) {
         this._roads = new Layer<boolean>(height, width, false);
         this._structures = new Layer<StructureConstant>(height, width, null);
         this._ramparts = new Layer<boolean>(height, width, false);
@@ -17,6 +17,8 @@ export class MapBlock {
             id: Guid.newGuid(),
             height: height,
             width: width,
+            offsetX: offsetX,
+            offsetY: offsetY,
             roads: this._roads.state,
             structures: this._structures.state,
             ramparts: this._ramparts.state,
@@ -26,6 +28,12 @@ export class MapBlock {
 
     public state: MapBlockMemory;
 
+    public get offsetX(): any { return this.state.offsetX; }
+    public set offsetX(val: any) { this.state.offsetX = val; }
+
+    public get offsetY(): any { return this.state.offsetY; }
+    public set offsetY(val: any) { this.state.offsetY = val; }
+    
     public get id(): string { return this.state.id; }
     public set id(val: string) { this.state.id = val; }
 

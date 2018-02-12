@@ -155,6 +155,8 @@ declare global {
         id: string;
         height: number;
         width: number;
+        offsetX: number;
+        offsetY: number;
         roads: LayerMemory;
         structures: LayerMemory;
         ramparts: LayerMemory;

@@ -91,9 +91,13 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\ColonyPlanRegistration.ts" />
+    <TypeScriptCompile Include="src\imp\colony\operations\economy\ExtensionsRcl2Operation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\colony\operations\economy\HarvestInfrastructureOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\colony\operations\economy\LightUpgradeOperation.ts" />
     <TypeScriptCompile Include="src\imp\colony\operations\economy\OperationTemplate.ts" />
     <TypeScriptCompile Include="src\imp\colony\operations\economy\HarvestOperation.ts">
       <SubType>Code</SubType>
@@ -169,6 +173,9 @@
     <TypeScriptCompile Include="src\imp\extend\seed\StructureSeed.ts" />
     <TypeScriptCompile Include="src\lib\debug\Playback.ts" />
     <TypeScriptCompile Include="src\lib\debug\Cleaner.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\ColonyMap.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\map\NestMap.ts">

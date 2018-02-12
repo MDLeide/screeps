@@ -5,7 +5,7 @@ import { SpawnDefinition } from "../../../../lib/spawn/SpawnDefinition";
 export class Operation extends ColonyOperation {
     constructor() {
         super("opName");
-        
+
     }
 
 
@@ -44,9 +44,9 @@ export class Operation extends ColonyOperation {
     protected onCleanup(colony: Colony): void {
     }
 
-    protected onGetCreepRequirement(colony: Colony): SpawnDefinition[] {            
+    protected onGetCreepRequirement(colony: Colony): SpawnDefinition[] {
         var def = new SpawnDefinition("lightMiner", "lightMiner", 250, 300);
         return [def];
     }
-    }
+}
 }
