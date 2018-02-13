@@ -6,6 +6,13 @@ import { BodyFactory } from "./BodyFactory";
 export class RC2SpawnStrategy extends SpawnStrategy {
     constructor() {
         super();
+        this.addCondition(
+            new SpawnCondition(
+                "lightMiner",
+                300,
+                (spawn) => {
+                    return BodyFactory.getBody("lightMiner", spawn.nut.totalEnergyAvailable());
+                }));
 
         this.addCondition(
             new SpawnCondition(
