@@ -1,4 +1,4 @@
-import { MapBlock } from "../MapBlock";
+import { MapBlock } from "../base/MapBlock";
 import { Repository } from "../../memory/Repository";
 
 export class MapBlockRepo extends Repository<MapBlock>{

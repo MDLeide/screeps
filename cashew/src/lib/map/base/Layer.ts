@@ -7,6 +7,7 @@ export class Layer<T> {
             width: width,
             array: []
         }
+        this.defaultValue = defaultValue;
         for (var i = 0; i < width; i++) {
             this.state.array.push([]);
 
@@ -18,6 +19,7 @@ export class Layer<T> {
 
     public state: LayerMemory;
 
+    public defaultValue: T;
     public get height(): number { return this.state.height; }
     public get width(): number { return this.state.width; }
     public get array(): T[][] {

@@ -8,7 +8,6 @@ import { Guid } from "../../util/GUID";
 
 export abstract class ColonyOperation {    
     private _creepRequirement: SpawnDefinition[];    
-    private _assigned: string[];
 
     constructor(name: string) {
         this.state = {
@@ -18,7 +17,7 @@ export abstract class ColonyOperation {
             started: false,
             finished: false,
             spawned: [],
-            assignedIds: []
+            assignedNames: []
         }        
     }
 
@@ -37,10 +36,8 @@ export abstract class ColonyOperation {
     public get finished(): boolean { return this.state.finished; }
     public set finished(val: boolean) { this.state.finished = val; }
     
-    public get assigned(): string[] {
-        if (!this._assigned)
-            this._assigned = [];
-        return this._assigned;
+    public get assigned(): string[] {        
+        return this.state.assignedNames;
     }
     
 
@@ -146,7 +143,6 @@ export abstract class ColonyOperation {
             for (var j = 0; j < this.assigned.length; j++) {
                 if (this.doSkip(j, toSkip))
                     continue;
-
                 var assignedCreepRole = Memory.creeps[this.assigned[j]].roleId;
                 if (req[i].roleId == assignedCreepRole) {
                     toSkip.push(j);

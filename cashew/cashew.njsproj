@@ -35,7 +35,6 @@
   <ItemGroup>
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <Content Include="src\imp\map\HeavyHarvestBlock.ts" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +154,15 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\ActivityRegistration.ts" />
+    <TypeScriptCompile Include="src\imp\MapBuilder.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\map\ExtensionBlockProvider.ts" />
+    <TypeScriptCompile Include="src\imp\map\MainBlockProvider.ts" />
+    <TypeScriptCompile Include="src\imp\map\ControllerBlockProvider.ts" />
+    <TypeScriptCompile Include="src\imp\map\HarvestBlockProvider.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\RoleRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -173,6 +181,9 @@
     <TypeScriptCompile Include="src\imp\extend\seed\SourceSeed.ts" />
     <TypeScriptCompile Include="src\imp\extend\seed\SpawnSeed.ts" />
     <TypeScriptCompile Include="src\imp\extend\seed\StructureSeed.ts" />
+    <TypeScriptCompile Include="src\lib\debug\Logger.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\debug\Playback.ts" />
     <TypeScriptCompile Include="src\lib\debug\Cleaner.ts">
       <SubType>Code</SubType>
@@ -375,6 +386,11 @@
     <TypeScriptCompile Include="src\util\IIdentifiable.ts" />
     <TypeScriptCompile Include="src\util\Legume.ts" />
     <TypeScriptCompile Include="src\util\StatefulArray.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\lib\map\BlockProviderBase.ts">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

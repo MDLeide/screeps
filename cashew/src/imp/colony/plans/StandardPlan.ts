@@ -4,9 +4,11 @@ import { ColonyOperation } from "../../../lib/colony/ColonyOperation";
 import { Milestone } from "../../../lib/colony/Milestone";
 
 import { HarvestInfrastructureOperation } from "../operations/economy/HarvestInfrastructureOperation";
-import { HarvestOperation } from from "../operations/economy/HarvestOperation";
+import { HarvestOperation } from "../operations/economy/HarvestOperation";
+import { LightUpgradeOperation } from "../operations/economy/LightUpgradeOperation";
+import { ExtensionsRcl2Operation } from "../operations/economy/ExtensionsRcl2Operation";
 
-import { HeavyHarvestBlock } from "../../map/HeavyHarvestBlock";
+import { HarvestBlock } from "../../../lib/map/blocks/HarvestBlock";
 
 export class StandardPlan extends ColonyPlan {
     constructor() {
@@ -159,7 +161,7 @@ export class StandardPlan extends ColonyPlan {
         var ops: ColonyOperation[] = [];
         var sources = colony.nest.room.nut.seed.findSources();
         for (var i = 0; i < sources.length; i++) {
-            ops.push(new HarvestInfrastructureOperation(sources[i], HeavyHarvestBlock.get(sources[i])));
+            ops.push(new HarvestInfrastructureOperation(sources[i]));
         }
         return ops;
     }
@@ -170,12 +172,14 @@ export class StandardPlan extends ColonyPlan {
         for (var i = 0; i < sources.length; i++) {
             ops.push(new HarvestOperation(300));
         }
+        ops.push(new LightUpgradeOperation());
         return ops;
     }
 
     public static rcl2Operations(colony: Colony): ColonyOperation[] {
         var ops: ColonyOperation[] = [];
-
+        ops.push(new ExtensionsRcl2Operation());
+        ops.push(new LightUpgradeOperation());
         return ops;
     }
 

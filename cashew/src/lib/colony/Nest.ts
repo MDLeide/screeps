@@ -1,10 +1,13 @@
+import { Empire } from "../empire/Empire";
 import { Colony } from "./Colony";
+import { NestMap } from "../map/NestMap";
 
 import { Spawner } from "../spawn/Spawner";
 import { SpawnDefinition } from "../spawn/SpawnDefinition";
 
 export class Nest {
     private _spawners: Spawner[];
+    private _nestMap: NestMap;
 
     constructor(roomName: string) {
         this.state = {
@@ -27,8 +30,14 @@ export class Nest {
         return this._spawners;
     }
     public get id(): string { return this.room.name; }    
-    public get room(): Room { return Game.rooms[this.state.id]; }
-
+    public get room(): Room {        
+        return Game.rooms[this.state.id];
+    }
+    public get nestMap(): NestMap {
+        if (!this._nestMap)
+            this._nestMap = Empire.getEmpireInstance().nestMapBuilder.getMap(this.room);
+        return this._nestMap;
+    }
 
     public canSpawn(spawnDefinition: SpawnDefinition): boolean {
         for (var i = 0; i < this.spawners.length; i++) {

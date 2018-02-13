@@ -1,3 +1,6 @@
+import { Cleaner } from "./lib/debug/Cleaner";
+import { Logger } from "./lib/debug/Logger";
+
 import { IRoleState } from "./lib/creep/role/state/IRoleState";
 
 import { CreepNut } from "./imp/extend/nut/CreepNut";
@@ -11,7 +14,12 @@ import { TowerController } from "./imp/tower/TowerController";
 
 
 declare global {
-    const global: any;
+    const global: global;
+
+    interface global {
+        cleaner: Cleaner;
+        logger: Logger;
+    }
 
     interface StructureTower {
         controller: TowerController | null | undefined;
@@ -109,6 +117,8 @@ declare global {
     }
 
     interface PlaybackFlagMemory {
+        pauseOnException: boolean;
+
         doOutput: boolean;
         outputColor: string;
 
@@ -180,7 +190,7 @@ declare global {
         started: boolean;
         finished: boolean;
         spawned: SpawnDefinitionMemory[];
-        assignedIds: string[];
+        assignedNames: string[];
     }
 
     interface OperationGroupMemory {

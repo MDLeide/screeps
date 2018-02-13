@@ -1,5 +1,5 @@
 import { Colony } from "../colony/Colony";
-
+import { NestMapBuilder } from "../map/NestMapBuilder";
 import { ColonyRepository } from "../colony/repo/ColonyRepository"
 
 export class Empire {
@@ -12,7 +12,7 @@ export class Empire {
     private constructor() {
     }
 
-
+    
     public static getEmpireInstance(): Empire {
         if (!Empire._instance) {
             Empire._instance = new Empire();
@@ -20,6 +20,7 @@ export class Empire {
         return Empire._instance;
     }
 
+    public nestMapBuilder: NestMapBuilder;
 
     public get colonies(): Colony[] {
         if (!this._colonies) {

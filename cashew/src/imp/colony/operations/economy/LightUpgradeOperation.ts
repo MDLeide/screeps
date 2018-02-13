@@ -2,7 +2,7 @@ import { Colony } from "../../../../lib/colony/Colony";
 import { ColonyOperation } from "../../../../lib/colony/ColonyOperation";
 import { SpawnDefinition } from "../../../../lib/spawn/SpawnDefinition";
 
-export class Operation extends ColonyOperation {
+export class LightUpgradeOperation extends ColonyOperation {
     constructor() {
         super("lightUpgrade");
         
@@ -45,7 +45,8 @@ export class Operation extends ColonyOperation {
     }
 
     protected onGetCreepRequirement(colony: Colony): SpawnDefinition[] {
-        var def = new SpawnDefinition("lightUpgrader", "lightUpgrader", 250, 300);
-        return [def];
+        var def1 = new SpawnDefinition("lightUpgrader", "lightUpgrader", 250, 300);
+        var def2 = new SpawnDefinition("lightUpgrader", "lightUpgrader", 250, 300);
+        return [def1, def2];
     }
 }

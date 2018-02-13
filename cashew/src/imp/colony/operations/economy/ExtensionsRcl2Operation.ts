@@ -2,10 +2,9 @@ import { Colony } from "../../../../lib/colony/Colony";
 import { ColonyOperation } from "../../../../lib/colony/ColonyOperation";
 import { SpawnDefinition } from "../../../../lib/spawn/SpawnDefinition";
 
-export class Operation extends ColonyOperation {
+export class ExtensionsRcl2Operation extends ColonyOperation {
     constructor() {
-        super("opName");
-
+        super("extensionsRcl2");
     }
 
 
@@ -23,6 +22,12 @@ export class Operation extends ColonyOperation {
 
 
     protected onInit(colony: Colony): boolean {
+        var locs = colony.nest.nestMap.extensionBlock.getExtensionLocations(2);
+
+        for (var i = 0; i < locs.length; i++) {
+            colony.nest.room.createConstructionSite(locs[i].x, locs[i].y, STRUCTURE_EXTENSION);
+        }
+
         return true;
     }
 
@@ -45,8 +50,8 @@ export class Operation extends ColonyOperation {
     }
 
     protected onGetCreepRequirement(colony: Colony): SpawnDefinition[] {
-        var def = new SpawnDefinition("lightMiner", "lightMiner", 250, 300);
-        return [def];
+        var def1 = new SpawnDefinition("builder", "builder", 250, 300);
+        var def2 = new SpawnDefinition("builder", "builder", 250, 300);
+        return [def1, def2];
     }
-}
 }

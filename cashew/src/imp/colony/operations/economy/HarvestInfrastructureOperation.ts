@@ -1,22 +1,21 @@
 import { Colony } from "../../../../lib/colony/Colony";
 import { ColonyOperation } from "../../../../lib/colony/ColonyOperation";
 import { SpawnDefinition } from "../../../../lib/spawn/SpawnDefinition";
-import { MapBlock } from "../../../../lib/map/MapBlock";
+import { MapBlock } from "../../../../lib/map/base/MapBlock";
 import { MapBlockRepo } from "../../../../lib/map/repo/MapBlockRepo";
+import { HarvestBlock } from "../../../../lib/map/blocks/HarvestBlock";
+
+
 
 export class HarvestInfrastructureOperation extends ColonyOperation {
     private _source: Source;
     private _sourceBlock: MapBlock;
     private _mapBlockRepo: MapBlockRepo = new MapBlockRepo();
 
-    constructor(source: Source, heavyHarvestBlock: MapBlock) {
+    constructor(source: Source) {
         super("harvestInfrastructure");
-
-        this.state.sourceId = source.id;
-        this.state.blockId = heavyHarvestBlock.id;
-
         this._source = source;
-        this._sourceBlock = heavyHarvestBlock;
+        this.state.sourceId = source.id;
     }
 
     public state: HarvestInfrastructureOperationMemory;
@@ -26,15 +25,7 @@ export class HarvestInfrastructureOperation extends ColonyOperation {
             this._source = Game.getObjectById<Source>(this.state.sourceId);
         return this._source;
     }
-
-    public get sourceBlock(): MapBlock {
-        if (!this._sourceBlock)
-            this._sourceBlock = this._mapBlockRepo.find(this.state.blockId);
-        return this._sourceBlock;
-    }
-
-
-
+    
     public canInit(colony: Colony): boolean {
         return true;
     }
@@ -44,7 +35,8 @@ export class HarvestInfrastructureOperation extends ColonyOperation {
     }
 
 
-    public isFinished(colony: Colony): boolean {        
+    public isFinished(colony: Colony): boolean {
+
         var look = this.source.room.lookAt(this.state.standX, this.state.standY);
         for (var i = 0; i < look.length; i++) {
             if (look[i].structure)
@@ -54,21 +46,23 @@ export class HarvestInfrastructureOperation extends ColonyOperation {
         return false;
     }
 
+    protected onInit(colony: Colony): boolean {
+        var block: HarvestBlock;
 
-
-    protected onInit(colony: Colony): boolean {        
-        for (var x = 0; x < this.sourceBlock.width; x++) {
-            for (var y = 0; y < this.sourceBlock.height; y++) {
-                if (this.sourceBlock.getSpecialAt(x, y) == 2) {// container/stand location
-                    this.state.standX = x + this.source.pos.x - 1; // assumes source is centered and map is 3x3
-                    this.state.standY = y + this.source.pos.y - 1;
-
-                    this.source.room.createConstructionSite(this.state.standX, this.state.standY, STRUCTURE_CONTAINER);                    
-                    return true;
-                }
+        for (var i = 0; i < colony.nest.nestMap.harvestBlocks.length; i++) {
+            var b = colony.nest.nestMap.harvestBlocks[i];
+            var s = b.getSourceLocation();
+            if (this.source.pos.x == s.x && this.source.pos.y == s.y) {
+                block = b;
+                break;
             }
-        }
-        return false;
+        } 
+
+        var c = b.getContainerLocation();
+        this.source.room.createConstructionSite(c.x, c.y, STRUCTURE_CONTAINER);
+        this.state.standX = c.x;
+        this.state.standY = c.y;
+        return true;
     }
 
     protected onStart(colony: Colony): boolean {

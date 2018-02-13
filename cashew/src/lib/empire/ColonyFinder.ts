@@ -1,6 +1,7 @@
 import { Empire } from "./Empire";
 import { Colony } from "../colony/Colony";
 import { Nest } from "../colony/Nest";
+import { NestMapBuilder } from "../map/NestMapBuilder";
 
 import { ColonyPlanRepository } from "../colony/repo/ColonyPlanRepository";
 import { NestRepository } from "../colony/repo/NestRepository";
@@ -50,7 +51,7 @@ export class ColonyFinder {
                 var result = room.createFlag(25, 25, colonyName, ColonyFinder.flagMainColor, ColonyFinder.flagSecondaryColor);
                 //todo: follow up on created flags and add memory
             }
-
+            
             var nest = new Nest(room.name);
             this._nestRepo.add(nest);
 

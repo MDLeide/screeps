@@ -47,6 +47,5 @@ export class Operation extends ColonyOperation {
     protected onGetCreepRequirement(colony: Colony): SpawnDefinition[] {            
         var def = new SpawnDefinition("lightMiner", "lightMiner", 250, 300);
         return [def];
-    }
-    }
+    }    
 }

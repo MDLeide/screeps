@@ -17,7 +17,7 @@ export class HarvestBlock extends MapBlock {
     public static readonly SourceToken: number = 1;
     public static readonly ContainerToken: number = 2;
 
-    public getContainerLocation(): { x: number, y: number } {
+    public getLocalContainerLocation(): { x: number, y: number } {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 if (this.special.getAt(x, y) == HarvestBlock.ContainerToken)
@@ -27,11 +27,31 @@ export class HarvestBlock extends MapBlock {
         return null;
     }
 
-    public getSourceLocation(): { x: number, y: number } {
+    public getLocalSourceLocation(): { x: number, y: number } {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 if (this.special.getAt(x, y) == HarvestBlock.SourceToken)
                     return { x: x, y: y };
+            }
+        }
+        return null;
+    }
+
+    public getContainerLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.special.getAt(x, y) == HarvestBlock.ContainerToken)
+                    return { x: x + this.offsetX, y: y + this.offsetY};
+            }
+        }
+        return null;
+    }
+
+    public getSourceLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.special.getAt(x, y) == HarvestBlock.SourceToken)
+                    return { x: x + this.offsetX, y: y + this.offsetY };
             }
         }
         return null;

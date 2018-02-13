@@ -1,3 +1,4 @@
+import { Guid } from "../../../util/GUID";
 import { Layer } from "./Layer";
 
 /**
@@ -12,11 +13,16 @@ export class Map {
 
 
     constructor(terrain: Layer<Terrain>, roads: Layer<boolean>, structures: Layer<StructureConstant>, ramparts: Layer<boolean>, special: Layer<number>) {
-        this.state.terrain = terrain.state;
-        this.state.roads = roads.state;
-        this.state.structures = structures.state;
-        this.state.ramparts = structures.state;
-        this.state.special = special.state;
+        this.state = {
+            id: Guid.newGuid(),
+            height: 50,
+            width: 50,
+            terrain: terrain.state,
+            roads: roads.state,
+            structures: structures.state,
+            ramparts: ramparts.state,
+            special: special.state
+        }
 
         this._terrain = terrain;
         this._roads = roads;

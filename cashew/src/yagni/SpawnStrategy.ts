@@ -28,7 +28,8 @@
 //            var cond = this.spawnConditions[i];
 
 //            if (this.debug)
-//                console.log("evaluating " + cond.roleId)
+//
+// ("evaluating " + cond.roleId)
 
 //            if (!count[cond.roleId]) {
 //                count[cond.roleId] = 0;

@@ -22,7 +22,7 @@ export class ControllerBlock extends MapBlock {
     public static readonly ContainerToken: number = 2;
     public static readonly StandToken: number = 3;
 
-    public getControllerLocation(): { x: number, y: number } {
+    public getLocalControllerLocation(): { x: number, y: number } {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 if (this.special.getAt(x, y) == ControllerBlock.ControllerToken)
@@ -32,11 +32,44 @@ export class ControllerBlock extends MapBlock {
         return null;
     }
 
-    public getContainerLocation(): { x: number, y: number } {
+    public getLocalContainerLocation(): { x: number, y: number } {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 if (this.special.getAt(x, y) == ControllerBlock.ContainerToken)
                     return { x: x, y: y };
+            }
+        }
+        return null;
+    }
+
+    public getLocalStandLocations(): { x: number, y: number }[] {
+        var locs = []
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.special.getAt(x, y) == ControllerBlock.StandToken)
+                    locs.push({ x: x, y: y });
+            }
+        }
+        return locs;
+    }
+
+
+
+    public getControllerLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.special.getAt(x, y) == ControllerBlock.ControllerToken)
+                    return { x: x + this.offsetX, y: y + this.offsetY};
+            }
+        }
+        return null;
+    }
+
+    public getContainerLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.special.getAt(x, y) == ControllerBlock.ContainerToken)
+                    return { x: x + this.offsetX, y: y + this.offsetY };
             }
         }
         return null;
@@ -47,7 +80,7 @@ export class ControllerBlock extends MapBlock {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 if (this.special.getAt(x, y) == ControllerBlock.StandToken)
-                    locs.push({ x: x, y: y });
+                    locs.push({ x: x + this.offsetX, y: y + this.offsetY });
             }
         }
         return locs;

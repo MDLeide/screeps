@@ -5,7 +5,7 @@ import { Population } from "./Population";
 import { NestRepository } from "./repo/NestRepository";
 import { ColonyPlanRepository } from "./repo/ColonyPlanRepository";
 
-import { MapBlock } from "../map/MapBlock";
+import { MapBlock } from "../map/base/MapBlock";
 import { MapBlockRepo } from "../map/repo/MapBlockRepo";
 import { Spawner } from "../spawn/Spawner";
 import { SpawnDefinition } from "../spawn/SpawnDefinition";

@@ -1,8 +1,10 @@
 import { Guid } from "../../util/GUID";
+
 import { Colony } from "./Colony"
 import { Milestone } from "./Milestone";
 import { ColonyOperation } from "./ColonyOperation"
 import { OperationGroup } from "./OperationGroup";
+
 import { ColonyOperationRepository } from "./repo/ColonyOperationRepository";
 import { OperationGroupRepo } from "./repo/OperationGroupRepo";
 

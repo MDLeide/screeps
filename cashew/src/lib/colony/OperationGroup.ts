@@ -78,18 +78,24 @@ export class OperationGroup {
             if (this.operations[key].initialized)
                 continue;
 
-            if (this.operations[key].canInit(colony))
-                if (this.operations[key].init(colony))
+            if (this.operations[key].canInit(colony)) {
+                if (this.operations[key].init(colony)) {
                     this.initializedOperations[key] = this.operations[key];
+                    this.state.initializedOps.push(key);
+                }
+            }
         }
 
         for (var key in this.operations) {
             if (this.operations[key].started)
                 continue;
 
-            if (this.operations[key].canStart(colony))
-                if (this.operations[key].start(colony))
+            if (this.operations[key].canStart(colony)) {
+                if (this.operations[key].start(colony)) {
                     this.runningOperations[key] = this.operations[key];
+                    this.state.runningOps.push(key);
+                }
+            }
         }        
     }
 
@@ -117,6 +123,20 @@ export class OperationGroup {
                 op.finish(colony);
                 this.completedOperationNames.push(op.name);
                 delete this.runningOperations[key];
+                var toRemove: number = -1;
+                for (var i = 0; i < this.state.runningOps.length; i++) {
+                    if (this.state.runningOps[i] == key)
+                        toRemove = i;
+                }
+                this.state.runningOps.splice(toRemove);
+
+                for (var i = 0; i < this.state.initializedOps.length; i++) {
+                    if (this.state.runningOps[i] == key)
+                        toRemove = i;
+                }
+                if (toRemove >= 0)
+                    this.state.initializedOps.splice(toRemove);
+
                 this.colonyOperationRepository.delete(op);
             }
         }

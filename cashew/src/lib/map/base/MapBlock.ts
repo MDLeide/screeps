@@ -64,6 +64,23 @@ export class MapBlock {
         return this._special;
     }
 
+    public set roads(val: Layer<boolean>) {      
+        this._roads = val;
+        this.state.roads = val.state;
+    }
+    public set structures(val: Layer<StructureConstant>) {        
+        this._structures = val;
+        this.state.structures = val.state;
+    }
+    public set ramparts(val: Layer<boolean>) {        
+        this._ramparts = val;
+        this.state.ramparts = val.state;
+    }
+    public set special(val: Layer<number>) {        
+        this._special = val;
+        this.state.special = val.state;
+    }
+
     public getRoadAt(x: number, y: number): boolean {
         return this.roads.getAt(x, y);
     }
