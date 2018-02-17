@@ -5,8 +5,6 @@ import { MapBlock } from "../../../../lib/map/base/MapBlock";
 import { MapBlockRepo } from "../../../../lib/map/repo/MapBlockRepo";
 import { HarvestBlock } from "../../../../lib/map/blocks/HarvestBlock";
 
-
-
 export class HarvestInfrastructureOperation extends ColonyOperation {
     private _source: Source;
     private _sourceBlock: MapBlock;
@@ -36,7 +34,6 @@ export class HarvestInfrastructureOperation extends ColonyOperation {
 
 
     public isFinished(colony: Colony): boolean {
-
         var look = this.source.room.lookAt(this.state.standX, this.state.standY);
         for (var i = 0; i < look.length; i++) {
             if (look[i].structure)

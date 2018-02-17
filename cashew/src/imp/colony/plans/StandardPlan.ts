@@ -1,16 +1,18 @@
-import { Colony } from "../../../lib/colony/Colony";
-import { ColonyPlan } from "../../../lib/colony/ColonyPlan";
-import { ColonyOperation } from "../../../lib/colony/ColonyOperation";
-import { Milestone } from "../../../lib/colony/Milestone";
-
 import { HarvestInfrastructureOperation } from "../operations/economy/HarvestInfrastructureOperation";
 import { HarvestOperation } from "../operations/economy/HarvestOperation";
 import { LightUpgradeOperation } from "../operations/economy/LightUpgradeOperation";
 import { ExtensionsRcl2Operation } from "../operations/economy/ExtensionsRcl2Operation";
 
+import { Colony } from "../../../lib/colony/Colony";
+import { ColonyPlan } from "../../../lib/colony/ColonyPlan";
+import { ColonyOperation } from "../../../lib/colony/ColonyOperation";
+import { Milestone } from "../../../lib/colony/Milestone";
 import { HarvestBlock } from "../../../lib/map/blocks/HarvestBlock";
+import { ColonyOperationRepository } from "../../../lib/colony/repo/ColonyOperationRepository";
 
 export class StandardPlan extends ColonyPlan {
+    private static _colonyOperationRepo: ColonyOperationRepository;
+
     constructor() {
         super(
             "standardPlan",
@@ -18,6 +20,12 @@ export class StandardPlan extends ColonyPlan {
             StandardPlan.getMilestones(),
             StandardPlan.getOperations
         );
+    }
+
+    private static get colonyOperationRepository(): ColonyOperationRepository {
+        if (!this._colonyOperationRepo)
+            this._colonyOperationRepo = new ColonyOperationRepository();
+        return this._colonyOperationRepo;
     }
 
     private static getMilestones(): Milestone[] {
@@ -158,10 +166,13 @@ export class StandardPlan extends ColonyPlan {
     }
 
     private static spawnOperations(colony: Colony): ColonyOperation[] {
+        //global.logger.log("Getting operations for Spawn milestone", "yellow", "Standard Plan");
         var ops: ColonyOperation[] = [];
         var sources = colony.nest.room.nut.seed.findSources();
         for (var i = 0; i < sources.length; i++) {
-            ops.push(new HarvestInfrastructureOperation(sources[i]));
+            var op = new HarvestInfrastructureOperation(sources[i]);
+            StandardPlan.colonyOperationRepository.add(op);
+            ops.push(op);
         }
         return ops;
     }
@@ -170,7 +181,9 @@ export class StandardPlan extends ColonyPlan {
         var ops: ColonyOperation[] = [];
         var sources = colony.nest.room.nut.seed.findSources();
         for (var i = 0; i < sources.length; i++) {
-            ops.push(new HarvestOperation(300));
+            var op = new HarvestOperation(300);
+            StandardPlan.colonyOperationRepository.add(op);
+            ops.push(op);
         }
         ops.push(new LightUpgradeOperation());
         return ops;
@@ -178,8 +191,12 @@ export class StandardPlan extends ColonyPlan {
 
     public static rcl2Operations(colony: Colony): ColonyOperation[] {
         var ops: ColonyOperation[] = [];
-        ops.push(new ExtensionsRcl2Operation());
-        ops.push(new LightUpgradeOperation());
+        var ext = new ExtensionsRcl2Operation()
+        var upg = new LightUpgradeOperation()
+        StandardPlan.colonyOperationRepository.add(ext);
+        StandardPlan.colonyOperationRepository.add(upg);
+        ops.push(ext);
+        ops.push(upg);
         return ops;
     }
 

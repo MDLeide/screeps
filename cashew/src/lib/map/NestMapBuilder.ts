@@ -74,25 +74,13 @@ export class NestMapBuilder {
     }
 
     private getControllerBlock(room: Room, map: Map): ControllerBlock {
-        console.log("get controller block");
-
-        var block: ControllerBlock = this.controllerProvider.getNext();
-        //global.logger.log(`Controller: [${room.controller.pos.x}, ${room.controller.pos.y}]`, "orange");
+        var block: ControllerBlock = this.controllerProvider.getNext();        
         while (block) {            
             for (var i = 0; i < 4; i++) {
-                //global.logger.log(`  Rotation ${i}`, "orange")
-
                 var controllerLoc = block.getLocalControllerLocation();
-                //global.logger.log(`Block Local Controller: [${controllerLoc.x}, ${controllerLoc.y}]`, "orange");
-
                 block.offsetX = room.controller.pos.x - controllerLoc.x;
                 block.offsetY = room.controller.pos.y - controllerLoc.y;
-                //global.logger.log(`Offset: [${block.offsetX}, ${block.offsetY}]`, "orange");
-
                 var controllerAbs = block.getContainerLocation();                                
-                //global.logger.log(`Block Controller: [${controllerAbs.x}, ${controllerAbs.y}]`, "orange");
-                
-
                 if (this.controllerBlockFits(block, room.controller, map)) {
                     this.controllerProvider.reset();
                     return block;
@@ -120,8 +108,6 @@ export class NestMapBuilder {
     }
 
     private getMainBlock(room: Room, map: Map): MainBlock {
-        console.log("get main block");
-
         var block: MainBlock = this.mainProvider.getNext();;
         while (block) {
             var w = Math.floor(block.width / 2);
@@ -141,8 +127,7 @@ export class NestMapBuilder {
         return null;
     }
 
-    private getHarvestBlocks(room: Room, map: Map): HarvestBlock[] {
-        console.log("get harvest[s]");
+    private getHarvestBlocks(room: Room, map: Map): HarvestBlock[] {        
         var blocks = [];
         var sources = room.nut.seed.findSources();
         for (var i = 0; i < sources.length; i++) {

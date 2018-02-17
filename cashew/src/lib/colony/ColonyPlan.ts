@@ -26,7 +26,6 @@ export class ColonyPlan {
     }
 
     private _currentOps: OperationGroup;
-    private _lastOps: OperationGroup;
 
 
     constructor(name: string, description: string, milestones: Milestone[], getOperations: (colony: Colony, milestone: Milestone) => ColonyOperation[]) {
@@ -34,8 +33,7 @@ export class ColonyPlan {
             id: Guid.newGuid(),
             name: name,
             milestoneIndex: -1,
-            currentOps: "",
-            lastOps: ""
+            currentOps: ""
         };
 
         this.milestones = milestones;
@@ -48,18 +46,9 @@ export class ColonyPlan {
     public get id(): string { return this.state.id; }
     public get name(): string { return this.state.name; }
     public get mostRecentMilestone(): Milestone { return this.milestones[this._milestoneIndex]; }
-
-    public get operationNamesCompletedThisMilestone(): string[] { return this.currentOperations.completedOperationNames; }
-    public get operationNamesCompletedLastMilestone(): string[] { return this.lastMilestoneOperations.completedOperationNames; }
-
+    
     public description: string;
     public milestones: Milestone[];
-    public get lastMilestoneOperations(): OperationGroup
-    {
-        if (!this._lastOps)
-            this._lastOps = this.operationGroupRepo.find(this.state.lastOps);
-        return this._lastOps;
-    }
     public get currentOperations(): OperationGroup {
         if (!this._currentOps && this.state.currentOps) // first op edge case
             this._currentOps = this.operationGroupRepo.find(this.state.currentOps);
@@ -71,18 +60,7 @@ export class ColonyPlan {
 
     /** Updates the plan, checks for a new milestone, updates all operations. */
     public update(colony: Colony): void {
-        if (this._milestoneIndex + 1 < this.milestones.length && this.milestones[this._milestoneIndex + 1].isMet(colony)) {
-            this._milestoneIndex++;
-
-            this._lastOps = this.currentOperations;
-
-            if (this._lastOps) // first op edge case
-                this.state.lastOps = this._lastOps.id;
-            
-            this._currentOps = new OperationGroup(this._getOperations(colony, this.mostRecentMilestone));
-            this.operationGroupRepo.add(this._currentOps);
-            this.state.currentOps = this._currentOps.id;
-        }
+        this.checkForNewMilestone(colony);
         this.currentOperations.update(colony);
     }
 
@@ -96,7 +74,23 @@ export class ColonyPlan {
 
     //## end update loop
 
-   
-   
+    private checkForNewMilestone(colony: Colony): void {
+        if (this.isNextMilestoneMet(colony))
+            this.advanceMilestone(colony);
+    }
 
+    private isNextMilestoneMet(colony: Colony) {
+        return this._milestoneIndex + 1 < this.milestones.length && // there is another milestone in the list
+            this.milestones[this._milestoneIndex + 1].isMet(colony); // and it is met
+    }
+
+    private advanceMilestone(colony: Colony) {
+        this._milestoneIndex++;
+
+        var newOperations = this._getOperations(colony, this.mostRecentMilestone);
+        this._currentOps = new OperationGroup(newOperations);
+
+        this.operationGroupRepo.add(this._currentOps);
+        this.state.currentOps = this._currentOps.id;
+    }
 }

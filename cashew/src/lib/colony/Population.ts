@@ -63,39 +63,39 @@ export class Population {
     public isAlive(creep: string): boolean
     public isAlive(creep: Creep): boolean
     public isAlive(creep: any): boolean {
-        return this.doesContain(creep, this.alive);
+        return this.listContainsCreep(creep, this.alive);
     }
     
     public isSpawning(creep: string): boolean
     public isSpawning(creep: Creep): boolean
     public isSpawning(creep: any): boolean {
-        return this.doesContain(creep, this.spawning);
+        return this.listContainsCreep(creep, this.spawning);
     }
 
     public isAliveOrSpawning(creep: string): boolean
     public isAliveOrSpawning(creep: Creep): boolean
     public isAliveOrSpawning(creep: any): boolean {
-        if (this.doesContain(creep, this.spawning))
+        if (this.listContainsCreep(creep, this.spawning))
             return true;
-        return this.doesContain(creep, this.alive);
+        return this.listContainsCreep(creep, this.alive);
     }
 
     public wasBornThisTick(creep: string): boolean
     public wasBornThisTick(creep: Creep): boolean
     public wasBornThisTick(creep: any): boolean {
-        return this.doesContain(creep, this.bornThisTick);
+        return this.listContainsCreep(creep, this.bornThisTick);
     }
 
     public didDieRecently(creep: string): boolean
     public didDieRecently(creep: Creep): boolean
     public didDieRecently(creep: any): boolean {
-        return this.doesContain(creep, this.diedRecently);
+        return this.listContainsCreep(creep, this.diedRecently);
     }
 
     public didDieLastTick(creep: string): boolean
     public didDieLastTick(creep: Creep): boolean
     public didDieLastTick(creep: any): boolean {
-        return this.doesContain(creep, this.diedLastTick);
+        return this.listContainsCreep(creep, this.diedLastTick);
     }
 
     public roleCount(roleId: string, includeSpawning: boolean = false) : number {
@@ -108,7 +108,7 @@ export class Population {
     }
 
 
-    private doesContain(creep: any, list: string[]) {
+    private listContainsCreep(creep: any, list: string[]) {
         var name = "";
         if (typeof creep == "string") {
             name = creep;

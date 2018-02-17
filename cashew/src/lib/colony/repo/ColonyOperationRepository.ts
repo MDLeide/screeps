@@ -19,7 +19,6 @@ export class ColonyOperationRepository extends Repository<ColonyOperation> {
 
     private static hydrate(state: any): ColonyOperation {
         var op = ColonyOperationRepository.delegates[state.name](state);
-        op.state = state;
         return op;
     }
 }

@@ -8,6 +8,7 @@ import { Guid } from "../../util/GUID";
 
 export abstract class ColonyOperation {    
     private _creepRequirement: SpawnDefinition[];    
+    private _state: ColonyOperationMemory;
 
     constructor(name: string) {
         this.state = {
@@ -16,12 +17,19 @@ export abstract class ColonyOperation {
             initialized: false,
             started: false,
             finished: false,
-            spawned: [],
             assignedNames: []
         }        
     }
 
-    public state: ColonyOperationMemory;
+    public get state(): ColonyOperationMemory {
+        //global.logger.log("Getting state", "blue", "Colony Operation");
+        return this._state;
+    }
+    public set state(val: ColonyOperationMemory) {
+        global.logger.log("Setting state", "yellow", "Colony Operation");
+        global.pause();
+        this._state = val;
+    }
 
     public get id(): string { return this.state.id; }
 
@@ -36,9 +44,7 @@ export abstract class ColonyOperation {
     public get finished(): boolean { return this.state.finished; }
     public set finished(val: boolean) { this.state.finished = val; }
     
-    public get assigned(): string[] {        
-        return this.state.assignedNames;
-    }
+    public get assigned(): string[] { return this.state.assignedNames; }
     
 
     /** Provides early-tick opportunity to update state. Will be called on all colonies and operations prior to Execute being called. */
@@ -89,12 +95,19 @@ export abstract class ColonyOperation {
 
     /** Called once, to start the operation, and begin calls of execute. */
     public start(colony: Colony): boolean {
-        if (this.started)
+        global.logger.log(`Starting operation ${this.name} [${this.id}]`, "orange", "Colony Operation");
+        if (this.started) {
+            global.logger.log(` Already started!`, "red", "Colony Operation");
             return true;
-        if (!this.canStart(colony))
+        }
+        if (!this.canStart(colony)) {
+            global.logger.log(` Can't start!`, "red", "Colony Operation");
             return false;
+        }
 
         this.started = this.onStart(colony);
+        if (!this.started)
+            global.logger.log(` Failed to start!`, "red", "Colony Operation");
         return this.started;
     }
 
@@ -104,12 +117,15 @@ export abstract class ColonyOperation {
     
     /** Assigns a creep to this operation. */
     public assignCreep(creepName: string): void {
+        global.logger.log(`Creep ${creepName} assigned to ${this.name} operation [${this.id}]`, "orange", "Colony Operation");
+        global.logger.log(`assigned length: ${this.assigned.length}`, "orange", "Colony Operation");
         this.assigned.push(creepName);
+        global.logger.log(`assigned length: ${this.assigned.length}`, "orange", "Colony Operation");
     }
 
     /** Removes a creep from this operation. */    
-    public removeCreep(creepName: string)
-    {
+    public removeCreep(creepName: string) {
+        global.logger.log(`Removing Creep ${creepName} from ${this.name} operation [${this.id}]`, "orange", "Colony Operation");
         var index = -1;
         for (var i = 0; i < this.assigned.length; i++) {
             if (this.assigned[i] == creepName) {
@@ -135,8 +151,7 @@ export abstract class ColonyOperation {
         var req = this.getTotalCreepRequirement(colony);
         var remaining: SpawnDefinition[] = [];        
         var toSkip: number[] = []; // used to make sure a single assigned creep does not count
-        // for multiples when comparing assigned vs required
-
+        // for multiples when comparing assigned vs required        
         // we will check each requirement against the list of assigned creeps
         for (var i = 0; i < req.length; i++) {
             var found = false;

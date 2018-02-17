@@ -26,6 +26,8 @@ export class Execute {
             global.cleaner = new Cleaner();
         if (!global.logger)
             global.logger = new Logger();
+        if (!global.pause)
+            global.pause = function () { Playback.pause(); }
 
         Playback.update();
         if (!Playback.init())
@@ -54,7 +56,7 @@ export class Execute {
         Playback.update();
         if (!Playback.loop())
             return;
-
+        
         try {
             ColonyFinder.createNewColonies(this.empire);
             this.empire.update();
@@ -64,7 +66,6 @@ export class Execute {
             if (Playback.pauseOnException)
                 Playback.pause();            
             throw e;
-        }
-        
+        }        
     }
 }

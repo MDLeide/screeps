@@ -19,6 +19,7 @@ declare global {
     interface global {
         cleaner: Cleaner;
         logger: Logger;
+        pause(): void;
     }
 
     interface StructureTower {
@@ -189,12 +190,11 @@ declare global {
         initialized: boolean;
         started: boolean;
         finished: boolean;
-        spawned: SpawnDefinitionMemory[];
         assignedNames: string[];
     }
 
     interface OperationGroupMemory {
-        operations: string[];
+        newOps: string[];
         initializedOps: string[];
         runningOps: string[];
         completedOps: string[];
@@ -206,7 +206,6 @@ declare global {
         name: string;
         milestoneIndex: number;
         currentOps: string;
-        lastOps: string;
     }
 
     /** END OPERATIONS **/
@@ -222,4 +221,22 @@ declare global {
     }
 
     /** END MISC / UNUSED **/
+
+    /** TESTS **/
+
+    interface MemTestMemory {
+        boolA: boolean;
+        boolB: boolean;
+        boolC: boolean;
+        intA: number;
+        intB: number;
+        intC: number;
+        stringA: string;
+        stringB: string;
+        stringC: string;
+        stringArrayA: string[];
+        stringArrayB: string[];
+    }
+
+    /** END TESTS **/
 }

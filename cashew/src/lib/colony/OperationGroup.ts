@@ -5,7 +5,7 @@ import { ColonyOperationRepository } from "./repo/ColonyOperationRepository";
 import { Guid } from "../../util/GUID";
 
 export class OperationGroup {
-    private _operations: { [opId: string]: ColonyOperation };
+    private _newOperations: { [opId: string]: ColonyOperation };
     private _initializedOperations: { [opId: string]: ColonyOperation };
     private _runningOperations: { [opId: string]: ColonyOperation };    
 
@@ -19,18 +19,17 @@ export class OperationGroup {
 
     constructor(operations: ColonyOperation[]) {
         this.state = {
-            operations: [],
+            newOps: [],
             initializedOps: [],
             runningOps: [],
             completedOps: [],
             id: Guid.newGuid()
         };
 
-        this._operations = {};
+        this._newOperations = {};
         for (var i = 0; i < operations.length; i++) {
-            this.state.operations.push(operations[i].id);
-            this._operations[operations[i].id] = operations[i];
-            this.colonyOperationRepository.add(operations[i]);
+            this.state.newOps.push(operations[i].id);
+            this._newOperations[operations[i].id] = operations[i];
         }
     }
 
@@ -38,14 +37,15 @@ export class OperationGroup {
     public state: OperationGroupMemory;
 
     public get id(): string { return this.state.id; }
-    public get operations(): { [opId: string]: ColonyOperation } {
-        if (!this._operations) {
-            this._operations = {}
-            for (var i = 0; i < this.state.operations.length; i++) {
-                this._operations[this.state.operations[i]] = this.colonyOperationRepository.find(this.state.operations[i]);
+    public get newOperations(): { [opId: string]: ColonyOperation } {
+        if (!this._newOperations) {
+            this._newOperations = {}
+            global.logger.log("Loading operations from memory.", "blue", "Operation Group");
+            for (var i = 0; i < this.state.newOps.length; i++) {                
+                this._newOperations[this.state.newOps[i]] = this.colonyOperationRepository.find(this.state.newOps[i]);
             }
         }
-        return this._operations;
+        return this._newOperations;
     }
     public get initializedOperations(): { [opId: string]: ColonyOperation } {
         if (!this._initializedOperations) {
@@ -70,30 +70,36 @@ export class OperationGroup {
 
     public update(colony: Colony) : void {
         // update ops
-        for (var key in this.operations) {
-            this.operations[key].update(colony);
+        for (var key in this.newOperations) {
+            this.newOperations[key].update(colony);
         }
 
-        for (var key in this.operations) {
-            if (this.operations[key].initialized)
+        for (var key in this.newOperations) {
+            var newOp = this.newOperations[key];
+            if (newOp.initialized)
                 continue;
 
-            if (this.operations[key].canInit(colony)) {
-                if (this.operations[key].init(colony)) {
-                    this.initializedOperations[key] = this.operations[key];
+            if (newOp.canInit(colony)) {
+                if (newOp.init(colony)) {
+                    this.initializedOperations[key] = newOp;
                     this.state.initializedOps.push(key);
+                    delete this.newOperations[key];
+                    delete this.state.newOps[key];
                 }
             }
         }
 
-        for (var key in this.operations) {
-            if (this.operations[key].started)
+        for (var key in this.initializedOperations) {
+            var initOp = this.initializedOperations[key];
+            if (initOp.started)
                 continue;
 
-            if (this.operations[key].canStart(colony)) {
-                if (this.operations[key].start(colony)) {
-                    this.runningOperations[key] = this.operations[key];
+            if (initOp.canStart(colony)) {
+                if (initOp.start(colony)) {
+                    this.runningOperations[key] = initOp;
                     this.state.runningOps.push(key);
+                    delete this.initializedOperations[key];
+                    delete this.state.initializedOps[key];
                 }
             }
         }        
@@ -114,8 +120,8 @@ export class OperationGroup {
     }
 
     public cleanup(colony: Colony) {
-        for (var key in this.operations)
-            this.operations[key].cleanup(colony);
+        for (var key in this.newOperations)
+            this.newOperations[key].cleanup(colony);
         
         for (var key in this.runningOperations) {
             var op = this.runningOperations[key];
@@ -145,13 +151,16 @@ export class OperationGroup {
      /** Spawns creeps required for an operation. */
     private spawnCreepsForOperation(op: ColonyOperation, colony: Colony) {
         var req = op.getRemainingCreepRequirements(colony);
+        if (req.length < 1)
+            return;
+
+        global.logger.log(`Attempting to spawning ${req.length} creeps for ${op.name} [${op.id}]`, "orange", "Operation Group");
         for (var i = 0; i < req.length; i++) {
-            if (!req[i]) //todo: figure this out
-                continue;
             if (!colony.canSpawn(req[i]))
                 break;
 
-            var response = colony.spawnCreep(req[i]);            
+            var response = colony.spawnCreep(req[i]);
+            global.logger.log(`Response: ${response.name}`, "orange", "Operation Group");
             if (response) {
                 op.assignCreep(response.name);
             }

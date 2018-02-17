@@ -22,7 +22,7 @@
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
     <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
-    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <EnableTypeScript>true</EnableTypeScript>
     <StartWebBrowser>false</StartWebBrowser>
   </PropertyGroup>
@@ -70,6 +70,8 @@
     <Folder Include="src\lib\memory\" />
     <Folder Include="src\lib\map\" />
     <Folder Include="src\lib\debug\" />
+    <Folder Include="src\test\" />
+    <Folder Include="src\test\Memory\" />
     <Folder Include="src\yagni\body\state\" />
     <Folder Include="src\lib\creep\role\" />
     <Folder Include="src\lib\creep\role\state\" />
@@ -215,6 +217,12 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\memory\Manager.ts" />
     <TypeScriptCompile Include="src\lib\Settings.ts" />
+    <TypeScriptCompile Include="src\test\Memory\MemTestClass.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\test\TestExecution.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\RC2SpawnStrategy.ts" />
     <TypeScriptCompile Include="src\yagni\RC1SpawnStrategy.ts">
       <SubType>Code</SubType>
