@@ -8,7 +8,7 @@ import { ActionResult } from "../../../lib/creep/action/ActionResult";
 import { ActionType } from "../../../lib/creep/action/ActionType";
 import { IActionResponse } from "../../../lib/creep/action/IActionResponse";
 
-export class WithdrawingEnergy extends MultiTargetActivity<StructureContainer> {
+export class WithdrawingEnergy extends MultiTargetActivity<StructureContainer | StructureStorage> {
     public static readonly id: string = "withdrawingEnergy";
 
     private _invalidating: boolean;
@@ -65,7 +65,7 @@ export class WithdrawingEnergy extends MultiTargetActivity<StructureContainer> {
         return true;
     }
     
-    protected targetIsValidForAssignment(target: StructureContainer): boolean {
+    protected targetIsValidForAssignment(target: StructureContainer | StructureStorage): boolean {
         return target.store[RESOURCE_ENERGY] > 0;
     }
 
@@ -87,12 +87,13 @@ export class WithdrawingEnergy extends MultiTargetActivity<StructureContainer> {
 
         this.canFindNewTargetArray = false;
 
-        var targets = this.creep.room.find<StructureContainer>(FIND_STRUCTURES,
+        var targets = this.creep.room.find<StructureContainer | StructureStorage>(FIND_STRUCTURES,
             {
-                filter: (cont: StructureContainer): boolean => {
-                    return cont.structureType == STRUCTURE_CONTAINER &&
+                filter: (cont): boolean => {
+                    return (cont.structureType == STRUCTURE_CONTAINER &&
                         cont.nut.tag != "controller" &&
-                        cont.store[RESOURCE_ENERGY] > 25;
+                        cont.store[RESOURCE_ENERGY] > 25) ||
+                        (cont.structureType == STRUCTURE_STORAGE && cont.store.energy > 25);
                 }
             });
 
