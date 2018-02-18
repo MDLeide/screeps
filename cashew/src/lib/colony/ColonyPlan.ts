@@ -1,78 +1,80 @@
-import { Guid } from "../../util/GUID";
-
 import { Colony } from "./Colony"
 import { Milestone } from "./Milestone";
-import { ColonyOperation } from "./ColonyOperation"
-import { OperationGroup } from "./OperationGroup";
-
-import { ColonyOperationRepository } from "./repo/ColonyOperationRepository";
-import { OperationGroupRepo } from "./repo/OperationGroupRepo";
+import { Operation } from "../operation/Operation"
+import { OperationGroup } from "../operation/OperationGroup";
 
 /**
  This class describes the long-term plan for a colony. Using milestones, it determines what operations
  should occur, and when. It also manages the lifecycle of those operations.
  */
 export class ColonyPlan {
-    private get _milestoneIndex(): number { return this.state.milestoneIndex; }
-    private set _milestoneIndex(val: number) { this.state.milestoneIndex = val; }
+    private _milestoneIndex: number;
+    private _getOperations: (colony: Colony, milestone: Milestone) => Operation[];
 
-    private _getOperations: (colony: Colony, milestone: Milestone) => ColonyOperation[];
+    public static fromMemory(
+        memory: ColonyPlanMemory,
+        milestones: Milestone[],
+        getOperations: (colony: Colony, milestone: Milestone) => Operation[]): ColonyPlan {
 
-    private _operationGroupRepo: OperationGroupRepo;
-    private get operationGroupRepo(): OperationGroupRepo {
-        if (!this._operationGroupRepo)
-            this._operationGroupRepo = new OperationGroupRepo();
-        return this._operationGroupRepo;
+        var plan = new this(memory.name, memory.description, milestones, getOperations);
+        plan._milestoneIndex = memory.milestoneIndex;
+        plan.currentOperationGroup = OperationGroup.fromMemory(memory.currentOperationGroup);
+        return plan;
     }
 
-    private _currentOps: OperationGroup;
+    constructor(
+        name: string,
+        description: string,
+        milestones: Milestone[],
+        getOperations: (colony: Colony, milestone: Milestone) => Operation[]) {
 
-
-    constructor(name: string, description: string, milestones: Milestone[], getOperations: (colony: Colony, milestone: Milestone) => ColonyOperation[]) {
-        this.state = {
-            id: Guid.newGuid(),
-            name: name,
-            milestoneIndex: -1,
-            currentOps: ""
-        };
-
-        this.milestones = milestones;
+        this.name = name;
         this.description = description;
+        this._milestoneIndex = -1;
+
+        this.milestones = milestones;        
         this._getOperations = getOperations;
     }
 
-    public state: ColonyPlanMemory;
 
-    public get id(): string { return this.state.id; }
-    public get name(): string { return this.state.name; }
-    public get mostRecentMilestone(): Milestone { return this.milestones[this._milestoneIndex]; }
-    
+    public name: string;
     public description: string;
     public milestones: Milestone[];
-    public get currentOperations(): OperationGroup {
-        if (!this._currentOps && this.state.currentOps) // first op edge case
-            this._currentOps = this.operationGroupRepo.find(this.state.currentOps);
-        return this._currentOps;
-    }
-
-
+    public currentOperationGroup: OperationGroup;
+    public get mostRecentMilestone(): Milestone { return this.milestones[this._milestoneIndex]; }        
+    
+    
     //## update loop
+
+    public load(): void {
+        this.currentOperationGroup.load();
+    }
 
     /** Updates the plan, checks for a new milestone, updates all operations. */
     public update(colony: Colony): void {
         this.checkForNewMilestone(colony);
-        this.currentOperations.update(colony);
+        this.currentOperationGroup.update(colony);
     }
 
     public execute(colony: Colony): void {
-        this.currentOperations.execute(colony);
+        this.currentOperationGroup.execute(colony);
     }
 
     public cleanup(colony: Colony): void {
-        this.currentOperations.cleanup(colony);
+        this.currentOperationGroup.cleanup(colony);
+    }
+
+    public save(): ColonyPlanMemory {
+        return {
+            name: this.name,
+            description: this.description,
+            milestoneIndex: this._milestoneIndex,
+            currentOperationGroup: this.currentOperationGroup.save()
+        };
     }
 
     //## end update loop
+
 
     private checkForNewMilestone(colony: Colony): void {
         if (this.isNextMilestoneMet(colony))
@@ -88,9 +90,6 @@ export class ColonyPlan {
         this._milestoneIndex++;
 
         var newOperations = this._getOperations(colony, this.mostRecentMilestone);
-        this._currentOps = new OperationGroup(newOperations);
-
-        this.operationGroupRepo.add(this._currentOps);
-        this.state.currentOps = this._currentOps.id;
+        this.currentOperationGroup = new OperationGroup(newOperations);
     }
 }

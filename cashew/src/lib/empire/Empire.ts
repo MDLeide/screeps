@@ -1,80 +1,76 @@
+import { ColonyFinder } from "./ColonyFinder";
 import { Colony } from "../colony/Colony";
 import { NestMapBuilder } from "../map/NestMapBuilder";
-import { ColonyRepository } from "../colony/repo/ColonyRepository"
 
 export class Empire {
-    private static _instance: Empire;
-
-    private _colonies: Colony[];
-    private _colonyRepo: ColonyRepository = new ColonyRepository();
-
-
-    private constructor() {
+    constructor(nestMapBuilder: NestMapBuilder) {
+        this.colonies = [];
+        for (var key in Memory.empire.colonies)
+            this.colonies.push(Colony.fromMemory(Memory.empire.colonies[key]));
+        this.nestMapBuilder = nestMapBuilder;
     }
-
     
-    public static getEmpireInstance(): Empire {
-        if (!Empire._instance) {
-            Empire._instance = new Empire();
-        }
-        return Empire._instance;
-    }
 
+    public colonies: Colony[];
     public nestMapBuilder: NestMapBuilder;
-
-    public get colonies(): Colony[] {
-        if (!this._colonies) {
-            this._colonies = [];
-            for (var key in Memory.colonies) {
-                this._colonies.push(this._colonyRepo.find(key));
-            }
-        }
-        return this._colonies;
-    }
-
 
 
     //## update loop
+
+    public load(): void {
+        for (var i = 0; i < this.colonies.length; i++) {
+            this.colonies[i].load();
+        }
+    }
     
     public update(): void {        
+        ColonyFinder.createNewColonies(this, this.nestMapBuilder);
+
         for (var i = 0; i < this.colonies.length; i++) {
-            this.colonies[i].update(this);
-        }
+            this.colonies[i].update();
+        }        
     }
 
     public execute(): void {
         for (var i = 0; i < this.colonies.length; i++) {
-            this.colonies[i].execute(this);
+            this.colonies[i].execute();
         }
     }
 
     public cleanup(): void {
         for (var i = 0; i < this.colonies.length; i++) {
-            this.colonies[i].cleanup(this);
+            this.colonies[i].cleanup();
         }
     }
 
+    public save(): EmpireMemory {
+        var colonies: { [name: string]: ColonyMemory } = {};
+        for (var i = 0; i < this.colonies.length; i++)
+            colonies[this.colonies[i].name] = this.colonies[i].save();
+        return {
+            colonies: colonies
+        };
+    }
+
     //## end update loop
+
     
     /** Adds a colony to the empire and memory. */
     public addColony(colony: Colony): void {
         this.colonies.push(colony);
-        this._colonyRepo.add(colony);
     }
 
     /** Removes a colony from the empire. */
     public removeColony(colony: Colony): void {
         var removeAt = -1;
         for (var i = 0; i < this.colonies.length; i++) {
-            if (this.colonies[i].id == colony.id) {
+            if (this.colonies[i].name == colony.name) {
                 removeAt = i;
                 break;
             }
         }
 
-        if (removeAt >= 0) {
-            this._colonyRepo.delete(colony);
-            this.colonies.splice(removeAt);
-        }
+        if (removeAt >= 0)             
+            this.colonies.splice(removeAt, 1);        
     }
 }

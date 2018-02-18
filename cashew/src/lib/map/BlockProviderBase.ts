@@ -3,7 +3,9 @@ import { IBlockProvider } from "./IBlockProvider";
 import { Layer } from "./base/Layer";
 import { MapBlock } from "./base/MapBlock";
 
-
+/**
+ * Base class for classes which build MapBlocks, provides common methods.
+ */
 export abstract class BlockProviderBase<T extends MapBlock> implements IBlockProvider<T> {
     protected index: number = 0;
 

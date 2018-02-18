@@ -21,24 +21,29 @@ export class NestMapBuilder {
         private labProvider: IBlockProvider<LabBlock>) {
     }
 
-    public getMap(room: Room): NestMap {
-        var map = new NestMap();
-        map.map = this.makeBaseMap(room);
+    public getMap(room: Room): NestMap {        
+        var map = this.makeBaseMap(room);
 
-        map.controllerBlock = this.getControllerBlock(room, map.map);
-        this.addMapBlock(map.map, map.controllerBlock);
+        var controllerBlock = this.getControllerBlock(room, map);
+        this.addMapBlock(map, controllerBlock);
 
-        map.harvestBlocks = this.getHarvestBlocks(room, map.map);
-        for (var i = 0; i < map.harvestBlocks.length; i++)
-            this.addMapBlock(map.map, map.harvestBlocks[i]);
+        var harvestBlocks = this.getHarvestBlocks(room, map);
+        for (var i = 0; i < harvestBlocks.length; i++)
+            this.addMapBlock(map, harvestBlocks[i]);
 
-        map.mainBlock = this.getMainBlock(room, map.map);
-        this.addMapBlock(map.map, map.mainBlock);
+        var mainBlock = this.getMainBlock(room, map);
+        this.addMapBlock(map, mainBlock);
 
-        map.extensionBlock = this.getExtensionBlock(room, map.map);
-        this.addMapBlock(map.map, map.extensionBlock);
-        
-        return map;
+        var extensionBlock = this.getExtensionBlock(room, map);
+        this.addMapBlock(map, extensionBlock);
+
+        return new NestMap(
+            map,
+            harvestBlocks,
+            extensionBlock,
+            mainBlock,
+            controllerBlock,
+            null);
     }
 
     private makeBaseMap(room: Room): Map {
@@ -62,8 +67,8 @@ export class NestMapBuilder {
     private addMapBlock(map: Map, mapblock: MapBlock): void {
         for (var x = 0; x < mapblock.width; x++) {
             for (var y = 0; y < mapblock.height; y++) {
-                var xD = mapblock.offsetX + x;
-                var yD = mapblock.offsetY + y;
+                var xD = mapblock.offset.x + x;
+                var yD = mapblock.offset.y + y;
 
                 map.ramparts.setAt(xD, yD, mapblock.ramparts.getAt(x, y));
                 map.structures.setAt(xD, yD, mapblock.structures.getAt(x, y));
@@ -78,8 +83,8 @@ export class NestMapBuilder {
         while (block) {            
             for (var i = 0; i < 4; i++) {
                 var controllerLoc = block.getLocalControllerLocation();
-                block.offsetX = room.controller.pos.x - controllerLoc.x;
-                block.offsetY = room.controller.pos.y - controllerLoc.y;
+                block.offset.x = room.controller.pos.x - controllerLoc.x;
+                block.offset.y = room.controller.pos.y - controllerLoc.y;
                 var controllerAbs = block.getContainerLocation();                                
                 if (this.controllerBlockFits(block, room.controller, map)) {
                     this.controllerProvider.reset();
@@ -115,8 +120,8 @@ export class NestMapBuilder {
 
             for (var i = 0; i < 500; i++) {
                 var offset = this.ulamSpiral(i);
-                block.offsetX = 25 - w + offset.x;
-                block.offsetY = 25 - h + offset.y;
+                block.offset.x = 25 - w + offset.x;
+                block.offset.y = 25 - h + offset.y;
                 if (this.blockFits(block, map)) {
                     this.mainProvider.reset();
                     return block;
@@ -143,8 +148,8 @@ export class NestMapBuilder {
         while (block) {            
             for (var i = 0; i < 4; i++) {
                 var srcLoc = block.getLocalSourceLocation();
-                block.offsetX = source.pos.x - srcLoc.x;
-                block.offsetY = source.pos.y - srcLoc.y;
+                block.offset.x = source.pos.x - srcLoc.x;
+                block.offset.y = source.pos.y - srcLoc.y;
 
                 if (this.harvestBlockFits(block, source, map)) {                    
                     this.harvestProvider.reset();
@@ -166,8 +171,8 @@ export class NestMapBuilder {
 
             for (var i = 0; i < 500; i++) {
                 var offset = this.ulamSpiral(i);
-                block.offsetX = 25 - w + offset.x;
-                block.offsetY = 25 - h + offset.y;
+                block.offset.x = 25 - w + offset.x;
+                block.offset.y = 25 - h + offset.y;
 
                 if (this.blockFits(block, map)) {
                     this.extensionProvider.reset();
@@ -194,7 +199,7 @@ export class NestMapBuilder {
         for (var x = 0; x < block.width; x++) {
             for (var y = 0; y < block.height; y++) {
                 if (this.needsWalkable(x, y, block)) {
-                    if (!this.isWalkable(map, x + block.offsetX, y + block.offsetY))
+                    if (!this.isWalkable(map, x + block.offset.x, y + block.offset.y))
                         return false;
                 }
             }

@@ -1,4 +1,4 @@
-import { ErrorMapper } from "utils/ErrorMapper";
+import { ErrorMapper } from "util/ErrorMapper";
 import { Execute } from "imp/Execution";
 
 var execute = new Execute();

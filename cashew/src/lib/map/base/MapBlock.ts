@@ -2,84 +2,46 @@ import { Layer } from "./Layer";
 import { Guid } from "../../../util/GUID";
 
 export class MapBlock {
-    private _roads: Layer<boolean>;
-    private _structures: Layer<StructureConstant>;
-    private _ramparts: Layer<boolean>;
-    private _special: Layer<number>;
-
-    constructor(height: number, width: number, offsetX: number, offsetY: number) {
-        this._roads = new Layer<boolean>(height, width, false);
-        this._structures = new Layer<StructureConstant>(height, width, null);
-        this._ramparts = new Layer<boolean>(height, width, false);
-        this._special = new Layer<number>(height, width, 0);
-
-        this.state = {
-            id: Guid.newGuid(),
-            height: height,
-            width: width,
-            offsetX: offsetX,
-            offsetY: offsetY,
-            roads: this._roads.state,
-            structures: this._structures.state,
-            ramparts: this._ramparts.state,
-            special: this._special.state
-        };
+    public static fromMemory(memory: MapBlockMemory) : MapBlock {
+        return new this(
+            memory.height,
+            memory.width,
+            memory.offset,
+            Layer.fromMemory(memory.roads),
+            Layer.fromMemory(memory.structures),
+            Layer.fromMemory(memory.ramparts),
+            Layer.fromMemory(memory.special));
     }
 
-    public state: MapBlockMemory;
+    constructor(
+        height: number,
+        width: number,
+        offset: { x: number, y: number },
+        roads?: Layer<boolean>,
+        structures?: Layer<StructureConstant>,
+        ramparts?: Layer<boolean>,
+        special?: Layer<number>) {
 
-    public get offsetX(): any { return this.state.offsetX; }
-    public set offsetX(val: any) { this.state.offsetX = val; }
+        this.height = height;
+        this.width = width;
+        this.offset = offset;
 
-    public get offsetY(): any { return this.state.offsetY; }
-    public set offsetY(val: any) { this.state.offsetY = val; }
-    
-    public get id(): string { return this.state.id; }
-    public set id(val: string) { this.state.id = val; }
-
-    public get height(): number { return this.state.height; }
-    public set height(val: number) { this.state.height = val; }
-
-    public get width(): number { return this.state.width; }
-    public set width(val: number) { this.state.width = val; }
-
-    public get roads(): Layer<boolean> {
-        if (!this._roads)
-            this._roads = Layer.LoadFromState<boolean>(this.state.roads);
-        return this._roads;
-    }
-    public get structures(): Layer<StructureConstant> {
-        if (!this._structures)
-            this._structures = Layer.LoadFromState<StructureConstant>(this.state.structures);
-        return this._structures;
-    }
-    public get ramparts(): Layer<boolean> {
-        if (!this._ramparts)
-            this._ramparts = Layer.LoadFromState<boolean>(this.state.ramparts);
-        return this._ramparts;
-    }
-    public get special(): Layer<number> {
-        if (!this._special)
-            this._special = Layer.LoadFromState<number>(this.state.special);
-        return this._special;
+        this.roads = roads ? roads : new Layer<boolean>(height, width, false);
+        this.structures = structures ? structures : new Layer<StructureConstant>(height, width, null);
+        this.ramparts = ramparts ? ramparts : new Layer<boolean>(height, width, false);
+        this.special = special ? special : new Layer<number>(height, width, 0);
     }
 
-    public set roads(val: Layer<boolean>) {      
-        this._roads = val;
-        this.state.roads = val.state;
-    }
-    public set structures(val: Layer<StructureConstant>) {        
-        this._structures = val;
-        this.state.structures = val.state;
-    }
-    public set ramparts(val: Layer<boolean>) {        
-        this._ramparts = val;
-        this.state.ramparts = val.state;
-    }
-    public set special(val: Layer<number>) {        
-        this._special = val;
-        this.state.special = val.state;
-    }
+
+    public offset: { x: number, y: number };
+    public height: number;
+    public width: number;
+
+    public roads: Layer<boolean>;
+    public structures: Layer<StructureConstant>;
+    public ramparts: Layer<boolean>;
+    public special: Layer<number>;
+        
 
     public getRoadAt(x: number, y: number): boolean {
         return this.roads.getAt(x, y);
@@ -95,5 +57,17 @@ export class MapBlock {
 
     public getSpecialAt(x: number, y: number): number {
         return this.special.getAt(x, y);
+    }
+
+    public save(): MapBlockMemory {
+        return {
+            height: this.height,
+            width: this.width,
+            offset: this.offset,
+            roads: this.roads.save(),
+            structures: this.structures.save(),
+            ramparts: this.ramparts.save(),
+            special: this.special.save()
+        };
     }
 }

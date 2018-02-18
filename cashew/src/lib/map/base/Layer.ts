@@ -1,33 +1,30 @@
 export class Layer<T> {
-    private _array: any[][];
+    public static fromMemory<T>(memory: LayerMemory<T>): Layer<T> {
+        return new this(memory.height, memory.width, memory.defaultValue, memory.array);
+    }
 
-    constructor(height: number, width: number, defaultValue: T) {
-        this.state = {
-            height: height,
-            width: width,
-            array: []
-        }
+    constructor(height: number, width: number, defaultValue: T, array?: T[][]) {
         this.defaultValue = defaultValue;
-        for (var i = 0; i < width; i++) {
-            this.state.array.push([]);
+        this.height = height;
+        this.width = width;
+        if (array) {
+            this.array = array;
+        }
+        else {
+            this.array = [];
 
-            for (var j = 0; j < height; j++) {
-                this.state.array[i].push(defaultValue);
+            for (var i = 0; i < width; i++) {
+                this.array.push([]);
+                for (var j = 0; j < height; j++)
+                    this.array[i].push(defaultValue);
             }
         }
     }
-
-    public state: LayerMemory;
-
+    
     public defaultValue: T;
-    public get height(): number { return this.state.height; }
-    public get width(): number { return this.state.width; }
-    public get array(): T[][] {
-        if (!this._array) {
-            this._array = this.state.array;
-        }
-        return this._array;
-    }
+    public height: number;
+    public width: number;
+    public array: T[][];
 
     public setAt(x: number, y: number, val: T): void {
         this.array[x][y] = val;
@@ -37,10 +34,13 @@ export class Layer<T> {
         return this.array[x][y];
     }
 
-    public static LoadFromState<T>(state: LayerMemory): Layer<T> {
-        var obj = Object.create(Layer.prototype);
-        obj.state = state;
-        return obj;
+    public save(): LayerMemory<T> {
+        return {
+            height: this.height,
+            width: this.width,
+            defaultValue: this.defaultValue,
+            array: this.array
+        };
     }
 }
 

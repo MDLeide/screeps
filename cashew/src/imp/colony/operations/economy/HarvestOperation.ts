@@ -1,28 +1,33 @@
 import { Colony } from "../../../../lib/colony/Colony";
-import { ColonyOperation } from "../../../../lib/colony/ColonyOperation";
+import { Operation } from "../../../../lib/operation/Operation";
 import { SpawnDefinition } from "../../../../lib/spawn/SpawnDefinition";
 
-export class HarvestOperation extends ColonyOperation {
-    constructor(minEnergy: number) {
-        super("harvest");
+export class HarvestOperation extends Operation {
 
-        this.state.minEnergy = minEnergy;
+    public static fromMemory(memory: HarvestOperationMemory): HarvestOperation {
+        var op = new this(memory.minimumEnergy);
+        return Operation.fromMemory(op, memory);
     }
 
-    public state: HarvestOperationMemory;
+    constructor(minimumEnergyForSpawn: number) {
+        super("harvest");
+        this.minimumEnergy = minimumEnergyForSpawn;
+    }
+
+    public minimumEnergy: number;
 
     public canInit(colony: Colony): boolean {
         return true;
     }
 
     public canStart(colony: Colony): boolean {
-        return this.assigned.length >= 1;
+        return this.assignedCreeps.length >= 1;
     }
 
     public isFinished(colony: Colony): boolean {
         return false;
     }
-
+    
 
     protected onInit(colony: Colony): boolean {
         return true;
@@ -37,6 +42,9 @@ export class HarvestOperation extends ColonyOperation {
     }
 
 
+    protected onLoad(): void {
+    }
+
     protected onUpdate(colony: Colony): void {
     }
 
@@ -46,12 +54,23 @@ export class HarvestOperation extends ColonyOperation {
     protected onCleanup(colony: Colony): void {
     }
 
+    protected onSave(): HarvestOperationMemory {
+        return {
+            minimumEnergy: this.minimumEnergy,
+            name: this.name,
+            initialized: this.initialized,
+            started: this.started,
+            finished: this.finished,
+            assignedCreeps: this.assignedCreeps
+        };
+    }
+
     protected onGetCreepRequirement(colony: Colony): SpawnDefinition[] {
-        var def = new SpawnDefinition("heavyHarvester", "heavyHarvester", this.state.minEnergy, 0);
+        var def = new SpawnDefinition("heavyHarvester", "heavyHarvester", this.minimumEnergy, 0);
         return [def];
     }
 }
 
-interface HarvestOperationMemory extends ColonyOperationMemory {
-    minEnergy: number;
+interface HarvestOperationMemory extends OperationMemory {
+    minimumEnergy: number;
 }

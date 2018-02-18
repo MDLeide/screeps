@@ -1,6 +1,17 @@
+import { Layer } from "../base/Layer";
 import { MapBlock } from "../base/MapBlock";
 
 export class LabBlock extends MapBlock {
+    public static fromMemory(memory: MapBlockMemory): LabBlock {
+        var block = Object.create(LabBlock.prototype) as LabBlock;
+        block.roads = Layer.fromMemory(memory.roads);
+        block.structures = Layer.fromMemory(memory.structures);
+        block.ramparts = Layer.fromMemory(memory.ramparts);
+        block.special = Layer.fromMemory(memory.special);
+        return block;
+    }
+
+
     constructor(
         height: number,
         width: number,
@@ -8,7 +19,7 @@ export class LabBlock extends MapBlock {
         rcl: { level: number, locations: { x: number, y: number }[] }[],
         roads: { x: number, y: number }[]) {
 
-        super(height, width, 0, 0);        
+        super(height, width, { x: 0, y: 0 });        
         for (var i = 0; i < labs.length; i++)
             this.structures.setAt(labs[i].x, labs[i].y, STRUCTURE_LAB);
 

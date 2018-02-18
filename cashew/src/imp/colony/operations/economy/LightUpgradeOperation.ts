@@ -1,20 +1,23 @@
 import { Colony } from "../../../../lib/colony/Colony";
-import { ColonyOperation } from "../../../../lib/colony/ColonyOperation";
+import { Operation } from "../../../../lib/operation/Operation";
 import { SpawnDefinition } from "../../../../lib/spawn/SpawnDefinition";
 
-export class LightUpgradeOperation extends ColonyOperation {
-    constructor() {
-        super("lightUpgrade");
-        
+export class LightUpgradeOperation extends Operation {
+    public static fromMemory(memory: OperationMemory): LightUpgradeOperation {
+        var op = new this();
+        return Operation.fromMemory(op, memory);
     }
 
+    constructor() {
+        super("lightUpgrade");        
+    }
 
     public canInit(colony: Colony): boolean {
         return true;
     }
 
     public canStart(colony: Colony): boolean {
-        return this.assigned.length >= 1;
+        return this.assignedCreeps.length >= 1;
     }
 
     public isFinished(colony: Colony): boolean {
@@ -35,6 +38,9 @@ export class LightUpgradeOperation extends ColonyOperation {
     }
 
 
+    protected onLoad(): void {
+    }
+
     protected onUpdate(colony: Colony): void {
     }
 
@@ -48,5 +54,9 @@ export class LightUpgradeOperation extends ColonyOperation {
         var def1 = new SpawnDefinition("lightUpgrader", "lightUpgrader", 250, 300);
         var def2 = new SpawnDefinition("lightUpgrader", "lightUpgrader", 250, 300);
         return [def1, def2];
+    }
+
+    protected onSave(): OperationMemory {
+        return null;
     }
 }

@@ -1,6 +1,16 @@
+import { Layer } from "../base/Layer";
 import { MapBlock } from "../base/MapBlock";
 
 export class ControllerBlock extends MapBlock {
+    public static fromMemory(memory: MapBlockMemory): ControllerBlock {
+        var block = Object.create(ControllerBlock.prototype) as ControllerBlock;
+        block.roads = Layer.fromMemory(memory.roads);
+        block.structures = Layer.fromMemory(memory.structures);
+        block.ramparts = Layer.fromMemory(memory.ramparts);
+        block.special = Layer.fromMemory(memory.special);
+        return block;
+    }
+
     constructor(
         height: number,
         width: number,
@@ -9,7 +19,7 @@ export class ControllerBlock extends MapBlock {
         containerX: number,
         containerY: number,
         standLocations: {x: number, y: number}[]) {
-        super(height, width, 0, 0);
+        super(height, width, { x: 0, y: 0 });
 
         this.special.setAt(controllerX, controllerY, ControllerBlock.ControllerToken);
         this.special.setAt(containerX, containerY, ControllerBlock.ContainerToken);
@@ -52,14 +62,12 @@ export class ControllerBlock extends MapBlock {
         }
         return locs;
     }
-
-
-
+    
     public getControllerLocation(): { x: number, y: number } {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 if (this.special.getAt(x, y) == ControllerBlock.ControllerToken)
-                    return { x: x + this.offsetX, y: y + this.offsetY};
+                    return { x: x + this.offset.x, y: y + this.offset.y};
             }
         }
         return null;
@@ -69,7 +77,7 @@ export class ControllerBlock extends MapBlock {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 if (this.special.getAt(x, y) == ControllerBlock.ContainerToken)
-                    return { x: x + this.offsetX, y: y + this.offsetY };
+                    return { x: x + this.offset.x, y: y + this.offset.y };
             }
         }
         return null;
@@ -80,7 +88,7 @@ export class ControllerBlock extends MapBlock {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 if (this.special.getAt(x, y) == ControllerBlock.StandToken)
-                    locs.push({ x: x + this.offsetX, y: y + this.offsetY });
+                    locs.push({ x: x + this.offset.x, y: y + this.offset.y });
             }
         }
         return locs;

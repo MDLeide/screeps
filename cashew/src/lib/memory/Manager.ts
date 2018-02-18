@@ -6,12 +6,9 @@ export class MemoryManager {
         Memory.containers = {};
         Memory.controllers = {};
         Memory.sources = {};
-        Memory.colonies = {};
-        Memory.nests = {};
-        Memory.operationGroups = {};
-        Memory.operations = {};
-        Memory.plans = {};
-        Memory.mapBlocks = {};
+        Memory.empire = {
+            colonies: {}
+        };
     }
 
     /**
@@ -24,18 +21,10 @@ export class MemoryManager {
             Memory.controllers = {};
         if (!Memory.sources)
             Memory.sources = {};
-        if (!Memory.colonies)
-            Memory.colonies = {};
-        if (!Memory.nests)
-            Memory.nests = {};
-        if (!Memory.operationGroups)
-            Memory.operationGroups = {};
-        if (!Memory.operations)
-            Memory.operations = {};
-        if (!Memory.plans)
-            Memory.plans = {};
-        if (!Memory.mapBlocks)
-            Memory.mapBlocks = {};
+        if (!Memory.empire)
+            Memory.empire = {
+                colonies: {}
+            };
     }
 
 }

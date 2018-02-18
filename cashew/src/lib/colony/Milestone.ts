@@ -1,4 +1,4 @@
-import { Colony } from "./Colony";
+import { Colony } from "../colony/Colony";
 
 export class Milestone {
     private _isMetDelegate: (colony: Colony) => boolean;

@@ -1,3 +1,4 @@
+import { Layer } from "../base/Layer";
 import { MapBlock } from "../base/MapBlock";
 /**
 Provides a description of the extension block. USes the special layer to indicate the RCL that
@@ -5,6 +6,15 @@ particular extensions should be built at.
  */
 
 export class ExtensionBlock extends MapBlock {
+    public static fromMemory(memory: MapBlockMemory): ExtensionBlock {
+        var block = Object.create(ExtensionBlock.prototype) as ExtensionBlock;
+        block.roads = Layer.fromMemory(memory.roads);
+        block.structures = Layer.fromMemory(memory.structures);
+        block.ramparts = Layer.fromMemory(memory.ramparts);
+        block.special = Layer.fromMemory(memory.special);
+        return block;
+    }
+
     constructor(
         height: number,
         width: number,
@@ -14,7 +24,7 @@ export class ExtensionBlock extends MapBlock {
         rcl: { level: number, locations: { x: number, y: number }[] }[],
         roads: { x: number, y: number }[]) {
 
-        super(height, width, 0, 0);
+        super(height, width, { x: 0, y: 0 });
         this.structures.setAt(linkX, linkY, STRUCTURE_LINK);
         for (var i = 0; i < extensions.length; i++)
             this.structures.setAt(extensions[i].x, extensions[i].y, STRUCTURE_EXTENSION);

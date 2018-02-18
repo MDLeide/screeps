@@ -1,16 +1,17 @@
+import { Empire } from "../lib/empire/Empire"
+
+import { StandardNestMapBuilder } from "./map/StandardNestMapBuilder";
+
+import { Extender } from "./extend/Extender";
+import { MemoryManager } from "../lib/memory/Manager";
+
 import { RoleRegistration } from "./RoleRegistration";
 import { ActivityRegistration } from "./ActivityRegistration";
 import { ColonyPlanRegistration } from "./ColonyPlanRegistration";
-import { ColonyOperationRegistration } from "./ColonyOperationRegistration";
+import { OperationRegistration } from "./OperationRegistration";
 import { BodyRegistration } from "./BodyRegistration";
-import { MapBuilder } from "./MapBuilder";
 
 //import { TowerController } from "./tower/TowerController";
-import { Extender } from "./extend/Extender";
-
-import { MemoryManager } from "../lib/memory/Manager";
-import { Empire } from "../lib/empire/Empire"
-import { ColonyFinder } from "../lib/empire/ColonyFinder";
 
 // debug
 import { Playback } from "../lib/debug/Playback";
@@ -18,38 +19,36 @@ import { Cleaner } from "../lib/debug/Cleaner";
 import { Logger } from "../lib/debug/Logger";
 
 export class Execute {
-    private empire: Empire = Empire.getEmpireInstance();
+    private empire: Empire;
     
-
     public init(): void {        
+        console.log("<span style='color:green'>Execution initializing...</span>");
+
+        this.debug();
+        if (!Playback.init())
+            return;                
+        MemoryManager.checkInit();
+        Extender.extend();        
+        this.registrations();
+        this.empire = new Empire(StandardNestMapBuilder.getBuilder());
+    }
+
+    private debug(): void {
         if (!global.cleaner)
             global.cleaner = new Cleaner();
         if (!global.logger)
             global.logger = new Logger();
         if (!global.pause)
             global.pause = function () { Playback.pause(); }
-
         Playback.update();
-        if (!Playback.init())
-            return;        
+    }
 
-        console.log("<span style='color:green'>Execution initializing...</span>");
-
-        MemoryManager.checkInit();
-        Extender.extend();
-
-        MapBuilder.init();
-
+    private registrations(): void {
         RoleRegistration.register();
         ActivityRegistration.register();
-
         ColonyPlanRegistration.register();
-        ColonyOperationRegistration.register();
-
+        OperationRegistration.register();
         BodyRegistration.register();
-
-        this.empire = Empire.getEmpireInstance();
-        console.log("<span style='color:green'>done</span>");
     }
 
     public main(): void {
@@ -58,10 +57,11 @@ export class Execute {
             return;
         
         try {
-            ColonyFinder.createNewColonies(this.empire);
+            this.empire.load();
             this.empire.update();
             this.empire.execute();
             this.empire.cleanup();
+            Memory.empire = this.empire.save();
         } catch (e) {
             if (Playback.pauseOnException)
                 Playback.pause();            

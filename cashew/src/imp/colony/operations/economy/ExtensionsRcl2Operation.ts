@@ -1,8 +1,13 @@
 import { Colony } from "../../../../lib/colony/Colony";
-import { ColonyOperation } from "../../../../lib/colony/ColonyOperation";
+import { Operation } from "../../../../lib/operation/Operation";
 import { SpawnDefinition } from "../../../../lib/spawn/SpawnDefinition";
 
-export class ExtensionsRcl2Operation extends ColonyOperation {
+export class ExtensionsRcl2Operation extends Operation {
+    public static fromMemory(memory: OperationMemory): ExtensionsRcl2Operation {
+        var op = new this();
+        return Operation.fromMemory(op, memory);
+    }
+
     constructor() {
         super("extensionsRcl2");
     }
@@ -13,7 +18,7 @@ export class ExtensionsRcl2Operation extends ColonyOperation {
     }
 
     public canStart(colony: Colony): boolean {
-        return this.assigned.length >= 1;
+        return this.assignedCreeps.length >= 1;
     }
 
     public isFinished(colony: Colony): boolean {
@@ -40,6 +45,9 @@ export class ExtensionsRcl2Operation extends ColonyOperation {
     }
 
 
+    protected onLoad(): void {
+    }
+
     protected onUpdate(colony: Colony): void {
     }
 
@@ -47,6 +55,10 @@ export class ExtensionsRcl2Operation extends ColonyOperation {
     }
 
     protected onCleanup(colony: Colony): void {
+    }
+
+    protected onSave(): OperationMemory {
+        return null;
     }
 
     protected onGetCreepRequirement(colony: Colony): SpawnDefinition[] {

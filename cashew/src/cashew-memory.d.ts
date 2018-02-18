@@ -1,0 +1,116 @@
+import { IRoleState } from "./lib/creep/role/state/IRoleState";
+
+declare global {
+    /** FLAGS */
+
+    interface ColonyFlagMemory {
+        name: string;
+        plan: string;
+    }
+
+    interface PlaybackFlagMemory {
+        pauseOnException: boolean;
+
+        doOutput: boolean;
+        outputColor: string;
+
+        playbackState: string;
+        lastPlaybackState: string;
+    }
+
+    /** END FLAGS */
+
+
+    /** MANAGEMENT UNITS **/
+
+    interface EmpireMemory {
+        colonies: { [colonyName: string]: ColonyMemory };
+    }
+
+    interface ColonyMemory {        
+        name: string;
+        nest: NestMemory;
+        plan: ColonyPlanMemory;
+    }
+
+    interface ColonyPlanMemory {
+        name: string;
+        description: string;
+        milestoneIndex: number;
+        currentOperationGroup: OperationGroupMemory;
+    }
+
+    interface NestMemory {
+        roomName: string;
+        map: NestMapMemory;
+    }
+    
+    /**  END MANAGEMENT UNITS **/
+
+
+    /** OPERATIONS **/
+
+    interface OperationMemory {
+        name: string;
+        initialized: boolean;
+        started: boolean;
+        finished: boolean;
+        assignedCreeps: string[];
+    }
+
+    interface OperationGroupMemory {
+        newOperations: OperationMemory[];
+        initializedOperations: OperationMemory[];
+        startedOperations: OperationMemory[];
+        completedOperationNames: string[];
+    }
+
+    /** END OPERATIONS **/
+
+
+    /** MAPS **/
+
+    interface MapMemory {        
+        terrain: LayerMemory<Terrain>;
+        roads: LayerMemory<boolean>;
+        structures: LayerMemory<StructureConstant>;
+        ramparts: LayerMemory<boolean>;
+        special: LayerMemory<number>;
+    }
+
+    interface MapBlockMemory {        
+        height: number;
+        width: number;
+        offset: { x: number, y: number };
+        roads: LayerMemory<boolean>;
+        structures: LayerMemory<StructureConstant>;
+        ramparts: LayerMemory<boolean>;
+        special: LayerMemory<number>;
+    }
+
+    interface LayerMemory<T> {
+        defaultValue: T;
+        height: number;
+        width: number;
+        array: any[][];
+    }
+
+    interface NestMapMemory {
+        map: MapMemory;
+        harvestBlocks: MapBlockMemory[];
+        extensionBlock: MapBlockMemory;
+        mainBlock: MapBlockMemory;
+        controllerBlock: MapBlockMemory;
+        labBlock: MapBlockMemory;
+    }
+    
+    /** END MAPS **/
+    
+    interface SpawnDefinitionMemory {
+        id: string;
+        name: string;
+        roleId: string;
+        minEnergy: number;
+        maxEnergy: number;
+    }
+}

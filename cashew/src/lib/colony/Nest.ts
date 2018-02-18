@@ -6,38 +6,25 @@ import { Spawner } from "../spawn/Spawner";
 import { SpawnDefinition } from "../spawn/SpawnDefinition";
 
 export class Nest {
-    private _spawners: Spawner[];
-    private _nestMap: NestMap;
+    public static fromMemory(memory: NestMemory): Nest {        
+        return new this(memory.roomName, NestMap.fromMemory(memory.map));
+    }
 
-    constructor(roomName: string) {
-        this.state = {
-            id: roomName
+    constructor(roomName: string, nestMap: NestMap) {
+        this.roomName = roomName;
+                        
+        this.spawners = [];
+        var spawns = this.room.nut.seed.findMySpawns();
+        for (var i = 0; i < spawns.length; i++) {
+            this.spawners.push(new Spawner(spawns[i].id));
         }
     }
 
-
-    public state: NestMemory;
-
-
-    public get spawners(): Spawner[] {
-        if (!this._spawners) {
-            this._spawners = [];
-            var spawns = this.room.nut.seed.findMySpawns();
-            for (var i = 0; i < spawns.length; i++) {
-                this._spawners.push(new Spawner(spawns[i]));
-            }
-        }
-        return this._spawners;
-    }
-    public get id(): string { return this.room.name; }    
-    public get room(): Room {        
-        return Game.rooms[this.state.id];
-    }
-    public get nestMap(): NestMap {
-        if (!this._nestMap)
-            this._nestMap = Empire.getEmpireInstance().nestMapBuilder.getMap(this.room);
-        return this._nestMap;
-    }
+    public spawners: Spawner[];    
+    public nestMap: NestMap;
+    public roomName: string;    
+    public room: Room;
+    
 
     public canSpawn(spawnDefinition: SpawnDefinition): boolean {
         for (var i = 0; i < this.spawners.length; i++) {
@@ -58,23 +45,37 @@ export class Nest {
         }
         return null;
     }
+    
 
-    public update(colony: Colony): void {
-        this._spawners = null;
+    public load(): void {
+        this.room = Game.getObjectById<Room>(this.roomName);
+        for (var i = 0; i < this.spawners.length; i++) {
+            this.spawners[i].load();
+        }
+    }
+
+    public update(): void {        
         for (var i = 0; i < this.spawners.length; i++) {
             this.spawners[i].update();
         }
     }
 
-    public execute(colony: Colony): void {
+    public execute(): void {
         for (var i = 0; i < this.spawners.length; i++) {
             this.spawners[i].execute();
         }
     }
 
-    public cleanup(colony: Colony): void {
+    public cleanup(): void {
         for (var i = 0; i < this.spawners.length; i++) {
             this.spawners[i].cleanup();
         }
+    }
+
+    public save(): NestMemory {
+        return {
+            roomName: this.roomName,
+            map: this.nestMap.save()
+        };
     }
 }

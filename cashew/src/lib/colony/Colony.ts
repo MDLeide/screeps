@@ -1,91 +1,66 @@
-import { Nest } from "./Nest";
 import { ColonyPlan } from "./ColonyPlan";
+import { ColonyPlanRepository } from "./ColonyPlanRepository";
+import { Nest } from "./Nest";
 import { Population } from "./Population";
 
-import { NestRepository } from "./repo/NestRepository";
-import { ColonyPlanRepository } from "./repo/ColonyPlanRepository";
-
 import { MapBlock } from "../map/base/MapBlock";
-import { MapBlockRepo } from "../map/repo/MapBlockRepo";
+
 import { Spawner } from "../spawn/Spawner";
 import { SpawnDefinition } from "../spawn/SpawnDefinition";
+
 import { Empire } from "../empire/Empire";
 
-import { Guid } from "../../util/GUID";
-import { IdArray } from "../../util/IdArray";
 
 export class Colony  {
-    private _nestRepository: NestRepository;
-    private get nestRepository(): NestRepository {
-        if (!this._nestRepository)
-            this._nestRepository = new NestRepository();
-        return this._nestRepository;
+    public static fromMemory(memory: ColonyMemory): Colony {
+        return new this(
+            Nest.fromMemory(memory.nest),
+            memory.name,
+            ColonyPlanRepository.load(memory.plan)
+        );
     }
 
-    private _planRepository: ColonyPlanRepository;
-    private get planRepository(): ColonyPlanRepository {
-        if (!this._planRepository)
-            this._planRepository = new ColonyPlanRepository();
-        return this._planRepository;
-    }
-    
-    private _nest: Nest;
-    private _plan: ColonyPlan;
-    private _population: Population;
-    
     constructor(nest: Nest, name: string, plan: ColonyPlan) {
-        this._nest = nest;
+        this.nest = nest;
+        this.name = name;
+        this.plan = plan;
 
-        this.state = {
-            id: nest.id,
-            name: name,
-            nestId: nest.id,
-            planId: plan.id,
-            harvestBlockIds: []
-        }
-    }
-
-
-    public state: ColonyMemory;
-
-    public get population(): Population {
-        if (!this._population)
-            this._population = new Population(this);
-        return this._population;
-    }
-    public get id(): string { return this.nest.id; }
-    public get name(): string { return this.state.name; };
-    public get nest(): Nest {
-        if (!this._nest) {
-            this._nest = this.nestRepository.find(this.state.nestId);
-        }
-        return this._nest;
-    }
-    public get plan(): ColonyPlan {
-        if (!this._plan) {
-            this._plan = this.planRepository.find(this.state.planId);
-        }
-        return this._plan;
+        this.population = new Population(this);
     }
     
-
+    public population: Population;    
+    public name: string;
+    public nest: Nest;
+    public plan: ColonyPlan;
 
     //## update loop
 
-    public update(empire: Empire): void {
+    public load(): void {
+        this.nest.load();
+    }
+
+    public update(): void {
         this.population.update();
         this.plan.update(this);
-        this.nest.update(this);
+        this.nest.update();
     }
 
-    public execute(empire: Empire): void {
+    public execute(): void {
         this.plan.execute(this);
-        this.nest.execute(this);
+        this.nest.execute();
     }
 
-    public cleanup(empire: Empire): void {
+    public cleanup(): void {
         this.plan.cleanup(this);
-        this.nest.cleanup(this);
+        this.nest.cleanup();
+    }
+
+    public save(): ColonyMemory {
+        return {
+            name: this.name,
+            nest: this.nest.save(),
+            plan: this.plan.save()
+        };
     }
 
     //## end update loop

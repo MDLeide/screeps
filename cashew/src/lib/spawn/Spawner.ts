@@ -4,19 +4,20 @@ import { Body } from "../creep/body/Body";
 export class Spawner {
     private _updated: boolean;
     private _cleanedup: boolean;
-
-    private _spawn: StructureSpawn;    
-    private _currentSpawnTotalGestation: number;
     private _startedThisTick: string;    
 
-    constructor(spawn: StructureSpawn) {
-        this._spawn = spawn;
+    constructor(spawnId: string) {        
+        this.spawnId = spawnId;
     }
 
-    public get spawn(): StructureSpawn { return this._spawn; }
-    public get currentlySpawning(): { name: string, remainingTime: number, needTime: number } { return this.spawn.spawning; }
-    /** If a creep started spawning this tick, this property will contain its name. */
+    public spawnId: string;
+    public spawn: StructureSpawn;
     public get startedThisTick(): string { return this._startedThisTick; }
+    
+
+    public getCurrentlySpawning(): { name: string, remainingTime: number, needTime: number } {
+        return this.spawn.spawning;
+    }
 
     public canSpawn(spawnDefinition: SpawnDefinition): boolean {        
         return (!this.spawn.spawning && !this.startedThisTick && this.spawn.energy >= spawnDefinition.minimumEnergy);
@@ -68,6 +69,11 @@ export class Spawner {
             this._startedThisTick = name;
             return name;
         }
+    }
+    
+
+    public load(): void {
+        this.spawn = Game.getObjectById<StructureSpawn>(this.spawnId);
     }
 
     public update(): void {
