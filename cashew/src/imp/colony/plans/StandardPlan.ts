@@ -4,9 +4,9 @@ import { LightUpgradeOperation } from "../../operation/economic/LightUpgradeOper
 import { ExtensionsRcl2Operation } from "../../operation/economic/ExtensionsRcl2Operation";
 
 import { Colony } from "../../../lib/colony/Colony";
-import { ColonyPlan } from "../../../lib/colony/ColonyPlan";
+import { ColonyPlan } from "../../../lib/colonyPlan/ColonyPlan";
 import { Operation } from "../../../lib/operation/Operation";
-import { Milestone } from "../../../lib/colony/Milestone";
+import { Milestone } from "../../../lib/colonyPlan/Milestone";
 import { HarvestBlock } from "../../../lib/map/blocks/HarvestBlock";
 
 export class StandardPlan {

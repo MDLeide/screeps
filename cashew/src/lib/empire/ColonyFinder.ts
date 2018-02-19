@@ -3,7 +3,7 @@ import { Settings } from "../Settings";
 import { Colony } from "../colony/Colony";
 import { Nest } from "../colony/Nest";
 import { NestMapBuilder } from "../map/NestMapBuilder";
-import { ColonyPlanRepository } from "../colony/ColonyPlanRepository";
+import { ColonyPlanRepository } from "../colonyPlan/ColonyPlanRepository";
 
 /** Finds new colonies and adds them to the empire. */
 export class ColonyFinder {

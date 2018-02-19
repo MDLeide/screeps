@@ -29,8 +29,7 @@ export abstract class Operation {
     public finished: boolean;
     public assignments: Assignment[]; // filled if creep name is not blank
     
-
-    /** Called once, to initialize the operation - returns true if successful. */
+        
     public init(colony: Colony): boolean {
         if (this.initialized)
             return true;
@@ -40,8 +39,7 @@ export abstract class Operation {
         this.initialized = this.onInit(colony);
         return this.initialized;
     }
-
-    /** Called once, to start the operation, and begin calls of execute. */
+    
     public start(colony: Colony): boolean {        
         if (this.started)
             return true;
@@ -51,14 +49,12 @@ export abstract class Operation {
         this.started = this.onStart(colony);
         return this.started;
     }
-
-    /** Allows the operation to finalize. */
+    
     public finish(colony: Colony): void {
         this.onFinish(colony);
     }
 
 
-    /** Assigns a creep to this operation and updates its role. */
     public assignCreep(creep: { name: string, bodyName: string }): void {
         for (var i = 0; i < this.assignments.length; i++) {
             if (this.assignments[i].creepName == "" && this.assignments[i].body.name == creep.bodyName) {
@@ -68,15 +64,13 @@ export abstract class Operation {
             }
         }
     }
-
-    /** Removes a creep from this operation. */    
+    
     public removeCreep(creepName: string) {
         for (var i = 0; i < this.assignments.length; i++)
             if (this.assignments[i].creepName == creepName)
                 this.assignments[i].creepName = "";
     }
-
-    /** Gets the remaining spawn requirements for the operation. */
+    
     public getUnfilledAssignments(colony: Colony): Assignment[] {
         var unfilled: Assignment[] = [];
         for (var i = 0; i < this.assignments.length; i++) 
@@ -84,8 +78,7 @@ export abstract class Operation {
                 unfilled.push(this.assignments[i]);
         return unfilled;
     }
-
-    /** Gets the number of filled assignments */
+    
     public getFilledAssignmentCount(): number {
         var count = 0;
         for (var i = 0; i < this.assignments.length; i++) 
@@ -93,24 +86,7 @@ export abstract class Operation {
                 count++;
         return count;
     }
-
-
-    /** Ensures we don't have any dead creeps assigned to the operation. */
-    private cleanDeadCreeps(colony: Colony) {
-        for (var i = 0; i < this.assignments.length; i++) 
-            if (!colony.population.isAliveOrSpawning(this.assignments[i].creepName)) 
-                this.assignments[i].creepName = "";
-                     
-    }
-
-    // helper
-    private doSkip(index: number, array: number[]): boolean {
-        for (var i = 0; i < array.length; i++)
-            if (array[i] == index)
-                return true;
-        return false;
-    }
-    
+        
 
     //**                    **//
     //** Update Loop        **//
@@ -165,7 +141,22 @@ export abstract class Operation {
     //**                    **//
     //** End Update Loop    **//
     //**                    **//
-    
+
+    /** Ensures we don't have any dead creeps assigned to the operation. */
+    private cleanDeadCreeps(colony: Colony) {
+        for (var i = 0; i < this.assignments.length; i++)
+            if (!colony.population.isAliveOrSpawning(this.assignments[i].creepName))
+                this.assignments[i].creepName = "";
+
+    }
+
+    // helper
+    private doSkip(index: number, array: number[]): boolean {
+        for (var i = 0; i < array.length; i++)
+            if (array[i] == index)
+                return true;
+        return false;
+    }
 
     //**                    **//
     //** Abstracts          **//

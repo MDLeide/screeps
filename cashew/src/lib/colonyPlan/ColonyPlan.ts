@@ -1,4 +1,4 @@
-import { Colony } from "./Colony"
+import { Colony } from "../colony/Colony"
 import { Milestone } from "./Milestone";
 import { Operation } from "../operation/Operation"
 import { OperationGroup } from "../operation/OperationGroup";

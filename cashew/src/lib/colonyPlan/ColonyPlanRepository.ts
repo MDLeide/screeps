@@ -1,4 +1,4 @@
-import { Colony } from "./Colony";
+import { Colony } from "../colony/Colony";
 import { ColonyPlan } from "./ColonyPlan";
 
 export class ColonyPlanRepository {

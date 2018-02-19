@@ -1,7 +1,7 @@
-import { ColonyPlan } from "../../lib/colony/ColonyPlan";
+import { ColonyPlan } from "../../lib/colonyPlan/ColonyPlan";
 import { StandardPlan } from "../colony/plans/StandardPlan";
 
-import { ColonyPlanRepository } from "../../lib/colony/ColonyPlanRepository";
+import { ColonyPlanRepository } from "../../lib/colonyPlan/ColonyPlanRepository";
 
 export class ColonyPlanRegistration {
     

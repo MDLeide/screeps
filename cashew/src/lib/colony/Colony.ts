@@ -1,5 +1,5 @@
-import { ColonyPlan } from "./ColonyPlan";
-import { ColonyPlanRepository } from "./ColonyPlanRepository";
+import { ColonyPlan } from "../colonyPlan/ColonyPlan";
+import { ColonyPlanRepository } from "../colonyPlan/ColonyPlanRepository";
 import { Nest } from "./Nest";
 import { Population } from "./Population";
 import { MapBlock } from "../map/base/MapBlock";

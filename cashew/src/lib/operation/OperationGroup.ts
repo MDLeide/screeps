@@ -35,6 +35,9 @@ export class OperationGroup {
     public startedOperations: Operation[];
     public completedOperationNames: string[];
 
+    public addOperation(operation: Operation): void {
+        this.newOperations.push(operation);
+    }
 
     public load(): void {
         for (var i = 0; i < this.newOperations.length; i++)
