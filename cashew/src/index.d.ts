@@ -1,5 +1,6 @@
 import { Cleaner } from "./lib/debug/Cleaner";
 import { Logger } from "./lib/debug/Logger";
+import { Reporter } from "./lib/debug/Reporter";
 
 import { CreepNut } from "./imp/extend/nut/CreepNut";
 import { RoomNut } from "./imp/extend/nut/RoomNut";
@@ -17,6 +18,7 @@ declare global {
     interface global {
         cleaner: Cleaner;
         logger: Logger;
+        reports: Reporter;
         pause(): void;
     }
 

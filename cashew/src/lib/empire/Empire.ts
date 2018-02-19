@@ -24,11 +24,10 @@ export class Empire {
     }
     
     public update(): void {        
-        ColonyFinder.createNewColonies(this, this.nestMapBuilder);
-
+        ColonyFinder.createNewColonies(this, this.nestMapBuilder);        
         for (var i = 0; i < this.colonies.length; i++) {
             this.colonies[i].update();
-        }        
+        }
     }
 
     public execute(): void {

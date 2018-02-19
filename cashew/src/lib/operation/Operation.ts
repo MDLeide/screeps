@@ -1,21 +1,25 @@
+import { Assignment } from "./Assignment";
 import { Colony } from "../colony/Colony";
-import { SpawnDefinition } from "../spawn/SpawnDefinition";
+import { Body } from "../spawn/Body";
 
-export abstract class Operation {    
-    private _creepRequirement: SpawnDefinition[];
+export abstract class Operation {        
     /** Just does some initialization to the base properties. Call it from an implementing
     class to save some typing.*/
-    public static fromMemory<T extends Operation>(instance: T, memory: OperationMemory): T {
+    public static fromMemory<T extends Operation>(memory: OperationMemory, instance: T): Operation {
         instance.name = memory.name;
         instance.initialized = memory.initialized;
         instance.started = memory.started;
         instance.finished = memory.finished;
-        instance.assignedCreeps = memory.assignedCreeps;
+        instance.assignments = [];
+        for (var i = 0; i < memory.assignments.length; i++) 
+            instance.assignments.push(Assignment.fromMemory(memory.assignments[i]));        
         return instance;
     }
+
     
-    constructor(name: string) {
-        this.name = name;
+    constructor(name: string, assignments: Assignment[]) {
+        this.name = name;        
+        this.assignments = assignments;
     }
 
     
@@ -23,7 +27,7 @@ export abstract class Operation {
     public initialized: boolean;
     public started: boolean;
     public finished: boolean;
-    public assignedCreeps: string[];
+    public assignments: Assignment[]; // filled if creep name is not blank
     
 
     /** Called once, to initialize the operation - returns true if successful. */
@@ -54,77 +58,82 @@ export abstract class Operation {
     }
 
 
-    /** Assigns a creep to this operation. */
-    public assignCreep(creepName: string): void {
-        this.assignedCreeps.push(creepName);
+    /** Assigns a creep to this operation and updates its role. */
+    public assignCreep(creep: { name: string, bodyName: string }): void {
+        for (var i = 0; i < this.assignments.length; i++) {
+            if (this.assignments[i].creepName == "" && this.assignments[i].body.name == creep.bodyName) {
+                this.assignments[i].creepName = creep.name;
+                Memory.creeps[creep.name].roleId = this.assignments[i].roleId;
+                return;
+            }
+        }
     }
 
     /** Removes a creep from this operation. */    
-    public removeCreep(creepName: string) {        
-        var index = -1;
-        for (var i = 0; i < this.assignedCreeps.length; i++) {
-            if (this.assignedCreeps[i] == creepName) {
-                index = i;
-                break;
-            }
-        }
-        
-        if (index >= 0) 
-            this.assignedCreeps.splice(index, 1);        
+    public removeCreep(creepName: string) {
+        for (var i = 0; i < this.assignments.length; i++)
+            if (this.assignments[i].creepName == creepName)
+                this.assignments[i].creepName = "";
     }
 
-    /** Gets the total spawn requirements for the operation. */
-    public getTotalCreepRequirement(colony: Colony): SpawnDefinition[] {
-        if (!this._creepRequirement)
-            this._creepRequirement = this.onGetCreepRequirement(colony);
-        return this._creepRequirement;
+    /** Gets the remaining spawn requirements for the operation. */
+    public getUnfilledAssignments(colony: Colony): Assignment[] {
+        var unfilled: Assignment[] = [];
+        for (var i = 0; i < this.assignments.length; i++) 
+            if (this.assignments[i].creepName == "")
+                unfilled.push(this.assignments[i]);
+        return unfilled;
+    }
+
+    /** Gets the number of filled assignments */
+    public getFilledAssignmentCount(): number {
+        var count = 0;
+        for (var i = 0; i < this.assignments.length; i++) 
+            if (this.assignments[i].creepName != "")
+                count++;
+        return count;
+    }
+
+
+    /** Ensures we don't have any dead creeps assigned to the operation. */
+    private cleanDeadCreeps(colony: Colony) {
+        for (var i = 0; i < this.assignments.length; i++) 
+            if (!colony.population.isAliveOrSpawning(this.assignments[i].creepName)) 
+                this.assignments[i].creepName = "";
+                     
+    }
+
+    // helper
+    private doSkip(index: number, array: number[]): boolean {
+        for (var i = 0; i < array.length; i++)
+            if (array[i] == index)
+                return true;
+        return false;
     }
     
-    /** Gets the remaining spawn requirements for the operation. */
-    public getRemainingCreepSpawnRequirements(colony: Colony): SpawnDefinition[] {
-        //todo: we don't have to recalculate this each time if we keep track of it via assigned, removed, and dead creeps
-        var req = this.getTotalCreepRequirement(colony);
-        var toSpawn: SpawnDefinition[] = [];
 
-        var toSkip: number[] = []; // used to make sure a single assigned creep does not count
-        // for multiples when comparing assigned vs required        
-        // we will check each requirement against the list of assigned creeps
-
-        for (var i = 0; i < req.length; i++) {
-            var found = false;
-            for (var j = 0; j < this.assignedCreeps.length; j++) {
-                if (this.doSkip(j, toSkip))
-                    continue;
-
-                var assignedCreepRole = Memory.creeps[this.assignedCreeps[j]].roleId;
-                if (req[i].roleId == assignedCreepRole) {
-                    toSkip.push(j);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) 
-                toSpawn.push(req[i]);            
-        }
-        return toSpawn;
-    }
-
+    //**                    **//
+    //** Update Loop        **//
+    //**                    **//
 
     public load(): void {
         this.onLoad();
     }
 
     /** Provides early-tick opportunity to update state. Will be called on all colonies and operations prior to Execute being called. */
-    public update(colony: Colony): void {
+    public update(colony: Colony): void {        
         this.cleanDeadCreeps(colony);
         this.onUpdate(colony);
     }
 
     /** Main operation logic should execute here. */
     public execute(colony: Colony): void {
-        for (var i = 0; i < this.assignedCreeps.length; i++) {
-            var creep = Game.creeps[this.assignedCreeps[i]];
-            if (!creep.spawning)
+        for (var i = 0; i < this.assignments.length; i++) {
+            if (this.assignments[i].creepName == "")
+                continue;
+
+            var creep = Game.creeps[this.assignments[i].creepName];
+            if (creep && !creep.spawning)
                 creep.nut.role.execute();
         }
         this.onExecute(colony);
@@ -138,35 +147,29 @@ export abstract class Operation {
     public save(): OperationMemory {
         var memory = this.onSave();
         if (!memory) {
+            var assignmentMemory: AssignmentMemory[] = [];
+            for (var i = 0; i < this.assignments.length; i++) 
+                assignmentMemory.push(this.assignments[i].save());
+            
             memory = {
                 name: this.name,
                 initialized: this.initialized,
                 started: this.started,
                 finished: this.finished,
-                assignedCreeps: this.assignedCreeps
-            }
+                assignments: assignmentMemory
+            };
         }
         return memory;
     }
 
-    /** Ensures we don't have any dead creeps assigned to the operation. */
-    private cleanDeadCreeps(colony: Colony) {
-        var toRemove: number[] = [];
-        for (var i = 0; i < this.assignedCreeps.length; i++)
-            if (colony.population.didDieRecently(this.assignedCreeps[i]))
-                toRemove.push(i);
-        for (var i = toRemove.length - 1; i >= 0; i--)
-            this.assignedCreeps.splice(toRemove[i], 1);
-    }
+    //**                    **//
+    //** End Update Loop    **//
+    //**                    **//
+    
 
-    // helper
-    private doSkip(index: number, array: number[]): boolean {
-        for (var i = 0; i < array.length; i++)
-            if (array[i] == index)
-                return true;
-        return false;
-    }
-
+    //**                    **//
+    //** Abstracts          **//
+    //**                    **//
 
     public abstract canInit(colony: Colony): boolean;
     public abstract canStart(colony: Colony): boolean;
@@ -187,10 +190,7 @@ export abstract class Operation {
     protected abstract onExecute(colony: Colony): void;
     /** Called after all operatoins have executed. */
     protected abstract onCleanup(colony: Colony): void;
-
-    /** Gets the creeps that this operation wants. */
-    protected abstract onGetCreepRequirement(colony: Colony): SpawnDefinition[];
-
+    
     /** Allows the concrete class to provide an extended memory object.
     Optionally it can return null for defualt Operation memory. */
     protected abstract onSave(): OperationMemory;

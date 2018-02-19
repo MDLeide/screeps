@@ -1,27 +1,38 @@
-import { Colony } from "../../../../lib/colony/Colony";
-import { Operation } from "../../../../lib/operation/Operation";
-import { SpawnDefinition } from "../../../../lib/spawn/SpawnDefinition";
+import { Colony } from "../../../lib/colony/Colony";
+import { Operation } from "../../../lib/operation/Operation";
+import { Assignment } from "../../../lib/operation/Assignment";
+import { BodyRepository } from "../../spawn/BodyRepository";
 
 export class HarvestOperation extends Operation {
 
-    public static fromMemory(memory: HarvestOperationMemory): HarvestOperation {
+    public static fromMemory(memory: HarvestOperationMemory): Operation {
         var op = new this(memory.minimumEnergy);
-        return Operation.fromMemory(op, memory);
+        return Operation.fromMemory(memory, op);
     }
 
     constructor(minimumEnergyForSpawn: number) {
-        super("harvest");
+        super("harvest", HarvestOperation.getAssignments(minimumEnergyForSpawn));
         this.minimumEnergy = minimumEnergyForSpawn;
     }
 
+    private static getAssignments(minEnergy: number): Assignment[] {
+        var body = BodyRepository.getBody("heavyHarvester");
+        body.minimumEnergy = minEnergy;
+        return [
+            new Assignment("", body, "heavyHarvester")
+        ]
+    }
+
+
     public minimumEnergy: number;
+
 
     public canInit(colony: Colony): boolean {
         return true;
     }
 
     public canStart(colony: Colony): boolean {
-        return this.assignedCreeps.length >= 1;
+        return this.getFilledAssignmentCount() >= 1;
     }
 
     public isFinished(colony: Colony): boolean {
@@ -55,19 +66,18 @@ export class HarvestOperation extends Operation {
     }
 
     protected onSave(): HarvestOperationMemory {
+        var assignmentMemory: AssignmentMemory[] = [];
+        for (var i = 0; i < this.assignments.length; i++)
+            assignmentMemory.push(this.assignments[i].save());
+
         return {
             minimumEnergy: this.minimumEnergy,
             name: this.name,
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
-            assignedCreeps: this.assignedCreeps
+            assignments: assignmentMemory
         };
-    }
-
-    protected onGetCreepRequirement(colony: Colony): SpawnDefinition[] {
-        var def = new SpawnDefinition("heavyHarvester", "heavyHarvester", this.minimumEnergy, 0);
-        return [def];
     }
 }
 

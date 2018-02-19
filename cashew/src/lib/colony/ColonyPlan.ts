@@ -53,7 +53,7 @@ export class ColonyPlan {
     /** Updates the plan, checks for a new milestone, updates all operations. */
     public update(colony: Colony): void {
         this.checkForNewMilestone(colony);
-        this.currentOperationGroup.update(colony);
+        this.currentOperationGroup.update(colony);        
     }
 
     public execute(colony: Colony): void {

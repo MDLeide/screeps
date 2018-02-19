@@ -40,7 +40,7 @@ export class Extender {
             return;
         }
         
-        //container
+        //container        
         Object.defineProperties(StructureContainer.prototype, {
             'memory': {
                 'get': function () {

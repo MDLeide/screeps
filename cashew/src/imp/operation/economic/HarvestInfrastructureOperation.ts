@@ -1,22 +1,32 @@
-import { Colony } from "../../../../lib/colony/Colony";
-import { Operation } from "../../../../lib/operation/Operation";
-import { SpawnDefinition } from "../../../../lib/spawn/SpawnDefinition";
-import { MapBlock } from "../../../../lib/map/base/MapBlock";
-import { HarvestBlock } from "../../../../lib/map/blocks/HarvestBlock";
+import { Colony } from "../../../lib/colony/Colony";
+import { Operation } from "../../../lib/operation/Operation";
+import { MapBlock } from "../../../lib/map/base/MapBlock";
+import { HarvestBlock } from "../../../lib/map/blocks/HarvestBlock";
+import { Assignment } from "../../../lib/operation/Assignment";
+import { BodyRepository } from "../../spawn/BodyRepository";
 
 export class HarvestInfrastructureOperation extends Operation {    
     private _sourceBlock: MapBlock;
 
-    public static fromMemory(memory: HarvestInfrastructureOperationMemory): HarvestInfrastructureOperation {
+    public static fromMemory(memory: HarvestInfrastructureOperationMemory): Operation {
         var op = new this(memory.sourceId);
-        return Operation.fromMemory(op, memory);
+        op.standLocation = memory.standlocation;
+        return Operation.fromMemory(memory, op);
     }
 
     constructor(sourceId: string) {
-        super("harvestInfrastructure");        
+        super("harvestInfrastructure", HarvestInfrastructureOperation.getAssignments());        
         this.sourceId = sourceId;
+        this.source = Game.getObjectById<Source>(sourceId);
     }
 
+    private static getAssignments(): Assignment[]{
+        return [
+            new Assignment("", BodyRepository.getBody("lightWorker"), "lightMiner"),
+            new Assignment("", BodyRepository.getBody("lightWorker"), "lightMiner")
+        ];
+    }
+    
 
     public source: Source;
     public sourceId: string;
@@ -25,21 +35,6 @@ export class HarvestInfrastructureOperation extends Operation {
 
     public canInit(colony: Colony): boolean {
         return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.assignedCreeps.length >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        var look = this.source.room.lookAt(this.standLocation.x, this.standLocation.y);
-
-        for (var i = 0; i < look.length; i++) {
-            if (look[i].structure)
-                if (look[i].structure.structureType == STRUCTURE_CONTAINER)
-                    return true;
-        }
-        return false;
     }
 
     protected onInit(colony: Colony): boolean {
@@ -52,7 +47,7 @@ export class HarvestInfrastructureOperation extends Operation {
                 harvestBlock = block;
                 break;
             }
-        } 
+        }
 
         var container = harvestBlock.getContainerLocation();
         this.source.room.createConstructionSite(container.x, container.y, STRUCTURE_CONTAINER);
@@ -60,8 +55,23 @@ export class HarvestInfrastructureOperation extends Operation {
         return true;
     }
 
+    public canStart(colony: Colony): boolean {
+        return this.getFilledAssignmentCount() >= 1;
+    }
+
     protected onStart(colony: Colony): boolean {
         return true;
+    }
+
+    public isFinished(colony: Colony): boolean {
+        var look = this.source.room.lookAt(this.standLocation.x, this.standLocation.y);
+
+        for (var i = 0; i < look.length; i++) {
+            if (look[i].structure)
+                if (look[i].structure.structureType == STRUCTURE_CONTAINER)
+                    return true;
+        }
+        return false;
     }
 
     protected onFinish(colony: Colony): boolean {
@@ -92,6 +102,10 @@ export class HarvestInfrastructureOperation extends Operation {
     }
 
     protected onSave(): HarvestInfrastructureOperationMemory {
+        var assignmentMemory: AssignmentMemory[] = [];
+        for (var i = 0; i < this.assignments.length; i++)
+            assignmentMemory.push(this.assignments[i].save());
+
         return {
             sourceId: this.sourceId,
             standlocation: this.standLocation,
@@ -99,14 +113,8 @@ export class HarvestInfrastructureOperation extends Operation {
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
-            assignedCreeps: this.assignedCreeps
+            assignments: assignmentMemory
         };
-    }
-
-
-    protected onGetCreepRequirement(colony: Colony): SpawnDefinition[] {
-        var builder = new SpawnDefinition("lightMiner", "lightMiner", 250, 300);
-        return [builder];
     }
 }
 

@@ -1,22 +1,22 @@
-import { ActivityRepo } from "../lib/creep/activity/ActivityRepo";
+import { ActivityRepo } from "../../lib/creep/activity/ActivityRepo";
 
-import { BuildingStructure } from "./creep/activity/BuildingStructure";
-import { ChargingTower } from "./creep/activity/ChargingTower";
-import { MiningEnergy } from "./creep/activity/MiningEnergy";
-import { SupplyingController } from "./creep/activity/SupplyingController";
-import { SupplyingSpawn } from "./creep/activity/SupplyingSpawn";
-import { UpgradingController } from "./creep/activity/UpgradingController";
-import { UpgradeWithdrawingEnergy } from "./creep/activity/UpgradeWithdrawingEnergy";
-import { WithdrawingEnergy } from "./creep/activity/WithdrawingEnergy";
-import { AttackingNearestEnemy } from "./creep/activity/AttackingNearestEnemy";
-import { PickingEnergy } from "./creep/activity/PickingEnergy";
-import { RepairingWalls } from "./creep/activity/RepairingWalls";
-import { RepairingRoads } from "./creep/activity/RepairingRoads";
-import { RepairingStructures } from "./creep/activity/RepairingStructures";
-import { SupplyingStorage } from "./creep/activity/SupplyingStorage";
+import { BuildingStructure } from "../creep/activity/BuildingStructure";
+import { ChargingTower } from "../creep/activity/ChargingTower";
+import { MiningEnergy } from "../creep/activity/MiningEnergy";
+import { SupplyingController } from "../creep/activity/SupplyingController";
+import { SupplyingSpawn } from "../creep/activity/SupplyingSpawn";
+import { UpgradingController } from "../creep/activity/UpgradingController";
+import { UpgradeWithdrawingEnergy } from "../creep/activity/UpgradeWithdrawingEnergy";
+import { WithdrawingEnergy } from "../creep/activity/WithdrawingEnergy";
+import { AttackingNearestEnemy } from "../creep/activity/AttackingNearestEnemy";
+import { PickingEnergy } from "../creep/activity/PickingEnergy";
+import { RepairingWalls } from "../creep/activity/RepairingWalls";
+import { RepairingRoads } from "../creep/activity/RepairingRoads";
+import { RepairingStructures } from "../creep/activity/RepairingStructures";
+import { SupplyingStorage } from "../creep/activity/SupplyingStorage";
 
-import { SilentEmptyActivity } from "../lib/creep/activity/SilentEmptyActivity";
-import { EmptyActivity } from "../lib/creep/activity/EmptyActivity";
+import { SilentEmptyActivity } from "../../lib/creep/activity/SilentEmptyActivity";
+import { EmptyActivity } from "../../lib/creep/activity/EmptyActivity";
 
 export class ActivityRegistration {
     public static register(): void {

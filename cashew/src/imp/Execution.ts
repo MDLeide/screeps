@@ -1,22 +1,16 @@
 import { Empire } from "../lib/empire/Empire"
-
 import { StandardNestMapBuilder } from "./map/StandardNestMapBuilder";
-
 import { Extender } from "./extend/Extender";
 import { MemoryManager } from "../lib/memory/Manager";
-
-import { RoleRegistration } from "./RoleRegistration";
-import { ActivityRegistration } from "./ActivityRegistration";
-import { ColonyPlanRegistration } from "./ColonyPlanRegistration";
-import { OperationRegistration } from "./OperationRegistration";
-import { BodyRegistration } from "./BodyRegistration";
-
-//import { TowerController } from "./tower/TowerController";
-
+import { RoleRegistration } from "./registration/RoleRegistration";
+import { ActivityRegistration } from "./registration/ActivityRegistration";
+import { ColonyPlanRegistration } from "./registration/ColonyPlanRegistration";
+import { OperationRegistration } from "./registration/OperationRegistration";
 // debug
 import { Playback } from "../lib/debug/Playback";
 import { Cleaner } from "../lib/debug/Cleaner";
 import { Logger } from "../lib/debug/Logger";
+import { Reporter } from "../lib/debug/Reporter";
 
 export class Execute {
     private empire: Empire;
@@ -25,12 +19,11 @@ export class Execute {
         console.log("<span style='color:green'>Execution initializing...</span>");
 
         this.debug();
-        if (!Playback.init())
-            return;                
+
+        Extender.extend();
         MemoryManager.checkInit();
-        Extender.extend();        
-        this.registrations();
-        this.empire = new Empire(StandardNestMapBuilder.getBuilder());
+
+        this.registrations();        
     }
 
     private debug(): void {
@@ -40,6 +33,8 @@ export class Execute {
             global.logger = new Logger();
         if (!global.pause)
             global.pause = function () { Playback.pause(); }
+
+
         Playback.update();
     }
 
@@ -48,19 +43,21 @@ export class Execute {
         ActivityRegistration.register();
         ColonyPlanRegistration.register();
         OperationRegistration.register();
-        BodyRegistration.register();
     }
 
     public main(): void {
         Playback.update();
         if (!Playback.loop())
             return;
-        
-        try {
+
+        this.empire = new Empire(StandardNestMapBuilder.getBuilder());
+        global.reports = new Reporter(this.empire);
+
+        try {            
             this.empire.load();
             this.empire.update();
             this.empire.execute();
-            this.empire.cleanup();
+            this.empire.cleanup();            
             Memory.empire = this.empire.save();
         } catch (e) {
             if (Playback.pauseOnException)

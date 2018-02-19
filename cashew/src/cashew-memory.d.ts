@@ -55,7 +55,7 @@ declare global {
         initialized: boolean;
         started: boolean;
         finished: boolean;
-        assignedCreeps: string[];
+        assignments: AssignmentMemory[];
     }
 
     interface OperationGroupMemory {
@@ -63,6 +63,12 @@ declare global {
         initializedOperations: OperationMemory[];
         startedOperations: OperationMemory[];
         completedOperationNames: string[];
+    }
+
+    interface AssignmentMemory {
+        creepName: string;
+        body: BodyMemory;
+        roleId: string;
     }
 
     /** END OPERATIONS **/
@@ -105,12 +111,13 @@ declare global {
     }
     
     /** END MAPS **/
-    
-    interface SpawnDefinitionMemory {
-        id: string;
-        name: string;
-        roleId: string;
-        minEnergy: number;
-        maxEnergy: number;
+
+    interface BodyMemory {
+        name: string,
+        minimumEnergy: number,
+        constantParts: BodyPartConstant[],
+        scalingParts: BodyPartConstant[],
+        maxCompleteScaling: number,
+        completeScalingPartsOnly: boolean
     }
 }

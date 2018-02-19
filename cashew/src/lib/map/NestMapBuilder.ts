@@ -23,7 +23,7 @@ export class NestMapBuilder {
 
     public getMap(room: Room): NestMap {        
         var map = this.makeBaseMap(room);
-
+               
         var controllerBlock = this.getControllerBlock(room, map);
         this.addMapBlock(map, controllerBlock);
 
@@ -31,11 +31,14 @@ export class NestMapBuilder {
         for (var i = 0; i < harvestBlocks.length; i++)
             this.addMapBlock(map, harvestBlocks[i]);
 
+        var extensionBlock = this.getExtensionBlock(room, map);
+        this.addMapBlock(map, extensionBlock);
+
         var mainBlock = this.getMainBlock(room, map);
         this.addMapBlock(map, mainBlock);
 
-        var extensionBlock = this.getExtensionBlock(room, map);
-        this.addMapBlock(map, extensionBlock);
+        var labBlock = this.getLabBlock(room, map);
+        this.addMapBlock(map, labBlock);
 
         return new NestMap(
             map,
@@ -43,7 +46,7 @@ export class NestMapBuilder {
             extensionBlock,
             mainBlock,
             controllerBlock,
-            null);
+            labBlock);
     }
 
     private makeBaseMap(room: Room): Map {
@@ -110,6 +113,26 @@ export class NestMapBuilder {
             }
         }
         return true;
+    }
+
+    private getLabBlock(room: Room, map: Map): LabBlock {
+        var block: LabBlock = this.labProvider.getNext();;
+        while (block) {
+            var w = Math.floor(block.width / 2);
+            var h = Math.floor(block.height / 2);
+
+            for (var i = 0; i < 500; i++) {
+                var offset = this.ulamSpiral(i);
+                block.offset.x = 25 - w + offset.x;
+                block.offset.y = 25 - h + offset.y;
+                if (this.blockFits(block, map)) {
+                    this.labProvider.reset();
+                    return block;
+                }
+            }
+            block = this.labProvider.getNext();
+        }
+        return null;
     }
 
     private getMainBlock(room: Room, map: Map): MainBlock {

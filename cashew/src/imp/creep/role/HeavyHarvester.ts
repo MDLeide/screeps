@@ -189,12 +189,10 @@ export class HeavyHarvester extends Role {
     }
 
     private harvestEnergy(): void {
-        var hResult = this.creep.harvest(this.source);
-        if (hResult == ERR_NOT_IN_RANGE) {
-            this.creep.moveTo(this.source);
-            return; 
-        } else {
-            this.creep.transfer(this.container, RESOURCE_ENERGY);
+        if (this.container.pos.x != this.creep.pos.x || this.container.pos.y != this.creep.pos.y) {
+            this.creep.moveTo(this.container);
         }
+
+        var hResult = this.creep.harvest(this.source);        
     }    
 }

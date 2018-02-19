@@ -35,6 +35,7 @@ export class OperationGroup {
     public startedOperations: Operation[];
     public completedOperationNames: string[];
 
+
     public load(): void {
         for (var i = 0; i < this.newOperations.length; i++)
             this.newOperations[i].load();
@@ -50,9 +51,15 @@ export class OperationGroup {
         // once an operation has moved to the next phase, we will remove
         // it from the previous array
 
-        for (var i = 0; i < this.newOperations.length; i++) {
+        for (var i = 0; i < this.newOperations.length; i++)
             this.newOperations[i].update(colony);
-        }
+
+        for (var i = 0; i < this.initializedOperations.length; i++)
+            this.initializedOperations[i].update(colony);
+
+        for (var i = 0; i < this.startedOperations.length; i++)
+            this.startedOperations[i].update(colony);
+
 
         var toRemove: number[] = [];
         for (var i = 0; i < this.newOperations.length; i++) {
@@ -64,12 +71,12 @@ export class OperationGroup {
                 }
             }
         }
-
-        for (var i = toRemove.length - 1; i >= 0; i++) 
+        
+        for (var i = toRemove.length - 1; i >= 0; i--) 
             this.newOperations.splice(toRemove[i], 1)
 
         toRemove = [];
-
+        
         for (var i = 0; i < this.initializedOperations.length; i++) {
             var op = this.initializedOperations[i];
             if (op.canStart(colony)) {
@@ -80,8 +87,8 @@ export class OperationGroup {
             }
         }
 
-        for (var i = toRemove.length - 1; i >= 0; i++)
-            this.initializedOperations.splice(toRemove[i], 1)        
+        for (var i = toRemove.length - 1; i >= 0; i--)
+            this.initializedOperations.splice(toRemove[i], 1)
     }
 
     public execute(colony: Colony): void {
@@ -117,7 +124,7 @@ export class OperationGroup {
             }
         }
 
-        for (var i = toRemove.length - 1; i >= 0; i++)
+        for (var i = toRemove.length - 1; i >= 0; i--)
             this.startedOperations.splice(toRemove[i], 1)
     }
 
@@ -142,19 +149,16 @@ export class OperationGroup {
         };
     }
 
+
      /** Spawns creeps required for an operation. */
     private spawnCreepsForOperation(op: Operation, colony: Colony) {
-        var req = op.getRemainingCreepSpawnRequirements(colony);
-        if (req.length < 1)
-            return;
-                
-        for (var i = 0; i < req.length; i++) {
-            if (!colony.canSpawn(req[i]))
-                break;
-
-            var response = colony.spawnCreep(req[i]);
-            if (response) 
-                op.assignCreep(response.name);            
+        var openAssignments = op.getUnfilledAssignments(colony);
+        for (var i = 0; i < openAssignments.length; i++) {
+            if (!colony.canSpawn(openAssignments[i].body))
+                continue;
+            var response = colony.spawnCreep(openAssignments[i].body);
+            if (response)
+                op.assignCreep({ name: response.name, bodyName: openAssignments[i].body.name });
         }
     }
 }

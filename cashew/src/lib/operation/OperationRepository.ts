@@ -9,5 +9,5 @@ export class OperationRepository {
         return this.delegates[memory.name](memory);
     }
 
-    private static delegates: { [operationName: string]: (memory: any) => Operation };
+    private static delegates: { [operationName: string]: (memory: any) => Operation } = {};
 }

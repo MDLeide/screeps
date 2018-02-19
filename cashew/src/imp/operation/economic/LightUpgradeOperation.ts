@@ -1,23 +1,32 @@
-import { Colony } from "../../../../lib/colony/Colony";
-import { Operation } from "../../../../lib/operation/Operation";
-import { SpawnDefinition } from "../../../../lib/spawn/SpawnDefinition";
+import { Colony } from "../../../lib/colony/Colony";
+import { Operation } from "../../../lib/operation/Operation";
+import { Assignment } from "../../../lib/operation/Assignment";
+import { BodyRepository } from "../../spawn/BodyRepository";
 
 export class LightUpgradeOperation extends Operation {
-    public static fromMemory(memory: OperationMemory): LightUpgradeOperation {
+    public static fromMemory(memory: OperationMemory): Operation {
         var op = new this();
-        return Operation.fromMemory(op, memory);
+        return Operation.fromMemory(memory, op);
     }
 
     constructor() {
-        super("lightUpgrade");        
+        super("lightUpgrade", LightUpgradeOperation.getAssignments());        
     }
+
+    private static getAssignments(): Assignment[] {
+        return [
+            new Assignment("", BodyRepository.getBody("lightWorker"), "lightUpgrader"),
+            new Assignment("", BodyRepository.getBody("lightWorker"), "lightUpgrader")
+        ]
+    }
+    
 
     public canInit(colony: Colony): boolean {
         return true;
     }
 
     public canStart(colony: Colony): boolean {
-        return this.assignedCreeps.length >= 1;
+        return this.getFilledAssignmentCount() >= 1;
     }
 
     public isFinished(colony: Colony): boolean {
@@ -48,12 +57,6 @@ export class LightUpgradeOperation extends Operation {
     }
 
     protected onCleanup(colony: Colony): void {
-    }
-
-    protected onGetCreepRequirement(colony: Colony): SpawnDefinition[] {
-        var def1 = new SpawnDefinition("lightUpgrader", "lightUpgrader", 250, 300);
-        var def2 = new SpawnDefinition("lightUpgrader", "lightUpgrader", 250, 300);
-        return [def1, def2];
     }
 
     protected onSave(): OperationMemory {

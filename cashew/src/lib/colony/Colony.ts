@@ -2,12 +2,9 @@ import { ColonyPlan } from "./ColonyPlan";
 import { ColonyPlanRepository } from "./ColonyPlanRepository";
 import { Nest } from "./Nest";
 import { Population } from "./Population";
-
 import { MapBlock } from "../map/base/MapBlock";
-
 import { Spawner } from "../spawn/Spawner";
-import { SpawnDefinition } from "../spawn/SpawnDefinition";
-
+import { Body } from "../spawn/Body";
 import { Empire } from "../empire/Empire";
 
 
@@ -35,13 +32,13 @@ export class Colony  {
 
     //## update loop
 
-    public load(): void {
+    public load(): void {        
         this.nest.load();
     }
 
-    public update(): void {
-        this.population.update();
-        this.plan.update(this);
+    public update(): void {        
+        this.population.update();        
+        this.plan.update(this);        
         this.nest.update();
     }
 
@@ -65,12 +62,12 @@ export class Colony  {
 
     //## end update loop
 
-    public canSpawn(spawnDefinition: SpawnDefinition): boolean {
-        return this.nest.canSpawn(spawnDefinition)
+    public canSpawn(body: Body): boolean {
+        return this.nest.canSpawn(body)
     }
 
     /** Returns the Spawner used if successful, otherwise null */
-    public spawnCreep(spawnDefinition: SpawnDefinition): {name: string, spawner: Spawner} | null {
-        return this.nest.spawnCreep(spawnDefinition);
+    public spawnCreep(body: Body): {name: string, spawner: Spawner} | null {
+        return this.nest.spawnCreep(body);
     }
 }

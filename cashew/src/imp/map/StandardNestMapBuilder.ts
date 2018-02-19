@@ -5,6 +5,7 @@ import { ControllerBlockProvider } from "./ControllerBlockProvider";
 import { ExtensionBlockProvider } from "./ExtensionBlockProvider";
 import { HarvestBlockProvider } from "./HarvestBlockProvider";
 import { MainBlockProvider } from "./MainBlockProvider";
+import { LabBlockProvider } from "./LabBlockProvider";
 
 export class StandardNestMapBuilder {
     public static getBuilder(): NestMapBuilder {
@@ -13,7 +14,7 @@ export class StandardNestMapBuilder {
             new ExtensionBlockProvider(),
             new MainBlockProvider(),
             new ControllerBlockProvider(),
-            null);
+            new LabBlockProvider());
         return builder;
     }
 }

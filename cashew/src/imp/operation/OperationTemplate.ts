@@ -1,19 +1,25 @@
-import { Colony } from "../../../../lib/colony/Colony";
-import { Operation } from "../../../../lib/operation/Operation";
-import { SpawnDefinition } from "../../../../lib/spawn/SpawnDefinition";
+import { Colony } from "../../lib/colony/Colony";
+import { Operation } from "../../lib/operation/Operation";
+import { Assignment } from "../../lib/operation/Assignment";
+import { BodyRepository } from "../spawn/BodyRepository";
 
 export class OperationTemplate extends Operation {
     constructor() {
-        super("opName");        
+        super("opName", OperationTemplate.getAssignments());        
     }
 
+    private static getAssignments(): Assignment[] {
+        return [
+
+        ];
+    }
 
     public canInit(colony: Colony): boolean {
         return true;
     }
 
     public canStart(colony: Colony): boolean {
-        return this.assignedCreeps.length >= 1;
+        return this.getFilledAssignmentCount() >= 1;
     }
 
     public isFinished(colony: Colony): boolean {
@@ -45,12 +51,7 @@ export class OperationTemplate extends Operation {
 
     protected onCleanup(colony: Colony): void {
     }
-
-    protected onGetCreepRequirement(colony: Colony): SpawnDefinition[] {            
-        var def = new SpawnDefinition("lightMiner", "lightMiner", 250, 300);
-        return [def];
-    }
-
+    
     protected onSave(): OperationMemory {
         return null;
     }

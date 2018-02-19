@@ -1,15 +1,15 @@
-import { RoleRepo } from "../lib/creep/role/RoleRepo";
+import { RoleRepo } from "../../lib/creep/role/RoleRepo";
 
-import { HeavyHarvester } from "./creep/role/HeavyHarvester";
-import { LightUpgrader } from "./creep/role/LightUpgrader";
-import { HeavyUpgrader } from "./creep/role/HeavyUpgrader";
-import { LightMiner } from "./creep/role/LightMiner";
-import { Transporter } from "./creep/role/Transporter";
-import { Builder } from "./creep/role/Builder";
-import { Waller } from "./creep/role/Waller";
-import { Warrior } from "./creep/role/Warrior";
-import { Cobbler } from "./creep/role/Cobbler";
-import { Cleaner } from "./creep/role/Cleaner";
+import { HeavyHarvester } from "../creep/role/HeavyHarvester";
+import { LightUpgrader } from "../creep/role/LightUpgrader";
+import { HeavyUpgrader } from "../creep/role/HeavyUpgrader";
+import { LightMiner } from "../creep/role/LightMiner";
+import { Transporter } from "../creep/role/Transporter";
+import { Builder } from "../creep/role/Builder";
+import { Waller } from "../creep/role/Waller";
+import { Warrior } from "../creep/role/Warrior";
+import { Cobbler } from "../creep/role/Cobbler";
+import { Cleaner } from "../creep/role/Cleaner";
 
 export class RoleRegistration {
     public static register(): void {

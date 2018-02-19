@@ -33,7 +33,7 @@ export class NestMap {
     }
 
     public save(): NestMapMemory {
-        var harvestBlocks: MapBlockMemory[];
+        var harvestBlocks: MapBlockMemory[] = [];
         for (var i = 0; i < this.harvestBlocks.length; i++) 
             harvestBlocks.push(this.harvestBlocks[i].save());
 

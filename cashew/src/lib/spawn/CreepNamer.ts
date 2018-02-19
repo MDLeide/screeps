@@ -1,10 +1,19 @@
-import { Spawner } from "../spawn/Spawner";
-import { SpawnDefinition } from "../spawn/SpawnDefinition";
+import { Spawner } from "./Spawner";
+import { Body } from "./Body";
 
 export class CreepNamer {
-    public static getCreepName(spawnDef: SpawnDefinition, spawner: Spawner): string {
+    public static setCustomNamingMethod(delegate: (body: Body, spawner: Spawner) => string) {
+        this.delegate = delegate;
+    }
+
+    public static getCreepName(body: Body, spawner: Spawner): string {
+        if (this.delegate)
+            return this.delegate(body, spawner);
+
         var timeString = Game.time.toString();
         var time = timeString.slice(timeString.length - 4);
-        return spawnDef.roleId + "-" + spawner.spawn.name + "-" + time;
+        return body.name + "-" + spawner.spawn.name + "-" + time;
     }
+
+    private static delegate: (body: Body, spawner: Spawner) => string;
 }

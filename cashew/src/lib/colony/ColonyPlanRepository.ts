@@ -15,6 +15,6 @@ export class ColonyPlanRepository {
         return this.newDelegates[planName]();
     }
 
-    private static loadDelegates: { [planName: string]: (memory: any) => ColonyPlan };
-    private static newDelegates: { [planName: string]: () => ColonyPlan };
+    private static loadDelegates: { [planName: string]: (memory: any) => ColonyPlan } = {};
+    private static newDelegates: { [planName: string]: () => ColonyPlan } = {};
 }

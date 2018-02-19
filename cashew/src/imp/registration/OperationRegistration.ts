@@ -1,9 +1,9 @@
-import { OperationRepository } from "../lib/operation/OperationRepository";
+import { OperationRepository } from "../../lib/operation/OperationRepository";
 
-import { ExtensionsRcl2Operation } from "./colony/operations/economy/ExtensionsRcl2Operation";
-import { HarvestInfrastructureOperation } from "./colony/operations/economy/HarvestInfrastructureOperation";
-import { HarvestOperation } from "./colony/operations/economy/HarvestOperation";
-import { LightUpgradeOperation } from "./colony/operations/economy/LightUpgradeOperation";
+import { ExtensionsRcl2Operation } from "../operation/economic/ExtensionsRcl2Operation";
+import { HarvestInfrastructureOperation } from "../operation/economic/HarvestInfrastructureOperation";
+import { HarvestOperation } from "../operation/economic/HarvestOperation";
+import { LightUpgradeOperation } from "../operation/economic/LightUpgradeOperation";
 
 export class OperationRegistration {
     public static register() {

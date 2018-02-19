@@ -1,7 +1,7 @@
-import { HarvestInfrastructureOperation } from "../operations/economy/HarvestInfrastructureOperation";
-import { HarvestOperation } from "../operations/economy/HarvestOperation";
-import { LightUpgradeOperation } from "../operations/economy/LightUpgradeOperation";
-import { ExtensionsRcl2Operation } from "../operations/economy/ExtensionsRcl2Operation";
+import { HarvestInfrastructureOperation } from "../../operation/economic/HarvestInfrastructureOperation";
+import { HarvestOperation } from "../../operation/economic/HarvestOperation";
+import { LightUpgradeOperation } from "../../operation/economic/LightUpgradeOperation";
+import { ExtensionsRcl2Operation } from "../../operation/economic/ExtensionsRcl2Operation";
 
 import { Colony } from "../../../lib/colony/Colony";
 import { ColonyPlan } from "../../../lib/colony/ColonyPlan";

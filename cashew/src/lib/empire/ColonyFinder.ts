@@ -13,23 +13,25 @@ export class ColonyFinder {
     /** Finds new colonies and adds them to the empire. */
     public static createNewColonies(empire: Empire, nestMapBuilder: NestMapBuilder): void {
         for (var key in Game.spawns) {
-            if (this.needsColonyBuilt(Game.spawns[key]))
-                empire.addColony(this.buildColony(Game.spawns[key].room, nestMapBuilder));
+            var colony = this.buildColony(empire, Game.spawns[key].room, nestMapBuilder);
+            if (colony)
+                empire.addColony(colony);
         }
     }
 
-    private static needsColonyBuilt(spawn: StructureSpawn): boolean {
-        if (Memory.empire.colonies[spawn.room.name])
-            return false;
-        return true;
-    }
-
-    private static buildColony(room: Room, nestMapBuilder: NestMapBuilder) : Colony {
+    private static buildColony(empire: Empire, room: Room, nestMapBuilder: NestMapBuilder): Colony {        
         var flag = this.findFlag(room);
         var colonyName = this.getColonyName(room, flag);
+
+        if (!this.needsColonyBuilt(empire, colonyName))
+            return null;
+
+        console.log(flag);
         var planName = this.getPlanName(flag);
-        if (!flag) //todo: follow up on created flags and add memory
+        if (!flag) {//todo: follow up on created flags and add memory        
             var result = room.createFlag(25, 25, colonyName, ColonyFinder.flagMainColor, ColonyFinder.flagSecondaryColor);
+            console.log("Flag Result: " + result);
+        }
 
         var nestMap = nestMapBuilder.getMap(room);
         var nest = new Nest(room.name, nestMap);
@@ -38,10 +40,17 @@ export class ColonyFinder {
         return colony;
     }
 
+    private static needsColonyBuilt(empire: Empire, colonyName: string): boolean {
+        for (var i = 0; i < empire.colonies.length; i++)
+            if (empire.colonies[i].name == colonyName)
+                return false;
+        return true;
+    }
+
     private static findFlag(room: Room): Flag {
         var flags = room.find(FIND_FLAGS);
         for (var i = 0; i < flags.length; i++)
-            if (flags[i].color == ColonyFinder.flagMainColor && flags[i].color == ColonyFinder.flagSecondaryColor)
+            if (flags[i].color == ColonyFinder.flagMainColor && flags[i].secondaryColor == ColonyFinder.flagSecondaryColor)
                 return flags[i];
         return null;
     }

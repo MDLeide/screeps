@@ -1,9 +1,9 @@
 import { Empire } from "../empire/Empire";
 import { Colony } from "./Colony";
 import { NestMap } from "../map/NestMap";
-
 import { Spawner } from "../spawn/Spawner";
-import { SpawnDefinition } from "../spawn/SpawnDefinition";
+import { Body } from "../spawn/Body";
+
 
 export class Nest {
     public static fromMemory(memory: NestMemory): Nest {        
@@ -12,7 +12,9 @@ export class Nest {
 
     constructor(roomName: string, nestMap: NestMap) {
         this.roomName = roomName;
-                        
+        this.room = Game.rooms[roomName];
+        this.nestMap = nestMap;
+
         this.spawners = [];
         var spawns = this.room.nut.seed.findMySpawns();
         for (var i = 0; i < spawns.length; i++) {
@@ -20,25 +22,26 @@ export class Nest {
         }
     }
 
+
     public spawners: Spawner[];    
     public nestMap: NestMap;
     public roomName: string;    
     public room: Room;
     
 
-    public canSpawn(spawnDefinition: SpawnDefinition): boolean {
+    public canSpawn(body: Body): boolean {
         for (var i = 0; i < this.spawners.length; i++) {
-            if (this.spawners[i].canSpawn(spawnDefinition))
+            if (this.spawners[i].canSpawn(body))
                 return true;
         }
         return false;
     }
 
     /** Returns the name and spawner used if successful, otherwise null */
-    public spawnCreep(spawnDefinition: SpawnDefinition): { name: string, spawner: Spawner }  | null {
+    public spawnCreep(body: Body): { name: string, spawner: Spawner }  | null {
         for (var i = 0; i < this.spawners.length; i++) {
-            if (this.spawners[i].canSpawn(spawnDefinition)) {
-                var name = this.spawners[i].spawnCreep(spawnDefinition); 
+            if (this.spawners[i].canSpawn(body)) {
+                var name = this.spawners[i].spawnCreep(body); 
                 if (name) 
                     return { name: name, spawner: this.spawners[i] };
             }
@@ -47,8 +50,8 @@ export class Nest {
     }
     
 
-    public load(): void {
-        this.room = Game.getObjectById<Room>(this.roomName);
+    public load(): void {        
+        this.room = Game.rooms[this.roomName];
         for (var i = 0; i < this.spawners.length; i++) {
             this.spawners[i].load();
         }
