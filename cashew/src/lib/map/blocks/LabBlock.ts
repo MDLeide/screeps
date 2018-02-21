@@ -8,6 +8,9 @@ export class LabBlock extends MapBlock {
         block.structures = Layer.fromMemory(memory.structures);
         block.ramparts = Layer.fromMemory(memory.ramparts);
         block.special = Layer.fromMemory(memory.special);
+        block.height = memory.height;
+        block.width = memory.width;
+        block.offset = { x: memory.offset.x, y: memory.offset.y };
         return block;
     }
 

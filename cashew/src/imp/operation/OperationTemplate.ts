@@ -4,6 +4,11 @@ import { Assignment } from "../../lib/operation/Assignment";
 import { BodyRepository } from "../spawn/BodyRepository";
 
 export class OperationTemplate extends Operation {
+    public static fromMemory(memory: OperationMemory): Operation {
+        var op = new this();
+        return Operation.fromMemory(memory, op);
+    }
+
     constructor() {
         super("opName", OperationTemplate.getAssignments());        
     }

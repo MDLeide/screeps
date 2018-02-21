@@ -68,6 +68,9 @@ export class Colony  {
 
     /** Returns the Spawner used if successful, otherwise null */
     public spawnCreep(body: Body): {name: string, spawner: Spawner} | null {
-        return this.nest.spawnCreep(body);
+        var result = this.nest.spawnCreep(body);
+        if (result)
+            global.events.colony.creepSpawning(this.name, result.name, body.name);
+        return result;
     }
 }

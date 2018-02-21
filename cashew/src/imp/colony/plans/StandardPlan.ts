@@ -1,7 +1,13 @@
 import { HarvestInfrastructureOperation } from "../../operation/economic/HarvestInfrastructureOperation";
 import { HarvestOperation } from "../../operation/economic/HarvestOperation";
 import { LightUpgradeOperation } from "../../operation/economic/LightUpgradeOperation";
-import { ExtensionsRcl2Operation } from "../../operation/economic/ExtensionsRcl2Operation";
+import { ExtensionsOperation } from "../../operation/economic/ExtensionsOperation";
+import { BasicMaintenanceOperation } from "../../operation/economic/BasicMaintenanceOperation";
+import { ControllerInfrastructureOperation } from "../../operation/economic/ControllerInfrastructureOperation";
+import { EnergyTransportOperation } from "../../operation/economic/EnergyTransportOperation";
+import { HeavyUpgradeOperation } from "../../operation/economic/HeavyUpgradeOperation";
+import { StorageConstructionOperation } from "../../operation/economic/StorageConstructionOperation";
+import { TowerConstructionOperation } from "../../operation/economic/TowerConstructionOperation";
 
 import { Colony } from "../../../lib/colony/Colony";
 import { ColonyPlan } from "../../../lib/colonyPlan/ColonyPlan";
@@ -153,7 +159,8 @@ export class StandardPlan {
         var ops: Operation[] = [];
         var sources = colony.nest.room.nut.seed.findSources();
         for (var i = 0; i < sources.length; i++) {
-            var op = new HarvestInfrastructureOperation(sources[i].id);            
+            var op = new HarvestInfrastructureOperation(sources[i].id);
+            op.cancelMilestoneId = "harvestContainers";
             ops.push(op);
         }
         return ops;
@@ -162,25 +169,43 @@ export class StandardPlan {
     private static harvestContainersOperations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
         var sources = colony.nest.room.nut.seed.findSources();
-        for (var i = 0; i < sources.length; i++) {
-            var op = new HarvestOperation(300);            
-            ops.push(op);
+        
+        var harvestOp = new HarvestOperation(300);
+        harvestOp.cancelMilestoneId = "firstLinks"
+        ops.push(harvestOp);
+
+        if (sources.length > 1) {
+            var secondHarvestOp = new HarvestOperation(300);
+            ops.push(secondHarvestOp);
         }
-        ops.push(new LightUpgradeOperation());
+        
+        var maintainOp = new BasicMaintenanceOperation(); // continue forever for now
+        ops.push(maintainOp);
+
+        var upgradeOp = new LightUpgradeOperation();
+        upgradeOp.cancelMilestoneId = "upgradeContainer";
+        ops.push(upgradeOp);
+
         return ops;
     }
 
     private static rcl2Operations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
-        var ext = new ExtensionsRcl2Operation();
-        var upg = new LightUpgradeOperation();
+
+        var ext = new ExtensionsOperation(2);
+        ext.cancelMilestoneId = "fiveExtensions";
         ops.push(ext);
-        ops.push(upg);
+        
         return ops;
     }
 
     private static fiveExtensionsOperations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
+
+        var controller = new ControllerInfrastructureOperation();
+        ops.push(controller);
+        var transport = new EnergyTransportOperation();
+        ops.push(transport);
 
         return ops;
     }
@@ -188,11 +213,17 @@ export class StandardPlan {
     private static upgradeContainerOperations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
 
+        var upgrade = new HeavyUpgradeOperation();
+        ops.push(upgrade);
+
         return ops;
     }
 
     private static rcl3Operations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
+
+        var tower = new TowerConstructionOperation(3);
+        ops.push(tower);
 
         return ops;
     }
@@ -200,11 +231,17 @@ export class StandardPlan {
     private static firstTowerOperations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
 
+        var extensions = new ExtensionsOperation(3);
+        ops.push(extensions);
+
         return ops;
     }
 
     private static rcl4Operations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
+
+        var storage = new StorageConstructionOperation();
+        ops.push(storage);
 
         return ops;
     }
@@ -212,11 +249,17 @@ export class StandardPlan {
     private static storageOperations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
 
+        var extensions = new ExtensionsOperation(4);
+        ops.push(extensions);
+
         return ops;
     }
 
     private static rcl5Operations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
+
+        var tower = new TowerConstructionOperation(5);
+        ops.push(tower);
 
         return ops;
     }

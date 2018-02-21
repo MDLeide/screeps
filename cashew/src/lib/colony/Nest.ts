@@ -23,7 +23,7 @@ export class Nest {
     }
 
 
-    public spawners: Spawner[];    
+    public spawners: Spawner[];
     public nestMap: NestMap;
     public roomName: string;    
     public room: Room;

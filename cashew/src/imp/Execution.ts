@@ -1,7 +1,9 @@
 import { Empire } from "../lib/empire/Empire"
+import { ColonyFinder } from "../lib/empire/ColonyFinder";
+import { MemoryManager } from "../lib/util/MemoryManager";
+import { NestMapBuilder } from "../lib/map/NestMapBuilder";
 import { StandardNestMapBuilder } from "./map/StandardNestMapBuilder";
 import { Extender } from "./extend/Extender";
-import { MemoryManager } from "../lib/memory/Manager";
 import { RoleRegistration } from "./registration/RoleRegistration";
 import { ActivityRegistration } from "./registration/ActivityRegistration";
 import { ColonyPlanRegistration } from "./registration/ColonyPlanRegistration";
@@ -11,58 +13,58 @@ import { Playback } from "../lib/debug/Playback";
 import { Cleaner } from "../lib/debug/Cleaner";
 import { Logger } from "../lib/debug/Logger";
 import { Reporter } from "../lib/debug/Reporter";
+import { EventLog } from "../lib/util/EventLog";
+import { Visuals } from "../lib/visual/Visuals";
+//import { StructureArtist } from "../lib/visual/StructureArtist";
 
-export class Execute {
-    private empire: Empire;
-    
+export class Execute {    
     public init(): void {        
         console.log("<span style='color:green'>Execution initializing...</span>");
 
-        this.debug();
+        global.cleaner = new Cleaner();
+        global.logger = new Logger();
+        global.visuals = new Visuals();
+        global.events = new EventLog();
+
+        global.pause = function () { Playback.pause(); }
+        global.reset = function () {
+            Playback.pause();
+            global.cleaner.cleanAll();
+        }    
 
         Extender.extend();
         MemoryManager.checkInit();
 
-        this.registrations();        
-    }
-
-    private debug(): void {
-        if (!global.cleaner)
-            global.cleaner = new Cleaner();
-        if (!global.logger)
-            global.logger = new Logger();
-        if (!global.pause)
-            global.pause = function () { Playback.pause(); }
-
-
-        Playback.update();
-    }
-
-    private registrations(): void {
         RoleRegistration.register();
         ActivityRegistration.register();
         ColonyPlanRegistration.register();
         OperationRegistration.register();
     }
-
+    
     public main(): void {
         Playback.update();
         if (!Playback.loop())
             return;
 
-        this.empire = new Empire(StandardNestMapBuilder.getBuilder());
-        global.reports = new Reporter(this.empire);
+        var empire = new Empire();
+        var nestMapBuilder = StandardNestMapBuilder.getBuilder();
+
+        ColonyFinder.createNewColonies(empire, nestMapBuilder);
+        Playback.placeFlag(empire.colonies[0].nest.roomName);
+        
+        global.reports = new Reporter(empire);
+        global.visuals.update(empire);
 
         try {            
-            this.empire.load();
-            this.empire.update();
-            this.empire.execute();
-            this.empire.cleanup();            
-            Memory.empire = this.empire.save();
+            empire.load();
+            empire.update();            
+            empire.execute();
+            empire.cleanup();            
+            Memory.empire = empire.save();
         } catch (e) {
             if (Playback.pauseOnException)
                 Playback.pause();            
             throw e;
-        }        
+        }
     }
 }

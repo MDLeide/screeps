@@ -11,6 +11,7 @@ export abstract class Operation {
         instance.started = memory.started;
         instance.finished = memory.finished;
         instance.assignments = [];
+        instance.cancelMilestoneId = memory.cancelMilestoneId;
         for (var i = 0; i < memory.assignments.length; i++) 
             instance.assignments.push(Assignment.fromMemory(memory.assignments[i]));        
         return instance;
@@ -28,7 +29,8 @@ export abstract class Operation {
     public started: boolean;
     public finished: boolean;
     public assignments: Assignment[]; // filled if creep name is not blank
-    
+    // this really, really doesn't belong here, but it was way easier to implement like this
+    public cancelMilestoneId: string = "";
         
     public init(colony: Colony): boolean {
         if (this.initialized)
@@ -37,6 +39,11 @@ export abstract class Operation {
             return false;
 
         this.initialized = this.onInit(colony);
+        if (this.initialized)
+            global.events.operation.init(this.name);
+        else
+            global.events.operation.failedToInit(this.name);
+
         return this.initialized;
     }
     
@@ -47,11 +54,20 @@ export abstract class Operation {
             return false;
 
         this.started = this.onStart(colony);
+        if (this.started)
+            global.events.operation.start(this.name);
+        else
+            global.events.operation.failedToStart(this.name);
+
         return this.started;
     }
     
     public finish(colony: Colony): void {
-        this.onFinish(colony);
+        this.finished = this.onFinish(colony);
+        if (this.finished)
+            global.events.operation.finish(this.name);
+        else
+            global.events.operation.failedToFinish(this.name);
     }
 
 
@@ -60,9 +76,11 @@ export abstract class Operation {
             if (this.assignments[i].creepName == "" && this.assignments[i].body.name == creep.bodyName) {
                 this.assignments[i].creepName = creep.name;
                 Memory.creeps[creep.name].roleId = this.assignments[i].roleId;
+                global.events.operation.creepAssigned(this.name, creep.name, creep.bodyName, this.assignments[i].roleId);
                 return;
             }
         }
+        global.events.operation.creepAssignmentFailed(this.name, creep.name, creep.bodyName);
     }
     
     public removeCreep(creepName: string) {
@@ -132,6 +150,7 @@ export abstract class Operation {
                 initialized: this.initialized,
                 started: this.started,
                 finished: this.finished,
+                cancelMilestoneId: this.cancelMilestoneId,
                 assignments: assignmentMemory
             };
         }
@@ -139,7 +158,7 @@ export abstract class Operation {
     }
 
     //**                    **//
-    //** End Update Loop    **//
+    //** Helpers            **//
     //**                    **//
 
     /** Ensures we don't have any dead creeps assigned to the operation. */

@@ -6,6 +6,7 @@ declare global {
         controllers: { [controllerId: string]: ControllerMemory };
         sources: { [sourceId: string]: SourceMemory };
 
+        visuals: VisualsMemory;
         empire: EmpireMemory;
     }
 }

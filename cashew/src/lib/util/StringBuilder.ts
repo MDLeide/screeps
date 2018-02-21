@@ -3,12 +3,14 @@ export class StringBuilder {
 
     public defaultColor: string = "grey";
 
-    public append(str: string, color: string = this.defaultColor): void {
-        this.str += `<span style='color:${color}'>${str}</span>`;
+    public append(str: string, color: string = this.defaultColor): StringBuilder {
+        this.str += `<font color='${color}'>${str}</font>`;
+        return this;
     }
     
-    public appendLine(str: string, color: string = this.defaultColor): void {
-        this.str += `<span style='color:${color}'>${str}</span></br>`;
+    public appendLine(str: string, color: string = this.defaultColor): StringBuilder {
+        this.str += `<font color='${color}'>${str}</font></br>`;
+        return this;
     }
 
     public getString(): string {

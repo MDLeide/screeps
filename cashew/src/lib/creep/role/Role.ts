@@ -14,7 +14,7 @@ export abstract class Role {
     constructor(creep: Creep, roleId: string, state?: IRoleState ) {
         this.state = state ? state : new RoleState();        
         this._creep = creep;
-        this.state.creepId = creep.id;        
+        this.state.creepId = creep.id;
         this.state.id = roleId;
     }
 
@@ -77,7 +77,7 @@ export abstract class Role {
             executeAgain = this.postActivityExecution(activityResponse);
 
             if (activityResponse.result == ActivityResult.ERROR) {
-                this.printError(activityResponse);
+                //this.printError(activityResponse);
 
                 if (activityResponse.status == ActivityStatus.NO_VALID_TARGETS) {
                     this.setActivity(this.nextActivity());

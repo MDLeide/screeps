@@ -6,7 +6,7 @@ export class MapBlock {
         return new this(
             memory.height,
             memory.width,
-            memory.offset,
+            { x: memory.offset.x, y: memory.offset.y },
             Layer.fromMemory(memory.roads),
             Layer.fromMemory(memory.structures),
             Layer.fromMemory(memory.ramparts),
@@ -63,7 +63,7 @@ export class MapBlock {
         return {
             height: this.height,
             width: this.width,
-            offset: this.offset,
+            offset: { x: this.offset.x, y: this.offset.y },
             roads: this.roads.save(),
             structures: this.structures.save(),
             ramparts: this.ramparts.save(),

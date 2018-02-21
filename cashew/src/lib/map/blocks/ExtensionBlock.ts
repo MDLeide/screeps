@@ -12,6 +12,9 @@ export class ExtensionBlock extends MapBlock {
         block.structures = Layer.fromMemory(memory.structures);
         block.ramparts = Layer.fromMemory(memory.ramparts);
         block.special = Layer.fromMemory(memory.special);
+        block.height = memory.height;
+        block.width = memory.width;
+        block.offset = { x: memory.offset.x, y: memory.offset.y };
         return block;
     }
 
@@ -43,7 +46,7 @@ export class ExtensionBlock extends MapBlock {
         for (var x = 0; x < this.width; x++)
             for (var y = 0; y < this.height; y++)
                 if (this.special.getAt(x, y) == rcl)
-                    results.push({ x: x, y: y });
+                    results.push({ x: x + this.offset.x, y: y + this.offset.y });
 
         return results;
     }

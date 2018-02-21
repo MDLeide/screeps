@@ -25,18 +25,19 @@ export class ColonyFinder {
 
         if (!this.needsColonyBuilt(empire, colonyName))
             return null;
-
-        console.log(flag);
+        
         var planName = this.getPlanName(flag);
         if (!flag) {//todo: follow up on created flags and add memory        
-            var result = room.createFlag(25, 25, colonyName, ColonyFinder.flagMainColor, ColonyFinder.flagSecondaryColor);
-            console.log("Flag Result: " + result);
+            var result = room.createFlag(25, 25, colonyName, ColonyFinder.flagMainColor, ColonyFinder.flagSecondaryColor);            
         }
 
         var nestMap = nestMapBuilder.getMap(room);
         var nest = new Nest(room.name, nestMap);
         var plan = ColonyPlanRepository.getNew(planName);
         var colony = new Colony(nest, colonyName, plan);
+
+        global.events.empire.colonyEstablished(colonyName);
+
         return colony;
     }
 

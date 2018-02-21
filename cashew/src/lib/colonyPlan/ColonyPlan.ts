@@ -18,7 +18,7 @@ export class ColonyPlan {
 
         var plan = new this(memory.name, memory.description, milestones, getOperations);
         plan._milestoneIndex = memory.milestoneIndex;
-        plan.currentOperationGroup = OperationGroup.fromMemory(memory.currentOperationGroup);
+        plan.operationGroup = OperationGroup.fromMemory(memory.operationGroup);
         return plan;
     }
 
@@ -34,34 +34,36 @@ export class ColonyPlan {
 
         this.milestones = milestones;        
         this._getOperations = getOperations;
+
+        this.operationGroup = new OperationGroup([]);
     }
 
 
     public name: string;
     public description: string;
     public milestones: Milestone[];
-    public currentOperationGroup: OperationGroup;
+    public operationGroup: OperationGroup;
     public get mostRecentMilestone(): Milestone { return this.milestones[this._milestoneIndex]; }        
     
     
     //## update loop
 
     public load(): void {
-        this.currentOperationGroup.load();
+        this.operationGroup.load();
     }
 
     /** Updates the plan, checks for a new milestone, updates all operations. */
     public update(colony: Colony): void {
         this.checkForNewMilestone(colony);
-        this.currentOperationGroup.update(colony);        
+        this.operationGroup.update(colony);        
     }
 
     public execute(colony: Colony): void {
-        this.currentOperationGroup.execute(colony);
+        this.operationGroup.execute(colony);
     }
 
     public cleanup(colony: Colony): void {
-        this.currentOperationGroup.cleanup(colony);
+        this.operationGroup.cleanup(colony);
     }
 
     public save(): ColonyPlanMemory {
@@ -69,7 +71,7 @@ export class ColonyPlan {
             name: this.name,
             description: this.description,
             milestoneIndex: this._milestoneIndex,
-            currentOperationGroup: this.currentOperationGroup.save()
+            operationGroup: this.operationGroup.save()
         };
     }
 
@@ -89,7 +91,12 @@ export class ColonyPlan {
     private advanceMilestone(colony: Colony) {
         this._milestoneIndex++;
 
+        global.events.colony.milestoneMet(colony.name, this.mostRecentMilestone.name);
+
         var newOperations = this._getOperations(colony, this.mostRecentMilestone);
-        this.currentOperationGroup = new OperationGroup(newOperations);
+        for (var i = 0; i < newOperations.length; i++)
+            this.operationGroup.addOperation(newOperations[i]);
+
+        this.operationGroup.checkForCanceledOperations(this.mostRecentMilestone.id, colony);
     }
 }

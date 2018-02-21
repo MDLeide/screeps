@@ -5,13 +5,13 @@ export class OperationReport {
     constructor(public operation: Operation) {
     }
 
-    public printToConsole() {
-        console.log(this.getHtml(this.operation));
+    public printToConsole(): void {
+        console.log(this.getHtml());
     }
 
-    private getHtml(operation: Operation): string {
-        var str = `<table style='width:100%'> <tr> <td>${this.getTitle(operation)}</td> </tr> <tr> <td>${this.getSubTitle(operation)}</td> </tr>`;
-        var assignments = this.getAssignments(operation);
+    public getHtml(): string {
+        var str = `<table style='width:100%'> <tr> <td>${this.getTitle(this.operation)}</td> </tr> <tr> <td>${this.getSubTitle(this.operation)}</td> </tr>`;
+        var assignments = this.getAssignments(this.operation);
         for (var i = 0; i < assignments.length; i++)
             str += `<tr><td>${assignments[i]}</td></tr>`;
         str += "</table>";
@@ -21,7 +21,8 @@ export class OperationReport {
     private getTitle(operation: Operation): string {
         var sb = new StringBuilder();
         sb.append("Operation ");
-        sb.append(operation.name + " is ")
+        sb.append(operation.name, "lightBlue");
+        sb.append(" is ");
         if (operation.finished)
             sb.append("Finished", "orange");
         else if (operation.started)

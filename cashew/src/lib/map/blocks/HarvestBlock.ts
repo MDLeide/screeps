@@ -8,6 +8,9 @@ export class HarvestBlock extends MapBlock {
         block.structures = Layer.fromMemory(memory.structures);
         block.ramparts = Layer.fromMemory(memory.ramparts);
         block.special = Layer.fromMemory(memory.special);
+        block.height = memory.height;
+        block.width = memory.width;
+        block.offset = { x: memory.offset.x, y: memory.offset.y };
         return block;
     }
 
@@ -20,6 +23,7 @@ export class HarvestBlock extends MapBlock {
         containerX: number,
         containerY: number) {
         super(height, width, { x: 0, y: 0 });
+
         this.structures.setAt(containerX, containerY, STRUCTURE_CONTAINER);
         this.special.setAt(containerX, containerY, HarvestBlock.ContainerToken);
         this.special.setAt(sourceX, sourceY, HarvestBlock.SourceToken);

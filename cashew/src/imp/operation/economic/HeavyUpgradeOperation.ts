@@ -3,22 +3,22 @@ import { Operation } from "../../../lib/operation/Operation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
 
-export class LightUpgradeOperation extends Operation {
+export class HeavyUpgradeOperation extends Operation {
+
     public static fromMemory(memory: OperationMemory): Operation {
         var op = new this();
         return Operation.fromMemory(memory, op);
     }
 
     constructor() {
-        super("lightUpgrade", LightUpgradeOperation.getAssignments());        
+        super("heavyUpgrade", HeavyUpgradeOperation.getAssignments());
     }
 
     private static getAssignments(): Assignment[] {
+        var body = BodyRepository.heavyUpgrader();
         return [
-            new Assignment("", BodyRepository.getBody("lightWorker"), "lightUpgrader"),
-            new Assignment("", BodyRepository.getBody("lightWorker"), "lightUpgrader"),
-            new Assignment("", BodyRepository.getBody("lightWorker"), "lightUpgrader"),
-            new Assignment("", BodyRepository.getBody("lightWorker"), "lightUpgrader")
+            new Assignment("", body, "heavyUpgrader"),
+            new Assignment("", body, "heavyUpgrader")
         ]
     }
     
@@ -34,7 +34,7 @@ export class LightUpgradeOperation extends Operation {
     public isFinished(colony: Colony): boolean {
         return false;
     }
-
+    
 
     protected onInit(colony: Colony): boolean {
         return true;
@@ -64,4 +64,8 @@ export class LightUpgradeOperation extends Operation {
     protected onSave(): OperationMemory {
         return null;
     }
+}
+
+interface HarvestOperationMemory extends OperationMemory {
+    minimumEnergy: number;
 }

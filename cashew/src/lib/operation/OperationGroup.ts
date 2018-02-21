@@ -39,6 +39,32 @@ export class OperationGroup {
         this.newOperations.push(operation);
     }
 
+    public checkForCanceledOperations(milestoneId: string, colony: Colony): void {
+        for (var i = 0; i < this.newOperations.length; i++) {
+            if (this.newOperations[i].cancelMilestoneId == milestoneId) {
+                this.newOperations[i].finish(colony);
+                this.completedOperationNames.push(this.newOperations[i].name);
+                this.newOperations.splice(i--, 1);
+            }
+        }
+
+        for (var i = 0; i < this.initializedOperations.length; i++) {
+            if (this.initializedOperations[i].cancelMilestoneId == milestoneId) {
+                this.initializedOperations[i].finish(colony);
+                this.completedOperationNames.push(this.initializedOperations[i].name);
+                this.initializedOperations.splice(i--, 1);
+            }
+        }
+
+        for (var i = 0; i < this.startedOperations.length; i++) {
+            if (this.startedOperations[i].cancelMilestoneId == milestoneId) {
+                this.startedOperations[i].finish(colony);
+                this.completedOperationNames.push(this.startedOperations[i].name);
+                this.startedOperations.splice(i--, 1);
+            }
+        }        
+    }
+
     public load(): void {
         for (var i = 0; i < this.newOperations.length; i++)
             this.newOperations[i].load();
@@ -54,44 +80,35 @@ export class OperationGroup {
         // once an operation has moved to the next phase, we will remove
         // it from the previous array
 
-        for (var i = 0; i < this.newOperations.length; i++)
-            this.newOperations[i].update(colony);
+        for (var i = 0; i < this.newOperations.length; i++) 
+            this.newOperations[i].update(colony);        
 
-        for (var i = 0; i < this.initializedOperations.length; i++)
+        for (var i = 0; i < this.initializedOperations.length; i++) 
             this.initializedOperations[i].update(colony);
-
-        for (var i = 0; i < this.startedOperations.length; i++)
+        
+        for (var i = 0; i < this.startedOperations.length; i++) 
             this.startedOperations[i].update(colony);
 
-
-        var toRemove: number[] = [];
+                
         for (var i = 0; i < this.newOperations.length; i++) {
             var op = this.newOperations[i];
             if (op.canInit(colony)) {
-                if (op.init(colony)) {
-                    toRemove.push(i);
+                if (op.init(colony)) {                    
                     this.initializedOperations.push(op);
+                    this.newOperations.splice(i--, 1);
                 }
             }
         }
-        
-        for (var i = toRemove.length - 1; i >= 0; i--) 
-            this.newOperations.splice(toRemove[i], 1)
-
-        toRemove = [];
         
         for (var i = 0; i < this.initializedOperations.length; i++) {
             var op = this.initializedOperations[i];
             if (op.canStart(colony)) {
                 if (op.start(colony)) {
-                    toRemove.push(i);
                     this.startedOperations.push(op);
+                    this.initializedOperations.splice(i--, 1);
                 }
             }
-        }
-
-        for (var i = toRemove.length - 1; i >= 0; i--)
-            this.initializedOperations.splice(toRemove[i], 1)
+        }        
     }
 
     public execute(colony: Colony): void {
@@ -114,21 +131,14 @@ export class OperationGroup {
 
         for (var i = 0; i < this.startedOperations.length; i++)
             this.startedOperations[i].cleanup(colony);
-
-        var toRemove: number[] = [];
-
+        
         for (var i = 0; i < this.startedOperations.length; i++) {
-            var op = this.startedOperations[i];
-
-            if (op.isFinished(colony)) {
-                op.finish(colony);
-                this.completedOperationNames.push(op.name);
-                toRemove.push(i);
+            if (this.startedOperations[i].isFinished(colony)) {
+                this.startedOperations[i].finish(colony);
+                this.completedOperationNames.push(this.startedOperations[i].name);
+                this.startedOperations.splice(i--, 1);
             }
-        }
-
-        for (var i = toRemove.length - 1; i >= 0; i--)
-            this.startedOperations.splice(toRemove[i], 1)
+        }        
     }
 
     public save(): OperationGroupMemory {

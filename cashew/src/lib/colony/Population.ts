@@ -1,4 +1,5 @@
 import { Colony } from "./Colony";
+import { RoleRepo } from "../creep/role/RoleRepo";
 
 export class Population {
     private lastTick: number = -1;
@@ -146,6 +147,10 @@ export class Population {
                 if (Memory.creeps[key].deathTick <= 0) {
                     Memory.creeps[key].deathTick = Game.time;
                     this._diedLastTick.push(key);
+                    var role = RoleRepo.LoadFromState(Memory.creeps[key].role);
+                    global.events.creep.died(key, role.id, this.colony.name);
+
+                    role.onDeath();
                 }
 
                 if (Game.time - Memory.creeps[key].deathTick >= this._deathLength) {

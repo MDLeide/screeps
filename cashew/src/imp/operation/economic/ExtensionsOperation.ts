@@ -3,29 +3,27 @@ import { Operation } from "../../../lib/operation/Operation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
 
-export class HarvestOperation extends Operation {
-
-    public static fromMemory(memory: HarvestOperationMemory): Operation {
-        var op = new this(memory.minimumEnergy);
+export class ExtensionsOperation extends Operation {
+    public static fromMemory(memory: ExtensionsOperationMemory): Operation {
+        var op = new this(memory.rcl);
         return Operation.fromMemory(memory, op);
     }
 
-    constructor(minimumEnergyForSpawn: number) {
-        super("harvest", HarvestOperation.getAssignments(minimumEnergyForSpawn));
-        this.minimumEnergy = minimumEnergyForSpawn;
+    constructor(rcl: number) {
+        super("extensions", ExtensionsOperation.getAssignments());
+        this.rcl = rcl;
     }
 
-    private static getAssignments(minEnergy: number): Assignment[] {
-        var body = BodyRepository.getBody("heavyHarvester");
-        body.minimumEnergy = minEnergy;
+
+    public rcl: number;
+
+
+    private static getAssignments(): Assignment[]{
         return [
-            new Assignment("", body, "heavyHarvester")
-        ]
+            new Assignment("", BodyRepository.getBody("lightWorker"), "builder"),
+            new Assignment("", BodyRepository.getBody("lightWorker"), "builder")
+        ];
     }
-
-
-    public minimumEnergy: number;
-
 
     public canInit(colony: Colony): boolean {
         return true;
@@ -36,11 +34,27 @@ export class HarvestOperation extends Operation {
     }
 
     public isFinished(colony: Colony): boolean {
-        return false;
+        var targetCount = 0;
+        for (var i = 0; i < this.rcl; i++) 
+            targetCount += colony.nest.nestMap.extensionBlock.getExtensionLocations(i + 1).length;
+
+        var extensionCount = colony.nest.room.find(FIND_MY_STRUCTURES, {
+            filter: (struct) => {
+                return struct.structureType == STRUCTURE_EXTENSION;
+            }
+        }).length;
+
+        return targetCount == extensionCount;
     }
-    
+
 
     protected onInit(colony: Colony): boolean {
+        var locs = colony.nest.nestMap.extensionBlock.getExtensionLocations(this.rcl);
+
+        for (var i = 0; i < locs.length; i++) {
+            colony.nest.room.createConstructionSite(locs[i].x, locs[i].y, STRUCTURE_EXTENSION);
+        }
+
         return true;
     }
 
@@ -65,13 +79,13 @@ export class HarvestOperation extends Operation {
     protected onCleanup(colony: Colony): void {
     }
 
-    protected onSave(): HarvestOperationMemory {
+    protected onSave(): ExtensionsOperationMemory {
         var assignmentMemory: AssignmentMemory[] = [];
         for (var i = 0; i < this.assignments.length; i++)
             assignmentMemory.push(this.assignments[i].save());
 
         return {
-            minimumEnergy: this.minimumEnergy,
+            rcl: this.rcl,
             name: this.name,
             initialized: this.initialized,
             started: this.started,
@@ -82,6 +96,6 @@ export class HarvestOperation extends Operation {
     }
 }
 
-interface HarvestOperationMemory extends OperationMemory {
-    minimumEnergy: number;
+interface ExtensionsOperationMemory extends OperationMemory {
+    rcl: number;
 }

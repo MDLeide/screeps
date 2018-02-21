@@ -6,6 +6,7 @@ import { HeavyUpgrader } from "../creep/role/HeavyUpgrader";
 import { LightMiner } from "../creep/role/LightMiner";
 import { Transporter } from "../creep/role/Transporter";
 import { Builder } from "../creep/role/Builder";
+import { Repairer } from "../creep/role/Repairer";
 import { Waller } from "../creep/role/Waller";
 import { Warrior } from "../creep/role/Warrior";
 import { Cobbler } from "../creep/role/Cobbler";
@@ -50,6 +51,12 @@ export class RoleRegistration {
 
         RoleRepo.RegisterRole(Builder.id, (state) => {
             var instance = Object.create(Builder.prototype);
+            instance.state = state;
+            return instance;
+        });
+
+        RoleRepo.RegisterRole(Repairer.id, (state) => {
+            var instance = Object.create(Repairer.prototype);
             instance.state = state;
             return instance;
         });
@@ -107,6 +114,10 @@ export class RoleRegistration {
 
         RoleRepo.RegisterRoleNew(Builder.id, (creep) => {
             return new Builder(creep);
+        });
+        
+        RoleRepo.RegisterRoleNew(Repairer.id, (creep) => {
+            return new Repairer(creep);
         });
 
         RoleRepo.RegisterRoleNew(Warrior.id, (creep) => {

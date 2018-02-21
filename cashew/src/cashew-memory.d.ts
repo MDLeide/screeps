@@ -37,7 +37,7 @@ declare global {
         name: string;
         description: string;
         milestoneIndex: number;
-        currentOperationGroup: OperationGroupMemory;
+        operationGroup: OperationGroupMemory;
     }
 
     interface NestMemory {
@@ -55,6 +55,7 @@ declare global {
         initialized: boolean;
         started: boolean;
         finished: boolean;
+        cancelMilestoneId: string;
         assignments: AssignmentMemory[];
     }
 
@@ -119,5 +120,10 @@ declare global {
         scalingParts: BodyPartConstant[],
         maxCompleteScaling: number,
         completeScalingPartsOnly: boolean
+    }
+
+    interface VisualsMemory {
+        drawNestMapStructures: boolean;
+        drawNestMapSpecials: boolean;
     }
 }

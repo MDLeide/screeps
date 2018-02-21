@@ -25,6 +25,11 @@ export class MemoryManager {
             Memory.empire = {
                 colonies: {}
             };
+        if (!Memory.visuals)
+            Memory.visuals = {
+                drawNestMapSpecials: false,
+                drawNestMapStructures: false
+            }
     }
 
 }

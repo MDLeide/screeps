@@ -3,28 +3,26 @@ import { Operation } from "../../../lib/operation/Operation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
 
-export class HarvestOperation extends Operation {
-
-    public static fromMemory(memory: HarvestOperationMemory): Operation {
-        var op = new this(memory.minimumEnergy);
+export class TowerConstructionOperation extends Operation {
+    public static fromMemory(memory: TowerConstructionOperationMemory): Operation {
+        var op = new this(memory.rcl);
         return Operation.fromMemory(memory, op);
     }
 
-    constructor(minimumEnergyForSpawn: number) {
-        super("harvest", HarvestOperation.getAssignments(minimumEnergyForSpawn));
-        this.minimumEnergy = minimumEnergyForSpawn;
+    constructor(rcl: number) {
+        super("towerConstruction", TowerConstructionOperation.getAssignments());
+        this.rcl = rcl;
     }
 
-    private static getAssignments(minEnergy: number): Assignment[] {
-        var body = BodyRepository.getBody("heavyHarvester");
-        body.minimumEnergy = minEnergy;
+    private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", body, "heavyHarvester")
-        ]
+            new Assignment("", BodyRepository.getBody("lightWorker"), "builder"),
+            new Assignment("", BodyRepository.getBody("lightWorker"), "builder")
+        ];
     }
 
 
-    public minimumEnergy: number;
+    public rcl: number;
 
 
     public canInit(colony: Colony): boolean {
@@ -36,12 +34,19 @@ export class HarvestOperation extends Operation {
     }
 
     public isFinished(colony: Colony): boolean {
+        var towerLocation = colony.nest.nestMap.mainBlock.getTowerLocation(this.rcl);
+        var look = colony.nest.room.lookForAt(LOOK_STRUCTURES, towerLocation.x, towerLocation.y);
+        for (var i = 0; i < look.length; i++) 
+            if (look[i].structureType == STRUCTURE_TOWER)
+                return true;        
         return false;
     }
-    
 
+    
     protected onInit(colony: Colony): boolean {
-        return true;
+        var tower = colony.nest.nestMap.mainBlock.getTowerLocation(this.rcl);
+        var result = colony.nest.room.createConstructionSite(tower.x, tower.y, STRUCTURE_TOWER);
+        return result == OK;
     }
 
     protected onStart(colony: Colony): boolean {
@@ -64,14 +69,14 @@ export class HarvestOperation extends Operation {
 
     protected onCleanup(colony: Colony): void {
     }
-
-    protected onSave(): HarvestOperationMemory {
+    
+    protected onSave(): TowerConstructionOperationMemory {
         var assignmentMemory: AssignmentMemory[] = [];
         for (var i = 0; i < this.assignments.length; i++)
             assignmentMemory.push(this.assignments[i].save());
 
         return {
-            minimumEnergy: this.minimumEnergy,
+            rcl: this.rcl,
             name: this.name,
             initialized: this.initialized,
             started: this.started,
@@ -82,6 +87,6 @@ export class HarvestOperation extends Operation {
     }
 }
 
-interface HarvestOperationMemory extends OperationMemory {
-    minimumEnergy: number;
+interface TowerConstructionOperationMemory extends OperationMemory {
+    rcl: number;
 }

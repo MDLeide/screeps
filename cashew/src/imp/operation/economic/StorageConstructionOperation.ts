@@ -3,17 +3,23 @@ import { Operation } from "../../../lib/operation/Operation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
 
-export class BasicMaintenance extends Operation {
+export class StorageConstructionOperation extends Operation {
+    public static fromMemory(memory: OperationMemory): Operation {
+        var op = new this();
+        return Operation.fromMemory(memory, op);
+    }
+
     constructor() {
-        super("basicMaintenance", BasicMaintenance.getAssignments());        
+        super("storageConstruction", StorageConstructionOperation.getAssignments());
     }
 
     private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", BodyRepository.lightWorker(), "")
+            new Assignment("", BodyRepository.getBody("lightWorker"), "builder"),
+            new Assignment("", BodyRepository.getBody("lightWorker"), "builder")
         ];
     }
-
+    
     public canInit(colony: Colony): boolean {
         return true;
     }
@@ -23,12 +29,19 @@ export class BasicMaintenance extends Operation {
     }
 
     public isFinished(colony: Colony): boolean {
+        var storage = colony.nest.nestMap.mainBlock.getStorageLocation();
+        var look = colony.nest.room.lookForAt(LOOK_STRUCTURES, storage.x, storage.y);
+        for (var i = 0; i < look.length; i++) 
+            if (look[i].structureType == STRUCTURE_STORAGE)
+                return true;        
         return false;
     }
 
     
     protected onInit(colony: Colony): boolean {
-        return true;
+        var storage = colony.nest.nestMap.mainBlock.getStorageLocation();
+        var result = colony.nest.room.createConstructionSite(storage.x, storage.y, STRUCTURE_STORAGE);
+        return result == OK;
     }
 
     protected onStart(colony: Colony): boolean {

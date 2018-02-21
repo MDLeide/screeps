@@ -64,10 +64,10 @@
     <Folder Include="src\lib\creep\activity\state\" />
     <Folder Include="src\lib\map\base\" />
     <Folder Include="src\lib\map\blocks\" />
-    <Folder Include="src\lib\memory\" />
     <Folder Include="src\lib\map\" />
     <Folder Include="src\lib\debug\" />
     <Folder Include="src\lib\colonyPlan\" />
+    <Folder Include="src\lib\visual\" />
     <Folder Include="src\lib\reports\" />
     <Folder Include="src\lib\operation\" />
     <Folder Include="src\test\" />
@@ -95,6 +95,7 @@
     <TypeScriptCompile Include="src\imp\creep\activity\RepairingWalls.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\PickingEnergy.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\UpgradeWithdrawingEnergy.ts" />
+    <TypeScriptCompile Include="src\imp\creep\role\Repairer.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\Cobbler.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\Cleaner.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\Waller.ts" />
@@ -104,7 +105,33 @@
     <TypeScriptCompile Include="src\imp\Execution.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\creep\ActivityBuilder.ts" />
+    <TypeScriptCompile Include="src\imp\operation\economic\ControllerInfrastructureOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\economic\StorageConstructionOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\economic\TowerConstructionOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\economic\EnergyTransportOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\economic\HeavyUpgradeOperation.ts" />
+    <TypeScriptCompile Include="src\lib\util\EventLog.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\BadgeArtist.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\NestMapVisual.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\Palette.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\StructurePalette.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\StructureArtist.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\Visuals.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\yagni\ActivityBuilder.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\BuildingStructure.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\ChargingTower.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\MiningEnergy.ts" />
@@ -119,7 +146,7 @@
     <TypeScriptCompile Include="src\imp\creep\activity\SupplyingSpawn.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\WithdrawingEnergy.ts" />
     <TypeScriptCompile Include="src\imp\creep\queen\BasicQueen.ts" />
-    <TypeScriptCompile Include="src\imp\creep\RoleBuilder.ts" />
+    <TypeScriptCompile Include="src\yagni\RoleBuilder.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\LightMiner.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\HeavyUpgrader.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\HeavyHarvester.ts" />
@@ -148,11 +175,11 @@
     <TypeScriptCompile Include="src\imp\map\StandardNestMapBuilder.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\operation\economic\ExtensionsRcl2Operation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\economic\ExtensionsOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\HarvestInfrastructureOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\HarvestOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\LightUpgradeOperation.ts" />
-    <TypeScriptCompile Include="src\imp\operation\economic\BasicMaintenance.ts" />
+    <TypeScriptCompile Include="src\imp\operation\economic\BasicMaintenanceOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\OperationTemplate.ts" />
     <TypeScriptCompile Include="src\imp\registration\ActivityRegistration.ts" />
     <TypeScriptCompile Include="src\lib\colonyPlan\ColonyPlan.ts" />
@@ -215,7 +242,7 @@
     <TypeScriptCompile Include="src\lib\map\NestMapBuilder.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\memory\Manager.ts" />
+    <TypeScriptCompile Include="src\lib\util\MemoryManager.ts" />
     <TypeScriptCompile Include="src\lib\operation\Assignment.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -289,8 +316,8 @@
     <TypeScriptCompile Include="src\lib\creep\activity\SilentEmptyActivity.ts" />
     <TypeScriptCompile Include="src\lib\creep\activity\EmptyActivity.ts" />
     <TypeScriptCompile Include="src\lib\creep\activity\MultiTargetActivity.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\Orders.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\Phase.ts" />
+    <TypeScriptCompile Include="src\yagni\Orders.ts" />
+    <TypeScriptCompile Include="src\yagni\Phase.ts" />
     <TypeScriptCompile Include="src\lib\creep\activity\state\ActivityState.ts" />
     <TypeScriptCompile Include="src\lib\creep\activity\state\IActivityState.ts" />
     <TypeScriptCompile Include="src\lib\creep\activity\state\IMultiTargetActivityState.ts" />

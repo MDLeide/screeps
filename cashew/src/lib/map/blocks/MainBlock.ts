@@ -8,6 +8,9 @@ export class MainBlock extends MapBlock {
         block.structures = Layer.fromMemory(memory.structures);
         block.ramparts = Layer.fromMemory(memory.ramparts);
         block.special = Layer.fromMemory(memory.special);
+        block.height = memory.height;
+        block.width = memory.width;
+        block.offset = { x: memory.offset.x, y: memory.offset.y };
         return block;
     }
 
@@ -39,5 +42,42 @@ export class MainBlock extends MapBlock {
         for (var i = 0; i < locations.length; i++)
             layer.setAt(locations[i].x, locations[i].y, structureType);        
     }
-    
+
+    public getSpawnLocatoion(rcl: number): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.special.getAt(x, y) == rcl)
+                    if (this.structures.getAt(x, y) == STRUCTURE_SPAWN)
+                        return { x: x + this.offset.x, y: y + this.offset.y };
+            }
+        }
+        return null;
+    }
+
+    public getTowerLocation(rcl: number): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.special.getAt(x, y) == rcl)
+                    if (this.structures.getAt(x, y) == STRUCTURE_TOWER)
+                        return { x: x + this.offset.x, y: y + this.offset.y };
+            }
+        }
+        return null;
+    }
+
+    public getTerminalLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++)
+            for (var y = 0; y < this.height; y++)
+                if (this.structures.getAt(x, y) == STRUCTURE_TERMINAL)
+                    return { x: x + this.offset.x, y: y + this.offset.y };
+        return null;
+    }
+
+    public getStorageLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++)
+            for (var y = 0; y < this.height; y++)
+                if (this.structures.getAt(x, y) == STRUCTURE_TERMINAL)
+                    return { x: x + this.offset.x, y: y + this.offset.y };
+        return null;
+    }
 }

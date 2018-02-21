@@ -3,16 +3,14 @@ import { Colony } from "../colony/Colony";
 import { NestMapBuilder } from "../map/NestMapBuilder";
 
 export class Empire {
-    constructor(nestMapBuilder: NestMapBuilder) {
+    constructor() {
         this.colonies = [];
         for (var key in Memory.empire.colonies)
             this.colonies.push(Colony.fromMemory(Memory.empire.colonies[key]));
-        this.nestMapBuilder = nestMapBuilder;
     }
     
 
     public colonies: Colony[];
-    public nestMapBuilder: NestMapBuilder;
 
 
     //## update loop
@@ -24,7 +22,6 @@ export class Empire {
     }
     
     public update(): void {        
-        ColonyFinder.createNewColonies(this, this.nestMapBuilder);        
         for (var i = 0; i < this.colonies.length; i++) {
             this.colonies[i].update();
         }

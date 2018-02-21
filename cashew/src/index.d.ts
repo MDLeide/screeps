@@ -1,6 +1,8 @@
 import { Cleaner } from "./lib/debug/Cleaner";
 import { Logger } from "./lib/debug/Logger";
 import { Reporter } from "./lib/debug/Reporter";
+import { EventLog } from "./lib/util/EventLog";
+import { Visuals } from "./lib/visual/Visuals";
 
 import { CreepNut } from "./imp/extend/nut/CreepNut";
 import { RoomNut } from "./imp/extend/nut/RoomNut";
@@ -19,7 +21,10 @@ declare global {
         cleaner: Cleaner;
         logger: Logger;
         reports: Reporter;
+        visuals: Visuals;
+        events: EventLog;
         pause(): void;
+        reset(): void;
     }
 
     interface StructureTower {

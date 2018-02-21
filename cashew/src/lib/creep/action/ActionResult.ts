@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Screeps.com response for actions.
  */
 export enum ActionResult {

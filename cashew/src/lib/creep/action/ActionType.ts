@@ -1,4 +1,4 @@
-﻿//todo: standardize enum style
+//todo: standardize enum style
 export enum ActionType {
     ATTACK,
     ATTACK_CONTROLLER,

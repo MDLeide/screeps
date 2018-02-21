@@ -3,20 +3,19 @@ import { Operation } from "../../../lib/operation/Operation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
 
-export class ExtensionsRcl2Operation extends Operation {
+export class EnergyTransportOperation extends Operation {
     public static fromMemory(memory: OperationMemory): Operation {
         var op = new this();
         return Operation.fromMemory(memory, op);
     }
 
     constructor() {
-        super("extensionsRcl2", ExtensionsRcl2Operation.getAssignments());
+        super("energyTransport", EnergyTransportOperation.getAssignments());        
     }
 
-    private static getAssignments(): Assignment[]{
+    private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", BodyRepository.getBody("lightWorker"), "builder"),
-            new Assignment("", BodyRepository.getBody("lightWorker"), "builder")
+            new Assignment("", BodyRepository.lightWorker(), "transporter")
         ];
     }
 
@@ -32,14 +31,8 @@ export class ExtensionsRcl2Operation extends Operation {
         return false;
     }
 
-
+    
     protected onInit(colony: Colony): boolean {
-        var locs = colony.nest.nestMap.extensionBlock.getExtensionLocations(2);
-
-        for (var i = 0; i < locs.length; i++) {
-            colony.nest.room.createConstructionSite(locs[i].x, locs[i].y, STRUCTURE_EXTENSION);
-        }
-
         return true;
     }
 
@@ -63,7 +56,7 @@ export class ExtensionsRcl2Operation extends Operation {
 
     protected onCleanup(colony: Colony): void {
     }
-
+    
     protected onSave(): OperationMemory {
         return null;
     }
