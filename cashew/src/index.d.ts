@@ -1,3 +1,5 @@
+import { UCreep } from "./lib/wrapper/Creep";
+
 import { Cleaner } from "./lib/debug/Cleaner";
 import { Logger } from "./lib/debug/Logger";
 import { Reporter } from "./lib/debug/Reporter";
@@ -23,6 +25,7 @@ declare global {
         reports: Reporter;
         visuals: Visuals;
         events: EventLog;
+        ucreep: UCreep;
         pause(): void;
         reset(): void;
     }
@@ -53,5 +56,11 @@ declare global {
 
     interface StructureController {
         nut: ControllerNut;
+    }
+
+
+    interface Coordinate {
+        x: number;
+        y: number;
     }    
 }

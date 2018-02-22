@@ -67,6 +67,7 @@
     <Folder Include="src\lib\map\" />
     <Folder Include="src\lib\debug\" />
     <Folder Include="src\lib\colonyPlan\" />
+    <Folder Include="src\lib\wrapper\" />
     <Folder Include="src\lib\visual\" />
     <Folder Include="src\lib\reports\" />
     <Folder Include="src\lib\operation\" />
@@ -110,7 +111,13 @@
     <TypeScriptCompile Include="src\imp\operation\economic\TowerConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\EnergyTransportOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\HeavyUpgradeOperation.ts" />
+    <TypeScriptCompile Include="src\lib\wrapper\Creep.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\EventLog.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\Util.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\visual\BadgeArtist.ts">

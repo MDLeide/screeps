@@ -1,13 +1,18 @@
 import { Empire } from "../lib/empire/Empire"
 import { ColonyFinder } from "../lib/empire/ColonyFinder";
-import { MemoryManager } from "../lib/util/MemoryManager";
 import { NestMapBuilder } from "../lib/map/NestMapBuilder";
 import { StandardNestMapBuilder } from "./map/StandardNestMapBuilder";
+
 import { Extender } from "./extend/Extender";
+import { UCreep } from "../lib/wrapper/Creep";
+import { MemoryManager } from "../lib/util/MemoryManager";
+
 import { RoleRegistration } from "./registration/RoleRegistration";
 import { ActivityRegistration } from "./registration/ActivityRegistration";
 import { ColonyPlanRegistration } from "./registration/ColonyPlanRegistration";
 import { OperationRegistration } from "./registration/OperationRegistration";
+
+
 // debug
 import { Playback } from "../lib/debug/Playback";
 import { Cleaner } from "../lib/debug/Cleaner";
@@ -25,6 +30,7 @@ export class Execute {
         global.logger = new Logger();
         global.visuals = new Visuals();
         global.events = new EventLog();
+        global.ucreep = new UCreep();
 
         global.pause = function () { Playback.pause(); }
         global.reset = function () {
