@@ -95,10 +95,12 @@
     <TypeScriptCompile Include="src\imp\creep\activity\RepairingRoads.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\RepairingWalls.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\PickingEnergy.ts" />
+    <TypeScriptCompile Include="src\imp\creep\activity\SupplyingStorage.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\UpgradeWithdrawingEnergy.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\Repairer.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\Cobbler.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\Cleaner.ts" />
+    <TypeScriptCompile Include="src\imp\creep\role\state\HeavyHarvesterState.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\Waller.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\Builder.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\LightUpgrader.ts" />
@@ -162,9 +164,6 @@
     <TypeScriptCompile Include="src\imp\creep\role\state\IHeavyHarvesterState.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\state\ITransporterState.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\state\TransporterState.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\state\HeavyHarvesterState.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\role\Transporter.ts" />
     <TypeScriptCompile Include="src\imp\extend\nut\ControllerNut.ts" />
     <TypeScriptCompile Include="src\imp\extend\seed\ControllerSeed.ts">

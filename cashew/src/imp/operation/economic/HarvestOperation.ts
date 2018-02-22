@@ -6,13 +6,14 @@ import { BodyRepository } from "../../spawn/BodyRepository";
 export class HarvestOperation extends Operation {
 
     public static fromMemory(memory: HarvestOperationMemory): Operation {
-        var op = new this(memory.minimumEnergy);
+        var op = new this(memory.minimumEnergy, memory.sourceId);
         return Operation.fromMemory(memory, op);
     }
 
-    constructor(minimumEnergyForSpawn: number) {
+    constructor(minimumEnergyForSpawn: number, sourceId: string) {
         super("harvest", HarvestOperation.getAssignments(minimumEnergyForSpawn));
         this.minimumEnergy = minimumEnergyForSpawn;
+        this.sourceId = sourceId;
     }
 
     private static getAssignments(minEnergy: number): Assignment[] {
@@ -25,6 +26,7 @@ export class HarvestOperation extends Operation {
 
 
     public minimumEnergy: number;
+    public sourceId: string;
 
 
     public canInit(colony: Colony): boolean {
@@ -66,6 +68,7 @@ export class HarvestOperation extends Operation {
     }
 
     protected onAssignment(assignment: Assignment): void {
+
     }
 
     protected onSave(): HarvestOperationMemory {
@@ -75,6 +78,7 @@ export class HarvestOperation extends Operation {
 
         return {
             minimumEnergy: this.minimumEnergy,
+            sourceId: this.sourceId,
             name: this.name,
             initialized: this.initialized,
             started: this.started,
@@ -87,4 +91,5 @@ export class HarvestOperation extends Operation {
 
 interface HarvestOperationMemory extends OperationMemory {
     minimumEnergy: number;
+    sourceId: string;
 }
