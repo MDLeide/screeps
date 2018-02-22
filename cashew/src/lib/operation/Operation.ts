@@ -31,7 +31,9 @@ export abstract class Operation {
     public assignments: Assignment[]; // filled if creep name is not blank
     // this really, really doesn't belong here, but it was way easier to implement like this
     public cancelMilestoneId: string = "";
-        
+    /** Indicates that an inheriting class will manually control the creeps. */
+    protected manualCreepControl: boolean = false;
+
     public init(colony: Colony): boolean {
         if (this.initialized)
             return true;
@@ -84,6 +86,7 @@ export abstract class Operation {
                 Memory.creeps[creep.name].role = undefined;
                 Memory.creeps[creep.name].roleId = this.assignments[i].roleId;
                 Memory.creeps[creep.name].operation = this.name;
+                this.onAssignment(this.assignments[i]);
                 global.events.operation.creepAssigned(this.name, creep.name, creep.bodyName, this.assignments[i].roleId);
                 return;
             }
@@ -136,14 +139,17 @@ export abstract class Operation {
 
     /** Main operation logic should execute here. */
     public execute(colony: Colony): void {
-        for (var i = 0; i < this.assignments.length; i++) {
-            if (this.assignments[i].creepName == "")
-                continue;
+        if (!this.manualCreepControl) {
+            for (var i = 0; i < this.assignments.length; i++) {
+                if (this.assignments[i].creepName == "")
+                    continue;
 
-            var creep = Game.creeps[this.assignments[i].creepName];
-            if (creep && !creep.spawning)
-                creep.nut.role.execute();
+                var creep = Game.creeps[this.assignments[i].creepName];
+                if (creep && !creep.spawning)
+                    creep.nut.role.execute();
+            }
         }
+
         this.onExecute(colony);
     }
 
@@ -198,6 +204,8 @@ export abstract class Operation {
     public abstract canInit(colony: Colony): boolean;
     public abstract canStart(colony: Colony): boolean;
     public abstract isFinished(colony: Colony): boolean;
+
+    protected abstract onAssignment(assignment: Assignment): void;
 
     /** Called once, to initialize the operation - returns true if successful. */
     protected abstract onInit(colony: Colony): boolean;

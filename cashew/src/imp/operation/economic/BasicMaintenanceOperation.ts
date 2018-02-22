@@ -61,4 +61,7 @@ export class BasicMaintenanceOperation extends Operation {
     protected onSave(): OperationMemory {
         return null;
     }
+
+    protected onAssignment(assignment: Assignment): void {
+    }
 }

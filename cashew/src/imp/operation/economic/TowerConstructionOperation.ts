@@ -69,7 +69,10 @@ export class TowerConstructionOperation extends Operation {
 
     protected onCleanup(colony: Colony): void {
     }
-    
+
+    protected onAssignment(assignment: Assignment): void {
+    }
+
     protected onSave(): TowerConstructionOperationMemory {
         var assignmentMemory: AssignmentMemory[] = [];
         for (var i = 0; i < this.assignments.length; i++)

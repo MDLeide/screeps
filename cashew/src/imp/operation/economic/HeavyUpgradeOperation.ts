@@ -61,6 +61,9 @@ export class HeavyUpgradeOperation extends Operation {
     protected onCleanup(colony: Colony): void {
     }
 
+    protected onAssignment(assignment: Assignment): void {
+    }
+
     protected onSave(): OperationMemory {
         return null;
     }
