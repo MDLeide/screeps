@@ -1,5 +1,6 @@
 import { Colony } from "../colony/Colony"
 import { Operation } from "./Operation"
+import { Assignment } from "./Assignment"
 import { OperationRepository } from "./OperationRepository";
 
 export class OperationGroup {
@@ -113,10 +114,10 @@ export class OperationGroup {
 
     public execute(colony: Colony): void {
         for (var i = 0; i < this.initializedOperations.length; i++) 
-            this.spawnCreepsForOperation(this.initializedOperations[i], colony);
+            this.getCreepsForOperation(this.initializedOperations[i], colony);
 
         for (var i = 0; i < this.startedOperations.length; i++) 
-            this.spawnCreepsForOperation(this.startedOperations[i], colony);
+            this.getCreepsForOperation(this.startedOperations[i], colony);
 
         for (var i = 0; i < this.startedOperations.length; i++) 
             this.startedOperations[i].execute(colony);
@@ -164,14 +165,32 @@ export class OperationGroup {
 
 
      /** Spawns creeps required for an operation. */
-    private spawnCreepsForOperation(op: Operation, colony: Colony) {
+    private getCreepsForOperation(op: Operation, colony: Colony) {
         var openAssignments = op.getUnfilledAssignments(colony);
+
         for (var i = 0; i < openAssignments.length; i++) {
+            var unassignedCreep = this.getUnassignedCreep(openAssignments[i], colony);
+            if (unassignedCreep) {
+                op.assignCreep({ name: unassignedCreep, bodyName: openAssignments[i].body.name });
+                continue;
+            }
+            
             if (!colony.canSpawn(openAssignments[i].body))
                 continue;
+
             var response = colony.spawnCreep(openAssignments[i].body);
             if (response)
                 op.assignCreep({ name: response.name, bodyName: openAssignments[i].body.name });
         }
+    }
+
+    private getUnassignedCreep(assignment: Assignment, colony: Colony): string {
+        var unassigned = colony.population.notAssignedToOperation();
+        for (var i = 0; i < unassigned.length; i++) {
+            var name = unassigned[i];
+            if (Memory.creeps[name].body == assignment.body.name) 
+                return name;            
+        }
+        return null;
     }
 }

@@ -83,13 +83,7 @@ export class HarvestInfrastructureOperation extends Operation {
                 (container[i] as StructureContainer).nut.tagId = this.source.id;
             }
         }
-                
-        for (var i = 0; i < this.assignments.length; i++) {
-            if (this.assignments[i].creepName == "")
-                continue;
-            Game.creeps[this.assignments[i].creepName].suicide();
-        }
-
+        
         return true;
     }
 

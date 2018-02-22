@@ -183,7 +183,8 @@ class OperationEvents extends EventGroup {
 
     public creepAssignedLevel: number = 2;
     public creepAssignmentFailedLevel: number = 6;
-    public creepReleasedLevel: number = 2;
+    public creepReleasedLevel: number = 4;
+    public creepReleaseFailedLevel: number = 6;
 
     protected getCategory(): string {
         return "Operation";
@@ -300,8 +301,36 @@ class OperationEvents extends EventGroup {
         this.log(sb.getString(), this.creepAssignmentFailedLevel);
     }
 
-    public creepReleased(operationName: string, creepName: string): void {
+    public creepReleased(operationName: string, creepName: string, bodyType: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
 
+        sb.append("Creep ", this.colors.identifier);
+        sb.append(creepName, this.colors.name);
+        sb.append(" with ");
+        sb.append("body ", this.colors.identifier);
+        sb.append(bodyType, this.colors.name);
+        sb.append(" was released from ", this.colors.neutralVerb);
+        sb.append("operation ", this.colors.identifier);
+        sb.append(operationName, this.colors.name);
+
+        this.log(sb.getString(), this.creepReleasedLevel);
+    }
+
+    public creepReleaseFailed(operationName: string, creepName: string, bodyType: string) {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Creep ", this.colors.identifier);
+        sb.append(creepName, this.colors.name);
+        sb.append(" with ");
+        sb.append("body ", this.colors.identifier);
+        sb.append(bodyType, this.colors.name);
+        sb.append(" failed to release from ", this.colors.negativeVerb);
+        sb.append("operation ", this.colors.identifier);
+        sb.append(operationName, this.colors.name);
+
+        this.log(sb.getString(), this.creepAssignmentFailedLevel);
     }
 }
 

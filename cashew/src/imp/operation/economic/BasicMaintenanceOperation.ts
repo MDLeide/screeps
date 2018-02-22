@@ -15,7 +15,7 @@ export class BasicMaintenanceOperation extends Operation {
 
     private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", BodyRepository.lightWorker(), "transporter"),
+            new Assignment("", BodyRepository.hauler(), "transporter"),
             new Assignment("", BodyRepository.lightWorker(), "repairer")
         ];
     }

@@ -64,18 +64,26 @@ export abstract class Operation {
     
     public finish(colony: Colony): void {
         this.finished = this.onFinish(colony);
-        if (this.finished)
+        if (this.finished) {
+            for (var i = 0; i < this.assignments.length; i++) {
+                if (this.assignments[i].creepName != "")
+                    this.removeCreep(this.assignments[i].creepName);
+            }
+
             global.events.operation.finish(this.name);
-        else
+        }
+        else {
             global.events.operation.failedToFinish(this.name);
+        }
     }
-
-
+    
     public assignCreep(creep: { name: string, bodyName: string }): void {
         for (var i = 0; i < this.assignments.length; i++) {
             if (this.assignments[i].creepName == "" && this.assignments[i].body.name == creep.bodyName) {
                 this.assignments[i].creepName = creep.name;
+                Memory.creeps[creep.name].role = undefined;
                 Memory.creeps[creep.name].roleId = this.assignments[i].roleId;
+                Memory.creeps[creep.name].operation = this.name;
                 global.events.operation.creepAssigned(this.name, creep.name, creep.bodyName, this.assignments[i].roleId);
                 return;
             }
@@ -84,9 +92,15 @@ export abstract class Operation {
     }
     
     public removeCreep(creepName: string) {
-        for (var i = 0; i < this.assignments.length; i++)
-            if (this.assignments[i].creepName == creepName)
+        for (var i = 0; i < this.assignments.length; i++) {
+            if (this.assignments[i].creepName == creepName) {
                 this.assignments[i].creepName = "";
+                Memory.creeps[creepName].operation = "";
+                global.events.operation.creepReleased(this.name, creepName, Memory.creeps[creepName].body);
+                return;
+            }
+        }
+        global.events.operation.creepReleaseFailed(this.name, creepName, Memory.creeps[creepName].body);
     }
     
     public getUnfilledAssignments(colony: Colony): Assignment[] {

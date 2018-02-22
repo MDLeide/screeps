@@ -4,6 +4,8 @@ declare global {
     interface CreepMemory {
         roleId: string;
         role: IRoleState | null;
+        body: string;
+        operation: string;
         homeSpawnId: string;        
         birthTick: number;
         deathTick: number;
