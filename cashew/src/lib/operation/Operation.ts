@@ -1,6 +1,8 @@
 import { Assignment } from "./Assignment";
 import { Colony } from "../colony/Colony";
 import { Body } from "../spawn/Body";
+import { CreepController } from "../creep/controller/CreepController";
+import { CreepControllerRepository } from "../creep/controller/CreepControllerRepository";
 
 export abstract class Operation {        
     /** Just does some initialization to the base properties. Call it from an implementing
@@ -29,6 +31,8 @@ export abstract class Operation {
     public started: boolean;
     public finished: boolean;
     public assignments: Assignment[]; // filled if creep name is not blank
+    public controllers: { [creepName: string]: CreepController } = {};
+
     // this really, really doesn't belong here, but it was way easier to implement like this
     public cancelMilestoneId: string = "";
     /** Indicates that an inheriting class will manually control the creeps. */
@@ -78,18 +82,25 @@ export abstract class Operation {
             global.events.operation.failedToFinish(this.name);
         }
     }
-    
+
+    // creep may not yet be available via Game.creeps - may have just requested spawning this tick
     public assignCreep(creep: { name: string, bodyName: string }): void {
         for (var i = 0; i < this.assignments.length; i++) {
-            if (this.assignments[i].creepName == "" && this.assignments[i].body.name == creep.bodyName) {
-                this.assignments[i].creepName = creep.name;
-                Memory.creeps[creep.name].role = undefined;
-                Memory.creeps[creep.name].roleId = this.assignments[i].roleId;
-                Memory.creeps[creep.name].operation = this.name;
-                this.onAssignment(this.assignments[i]);
-                global.events.operation.creepAssigned(this.name, creep.name, creep.bodyName, this.assignments[i].roleId);
-                return;
-            }
+            if (this.assignments[i].isFilled())
+                continue;
+
+            if (this.assignments[i].body.name != creep.bodyName)
+                continue;
+            
+            this.assignments[i].creepName = creep.name;            
+            Memory.creeps[creep.name].role = undefined;
+            Memory.creeps[creep.name].roleId = this.assignments[i].roleId;
+            Memory.creeps[creep.name].operation = this.name;            
+
+            this.onAssignment(this.assignments[i]);
+
+            global.events.operation.creepAssigned(this.name, creep.name, creep.bodyName, this.assignments[i].roleId);
+            return;
         }
         global.events.operation.creepAssignmentFailed(this.name, creep.name, creep.bodyName);
     }
@@ -97,8 +108,11 @@ export abstract class Operation {
     public removeCreep(creepName: string) {
         for (var i = 0; i < this.assignments.length; i++) {
             if (this.assignments[i].creepName == creepName) {
-                this.assignments[i].creepName = "";
+                this.assignments[i].release();
                 Memory.creeps[creepName].operation = "";
+                if (this.controllers[creepName])
+                    delete this.controllers[creepName];
+
                 global.events.operation.creepReleased(this.name, creepName, Memory.creeps[creepName].body);
                 return;
             }
@@ -122,11 +136,6 @@ export abstract class Operation {
         return count;
     }
         
-
-    //**                    **//
-    //** Update Loop        **//
-    //**                    **//
-
     public load(): void {
         this.onLoad();
     }
@@ -176,31 +185,20 @@ export abstract class Operation {
         }
         return memory;
     }
-
-    //**                    **//
-    //** Helpers            **//
-    //**                    **//
-
+    
     /** Ensures we don't have any dead creeps assigned to the operation. */
     private cleanDeadCreeps(colony: Colony) {
-        for (var i = 0; i < this.assignments.length; i++)
-            if (!colony.population.isAliveOrSpawning(this.assignments[i].creepName))
-                this.assignments[i].creepName = "";
-
+        for (var i = 0; i < this.assignments.length; i++) {
+            if (this.assignments[i].creepName) {
+                if (!colony.population.isAliveOrSpawning(this.assignments[i].creepName))
+                    this.assignments[i].release();
+                if (this.controllers[this.assignments[i].creepName])
+                    delete this.controllers[this.assignments[i].creepName];
+            }            
+        }
+        
     }
-
-    // helper
-    private doSkip(index: number, array: number[]): boolean {
-        for (var i = 0; i < array.length; i++)
-            if (array[i] == index)
-                return true;
-        return false;
-    }
-
-    //**                    **//
-    //** Abstracts          **//
-    //**                    **//
-
+    
     public abstract canInit(colony: Colony): boolean;
     public abstract canStart(colony: Colony): boolean;
     public abstract isFinished(colony: Colony): boolean;

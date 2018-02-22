@@ -2,12 +2,12 @@ import { Colony } from "../colony/Colony";
 import { ColonyPlan } from "./ColonyPlan";
 
 export class ColonyPlanRepository {
-    public static register(planName: string, loadPlanDelegate: (memory: any) => ColonyPlan, newPlanDelegate: () => ColonyPlan): void {
+    public static register(planName: string, loadPlanDelegate: (memory: ColonyPlanMemory) => ColonyPlan, newPlanDelegate: () => ColonyPlan): void {
         this.loadDelegates[planName] = loadPlanDelegate;
         this.newDelegates[planName] = newPlanDelegate;
     }
 
-    public static load(memory: any): ColonyPlan {
+    public static load(memory: ColonyPlanMemory): ColonyPlan {
         return this.loadDelegates[memory.name](memory);
     }
 

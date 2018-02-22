@@ -129,9 +129,13 @@ export class Population {
         if (Memory.creeps[creep].deathTick <= 0) { // just died
             Memory.creeps[creep].deathTick = Game.time;
             this.diedLastTick.push(creep);
-            var role = RoleRepo.LoadFromState(Memory.creeps[creep].role);
+            if (Memory.creeps[creep].roleId) {
+                var role = RoleRepo.LoadFromState(Memory.creeps[creep].role);
+                role.onDeath();
+            }
+            
             global.events.creep.died(creep, role.id, this.colony.name);
-            role.onDeath();
+            
         }
 
         if (Game.time - Memory.creeps[creep].deathTick >= this.keepDeadCreepsFor)

@@ -57,6 +57,7 @@ declare global {
         finished: boolean;
         cancelMilestoneId: string;
         assignments: AssignmentMemory[];
+
     }
 
     interface OperationGroupMemory {
@@ -70,6 +71,8 @@ declare global {
         creepName: string;
         body: BodyMemory;
         roleId: string;
+        controllerName: string;
+        controller: CreepControllerMemory;
     }
 
     /** END OPERATIONS **/
@@ -125,5 +128,9 @@ declare global {
     interface VisualsMemory {
         drawNestMapStructures: boolean;
         drawNestMapSpecials: boolean;
+    }
+
+    interface CreepControllerMemory {
+        name: string;
     }
 }

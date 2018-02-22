@@ -2,18 +2,38 @@ import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
+import { HarvesterController } from "../../creep/controller/HarvesterController";
 
 export class HarvestOperation extends Operation {
 
     public static fromMemory(memory: HarvestOperationMemory): Operation {
-        var op = new this(memory.minimumEnergy, memory.sourceId);
+        var op = new this(memory.minimumEnergy, memory.sourceId, memory.containerId);
         return Operation.fromMemory(memory, op);
     }
 
-    constructor(minimumEnergyForSpawn: number, sourceId: string) {
+    constructor(minimumEnergyForSpawn: number, source: (Source | string), containerId?: string) {
         super("harvest", HarvestOperation.getAssignments(minimumEnergyForSpawn));
+
         this.minimumEnergy = minimumEnergyForSpawn;
-        this.sourceId = sourceId;
+        let s: Source = null;
+
+        if (source instanceof Source) {
+            this.sourceId = source.id;
+            s = source;
+        } else {
+            this.sourceId = source;
+            if (!containerId)
+                s = Game.getObjectById<Source>(source);
+        }
+
+        if (containerId)
+            this.containerId = containerId;
+        else
+            this.containerId = s.pos.findClosestByRange<StructureContainer>(FIND_STRUCTURES, {
+                filter: (struct) => {
+                    return struct.structureType == STRUCTURE_CONTAINER;
+                }
+            }).id;
     }
 
     private static getAssignments(minEnergy: number): Assignment[] {
@@ -26,6 +46,7 @@ export class HarvestOperation extends Operation {
 
 
     public minimumEnergy: number;
+    public containerId: string;
     public sourceId: string;
 
 
@@ -41,7 +62,6 @@ export class HarvestOperation extends Operation {
         return false;
     }
     
-
     protected onInit(colony: Colony): boolean {
         return true;
     }
@@ -53,22 +73,21 @@ export class HarvestOperation extends Operation {
     protected onFinish(colony: Colony): boolean {
         return true;
     }
-
-
-    protected onLoad(): void {
-    }
+    
+    protected onLoad(): void { }
 
     protected onUpdate(colony: Colony): void {
     }
 
     protected onExecute(colony: Colony): void {
+  
     }
-
+       
     protected onCleanup(colony: Colony): void {
     }
 
     protected onAssignment(assignment: Assignment): void {
-
+        this.controllers[assignment.creepName] = new HarvesterController(this.containerId, this.sourceId);
     }
 
     protected onSave(): HarvestOperationMemory {
@@ -79,6 +98,7 @@ export class HarvestOperation extends Operation {
         return {
             minimumEnergy: this.minimumEnergy,
             sourceId: this.sourceId,
+            containerId: this.containerId,
             name: this.name,
             initialized: this.initialized,
             started: this.started,
@@ -92,4 +112,5 @@ export class HarvestOperation extends Operation {
 interface HarvestOperationMemory extends OperationMemory {
     minimumEnergy: number;
     sourceId: string;
+    containerId: string;
 }

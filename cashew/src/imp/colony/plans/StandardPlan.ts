@@ -170,12 +170,12 @@ export class StandardPlan {
         var ops: Operation[] = [];
         var sources = colony.nest.room.nut.seed.findSources();
         
-        var harvestOp = new HarvestOperation(300);
+        var harvestOp = new HarvestOperation(300, sources[0]);
         harvestOp.cancelMilestoneId = "firstLinks"
         ops.push(harvestOp);
 
         if (sources.length > 1) {
-            var secondHarvestOp = new HarvestOperation(300);
+            var secondHarvestOp = new HarvestOperation(300, sources[1]);
             ops.push(secondHarvestOp);
         }
         

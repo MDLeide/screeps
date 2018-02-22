@@ -2,6 +2,7 @@ import { IRoleState } from "./lib/creep/role/state/IRoleState";
 
 declare global {
     interface CreepMemory {
+        controller: CreepControllerMemory;
         roleId: string;
         role: IRoleState | null;
         body: string;

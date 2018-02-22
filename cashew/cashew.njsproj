@@ -43,6 +43,7 @@
     <Folder Include="src\imp\creep\" />
     <Folder Include="src\imp\creep\activity\" />
     <Folder Include="src\imp\creep\activity\state\" />
+    <Folder Include="src\imp\creep\controller\" />
     <Folder Include="src\imp\creep\queen\" />
     <Folder Include="src\imp\creep\role\" />
     <Folder Include="src\imp\creep\role\state\" />
@@ -62,6 +63,8 @@
     <Folder Include="src\lib\creep\action\" />
     <Folder Include="src\lib\creep\activity\" />
     <Folder Include="src\lib\creep\activity\state\" />
+    <Folder Include="src\lib\creep\controller\" />
+    <Folder Include="src\lib\creep\task\" />
     <Folder Include="src\lib\map\base\" />
     <Folder Include="src\lib\map\blocks\" />
     <Folder Include="src\lib\map\" />
@@ -97,6 +100,9 @@
     <TypeScriptCompile Include="src\imp\creep\activity\PickingEnergy.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\SupplyingStorage.ts" />
     <TypeScriptCompile Include="src\imp\creep\activity\UpgradeWithdrawingEnergy.ts" />
+    <TypeScriptCompile Include="src\imp\creep\controller\HarvesterController.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\role\Repairer.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\Cobbler.ts" />
     <TypeScriptCompile Include="src\imp\creep\role\Cleaner.ts" />
@@ -113,6 +119,21 @@
     <TypeScriptCompile Include="src\imp\operation\economic\TowerConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\EnergyTransportOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\HeavyUpgradeOperation.ts" />
+    <TypeScriptCompile Include="src\imp\registration\ControllerRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\ResourceManager.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\creep\controller\CreepControllerRepository.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\creep\controller\CreepController.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\creep\task\Task.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\wrapper\Creep.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

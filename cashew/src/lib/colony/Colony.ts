@@ -1,12 +1,13 @@
-import { ColonyPlan } from "../colonyPlan/ColonyPlan";
-import { ColonyPlanRepository } from "../colonyPlan/ColonyPlanRepository";
 import { Nest } from "./Nest";
 import { Population } from "./Population";
-import { MapBlock } from "../map/base/MapBlock";
+import { ResourceManager } from "./ResourceManager";
+
+import { Empire } from "../empire/Empire";
 import { Spawner } from "../spawn/Spawner";
 import { Body } from "../spawn/Body";
-import { Empire } from "../empire/Empire";
-
+import { ColonyPlan } from "../colonyPlan/ColonyPlan";
+import { ColonyPlanRepository } from "../colonyPlan/ColonyPlanRepository";
+import { MapBlock } from "../map/base/MapBlock";
 
 export class Colony  {
     public static fromMemory(memory: ColonyMemory): Colony {
@@ -23,16 +24,19 @@ export class Colony  {
         this.plan = plan;
 
         this.population = new Population(this);
+        this.resourceManager = new ResourceManager(this);
     }
     
-    public population: Population;    
+    public population: Population;
+    public resourceManager: ResourceManager;
     public name: string;
     public nest: Nest;
     public plan: ColonyPlan;
 
+
     //## update loop
 
-    public load(): void {        
+    public load(): void {
         this.nest.load();
     }
 
@@ -72,5 +76,13 @@ export class Colony  {
         if (result)
             global.events.colony.creepSpawning(this.name, result.name, body.name);
         return result;
+    }
+
+    public getWithdrawTarget(creep: Creep): Structure<StructureConstant> {
+        return this.resourceManager.getWithdrawTarget(creep);
+    }
+
+    public getTransferTarget(creep: Creep): Structure<StructureConstant> {
+        return this.resourceManager.getTransferTarget(creep);
     }
 }

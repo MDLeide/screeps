@@ -1,11 +1,11 @@
 import { Operation } from "./Operation";
 
 export class OperationRepository {
-    public static register(operationName: string, loadOperationDelegate: (memory: any) => Operation): void {
+    public static register(operationName: string, loadOperationDelegate: (memory: OperationMemory) => Operation): void {
         this.delegates[operationName] = loadOperationDelegate;
     }
 
-    public static load(memory: any): Operation {
+    public static load(memory: OperationMemory): Operation {
         return this.delegates[memory.name](memory);
     }
 
