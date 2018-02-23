@@ -1,7 +1,7 @@
 import { CreepController } from "../../../lib/creep/controller/CreepController";
 
 export class HarvesterController extends CreepController {
-    public static readonly myName: string = "harvest";
+    public static readonly myName: string = "Harvest";
 
     public static fromMemory(memory: HarvesterControllerMemory): HarvesterController {
         var controller = new this(memory.containerId, memory.sourceId);

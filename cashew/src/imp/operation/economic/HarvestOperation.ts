@@ -91,10 +91,6 @@ export class HarvestOperation extends Operation {
     }
 
     protected onSave(): HarvestOperationMemory {
-        var assignmentMemory: AssignmentMemory[] = [];
-        for (var i = 0; i < this.assignments.length; i++)
-            assignmentMemory.push(this.assignments[i].save());
-
         return {
             minimumEnergy: this.minimumEnergy,
             sourceId: this.sourceId,
@@ -104,7 +100,8 @@ export class HarvestOperation extends Operation {
             started: this.started,
             finished: this.finished,
             cancelMilestoneId: this.cancelMilestoneId,
-            assignments: assignmentMemory
+            assignments: this.getAssignmentMemory(),
+            controllers: this.getControllerMemory()
         };
     }
 }

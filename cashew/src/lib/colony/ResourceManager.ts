@@ -8,13 +8,13 @@ export class ResourceManager {
 
     public colony: Colony;
 
-    public fillPriority: TransferTarget[] = [
-        TransferTarget.SpawnsAndExtensions,
-        TransferTarget.Towers,
-        TransferTarget.Controller,
-        TransferTarget.Lab,
-        TransferTarget.Terminal,
-        TransferTarget.Storage
+    public fillPriority: TransferPriorityTarget[] = [
+        TransferPriorityTarget.SpawnsAndExtensions,
+        TransferPriorityTarget.Towers,
+        TransferPriorityTarget.Controller,
+        TransferPriorityTarget.Lab,
+        TransferPriorityTarget.Terminal,
+        TransferPriorityTarget.Storage
     ];
 
     /** If a storage has less than this much energy, it will be ignored in withdraw requests. */
@@ -42,7 +42,7 @@ export class ResourceManager {
     public controllerContainer: StructureContainer;
 
     
-    public getWithdrawTarget(creep: Creep): Structure<StructureConstant> {
+    public getWithdrawTarget(creep: Creep): WithdrawTarget {
         var container = this.getContainerWithdrawTarget(creep);
         if (container)
             return container;
@@ -91,7 +91,7 @@ export class ResourceManager {
     }
 
     
-    public getTransferTarget(creep: Creep): Structure<StructureConstant> {
+    public getTransferTarget(creep: Creep): TransferTarget {
         for (var i = 0; i < this.fillPriority.length; i++) {
             let target = this.getTarget(creep, this.fillPriority[i]);
             if (target)
@@ -100,28 +100,28 @@ export class ResourceManager {
         return null;
     }
 
-    private getTarget(creep: Creep, target: TransferTarget) {
+    private getTarget(creep: Creep, target: TransferPriorityTarget) : TransferTarget {
         switch (target) {
-            case TransferTarget.SpawnsAndExtensions:
+            case TransferPriorityTarget.SpawnsAndExtensions:
                 return this.getSpawnExtensionTransferTargets(creep);
-            case TransferTarget.Towers:
+            case TransferPriorityTarget.Towers:
                 return this.getTowerTransferTarget(creep);
-            case TransferTarget.Controller:
+            case TransferPriorityTarget.Controller:
                 return this.getControllerTransferTarget(creep);
-            case TransferTarget.Storage:
+            case TransferPriorityTarget.Storage:
                 return this.getStorageTransferTarget(creep);
-            case TransferTarget.Terminal:
+            case TransferPriorityTarget.Terminal:
                 return this.getTerminalTransferTarget(creep);
-            case TransferTarget.Nuker:
+            case TransferPriorityTarget.Nuker:
                 return this.getNukerTransferTarget(creep);
-            case TransferTarget.Lab:
+            case TransferPriorityTarget.Lab:
                 return this.getLabTransferTarget(creep);
             default:
                 return null;
         }
     }
 
-    private getSpawnExtensionTransferTargets(creep: Creep): Structure<StructureConstant> {
+    public getSpawnExtensionTransferTargets(creep: Creep): (StructureSpawn | StructureExtension) {
         for (var i = 0; i < this.colony.nest.spawners.length; i++) 
             if (this.colony.nest.spawners[i].spawn.energy < this.colony.nest.spawners[i].spawn.energyCapacity)
                 return this.colony.nest.spawners[i].spawn;
@@ -135,7 +135,7 @@ export class ResourceManager {
         return closest;
     }
 
-    private getTowerTransferTarget(creep: Creep): Structure<StructureConstant> {
+    private getTowerTransferTarget(creep: Creep): StructureTower {
         return creep.pos.findClosestByRange<StructureTower>(FIND_MY_STRUCTURES,
             {
                 filter: (tower) => {
@@ -144,7 +144,7 @@ export class ResourceManager {
             });
     }
 
-    private getControllerTransferTarget(creep: Creep): Structure<StructureConstant> {
+    private getControllerTransferTarget(creep: Creep): StructureContainer {
         if (this.controllerContainer)
             if (this.controllerContainer.store.energy < this.upgradeContainerMaxEnergy)
                 return this.controllerContainer;
@@ -152,7 +152,7 @@ export class ResourceManager {
         return null;
     }
 
-    private getStorageTransferTarget(creep: Creep): Structure<StructureConstant> {
+    private getStorageTransferTarget(creep: Creep): StructureStorage {
         if (this.colony.nest.room.storage
             && this.colony.nest.room.storage.store.energy < this.storageMaxEnergy
             && _.sum(this.colony.nest.room.storage.store) < this.colony.nest.room.storage.storeCapacity)
@@ -161,7 +161,7 @@ export class ResourceManager {
         return null;
     }
 
-    private getTerminalTransferTarget(creep: Creep): Structure<StructureConstant>    {
+    private getTerminalTransferTarget(creep: Creep): StructureTerminal {
         if (this.colony.nest.room.terminal
             && this.colony.nest.room.terminal.store.energy < this.terminalMaxEnergy
             && _.sum(this.colony.nest.room.terminal.store) < this.colony.nest.room.terminal.storeCapacity)
@@ -170,11 +170,11 @@ export class ResourceManager {
         return null;
     }
 
-    private getNukerTransferTarget(creep: Creep): Structure<StructureConstant> {
+    private getNukerTransferTarget(creep: Creep): StructureNuker {
         throw Error("nuker transfer not implemented");
     }
 
-    private getLabTransferTarget(creep: Creep): Structure<StructureConstant> {
+    private getLabTransferTarget(creep: Creep): StructureLab {
         return creep.pos.findClosestByRange<StructureLab>(FIND_MY_STRUCTURES, {
             filter: (lab) => {
                 return lab.structureType == STRUCTURE_LAB && lab.energy < this.labMaxEnergy;
@@ -183,7 +183,7 @@ export class ResourceManager {
     }
 }
 
-export enum TransferTarget {
+export enum TransferPriorityTarget {
     SpawnsAndExtensions,
     Towers,
     Controller,

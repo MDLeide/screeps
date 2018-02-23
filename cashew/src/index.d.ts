@@ -1,3 +1,4 @@
+import { Empire } from "./lib/empire/Empire";
 import { UCreep } from "./lib/wrapper/Creep";
 
 import { Cleaner } from "./lib/debug/Cleaner";
@@ -26,6 +27,7 @@ declare global {
         visuals: Visuals;
         events: EventLog;
         ucreep: UCreep;
+        empire: Empire;
         pause(): void;
         reset(): void;
     }

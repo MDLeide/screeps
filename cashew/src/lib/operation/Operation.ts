@@ -14,6 +14,10 @@ export abstract class Operation {
         instance.finished = memory.finished;
         instance.assignments = [];
         instance.cancelMilestoneId = memory.cancelMilestoneId;
+        instance.controllers = {};
+        for (var key in memory.controllers)
+            instance.controllers[key] = CreepControllerRepository.load(memory.controllers[key]);
+
         for (var i = 0; i < memory.assignments.length; i++) 
             instance.assignments.push(Assignment.fromMemory(memory.assignments[i]));        
         return instance;
@@ -170,20 +174,31 @@ export abstract class Operation {
     public save(): OperationMemory {
         var memory = this.onSave();
         if (!memory) {
-            var assignmentMemory: AssignmentMemory[] = [];
-            for (var i = 0; i < this.assignments.length; i++) 
-                assignmentMemory.push(this.assignments[i].save());
-            
             memory = {
                 name: this.name,
                 initialized: this.initialized,
                 started: this.started,
                 finished: this.finished,
                 cancelMilestoneId: this.cancelMilestoneId,
-                assignments: assignmentMemory
+                assignments: this.getAssignmentMemory(),
+                controllers: this.getControllerMemory()
             };
         }
         return memory;
+    }
+
+    protected getAssignmentMemory(): AssignmentMemory[] {
+        var assignmentMemory: AssignmentMemory[] = [];
+        for (var i = 0; i < this.assignments.length; i++)
+            assignmentMemory.push(this.assignments[i].save());
+        return assignmentMemory;
+    }
+
+    protected getControllerMemory(): { [creepName: string]: CreepControllerMemory } {
+        var mem = {};
+        for (var key in this.controllers)
+            mem[key] = this.controllers[key].save();
+        return mem;
     }
     
     /** Ensures we don't have any dead creeps assigned to the operation. */

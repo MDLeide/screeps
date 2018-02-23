@@ -53,6 +53,7 @@ export class Execute {
             return;
 
         var empire = new Empire();
+        global.empire = empire;
         var nestMapBuilder = StandardNestMapBuilder.getBuilder();
 
         ColonyFinder.createNewColonies(empire, nestMapBuilder);

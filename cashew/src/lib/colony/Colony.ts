@@ -66,6 +66,13 @@ export class Colony  {
 
     //## end update loop
 
+    public creepBelongsToColony(creep: (Creep | string)): boolean {
+        if (creep instanceof Creep)
+            return this.creepBelongsToColony(creep.name);
+
+        return this.population.creepFromThisColony(Memory.creeps[creep]);
+    }
+
     public canSpawn(body: Body): boolean {
         return this.nest.canSpawn(body)
     }
@@ -78,11 +85,15 @@ export class Colony  {
         return result;
     }
 
-    public getWithdrawTarget(creep: Creep): Structure<StructureConstant> {
+    public getWithdrawTarget(creep: Creep): WithdrawTarget {
         return this.resourceManager.getWithdrawTarget(creep);
     }
 
-    public getTransferTarget(creep: Creep): Structure<StructureConstant> {
+    public getTransferTarget(creep: Creep): TransferTarget {
         return this.resourceManager.getTransferTarget(creep);
+    }
+
+    public getSpawnTransferTarget(creep: Creep): (StructureSpawn | StructureExtension) {
+        return this.resourceManager.getSpawnExtensionTransferTargets(creep);
     }
 }

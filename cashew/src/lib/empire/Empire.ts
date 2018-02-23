@@ -8,10 +8,17 @@ export class Empire {
         for (var key in Memory.empire.colonies)
             this.colonies.push(Colony.fromMemory(Memory.empire.colonies[key]));
     }
-    
+
 
     public colonies: Colony[];
 
+    public getColony(creep: (Creep | string)): Colony {
+        for (var i = 0; i < this.colonies.length; i++) {
+            if (this.colonies[i].creepBelongsToColony(creep))
+                return this.colonies[i];
+        }
+        return null;
+    }
 
     //## update loop
 

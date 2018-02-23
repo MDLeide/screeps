@@ -146,7 +146,7 @@ export class Population {
         return null;
     }
 
-    private creepFromThisColony(creep: CreepMemory) {
+    public creepFromThisColony(creep: CreepMemory) {
         for (var i = 0; i < this.colony.nest.spawners.length; i++) {
             if (creep.homeSpawnId == this.colony.nest.spawners[i].spawn.id) {
                 return true;
