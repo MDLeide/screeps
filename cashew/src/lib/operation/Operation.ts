@@ -1,8 +1,8 @@
 import { Assignment } from "./Assignment";
 import { Colony } from "../colony/Colony";
 import { Body } from "../spawn/Body";
-import { CreepController } from "../creep/controller/CreepController";
-import { CreepControllerRepository } from "../creep/controller/CreepControllerRepository";
+import { CreepController } from "../creep/CreepController";
+import { CreepControllerRepository } from "../creep/CreepControllerRepository";
 
 export abstract class Operation {        
     /** Just does some initialization to the base properties. Call it from an implementing
@@ -96,14 +96,12 @@ export abstract class Operation {
             if (this.assignments[i].body.name != creep.bodyName)
                 continue;
             
-            this.assignments[i].creepName = creep.name;            
-            Memory.creeps[creep.name].role = undefined;
-            Memory.creeps[creep.name].roleId = this.assignments[i].roleId;
+            this.assignments[i].creepName = creep.name;
             Memory.creeps[creep.name].operation = this.name;            
 
             this.onAssignment(this.assignments[i]);
 
-            global.events.operation.creepAssigned(this.name, creep.name, creep.bodyName, this.assignments[i].roleId);
+            global.events.operation.creepAssigned(this.name, creep.name, creep.bodyName);
             return;
         }
         global.events.operation.creepAssignmentFailed(this.name, creep.name, creep.bodyName);
@@ -147,6 +145,22 @@ export abstract class Operation {
     /** Provides early-tick opportunity to update state. Will be called on all colonies and operations prior to Execute being called. */
     public update(colony: Colony): void {        
         this.cleanDeadCreeps(colony);
+
+        if (!this.manualCreepControl) {
+            for (var i = 0; i < this.assignments.length; i++) {
+                if (this.assignments[i].creepName == "")
+                    continue;
+
+                var creep = Game.creeps[this.assignments[i].creepName];
+                if (creep && !creep.spawning) {
+                    let controller = this.controllers[creep.name];
+                    if (controller)
+                        controller.update(creep);
+                }
+
+            }
+        }
+
         this.onUpdate(colony);
     }
 
@@ -158,8 +172,12 @@ export abstract class Operation {
                     continue;
 
                 var creep = Game.creeps[this.assignments[i].creepName];
-                if (creep && !creep.spawning)
-                    creep.nut.role.execute();
+                if (creep && !creep.spawning) {
+                    let controller = this.controllers[creep.name];
+                    if (controller)
+                        controller.execute(creep);
+                }
+                    
             }
         }
 
@@ -168,6 +186,21 @@ export abstract class Operation {
 
     /** Called after all operatoins have executed. */
     public cleanup(colony: Colony): void {
+        if (!this.manualCreepControl) {
+            for (var i = 0; i < this.assignments.length; i++) {
+                if (this.assignments[i].creepName == "")
+                    continue;
+
+                var creep = Game.creeps[this.assignments[i].creepName];
+                if (creep && !creep.spawning) {
+                    let controller = this.controllers[creep.name];
+                    if (controller)
+                        controller.cleanup(creep);
+                }
+
+            }
+        }
+
         this.onCleanup(colony);
     }
 

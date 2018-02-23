@@ -1,4 +1,4 @@
-import { CreepController } from "../../../lib/creep/controller/CreepController";
+import { CreepController } from "../../lib/creep/CreepController";
 
 export class ControllerTemplate extends CreepController {
     public static readonly myName: string = "ControllerTemplate";

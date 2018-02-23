@@ -1,10 +1,7 @@
-import { IRoleState } from "./lib/creep/role/state/IRoleState";
+import { Execute } from "./imp/Execution";
 
 declare global {
     interface CreepMemory {
-        controller: CreepControllerMemory;
-        roleId: string;
-        role: IRoleState | null;
         body: string;
         operation: string;
         homeSpawnId: string;        
@@ -25,7 +22,7 @@ declare global {
     }
 
     interface SourceMemory {
-        id: string;
+        id: string; //todo: remove
         isBeingHarvested: boolean;
     }
 

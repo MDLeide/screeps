@@ -1,5 +1,5 @@
-import { CreepControllerRepository } from "../../lib/creep/controller/CreepControllerRepository";
-import { HarvesterController, HarvesterControllerMemory } from "../creep/controller/HarvesterController";
+import { CreepControllerRepository } from "../../lib/creep/CreepControllerRepository";
+import { HarvesterController, HarvesterControllerMemory } from "../creep/HarvesterController";
 
 
 export class ControllerRegistration {

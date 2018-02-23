@@ -7,8 +7,6 @@ import { Extender } from "./extend/Extender";
 import { UCreep } from "../lib/wrapper/Creep";
 import { MemoryManager } from "../lib/util/MemoryManager";
 
-import { RoleRegistration } from "./registration/RoleRegistration";
-import { ActivityRegistration } from "./registration/ActivityRegistration";
 import { ColonyPlanRegistration } from "./registration/ColonyPlanRegistration";
 import { OperationRegistration } from "./registration/OperationRegistration";
 
@@ -40,9 +38,7 @@ export class Execute {
 
         Extender.extend();
         MemoryManager.checkInit();
-
-        RoleRegistration.register();
-        ActivityRegistration.register();
+                
         ColonyPlanRegistration.register();
         OperationRegistration.register();
     }

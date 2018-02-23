@@ -2,7 +2,7 @@ import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
-import { HarvesterController } from "../../creep/controller/HarvesterController";
+import { HarvesterController } from "../../creep/HarvesterController";
 
 export class HarvestOperation extends Operation {
 

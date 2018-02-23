@@ -1,4 +1,4 @@
-import { IRoleState } from "./lib/creep/role/state/IRoleState";
+import { Execute } from "./imp/Execution";
 
 declare global {
     interface Memory {

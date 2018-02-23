@@ -265,7 +265,7 @@ class OperationEvents extends EventGroup {
 
 
 
-    public creepAssigned(operationName: string, creepName: string, bodyType: string, roleName: string): void {
+    public creepAssigned(operationName: string, creepName: string, bodyType: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
@@ -277,10 +277,6 @@ class OperationEvents extends EventGroup {
         sb.append(" was assigned to ", this.colors.neutralVerb);
         sb.append("operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
-        sb.append(" in the ");
-        sb.append("role", this.colors.identifier);
-        sb.append(" of ");
-        sb.append(roleName, this.colors.name);
 
         this.log(sb.getString(), this.creepAssignedLevel);
     }
@@ -347,16 +343,13 @@ class CreepEvents extends EventGroup {
 
     }
 
-    public died(creepName: string, roleName: string, colonyName: string): void {
+    public died(creepName: string, colonyName: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Creep ", this.colors.identifier)
             .append(creepName, this.colors.name)
             .append(" died ", this.colors.neutralVerb)
-            .append("while in the ")
-            .append("role ", this.colors.identifier)
-            .append(roleName, this.colors.name)
             .append(" in ")
             .append("colony ", this.colors.identifier)
             .append(colonyName, this.colors.name);

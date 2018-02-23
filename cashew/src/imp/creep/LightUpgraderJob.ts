@@ -1,5 +1,5 @@
-import { Job } from "../../../lib/creep/controller/Job";
-import { Task } from "../../../lib/creep/controller/Task";
+import { Job } from "../../lib/creep/Job";
+import { Task } from "../../lib/creep/Task";
 
 /**
  * Specialized job for the early parts of a room. Upgrades the controller by getting

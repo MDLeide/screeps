@@ -1,5 +1,4 @@
 import { Colony } from "./Colony";
-import { RoleRepo } from "../creep/role/RoleRepo";
 
 export class Population {    
     private keepDeadCreepsFor: number = 50; // number of ticks to keep dead creeps
@@ -19,8 +18,6 @@ export class Population {
     public bornThisTick: string[];
     public diedRecently: string[];
     public diedLastTick: string[];
-    public roleCallAlive: { [roleId: string]: string[] };
-    public roleCallSpawning: { [roleId: string]: string[] };
 
     public notAssignedToOperation(): string[] {
         var unassigned: string[] = [];
@@ -55,16 +52,7 @@ export class Population {
     public didDieLastTick(creep: (Creep | string)): boolean {
         return this.listContainsCreep(creep, this.diedLastTick);
     }
-
-    public roleCount(roleId: string, includeSpawning: boolean = false) : number {
-        var count = 0;
-        if (this.roleCallAlive[roleId])
-            count += this.roleCallAlive[roleId].length;
-        if (includeSpawning && this.roleCallSpawning[roleId])
-            count += this.roleCallSpawning[roleId].length;
-        return count;
-    }
-
+    
 
     private listContainsCreep(creep: (Creep | string), list: string[]) {        
         if (typeof creep != "string") 
@@ -105,22 +93,14 @@ export class Population {
         this.bornThisTick = [];
         this.diedLastTick = [];
         this.diedRecently = [];
-        this.roleCallAlive = {};
-        this.roleCallSpawning = {};
     }
    
 
     private creepIsAlive(creep: string): void {
-        if (!this.roleCallAlive[Memory.creeps[creep].roleId])
-            this.roleCallAlive[Memory.creeps[creep].roleId] = []
-        this.roleCallAlive[Memory.creeps[creep].roleId].push(creep);
         this.alive.push(creep);
     }
 
     private creepIsSpawning(creep: string): void {
-        if (!this.roleCallSpawning[Memory.creeps[creep].roleId])
-            this.roleCallSpawning[Memory.creeps[creep].roleId] = []
-        this.roleCallSpawning[Memory.creeps[creep].roleId].push(creep);
         this.spawning.push(creep);
     }
 
@@ -129,13 +109,8 @@ export class Population {
         if (Memory.creeps[creep].deathTick <= 0) { // just died
             Memory.creeps[creep].deathTick = Game.time;
             this.diedLastTick.push(creep);
-            if (Memory.creeps[creep].roleId) {
-                var role = RoleRepo.LoadFromState(Memory.creeps[creep].role);
-                role.onDeath();
-            }
             
-            global.events.creep.died(creep, role.id, this.colony.name);
-            
+            global.events.creep.died(creep, this.colony.name);            
         }
 
         if (Game.time - Memory.creeps[creep].deathTick >= this.keepDeadCreepsFor)

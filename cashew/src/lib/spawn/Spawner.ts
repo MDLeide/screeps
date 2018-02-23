@@ -42,9 +42,6 @@ export class Spawner {
                     homeSpawnId: this.spawn.id,
                     body: body.name,
                     operation: "",
-                    controller: undefined,
-                    roleId: "",
-                    role: null,
                     birthTick: Game.time + 1,
                     deathTick: 0
                 }

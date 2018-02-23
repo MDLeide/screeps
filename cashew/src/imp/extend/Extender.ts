@@ -20,7 +20,6 @@ import { SpawnSeed } from "./seed/SpawnSeed";
 import { ControllerNut } from "./nut/ControllerNut";
 import { ControllerSeed } from "./seed/ControllerSeed";
 
-import { RoleRepo } from "../../lib/creep/role/RoleRepo";
 
 export class Extender {
     private static _extended = false;

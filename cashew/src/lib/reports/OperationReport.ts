@@ -56,7 +56,7 @@ export class OperationReport {
         for (var i = 0; i < operation.assignments.length; i++) {
             var assignment = operation.assignments[i];
             var sb = new StringBuilder();
-            sb.append(assignment.roleId);
+            sb.append(assignment.controllerName);
             sb.append(" [");
             sb.append(assignment.body.name);
             sb.append("] ");

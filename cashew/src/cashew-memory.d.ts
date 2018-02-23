@@ -1,4 +1,4 @@
-import { IRoleState } from "./lib/creep/role/state/IRoleState";
+import { Execute } from "./imp/Execution"; // silly hack that i don't understand - this isn't actually used
 
 declare global {
     /** FLAGS */
@@ -70,7 +70,6 @@ declare global {
     interface AssignmentMemory {
         creepName: string;
         body: BodyMemory;
-        roleId: string;
         controllerName: string;
         controller: CreepControllerMemory;
     }

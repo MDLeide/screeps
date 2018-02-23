@@ -1,13 +1,12 @@
 import { Body } from "../spawn/Body";
-import { CreepController } from "../creep/controller/CreepController";
-import { CreepControllerRepository } from "../creep/controller/CreepControllerRepository";
+import { CreepController } from "../creep/CreepController";
+import { CreepControllerRepository } from "../creep/CreepControllerRepository";
 
 export class Assignment {
     public static fromMemory(memory: AssignmentMemory): Assignment {
         let assignment = new this(
             memory.creepName,
             Body.fromMemory(memory.body),
-            memory.roleId,
             memory.controllerName);
 
         if (memory.controllerName && memory.controllerName != "")
@@ -19,8 +18,7 @@ export class Assignment {
     constructor(
         public creepName: string,
         public body: Body,
-        public roleId: string,
-        public controllerName?: string) {
+        public controllerName: string) {
     }
 
     public controller: CreepController;
@@ -45,7 +43,6 @@ export class Assignment {
         return {
             creepName: this.creepName,
             body: this.body.save(),
-            roleId: this.roleId,
             controllerName: this.controllerName,
             controller: this.controller ? this.controller.save() : null
         };
