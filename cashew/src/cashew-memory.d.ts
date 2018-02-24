@@ -71,7 +71,6 @@ declare global {
         creepName: string;
         body: BodyMemory;
         controllerName: string;
-        controller: CreepControllerMemory;
     }
 
     /** END OPERATIONS **/

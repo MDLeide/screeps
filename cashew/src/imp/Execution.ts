@@ -4,43 +4,21 @@ import { NestMapBuilder } from "../lib/map/NestMapBuilder";
 import { StandardNestMapBuilder } from "./map/StandardNestMapBuilder";
 
 import { Extender } from "./extend/Extender";
-import { UCreep } from "../lib/wrapper/Creep";
 import { MemoryManager } from "../lib/util/MemoryManager";
-
-import { ColonyPlanRegistration } from "./registration/ColonyPlanRegistration";
-import { OperationRegistration } from "./registration/OperationRegistration";
-
-
-// debug
 import { Playback } from "../lib/debug/Playback";
-import { Cleaner } from "../lib/debug/Cleaner";
-import { Logger } from "../lib/debug/Logger";
+import { GlobalExtension } from "./GlobalExtension";
+import { Register } from "./registration/Register";
+
 import { Reporter } from "../lib/debug/Reporter";
-import { EventLog } from "../lib/util/EventLog";
-import { Visuals } from "../lib/visual/Visuals";
-//import { StructureArtist } from "../lib/visual/StructureArtist";
 
 export class Execute {    
     public init(): void {        
         console.log("<span style='color:green'>Execution initializing...</span>");
-
-        global.cleaner = new Cleaner();
-        global.logger = new Logger();
-        global.visuals = new Visuals();
-        global.events = new EventLog();
-        global.ucreep = new UCreep();
-
-        global.pause = function () { Playback.pause(); }
-        global.reset = function () {
-            Playback.pause();
-            global.cleaner.cleanAll();
-        }    
-
+        
+        GlobalExtension.extend();
         Extender.extend();
         MemoryManager.checkInit();
-                
-        ColonyPlanRegistration.register();
-        OperationRegistration.register();
+        Register.register();
     }
     
     public main(): void {

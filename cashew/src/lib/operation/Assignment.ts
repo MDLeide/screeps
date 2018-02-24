@@ -9,9 +9,6 @@ export class Assignment {
             Body.fromMemory(memory.body),
             memory.controllerName);
 
-        if (memory.controllerName && memory.controllerName != "")
-            assignment.controller = CreepControllerRepository.load(memory.controller);
-
         return assignment;
     }
 
@@ -20,9 +17,7 @@ export class Assignment {
         public body: Body,
         public controllerName: string) {
     }
-
-    public controller: CreepController;
-
+    
     /** True if there is no creep assigned. */
     public isOpen(): boolean {
         return !this.creepName || this.creepName == "";
@@ -35,16 +30,14 @@ export class Assignment {
 
     /** Clears the current creep from the assignment. */
     public release(): void {
-        this.creepName = undefined;
-        this.controller = undefined;
+        this.creepName = undefined;        
     }
 
     public save(): AssignmentMemory {
         return {
             creepName: this.creepName,
             body: this.body.save(),
-            controllerName: this.controllerName,
-            controller: this.controller ? this.controller.save() : null
+            controllerName: this.controllerName
         };
     }
 }

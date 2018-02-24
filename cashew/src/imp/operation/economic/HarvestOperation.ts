@@ -1,6 +1,7 @@
 import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
 import { Assignment } from "../../../lib/operation/Assignment";
+import { CreepController } from "../../../lib/creep/CreepController";
 import { BodyRepository } from "../../spawn/BodyRepository";
 import { HarvesterController } from "../../creep/HarvesterController";
 
@@ -86,8 +87,8 @@ export class HarvestOperation extends Operation {
     protected onCleanup(colony: Colony): void {
     }
 
-    protected onAssignment(assignment: Assignment): void {
-        this.controllers[assignment.creepName] = new HarvesterController(this.containerId, this.sourceId);
+    protected onAssignment(assignment: Assignment): CreepController {
+        return new HarvesterController(this.containerId, this.sourceId);
     }
 
     protected onSave(): HarvestOperationMemory {

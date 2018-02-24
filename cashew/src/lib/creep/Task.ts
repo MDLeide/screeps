@@ -8,10 +8,10 @@ export abstract class Task {
     }
 
     constructor(name: string) {
-        this.name = name;
+        this.type = name;
     }
 
-    public name: string;
+    public type: TaskType;
 
     public complete: boolean;
     public incomplete: boolean;
@@ -23,7 +23,7 @@ export abstract class Task {
         if (mem)
             return mem;
         return {
-            name: this.name,
+            name: this.type,
             complete: this.complete,
             incomplete: this.incomplete,
             error: this.error,
@@ -116,7 +116,7 @@ export abstract class TargetedTask<T extends { id: string }> extends Task {
 
     protected onSave(): TargetedTaskMemory {
         return {
-            name: this.name,
+            name: this.type,
             complete: this.complete,
             incomplete: this.incomplete,
             error: this.error,
@@ -200,7 +200,7 @@ export class MoveTo extends Task {
 
     protected onSave(): MoveToMemory {
         return {
-            name: this.name,
+            name: this.type,
             complete: this.complete,
             incomplete: this.incomplete,
             error: this.error,

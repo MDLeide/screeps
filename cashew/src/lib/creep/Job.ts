@@ -36,7 +36,7 @@ export abstract class Job extends CreepController {
                 this.currentTask = nextTask;
             else
                 this.currentTask = Task.Idle();            
-        } else if (this.currentTask.name == Task.IdleName) {
+        } else if (this.currentTask.type == Task.IdleName) {
             let nextTask = this.isIdle(creep);
             if (nextTask) {
                 this.lastTask = this.currentTask;

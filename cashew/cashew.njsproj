@@ -80,6 +80,12 @@
     <TypeScriptCompile Include="src\cashew-types.d.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\extended-types.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\global.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\colony\plans\StandardPlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -96,12 +102,18 @@
     <TypeScriptCompile Include="src\imp\Execution.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\GlobalExtension.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\economic\ControllerInfrastructureOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\StorageConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\TowerConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\EnergyTransportOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\HeavyUpgradeOperation.ts" />
     <TypeScriptCompile Include="src\imp\registration\ControllerRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\registration\Register.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\ResourceManager.ts">

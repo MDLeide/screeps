@@ -19,8 +19,8 @@ export class LightUpgraderJob extends Job {
         let colony = global.empire.getColony(creep);
 
         if (!this.currentTask ||
-            this.currentTask.name == Task.TransferName ||
-            this.currentTask.name == Task.UpgradeName) {
+            this.currentTask.type == Task.TransferName ||
+            this.currentTask.type == Task.UpgradeName) {
             
             let withdrawTarget = colony.getWithdrawTarget(creep);
             if (withdrawTarget)

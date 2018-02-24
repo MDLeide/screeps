@@ -3,14 +3,14 @@ import { Operation } from "../../../lib/operation/Operation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
 
-export class ExtensionsOperation extends Operation {
+export class ExtensionConstruction extends Operation {
     public static fromMemory(memory: ExtensionsOperationMemory): Operation {
         var op = new this(memory.rcl);
         return Operation.fromMemory(memory, op);
     }
 
     constructor(rcl: number) {
-        super("extensions", ExtensionsOperation.getAssignments());
+        super("extensions", ExtensionConstruction.getAssignments());
         this.rcl = rcl;
     }
 

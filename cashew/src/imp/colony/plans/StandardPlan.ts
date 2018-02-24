@@ -1,7 +1,7 @@
 import { HarvestInfrastructureOperation } from "../../operation/economic/HarvestInfrastructureOperation";
 import { HarvestOperation } from "../../operation/economic/HarvestOperation";
 import { LightUpgradeOperation } from "../../operation/economic/LightUpgradeOperation";
-import { ExtensionsOperation } from "../../operation/economic/ExtensionsOperation";
+import { ExtensionConstruction } from "../../operation/economic/ExtensionsOperation";
 import { BasicMaintenanceOperation } from "../../operation/economic/BasicMaintenanceOperation";
 import { ControllerInfrastructureOperation } from "../../operation/economic/ControllerInfrastructureOperation";
 import { EnergyTransportOperation } from "../../operation/economic/EnergyTransportOperation";
@@ -192,7 +192,7 @@ export class StandardPlan {
     private static rcl2Operations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
 
-        var ext = new ExtensionsOperation(2);
+        var ext = new ExtensionConstruction(2);
         ext.cancelMilestoneId = "fiveExtensions";
         ops.push(ext);
         
@@ -231,7 +231,7 @@ export class StandardPlan {
     private static firstTowerOperations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
 
-        var extensions = new ExtensionsOperation(3);
+        var extensions = new ExtensionConstruction(3);
         ops.push(extensions);
 
         return ops;
@@ -249,7 +249,7 @@ export class StandardPlan {
     private static storageOperations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
 
-        var extensions = new ExtensionsOperation(4);
+        var extensions = new ExtensionConstruction(4);
         ops.push(extensions);
 
         return ops;
