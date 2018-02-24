@@ -109,7 +109,7 @@ export class HarvestInfrastructureOperation extends Operation {
         return {
             sourceId: this.sourceId,
             standlocation: this.standLocation,
-            name: this.name,
+            type: this.type,
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,

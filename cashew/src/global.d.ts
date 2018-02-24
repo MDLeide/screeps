@@ -44,5 +44,11 @@ declare global {
         CONTROLLER_HARVESTER: string;
         CONTROLLER_INITIAL_INFRASTRUCTURE_BUILDER: string;
         CONTROLLER_LIGHT_UPGRADER: string;
+
+        BODY_LIGHT_WORKER: string;
+        BODY_HEAVY_HARVESTER: string;
+        BODY_HEAVY_UPGRADER: string;
+        BODY_HAULER: string;
+        BODY_WARRIOR: string;
     }
 }

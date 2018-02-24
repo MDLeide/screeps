@@ -76,7 +76,7 @@ export class TowerConstructionOperation extends Operation {
     protected onSave(): TowerConstructionOperationMemory {
         return {
             rcl: this.rcl,
-            name: this.name,
+            type: this.type,
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,

@@ -8,7 +8,7 @@ export class ColonyPlanRepository {
     }
 
     public static load(memory: ColonyPlanMemory): ColonyPlan {
-        return this.loadDelegates[memory.name](memory);
+        return this.loadDelegates[memory.type](memory);
     }
 
     public static getNew(planName: string): ColonyPlan {

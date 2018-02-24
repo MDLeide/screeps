@@ -7,7 +7,7 @@ export class Assignment {
         let assignment = new this(
             memory.creepName,
             Body.fromMemory(memory.body),
-            memory.controllerName);
+            memory.controllerType);
 
         return assignment;
     }
@@ -15,12 +15,12 @@ export class Assignment {
     constructor(
         public creepName: string,
         public body: Body,
-        public controllerName: string) {
+        public controllerType: ControllerType) {
     }
     
     /** True if there is no creep assigned. */
     public isOpen(): boolean {
-        return !this.creepName || this.creepName == "";
+        return !this.creepName;
     }
 
     /** True if there is a creep assigned. */
@@ -37,7 +37,7 @@ export class Assignment {
         return {
             creepName: this.creepName,
             body: this.body.save(),
-            controllerName: this.controllerName
+            controllerType: this.controllerType
         };
     }
 }

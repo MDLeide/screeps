@@ -12,7 +12,7 @@ export class CreepNamer {
 
         var timeString = Game.time.toString();
         var time = timeString.slice(timeString.length - 4);
-        return body.name + "-" + spawner.spawn.name + "-" + time;
+        return body.type + "-" + spawner.spawn.name + "-" + time;
     }
 
     private static delegate: (body: Body, spawner: Spawner) => string;

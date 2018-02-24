@@ -8,7 +8,7 @@ export abstract class Operation {
     /** Just does some initialization to the base properties. Call it from an implementing
     class to save some typing.*/
     public static fromMemory<T extends Operation>(memory: OperationMemory, instance: T): Operation {
-        instance.name = memory.name;
+        instance.type = memory.type;
         instance.initialized = memory.initialized;
         instance.started = memory.started;
         instance.finished = memory.finished;
@@ -24,13 +24,13 @@ export abstract class Operation {
     }
 
     
-    constructor(name: string, assignments: Assignment[]) {
-        this.name = name;        
+    constructor(type: OperationType, assignments: Assignment[]) {
+        this.type = type;
         this.assignments = assignments;
     }
 
     
-    public name: string;    
+    public type: OperationType;
     public initialized: boolean;
     public started: boolean;
     public finished: boolean;
@@ -50,9 +50,9 @@ export abstract class Operation {
 
         this.initialized = this.onInit(colony);
         if (this.initialized)
-            global.events.operation.init(this.name);
+            global.events.operation.init(this.type);
         else
-            global.events.operation.failedToInit(this.name);
+            global.events.operation.failedToInit(this.type);
 
         return this.initialized;
     }
@@ -65,9 +65,9 @@ export abstract class Operation {
 
         this.started = this.onStart(colony);
         if (this.started)
-            global.events.operation.start(this.name);
+            global.events.operation.start(this.type);
         else
-            global.events.operation.failedToStart(this.name);
+            global.events.operation.failedToStart(this.type);
 
         return this.started;
     }
@@ -80,10 +80,10 @@ export abstract class Operation {
                     this.removeCreep(this.assignments[i].creepName);
             }
 
-            global.events.operation.finish(this.name);
+            global.events.operation.finish(this.type);
         }
         else {
-            global.events.operation.failedToFinish(this.name);
+            global.events.operation.failedToFinish(this.type);
         }
     }
 
@@ -93,18 +93,18 @@ export abstract class Operation {
             if (this.assignments[i].isFilled())
                 continue;
 
-            if (this.assignments[i].body.name != creep.bodyName)
+            if (this.assignments[i].body.type != creep.bodyName)
                 continue;
             
             this.assignments[i].creepName = creep.name;
-            Memory.creeps[creep.name].operation = this.name;            
+            Memory.creeps[creep.name].operation = this.type;            
 
             this.controllers[creep.name] = this.onAssignment(this.assignments[i]);
 
-            global.events.operation.creepAssigned(this.name, creep.name, creep.bodyName);
+            global.events.operation.creepAssigned(this.type, creep.name, creep.bodyName);
             return;
         }
-        global.events.operation.creepAssignmentFailed(this.name, creep.name, creep.bodyName);
+        global.events.operation.creepAssignmentFailed(this.type, creep.name, creep.bodyName);
     }
     
     public removeCreep(creepName: string) {
@@ -115,11 +115,11 @@ export abstract class Operation {
                 if (this.controllers[creepName])
                     delete this.controllers[creepName];
 
-                global.events.operation.creepReleased(this.name, creepName, Memory.creeps[creepName].body);
+                global.events.operation.creepReleased(this.type, creepName, Memory.creeps[creepName].body);
                 return;
             }
         }
-        global.events.operation.creepReleaseFailed(this.name, creepName, Memory.creeps[creepName].body);
+        global.events.operation.creepReleaseFailed(this.type, creepName, Memory.creeps[creepName].body);
     }
     
     public getUnfilledAssignments(colony: Colony): Assignment[] {
@@ -208,7 +208,7 @@ export abstract class Operation {
         var memory = this.onSave();
         if (!memory) {
             memory = {
-                name: this.name,
+                type: this.type,
                 initialized: this.initialized,
                 started: this.started,
                 finished: this.finished,

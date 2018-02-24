@@ -15,8 +15,8 @@ export class OperationGroup {
         for (var i = 0; i < memory.startedOperations.length; i++)
             group.startedOperations.push(OperationRepository.load(memory.startedOperations[i]));
 
-        for (var i = 0; i < memory.completedOperationNames.length; i++) 
-            group.completedOperationNames.push(memory.completedOperationNames[i]);
+        for (var i = 0; i < memory.completedOperations.length; i++) 
+            group.completedOperations.push(memory.completedOperations[i]);
 
         return group;
     }
@@ -27,14 +27,14 @@ export class OperationGroup {
             this.newOperations.push(operations[i]);
         this.initializedOperations = [];
         this.startedOperations = [];
-        this.completedOperationNames = [];
+        this.completedOperations = [];
     }    
 
     
     public newOperations: Operation[];
     public initializedOperations: Operation[];
     public startedOperations: Operation[];
-    public completedOperationNames: string[];
+    public completedOperations: OperationType[];
 
     public addOperation(operation: Operation): void {
         this.newOperations.push(operation);
@@ -44,7 +44,7 @@ export class OperationGroup {
         for (var i = 0; i < this.newOperations.length; i++) {
             if (this.newOperations[i].cancelMilestoneId == milestoneId) {
                 this.newOperations[i].finish(colony);
-                this.completedOperationNames.push(this.newOperations[i].name);
+                this.completedOperations.push(this.newOperations[i].type);
                 this.newOperations.splice(i--, 1);
             }
         }
@@ -52,7 +52,7 @@ export class OperationGroup {
         for (var i = 0; i < this.initializedOperations.length; i++) {
             if (this.initializedOperations[i].cancelMilestoneId == milestoneId) {
                 this.initializedOperations[i].finish(colony);
-                this.completedOperationNames.push(this.initializedOperations[i].name);
+                this.completedOperations.push(this.initializedOperations[i].type);
                 this.initializedOperations.splice(i--, 1);
             }
         }
@@ -60,7 +60,7 @@ export class OperationGroup {
         for (var i = 0; i < this.startedOperations.length; i++) {
             if (this.startedOperations[i].cancelMilestoneId == milestoneId) {
                 this.startedOperations[i].finish(colony);
-                this.completedOperationNames.push(this.startedOperations[i].name);
+                this.completedOperations.push(this.startedOperations[i].type);
                 this.startedOperations.splice(i--, 1);
             }
         }        
@@ -136,7 +136,7 @@ export class OperationGroup {
         for (var i = 0; i < this.startedOperations.length; i++) {
             if (this.startedOperations[i].isFinished(colony)) {
                 this.startedOperations[i].finish(colony);
-                this.completedOperationNames.push(this.startedOperations[i].name);
+                this.completedOperations.push(this.startedOperations[i].type);
                 this.startedOperations.splice(i--, 1);
             }
         }        
@@ -159,7 +159,7 @@ export class OperationGroup {
             newOperations: newOps,
             initializedOperations: initOps,
             startedOperations: startedOps,
-            completedOperationNames: this.completedOperationNames
+            completedOperations: this.completedOperations
         };
     }
 
@@ -171,7 +171,7 @@ export class OperationGroup {
         for (var i = 0; i < openAssignments.length; i++) {
             var unassignedCreep = this.getUnassignedCreep(openAssignments[i], colony);
             if (unassignedCreep) {
-                op.assignCreep({ name: unassignedCreep, bodyName: openAssignments[i].body.name });
+                op.assignCreep({ name: unassignedCreep, bodyName: openAssignments[i].body.type });
                 continue;
             }
             
@@ -180,7 +180,7 @@ export class OperationGroup {
 
             var response = colony.spawnCreep(openAssignments[i].body);
             if (response)
-                op.assignCreep({ name: response.name, bodyName: openAssignments[i].body.name });
+                op.assignCreep({ name: response.name, bodyName: openAssignments[i].body.type });
         }
     }
 
@@ -188,7 +188,7 @@ export class OperationGroup {
         var unassigned = colony.population.notAssignedToOperation();
         for (var i = 0; i < unassigned.length; i++) {
             var name = unassigned[i];
-            if (Memory.creeps[name].body == assignment.body.name) 
+            if (Memory.creeps[name].body == assignment.body.type) 
                 return name;            
         }
         return null;

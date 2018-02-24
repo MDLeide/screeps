@@ -1,9 +1,9 @@
 export abstract class CreepController {
-    constructor(name: string) {
-        this.name = name;
+    constructor(type: ControllerType) {
+        this.type = type;
     }
 
-    public name: string;
+    public type: ControllerType;
 
     public load(creep: Creep): void {
         this.onLoad(creep);
@@ -27,7 +27,7 @@ export abstract class CreepController {
             return mem;
 
         return {
-            name: this.name
+            type: this.type
         };
     }
 

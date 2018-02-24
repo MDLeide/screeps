@@ -68,7 +68,7 @@ export class HarvesterController extends CreepController {
 
     protected onSave(): HarvesterControllerMemory {
         return {
-            name: this.name,
+            type: this.type,
             arrived: this.arrived,
             containerId: this.containerId,
             sourceId: this.sourceId

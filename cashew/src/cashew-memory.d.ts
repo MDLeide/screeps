@@ -5,7 +5,7 @@ declare global {
 
     interface ColonyFlagMemory {
         name: string;
-        plan: string;
+        plan: PlanType;
     }
 
     interface PlaybackFlagMemory {
@@ -34,7 +34,7 @@ declare global {
     }
 
     interface ColonyPlanMemory {
-        name: string;
+        type: PlanType;
         description: string;
         milestoneIndex: number;
         operationGroup: OperationGroupMemory;
@@ -51,7 +51,7 @@ declare global {
     /** OPERATIONS **/
 
     interface OperationMemory {
-        name: string;
+        type: OperationType;
         initialized: boolean;
         started: boolean;
         finished: boolean;
@@ -64,13 +64,13 @@ declare global {
         newOperations: OperationMemory[];
         initializedOperations: OperationMemory[];
         startedOperations: OperationMemory[];
-        completedOperationNames: string[];
+        completedOperations: OperationType[];
     }
 
     interface AssignmentMemory {
         creepName: string;
         body: BodyMemory;
-        controllerName: string;
+        controllerType: ControllerType;
     }
 
     /** END OPERATIONS **/
@@ -115,7 +115,7 @@ declare global {
     /** END MAPS **/
 
     interface BodyMemory {
-        name: string,
+        type: BodyType,
         minimumEnergy: number,
         constantParts: BodyPartConstant[],
         scalingParts: BodyPartConstant[],
@@ -129,11 +129,11 @@ declare global {
     }
 
     interface CreepControllerMemory {
-        name: string;
+        type: ControllerType;
     }
 
     interface TaskMemory {
-        name: string;
+        type: TaskType;
         complete: boolean;
         incomplete: boolean;
         error: boolean;

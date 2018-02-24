@@ -16,19 +16,19 @@ export class ColonyPlan {
         milestones: Milestone[],
         getOperations: (colony: Colony, milestone: Milestone) => Operation[]): ColonyPlan {
 
-        var plan = new this(memory.name, memory.description, milestones, getOperations);
+        var plan = new this(memory.type, memory.description, milestones, getOperations);
         plan._milestoneIndex = memory.milestoneIndex;
         plan.operationGroup = OperationGroup.fromMemory(memory.operationGroup);
         return plan;
     }
 
     constructor(
-        name: string,
+        type: PlanType,
         description: string,
         milestones: Milestone[],
         getOperations: (colony: Colony, milestone: Milestone) => Operation[]) {
 
-        this.name = name;
+        this.type = type;
         this.description = description;
         this._milestoneIndex = -1;
 
@@ -39,7 +39,7 @@ export class ColonyPlan {
     }
 
 
-    public name: string;
+    public type: PlanType;
     public description: string;
     public milestones: Milestone[];
     public operationGroup: OperationGroup;
@@ -68,7 +68,7 @@ export class ColonyPlan {
 
     public save(): ColonyPlanMemory {
         return {
-            name: this.name,
+            type: this.type,
             description: this.description,
             milestoneIndex: this._milestoneIndex,
             operationGroup: this.operationGroup.save()

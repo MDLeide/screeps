@@ -6,7 +6,7 @@
 export class Body {
     public static fromMemory(memory: BodyMemory) {
         return new this(
-            memory.name,
+            memory.type,
             memory.minimumEnergy,
             memory.constantParts,
             memory.scalingParts,
@@ -15,7 +15,7 @@ export class Body {
     }
 
     constructor(
-        public name: string,
+        public type: BodyType,
         public minimumEnergy: number,
         public constantParts: BodyPartConstant[],
         public scalingParts: BodyPartConstant[],
@@ -58,7 +58,7 @@ export class Body {
 
     public save(): BodyMemory {
         return {
-            name: this.name,
+            type: this.type,
             minimumEnergy: this.minimumEnergy,
             constantParts: this.constantParts,
             scalingParts: this.scalingParts,

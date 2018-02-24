@@ -7,8 +7,8 @@ export abstract class Task {
         return instance;
     }
 
-    constructor(name: string) {
-        this.type = name;
+    constructor(type: TaskType) {
+        this.type = type;
     }
 
     public type: TaskType;
@@ -23,7 +23,7 @@ export abstract class Task {
         if (mem)
             return mem;
         return {
-            name: this.type,
+            type: this.type,
             complete: this.complete,
             incomplete: this.incomplete,
             error: this.error,
@@ -54,28 +54,21 @@ export abstract class Task {
 
 
     public static loadTask(memory: TaskMemory): Task {
-        switch (memory.name) {
-            case "Move":
+        switch (memory.type) {
+            case TASK_MOVE_TO:
                 return MoveTo.fromMemory(memory as MoveToMemory);
-            case "Idle":
+            case TASK_IDLE:
                 return Idle.fromMemory(memory);
-            case "Transfer":
+            case TASK_TRANSFER:
                 return Transfer.fromMemory(memory as TargetedTaskMemory);
-            case "Withdraw":
+            case TASK_WITHDRAW:
                 return Withdraw.fromMemory(memory as TargetedTaskMemory);
-            case "Build":
+            case TASK_BUILD:
                 return Build.fromMemory(memory as TargetedTaskMemory);
             default:
-                throw new Error(`Task name ${memory.name} not recognized`)
+                throw new Error(`Task name ${memory.type} not recognized`)
         }
     }
-
-    public static readonly IdleName = "Idle";
-    public static readonly MoveToName = "MoveTo";
-    public static readonly TransferName = "Transfer";
-    public static readonly WithdrawName = "Withdraw";
-    public static readonly BuildName = "Build";
-    public static readonly UpgradeName = "Upgrade";
 
     public static Idle(): Idle {
         return new Idle();
@@ -107,8 +100,8 @@ export abstract class TargetedTask<T extends { id: string }> extends Task {
         return Task.fromMemory(memory, instance);
     }
 
-    constructor(name: string, target: T) {
-        super(name);
+    constructor(type: TaskType, target: T) {
+        super(type);
         this.target = target;
     }
 
@@ -116,7 +109,7 @@ export abstract class TargetedTask<T extends { id: string }> extends Task {
 
     protected onSave(): TargetedTaskMemory {
         return {
-            name: this.type,
+            type: this.type,
             complete: this.complete,
             incomplete: this.incomplete,
             error: this.error,
@@ -133,7 +126,7 @@ export class Idle extends Task {
     }
 
     constructor() {
-        super("Idle");
+        super(TASK_IDLE);
     }
 
     public update(creep: Creep): void {
@@ -158,7 +151,7 @@ export class MoveTo extends Task {
     }
 
     constructor(target: (RoomPosition | { pos: RoomPosition }), range?: number) {
-        super(Task.MoveToName);
+        super(TASK_MOVE_TO);
         if (target instanceof RoomPosition)
             this.target = target;
         else
@@ -200,7 +193,7 @@ export class MoveTo extends Task {
 
     protected onSave(): MoveToMemory {
         return {
-            name: this.type,
+            type: this.type,
             complete: this.complete,
             incomplete: this.incomplete,
             error: this.error,
@@ -228,7 +221,7 @@ export class Transfer extends TargetedTask<TransferTarget> {
     }
 
     constructor(target: TransferTarget) {
-        super(Task.TransferName, target);
+        super(TASK_TRANSFER, target);
     }
 
     public update(creep: Creep): void {
@@ -270,7 +263,7 @@ export class Withdraw extends TargetedTask<WithdrawTarget> {
     }
 
     constructor(target: WithdrawTarget) {
-        super(Task.WithdrawName, target);
+        super(TASK_WITHDRAW, target);
     }
 
     public update(creep: Creep): void {
@@ -311,7 +304,7 @@ export class Build extends TargetedTask<ConstructionSite> {
     }
 
     constructor(target: ConstructionSite) {
-        super(Task.BuildName, target);
+        super(TASK_BUILD, target);
     }
 
     public update(creep: Creep): void {
@@ -347,7 +340,7 @@ export class Upgrade extends TargetedTask<StructureController> {
     }
 
     constructor(target: StructureController) {
-        super(Task.UpgradeName, target);
+        super(TASK_UPGRADE, target);
     }
 
     public update(creep: Creep): void {

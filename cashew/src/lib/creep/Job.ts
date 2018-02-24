@@ -14,8 +14,8 @@ export abstract class Job extends CreepController {
         return instance;
     }
 
-    constructor(name: string, initialTask?: Task) {
-        super(name);
+    constructor(type: ControllerType, initialTask?: Task) {
+        super(type);
         this.currentTask = initialTask;
     }
     
@@ -55,7 +55,7 @@ export abstract class Job extends CreepController {
 
     protected onSave(): JobMemory {
         return {
-            name: this.name,
+            type: this.type,
             lastTask: this.lastTask.save(),
             currentTask: this.currentTask.save()
         };

@@ -96,7 +96,7 @@ export class HarvestOperation extends Operation {
             minimumEnergy: this.minimumEnergy,
             sourceId: this.sourceId,
             containerId: this.containerId,
-            name: this.name,
+            type: this.type,
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,

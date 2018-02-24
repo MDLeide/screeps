@@ -21,7 +21,7 @@ export class OperationReport {
     private getTitle(operation: Operation): string {
         var sb = new StringBuilder();
         sb.append("Operation ");
-        sb.append(operation.name, "lightBlue");
+        sb.append(operation.type, "lightBlue");
         sb.append(" is ");
         if (operation.finished)
             sb.append("Finished", "orange");
@@ -56,9 +56,9 @@ export class OperationReport {
         for (var i = 0; i < operation.assignments.length; i++) {
             var assignment = operation.assignments[i];
             var sb = new StringBuilder();
-            sb.append(assignment.controllerName);
+            sb.append(assignment.controllerType);
             sb.append(" [");
-            sb.append(assignment.body.name);
+            sb.append(assignment.body.type);
             sb.append("] ");
             if (assignment.creepName == "") {
                 sb.append(" is ");

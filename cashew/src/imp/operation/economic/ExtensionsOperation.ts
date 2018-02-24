@@ -85,7 +85,7 @@ export class ExtensionConstruction extends Operation {
     protected onSave(): ExtensionsOperationMemory {
         return {
             rcl: this.rcl,
-            name: this.name,
+            type: this.type,
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,

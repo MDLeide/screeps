@@ -60,7 +60,7 @@ export class InitialInfrastructureBuilderController extends CreepController {
     
     protected onSave(): InitialInfrastructureBuilderControllerMemory {
         return {
-            name: this.name,
+            type: this.type,
             sourceId: this.sourceId,
             siteId: this.siteId,
             harvest: this.harvest

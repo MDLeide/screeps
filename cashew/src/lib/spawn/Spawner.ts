@@ -40,7 +40,7 @@ export class Spawner {
             {
                 memory: {
                     homeSpawnId: this.spawn.id,
-                    body: body.name,
+                    body: body.type,
                     operation: "",
                     birthTick: Game.time + 1,
                     deathTick: 0

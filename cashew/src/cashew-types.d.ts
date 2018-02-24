@@ -22,6 +22,11 @@ declare const CONTROLLER_HARVESTER: "Harvester";
 declare const CONTROLLER_INITIAL_INFRASTRUCTURE_BUILDER: "InitialInfrastructureBuilder";
 declare const CONTROLLER_LIGHT_UPGRADER: "LightUpgrader";
 
+declare const BODY_LIGHT_WORKER: "LightWorker";
+declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
+declare const BODY_HEAVY_UPGRADER: "HeavyUpgrader";
+declare const BODY_HAULER: "Hauler";
+declare const BODY_WARRIOR: "Warrior";
 
 type TASK_IDLE = "Idle";
 type TASK_MOVE_TO = "MoveTo";
@@ -47,6 +52,12 @@ type CONTROLLER_HARVESTER = "Harvester";
 type CONTROLLER_INITIAL_INFRASTRUCTURE_BUILDER = "InitialInfrastructureBuilder";
 type CONTROLLER_LIGHT_UPGRADER = "LightUpgrader";
 
+type BODY_LIGHT_WORKER = "LightWorker";
+type BODY_HEAVY_HARVESTER = "HeavyHarvester";
+type BODY_HEAVY_UPGRADER = "HeavyUpgrader";
+type BODY_HAULER = "Hauler";
+type BODY_WARRIOR = "Warrior";
+
 type TaskType =
     TASK_IDLE |
     TASK_MOVE_TO |
@@ -67,10 +78,18 @@ type OperationType =
     OPERATION_CONTROLLER_INFRASTRUCTURE |
     OPERATION_BASIC_MAINTENANCE;
 
-type ColonyPlanType =
+type PlanType =
     PLAN_STANDARD;
 
 type ControllerType =
     CONTROLLER_HARVESTER |
     CONTROLLER_INITIAL_INFRASTRUCTURE_BUILDER |
     CONTROLLER_LIGHT_UPGRADER;
+
+type BodyType =
+    BODY_LIGHT_WORKER |
+    BODY_HEAVY_HARVESTER |
+    BODY_HEAVY_UPGRADER |
+    BODY_HAULER |
+    BODY_WARRIOR;
+

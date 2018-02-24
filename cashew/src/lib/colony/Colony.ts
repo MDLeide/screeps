@@ -81,7 +81,7 @@ export class Colony  {
     public spawnCreep(body: Body): {name: string, spawner: Spawner} | null {
         var result = this.nest.spawnCreep(body);
         if (result)
-            global.events.colony.creepSpawning(this.name, result.name, body.name);
+            global.events.colony.creepSpawning(this.name, result.name, body.type);
         return result;
     }
 

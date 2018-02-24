@@ -1,17 +1,17 @@
 import { Body } from "../../lib/spawn/Body";
 
 export class BodyRepository {
-    public static getBody(name: string): Body {
-        switch (name) {
-            case "lightWorker":
+    public static getBody(type: BodyType): Body {
+        switch (type) {
+            case BODY_LIGHT_WORKER:
                 return this.lightWorker();
-            case "heavyHarvester":
+            case BODY_HEAVY_HARVESTER:
                 return this.heavyHarvester();
-            case "heavyUpgrader":
+            case BODY_HEAVY_UPGRADER:
                 return this.heavyUpgrader();
-            case "hauler":
+            case BODY_HAULER:
                 return this.hauler();
-            case "warrior":
+            case BODY_WARRIOR:
                 return this.warrior();
             default:
                 return null;
@@ -20,7 +20,7 @@ export class BodyRepository {
 
     public static lightWorker():Body {
         return new Body(
-            "lightWorker",
+            BODY_LIGHT_WORKER,
             250,
             [WORK, MOVE, CARRY, MOVE],
             [WORK, MOVE, CARRY, MOVE],
@@ -31,7 +31,7 @@ export class BodyRepository {
 
     public static heavyHarvester(): Body {
         return new Body(
-            "heavyHarvester",
+            BODY_HEAVY_HARVESTER,
             200,
             [CARRY, MOVE, WORK],
             [WORK],
@@ -42,7 +42,7 @@ export class BodyRepository {
 
     public static heavyUpgrader(): Body {
         return new Body(
-            "heavyUpgrader",
+            BODY_HEAVY_UPGRADER,
             200,
             [CARRY, MOVE, WORK],
             [WORK],
@@ -53,7 +53,7 @@ export class BodyRepository {
 
     public static hauler(): Body {
         return new Body(
-            "hauler",
+            BODY_HAULER,
             100,
             [CARRY, MOVE],
             [CARRY, MOVE],
@@ -64,7 +64,7 @@ export class BodyRepository {
 
     public static warrior(): Body {
         return new Body(
-            "warrior",
+            BODY_WARRIOR,
             100,
             [ATTACK, MOVE],
             [ATTACK, MOVE],

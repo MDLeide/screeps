@@ -43,5 +43,11 @@ export class GlobalExtension {
         global.CONTROLLER_HARVESTER = "Harvester";
         global.CONTROLLER_INITIAL_INFRASTRUCTURE_BUILDER = "InitialInfrastructureBuilder";
         global.CONTROLLER_LIGHT_UPGRADER = "LightUpgrader";
+
+        global.BODY_LIGHT_WORKER = "LightWorker";
+        global.BODY_HEAVY_HARVESTER = "HeavyHarvester";
+        global.BODY_HEAVY_UPGRADER = "HeavyUpgrader";
+        global.BODY_HAULER = "Hauler";
+        global.BODY_WARRIOR = "Warrior";
     }
 }
