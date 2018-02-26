@@ -1,28 +1,33 @@
 import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
+import { JobOperation } from "../../../lib/operation/JobOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
+import { BuildJob } from "../../creep/BuildJob";
 
-export class TowerConstructionOperation extends Operation {
+export class TowerConstructionOperation extends JobOperation {
     public static fromMemory(memory: TowerConstructionOperationMemory): Operation {
         var op = new this(memory.rcl);
         return Operation.fromMemory(memory, op);
     }
 
     constructor(rcl: number) {
-        super("towerConstruction", TowerConstructionOperation.getAssignments());
+        super(OPERATION_TOWER_CONSTRUCTION, TowerConstructionOperation.getAssignments());
         this.rcl = rcl;
     }
 
     private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", BodyRepository.getBody("lightWorker"), "builder"),
-            new Assignment("", BodyRepository.getBody("lightWorker"), "builder")
+            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_BUILD),
+            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_BUILD)
         ];
     }
 
 
     public rcl: number;
+    public siteBuilt: boolean;
+    public siteId: string;
+    public site: ConstructionSite;
 
 
     public canInit(colony: Colony): boolean {
@@ -34,19 +39,24 @@ export class TowerConstructionOperation extends Operation {
     }
 
     public isFinished(colony: Colony): boolean {
-        var towerLocation = colony.nest.nestMap.mainBlock.getTowerLocation(this.rcl);
-        var look = colony.nest.room.lookForAt(LOOK_STRUCTURES, towerLocation.x, towerLocation.y);
-        for (var i = 0; i < look.length; i++) 
-            if (look[i].structureType == STRUCTURE_TOWER)
-                return true;        
-        return false;
+        return this.initialized && this.siteBuilt && !this.site;
     }
-
     
     protected onInit(colony: Colony): boolean {
-        var tower = colony.nest.nestMap.mainBlock.getTowerLocation(this.rcl);
-        var result = colony.nest.room.createConstructionSite(tower.x, tower.y, STRUCTURE_TOWER);
-        return result == OK;
+        let tower = colony.nest.nestMap.mainBlock.getTowerLocation(this.rcl);
+        if (!this.siteBuilt) {            
+            let result = colony.nest.room.createConstructionSite(tower.x, tower.y, STRUCTURE_TOWER);
+            this.siteBuilt = result == OK;
+            return false;
+        } else {
+            let site = colony.nest.room.lookForAt(LOOK_CONSTRUCTION_SITES, tower.x, tower.y);
+            if (site.length) {
+                this.site = site[0];
+                this.siteId = this.site.id;
+                return true;
+            }
+        }
+        return false;
     }
 
     protected onStart(colony: Colony): boolean {
@@ -56,9 +66,10 @@ export class TowerConstructionOperation extends Operation {
     protected onFinish(colony: Colony): boolean {
         return true;
     }
-
-
+    
     protected onLoad(): void {
+        if (this.siteId)
+            this.site = Game.getObjectById<ConstructionSite>(this.siteId);
     }
 
     protected onUpdate(colony: Colony): void {
@@ -73,20 +84,28 @@ export class TowerConstructionOperation extends Operation {
     protected onAssignment(assignment: Assignment): void {
     }
 
+    protected getJob(assignment: Assignment): BuildJob {
+        return new BuildJob(this.siteId);
+    }
+
     protected onSave(): TowerConstructionOperationMemory {
         return {
-            rcl: this.rcl,
             type: this.type,
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
             cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
-            controllers: this.getControllerMemory()
+            jobs: this.getJobMemory(),
+            rcl: this.rcl,
+            siteBuilt: this.siteBuilt,
+            siteId: this.siteId
         };
     }
 }
 
-interface TowerConstructionOperationMemory extends OperationMemory {
+interface TowerConstructionOperationMemory extends JobOperationMemory {
     rcl: number;
+    siteBuilt: boolean;
+    siteId: string;
 }

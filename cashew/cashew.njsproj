@@ -89,14 +89,21 @@
     <TypeScriptCompile Include="src\imp\colony\plans\StandardPlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\creep\LightUpgraderJob.ts">
+    <TypeScriptCompile Include="src\imp\creep\BuildJob.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\HaulerRole.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\UpgraderRole.ts" />
+    <TypeScriptCompile Include="src\imp\creep\LightUpgraderRole.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\HarvesterController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\ControllerTemplate.ts" />
-    <TypeScriptCompile Include="src\imp\creep\InitialInfrastructureBuilderController.ts">
+    <TypeScriptCompile Include="src\imp\creep\HarvestInfrastructureBuilderController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\Execution.ts">
@@ -125,10 +132,17 @@
     <TypeScriptCompile Include="src\lib\creep\CreepController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\creep\Role.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\creep\Job.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\creep\Task.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\operation\JobOperation.ts" />
+    <TypeScriptCompile Include="src\lib\operation\ControllerOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\wrapper\Creep.ts">

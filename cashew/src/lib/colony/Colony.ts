@@ -96,4 +96,17 @@ export class Colony  {
     public getSpawnTransferTarget(creep: Creep): (StructureSpawn | StructureExtension) {
         return this.resourceManager.getSpawnExtensionTransferTargets(creep);
     }
+
+    public getControllerEnergySource(): (StructureContainer | StructureLink) {
+        let loc = this.nest.nestMap.controllerBlock.getContainerLocation();
+        let source = this.nest.room.lookForAt(LOOK_STRUCTURES, loc.x, loc.y);
+        if (source.length) {
+            if (source[0].structureType == STRUCTURE_CONTAINER)
+                return source[0] as StructureContainer;
+            else if (source[0].structureType == STRUCTURE_LINK)
+                return source[0] as StructureLink;
+        }
+            
+        return null;
+    }
 }

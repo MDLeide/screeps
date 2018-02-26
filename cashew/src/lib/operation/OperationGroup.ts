@@ -171,7 +171,7 @@ export class OperationGroup {
         for (var i = 0; i < openAssignments.length; i++) {
             var unassignedCreep = this.getUnassignedCreep(openAssignments[i], colony);
             if (unassignedCreep) {
-                op.assignCreep({ name: unassignedCreep, bodyName: openAssignments[i].body.type });
+                op.assignCreep({ name: unassignedCreep, bodyType: openAssignments[i].body.type });
                 continue;
             }
             
@@ -180,7 +180,7 @@ export class OperationGroup {
 
             var response = colony.spawnCreep(openAssignments[i].body);
             if (response)
-                op.assignCreep({ name: response.name, bodyName: openAssignments[i].body.type });
+                op.assignCreep({ name: response.name, bodyType: openAssignments[i].body.type });
         }
     }
 

@@ -1,37 +1,35 @@
-import { Job } from "../../lib/creep/Job";
+import { Role } from "../../lib/creep/Role";
 import { Task } from "../../lib/creep/Task";
 
 /**
- * Specialized job for the early parts of a room. Upgrades the controller by getting
+ * Specialized role for the early parts of a room. Upgrades the controller by getting
 energy from a container. Also keeps the Spawn fed.
  */
-export class LightUpgraderJob extends Job {
-    public static readonly myName: string = "LightUpgraderController";
-
+export class LightUpgraderRole extends Role {
     constructor() {
-        super(LightUpgraderJob.myName);
+        super(CONTROLLER_LIGHT_UPGRADER);
     }
 
-    public supplySpawn: boolean = false;
-    public filling: boolean = true;
+    ///** If true, the creep will fill the spawn. */
+    //public supplySpawn: boolean = true;    // not saving this to memory, so just hardcoding as 'true' for now
 
     protected getNextTask(creep: Creep): Task {
         let colony = global.empire.getColony(creep);
 
         if (!this.currentTask ||
-            this.currentTask.type == Task.TransferName ||
-            this.currentTask.type == Task.UpgradeName) {
+            this.currentTask.type == TASK_TRANSFER ||
+            this.currentTask.type == TASK_UPGRADE) {
             
             let withdrawTarget = colony.getWithdrawTarget(creep);
             if (withdrawTarget)
                 return Task.Withdraw(withdrawTarget);
 
         } else if (creep.carry.energy > 0) {
-            if (this.supplySpawn) {
-                let spawnTarget = colony.getSpawnTransferTarget(creep);
-                if (spawnTarget)
-                    return Task.Transfer(spawnTarget);
-            }
+            //if (this.supplySpawn) {
+            let spawnTarget = colony.getSpawnTransferTarget(creep);
+            if (spawnTarget)
+                return Task.Transfer(spawnTarget);
+            //}
 
             let upgradeTarget = colony.nest.room.controller;
             return Task.Upgrade(upgradeTarget);
@@ -44,11 +42,11 @@ export class LightUpgraderJob extends Job {
     protected isIdle(creep: Creep): Task {
         let colony = global.empire.getColony(creep);
         if (creep.carry.energy > 0) {
-            if (this.supplySpawn) {
-                let spawnTarget = colony.getSpawnTransferTarget(creep);
-                if (spawnTarget)
-                    return Task.Transfer(spawnTarget);
-            }
+            //if (this.supplySpawn) {
+            let spawnTarget = colony.getSpawnTransferTarget(creep);
+            if (spawnTarget)
+                return Task.Transfer(spawnTarget);
+            //}
 
             let upgradeTarget = colony.nest.room.controller;
             return Task.Upgrade(upgradeTarget);

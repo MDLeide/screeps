@@ -1,24 +1,25 @@
 import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
+import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
+import { LightUpgraderRole } from "../../creep/LightUpgraderRole";
 
-export class LightUpgradeOperation extends Operation {
+export class LightUpgradeOperation extends ControllerOperation {
     public static fromMemory(memory: OperationMemory): Operation {
         var op = new this();
-        return Operation.fromMemory(memory, op);
+        return ControllerOperation.fromMemory(memory, op);
     }
 
     constructor() {
-        super("lightUpgrade", LightUpgradeOperation.getAssignments());        
+        super(OPERATION_LIGHT_UPGRADE, LightUpgradeOperation.getAssignments());        
     }
 
     private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", BodyRepository.getBody("lightWorker"), "lightUpgrader"),
-            new Assignment("", BodyRepository.getBody("lightWorker"), "lightUpgrader"),
-            new Assignment("", BodyRepository.getBody("lightWorker"), "lightUpgrader"),
-            new Assignment("", BodyRepository.getBody("lightWorker"), "lightUpgrader")
+            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_LIGHT_UPGRADER),
+            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_LIGHT_UPGRADER),
+            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_LIGHT_UPGRADER)
         ]
     }
     
@@ -34,8 +35,7 @@ export class LightUpgradeOperation extends Operation {
     public isFinished(colony: Colony): boolean {
         return false;
     }
-
-
+    
     protected onInit(colony: Colony): boolean {
         return true;
     }
@@ -47,8 +47,7 @@ export class LightUpgradeOperation extends Operation {
     protected onFinish(colony: Colony): boolean {
         return true;
     }
-
-
+    
     protected onLoad(): void {
     }
 
@@ -64,7 +63,7 @@ export class LightUpgradeOperation extends Operation {
     protected onAssignment(assignment: Assignment): void {
     }
 
-    protected onSave(): OperationMemory {
-        return null;
+    protected getController(assignment: Assignment): LightUpgraderRole {
+        return new LightUpgraderRole();
     }
 }

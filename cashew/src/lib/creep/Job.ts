@@ -1,71 +1,46 @@
-import { CreepController } from "./CreepController";
+import { Role } from "./Role";
 import { Task } from "./Task"
 
 /**
- Job is a type of controller that provides some
-functionality for Task based creep control.
+ Job is a type of controller that uses tasks to control the creep,
+and has a discrete finishing point.
  */
-export abstract class Job extends CreepController {
+export abstract class Job extends Role {
     public static fromMemory<T extends Job>(memory: JobMemory, instance: T): T {
-        if (memory.lastTask)
-            instance.lastTask = Task.loadTask(memory.lastTask);
-        if (memory.currentTask)
-            instance.currentTask = Task.loadTask(memory.currentTask);
-        return instance;
+        instance.complete = memory.complete;
+        return Role.fromMemory(memory, instance);
     }
 
-    constructor(type: ControllerType, initialTask?: Task) {
-        super(type);
-        this.currentTask = initialTask;
-    }
-    
-    public lastTask: Task;
-    public currentTask: Task;
-
-    protected onLoad(creep: Creep): void {        
-    }
+    public complete: boolean;
 
     protected onUpdate(creep: Creep): void {
-        if (this.currentTask)
-            this.currentTask.update(creep);
-
-        if (!this.currentTask || this.currentTask.finished) {
-            let nextTask = this.getNextTask(creep);
-            this.lastTask = this.currentTask;
-            if (nextTask)
-                this.currentTask = nextTask;
-            else
-                this.currentTask = Task.Idle();            
-        } else if (this.currentTask.type == Task.IdleName) {
-            let nextTask = this.isIdle(creep);
-            if (nextTask) {
-                this.lastTask = this.currentTask;
-                this.currentTask = nextTask;
-            }                
-        }
+        if (this.isCompleted())
+            this.complete = true;
+        if (this.complete)
+            return;
+        super.onUpdate(creep);
     }
 
     protected onExecute(creep: Creep): void {
-        this.currentTask.execute(creep);
+        if (this.complete)
+            return;
+        super.onExecute(creep);
     }
 
     protected onCleanup(creep: Creep): void {
-        this.currentTask.cleanup(creep);
+        if (this.complete)
+            return;
+        super.onCleanup(creep);
     }
 
     protected onSave(): JobMemory {
         return {
             type: this.type,
-            lastTask: this.lastTask.save(),
-            currentTask: this.currentTask.save()
+            lastTask: this.lastTask ? this.lastTask.save() : undefined,
+            currentTask: this.currentTask ? this.currentTask.save() : undefined,
+            complete: this.complete
         };
     }
 
-    protected abstract getNextTask(creep: Creep): Task;
-    protected abstract isIdle(creep: Creep): Task;
-}
-
-export interface JobMemory extends CreepControllerMemory {
-    lastTask: TaskMemory;
-    currentTask: TaskMemory;
+    protected abstract isCompleted(): boolean;
 }

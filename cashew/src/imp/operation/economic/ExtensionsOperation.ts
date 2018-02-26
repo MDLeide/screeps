@@ -1,27 +1,31 @@
 import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
+import { JobOperation } from "../../../lib/operation/JobOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
+import { BuildJob } from "../../creep/BuildJob";
 import { BodyRepository } from "../../spawn/BodyRepository";
 
-export class ExtensionConstruction extends Operation {
+export class ExtensionConstruction extends JobOperation {
     public static fromMemory(memory: ExtensionsOperationMemory): Operation {
         var op = new this(memory.rcl);
         return Operation.fromMemory(memory, op);
     }
 
     constructor(rcl: number) {
-        super("extensions", ExtensionConstruction.getAssignments());
+        super(OPERATION_EXTENSION_CONSTRUCTION, ExtensionConstruction.getAssignments());
         this.rcl = rcl;
     }
 
 
     public rcl: number;
-
+    public siteIds: string[] = [];
+    public sites: ConstructionSite[] = [];
+    public sitesBuilt: boolean;
 
     private static getAssignments(): Assignment[]{
         return [
-            new Assignment("", BodyRepository.getBody("lightWorker"), "builder"),
-            new Assignment("", BodyRepository.getBody("lightWorker"), "builder")
+            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_BUILD),
+            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_BUILD)
         ];
     }
 
@@ -34,28 +38,29 @@ export class ExtensionConstruction extends Operation {
     }
 
     public isFinished(colony: Colony): boolean {
-        var targetCount = 0;
-        for (var i = 0; i < this.rcl; i++) 
-            targetCount += colony.nest.nestMap.extensionBlock.getExtensionLocations(i + 1).length;
-
-        var extensionCount = colony.nest.room.find(FIND_MY_STRUCTURES, {
-            filter: (struct) => {
-                return struct.structureType == STRUCTURE_EXTENSION;
-            }
-        }).length;
-
-        return targetCount == extensionCount;
+        return this.sitesBuilt && this.initialized && this.sites.length == 0;
     }
 
 
     protected onInit(colony: Colony): boolean {
-        var locs = colony.nest.nestMap.extensionBlock.getExtensionLocations(this.rcl);
-
-        for (var i = 0; i < locs.length; i++) {
-            colony.nest.room.createConstructionSite(locs[i].x, locs[i].y, STRUCTURE_EXTENSION);
+        let locs = colony.nest.nestMap.extensionBlock.getExtensionLocations(this.rcl);
+        if (!this.sitesBuilt) {            
+            for (let i = 0; i < locs.length; i++) {
+                colony.nest.room.createConstructionSite(locs[i].x, locs[i].y, STRUCTURE_EXTENSION);
+            }
+            return false;
+        } else {
+            for (let i = 0; i < locs.length; i++) {
+                let site = colony.nest.room.lookForAt(LOOK_CONSTRUCTION_SITES, locs[i].x, locs[i].y);
+                if (site.length) {
+                    this.siteIds.push(site[0].id);
+                    this.sites.push(site[0]);
+                }
+            }
+            if (this.siteIds.length > 0)
+                return true;
         }
-
-        return true;
+        return false;
     }
 
     protected onStart(colony: Colony): boolean {
@@ -65,9 +70,16 @@ export class ExtensionConstruction extends Operation {
     protected onFinish(colony: Colony): boolean {
         return true;
     }
-
-
+    
     protected onLoad(): void {
+        this.sites = [];
+        for (var i = 0; i < this.siteIds.length; i++) {
+            let site = Game.getObjectById<ConstructionSite>(this.siteIds[i]);
+            if (site)
+                this.sites.push(site);
+            else
+                this.siteIds.splice(i--, 1);
+        }
     }
 
     protected onUpdate(colony: Colony): void {
@@ -82,20 +94,30 @@ export class ExtensionConstruction extends Operation {
     protected onAssignment(assignment: Assignment): void {
     }
 
+    protected getJob(assignment: Assignment): BuildJob {
+        if (this.siteIds.length)
+            return new BuildJob(this.siteIds[0]);
+        return null;
+    }
+
     protected onSave(): ExtensionsOperationMemory {
         return {
-            rcl: this.rcl,
             type: this.type,
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
             cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
-            controllers: this.getControllerMemory()
+            jobs: this.getJobMemory(),
+            rcl: this.rcl,
+            siteIds: this.siteIds,
+            sitesBuilt: this.sitesBuilt
         };
     }
 }
 
-interface ExtensionsOperationMemory extends OperationMemory {
+interface ExtensionsOperationMemory extends JobOperationMemory {
     rcl: number;
+    siteIds: string[];
+    sitesBuilt: boolean;
 }

@@ -1,22 +1,24 @@
 import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
+import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
+import { HaulerRole } from "../../creep/HaulerRole";
 
-export class EnergyTransportOperation extends Operation {
+export class EnergyTransportOperation extends ControllerOperation {
     public static fromMemory(memory: OperationMemory): Operation {
         var op = new this();
         return Operation.fromMemory(memory, op);
     }
 
     constructor() {
-        super("energyTransport", EnergyTransportOperation.getAssignments());        
+        super(OPERATION_ENERGY_TRANSPORT, EnergyTransportOperation.getAssignments());        
     }
 
     private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", BodyRepository.hauler(), "transporter"),
-            new Assignment("", BodyRepository.hauler(), "transporter")
+            new Assignment("", BodyRepository.hauler(), CONTROLLER_HAULER),
+            new Assignment("", BodyRepository.hauler(), CONTROLLER_HAULER)
         ];
     }
 
@@ -58,10 +60,7 @@ export class EnergyTransportOperation extends Operation {
     protected onCleanup(colony: Colony): void {
     }
 
-    protected onAssignment(assignment: Assignment): void {
-    }
-    
-    protected onSave(): OperationMemory {
-        return null;
+    protected getController(assignment: Assignment): HaulerRole {
+        return new HaulerRole();
     }
 }

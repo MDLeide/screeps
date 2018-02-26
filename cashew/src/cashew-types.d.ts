@@ -19,7 +19,7 @@ declare const OPERATION_BASIC_MAINTENANCE: "BasicMaintenance";
 declare const PLAN_STANDARD: "Standard";
 
 declare const CONTROLLER_HARVESTER: "Harvester";
-declare const CONTROLLER_INITIAL_INFRASTRUCTURE_BUILDER: "InitialInfrastructureBuilder";
+declare const CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: "InitialInfrastructureBuilder";
 declare const CONTROLLER_LIGHT_UPGRADER: "LightUpgrader";
 
 declare const BODY_LIGHT_WORKER: "LightWorker";
@@ -49,7 +49,7 @@ type OPERATION_BASIC_MAINTENANCE = "BasicMaintenance";
 type PLAN_STANDARD = "Standard";
 
 type CONTROLLER_HARVESTER = "Harvester";
-type CONTROLLER_INITIAL_INFRASTRUCTURE_BUILDER = "InitialInfrastructureBuilder";
+type CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "InitialInfrastructureBuilder";
 type CONTROLLER_LIGHT_UPGRADER = "LightUpgrader";
 
 type BODY_LIGHT_WORKER = "LightWorker";
@@ -83,7 +83,7 @@ type PlanType =
 
 type ControllerType =
     CONTROLLER_HARVESTER |
-    CONTROLLER_INITIAL_INFRASTRUCTURE_BUILDER |
+    CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER |
     CONTROLLER_LIGHT_UPGRADER;
 
 type BodyType =

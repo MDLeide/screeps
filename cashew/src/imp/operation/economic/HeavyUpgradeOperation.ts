@@ -1,27 +1,32 @@
 import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
+import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
+import { UpgraderRole } from "../../creep/UpgraderRole";
 
-export class HeavyUpgradeOperation extends Operation {
-
-    public static fromMemory(memory: OperationMemory): Operation {
+export class HeavyUpgradeOperation extends ControllerOperation {
+    public static fromMemory(memory: HeavyUpgradeOperationMemory): Operation {
         var op = new this();
-        return Operation.fromMemory(memory, op);
+        op.containerId = memory.containerId;
+        op.controllerId = memory.controllerId;
+        return ControllerOperation.fromMemory(memory, op);
     }
 
     constructor() {
-        super("heavyUpgrade", HeavyUpgradeOperation.getAssignments());
+        super(OPERATION_HEAVY_UPGRADE, HeavyUpgradeOperation.getAssignments());
     }
 
     private static getAssignments(): Assignment[] {
         var body = BodyRepository.heavyUpgrader();
         return [
-            new Assignment("", body, "heavyUpgrader"),
-            new Assignment("", body, "heavyUpgrader")
+            new Assignment("", body, CONTROLLER_UPGRADER),
+            new Assignment("", body, CONTROLLER_UPGRADER)
         ]
     }
-    
+
+    public containerId: string;
+    public controllerId: string;
 
     public canInit(colony: Colony): boolean {
         return true;
@@ -35,8 +40,9 @@ export class HeavyUpgradeOperation extends Operation {
         return false;
     }
     
-
     protected onInit(colony: Colony): boolean {
+        this.containerId = colony.getControllerEnergySource().id;
+        this.controllerId = colony.nest.room.controller.id;
         return true;
     }
 
@@ -47,7 +53,6 @@ export class HeavyUpgradeOperation extends Operation {
     protected onFinish(colony: Colony): boolean {
         return true;
     }
-
 
     protected onLoad(): void {
     }
@@ -64,11 +69,26 @@ export class HeavyUpgradeOperation extends Operation {
     protected onAssignment(assignment: Assignment): void {
     }
 
-    protected onSave(): OperationMemory {
-        return null;
+    protected getController(assignment: Assignment): UpgraderRole {
+        return new UpgraderRole(this.containerId, this.controllerId);
+    }
+
+    protected onSave(): HeavyUpgradeOperationMemory {
+        return {
+            type: this.type,
+            initialized: this.initialized,
+            started: this.started,
+            finished: this.finished,
+            cancelMilestoneId: this.cancelMilestoneId,
+            assignments: this.getAssignmentMemory(),
+            controllers: this.getControllerMemory(),
+            containerId: this.containerId,
+            controllerId: this.controllerId
+        };
     }
 }
 
-interface HarvestOperationMemory extends OperationMemory {
-    minimumEnergy: number;
+interface HeavyUpgradeOperationMemory extends ControllerOperationMemory {
+    containerId: string;
+    controllerId: string;
 }

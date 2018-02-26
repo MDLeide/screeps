@@ -1,16 +1,14 @@
 import { CreepController } from "../../lib/creep/CreepController";
 
-export class InitialInfrastructureBuilderController extends CreepController {
-    public static readonly myName: string = "InitialInfrastructureBuilderController";
-
-    public static fromMemory(memory: InitialInfrastructureBuilderControllerMemory ): InitialInfrastructureBuilderController {
+export class HarvestInfrastructureBuilderController extends CreepController {
+    public static fromMemory(memory: HarvestInfrastructureBuilderControllerMemory ): HarvestInfrastructureBuilderController {
         let cont = new this(memory.sourceId, memory.siteId);
         cont.harvest = memory.harvest;
         return cont;
     }
 
     constructor(sourceId: string, siteId: string) {
-        super(InitialInfrastructureBuilderController.myName);
+        super(CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER);
         this.sourceId = sourceId;
         this.siteId = siteId;
     }
@@ -58,7 +56,7 @@ export class InitialInfrastructureBuilderController extends CreepController {
 
     protected onCleanup(creep: Creep): void { }
     
-    protected onSave(): InitialInfrastructureBuilderControllerMemory {
+    protected onSave(): HarvestInfrastructureBuilderControllerMemory {
         return {
             type: this.type,
             sourceId: this.sourceId,
@@ -68,7 +66,7 @@ export class InitialInfrastructureBuilderController extends CreepController {
     }
 }
 
-export interface InitialInfrastructureBuilderControllerMemory extends CreepControllerMemory {
+export interface HarvestInfrastructureBuilderControllerMemory extends CreepControllerMemory {
     sourceId: string;
     siteId: string;
     harvest: boolean;

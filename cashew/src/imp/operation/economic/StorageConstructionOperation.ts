@@ -1,24 +1,34 @@
 import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
+import { JobOperation } from "../../../lib/operation/JobOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
+import { BuildJob } from "../../creep/BuildJob";
 
-export class StorageConstructionOperation extends Operation {
-    public static fromMemory(memory: OperationMemory): Operation {
+export class StorageConstructionOperation extends JobOperation {
+    public static fromMemory(memory: StorageConstructionMemory): Operation {
         var op = new this();
-        return Operation.fromMemory(memory, op);
+        op.siteBuilt = memory.siteBuilt;
+        op.siteId = memory.siteId;
+        return JobOperation.fromMemory(memory, op);
     }
 
     constructor() {
-        super("storageConstruction", StorageConstructionOperation.getAssignments());
+        super(OPERATION_STORAGE_CONSTRUCTION, StorageConstructionOperation.getAssignments());
     }
 
     private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", BodyRepository.getBody("lightWorker"), "builder"),
-            new Assignment("", BodyRepository.getBody("lightWorker"), "builder")
+            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_BUILDER),
+            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_BUILDER)
         ];
     }
+
+
+    public siteId: string;
+    public site: ConstructionSite;
+    public siteBuilt: boolean;
+
     
     public canInit(colony: Colony): boolean {
         return true;
@@ -29,19 +39,24 @@ export class StorageConstructionOperation extends Operation {
     }
 
     public isFinished(colony: Colony): boolean {
-        var storage = colony.nest.nestMap.mainBlock.getStorageLocation();
-        var look = colony.nest.room.lookForAt(LOOK_STRUCTURES, storage.x, storage.y);
-        for (var i = 0; i < look.length; i++) 
-            if (look[i].structureType == STRUCTURE_STORAGE)
-                return true;        
-        return false;
+        return this.initialized && this.siteBuilt && !this.site;
     }
-
     
     protected onInit(colony: Colony): boolean {
-        var storage = colony.nest.nestMap.mainBlock.getStorageLocation();
-        var result = colony.nest.room.createConstructionSite(storage.x, storage.y, STRUCTURE_STORAGE);
-        return result == OK;
+        let storage = colony.nest.nestMap.mainBlock.getStorageLocation();
+        if (!this.siteBuilt) {            
+            let result = colony.nest.room.createConstructionSite(storage.x, storage.y, STRUCTURE_STORAGE);
+            this.siteBuilt = result == OK;
+            return false;
+        } else {
+            let site = colony.nest.room.lookForAt(LOOK_CONSTRUCTION_SITES, storage.x, storage.y);
+            if (site.length) {
+                this.site = site[0];
+                this.siteId = this.site.id;
+                return true;
+            }
+        }
+        return false;
     }
 
     protected onStart(colony: Colony): boolean {
@@ -51,9 +66,10 @@ export class StorageConstructionOperation extends Operation {
     protected onFinish(colony: Colony): boolean {
         return true;
     }
-
-
+    
     protected onLoad(): void {
+        if (this.siteId)
+            this.site = Game.getObjectById<ConstructionSite>(this.siteId);
     }
 
     protected onUpdate(colony: Colony): void {
@@ -67,8 +83,27 @@ export class StorageConstructionOperation extends Operation {
 
     protected onAssignment(assignment: Assignment): void {
     }
-    
-    protected onSave(): OperationMemory {
-        return null;
+
+    protected getJob(assignment: Assignment): BuildJob {
+        return new BuildJob(this.siteId);
     }
+
+    protected onSave(): StorageConstructionMemory {
+        return {
+            type: this.type,
+            initialized: this.initialized,
+            started: this.started,
+            finished: this.finished,
+            cancelMilestoneId: this.cancelMilestoneId,
+            assignments: this.getAssignmentMemory(),
+            jobs: this.getJobMemory(),
+            siteId: this.siteId,
+            siteBuilt: this.siteBuilt
+        };
+    }
+}
+
+export interface StorageConstructionMemory extends JobOperationMemory {
+    siteId: string;
+    siteBuilt: boolean;
 }

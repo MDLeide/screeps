@@ -56,8 +56,15 @@ declare global {
         started: boolean;
         finished: boolean;
         cancelMilestoneId: string;
-        assignments: AssignmentMemory[];
-        controllers: { [creedName: string]: CreepControllerMemory };
+        assignments: AssignmentMemory[];        
+    }
+
+    interface ControllerOperationMemory extends OperationMemory {
+        controllers: { [creepName: string]: CreepControllerMemory };
+    }
+
+    interface JobOperationMemory extends OperationMemory {
+        jobs: { [creepName: string]: JobMemory };
     }
 
     interface OperationGroupMemory {
@@ -130,6 +137,15 @@ declare global {
 
     interface CreepControllerMemory {
         type: ControllerType;
+    }
+
+    interface RoleMemory extends CreepControllerMemory {
+        lastTask: TaskMemory;
+        currentTask: TaskMemory;
+    }
+
+    interface JobMemory extends RoleMemory {
+        complete: boolean;
     }
 
     interface TaskMemory {

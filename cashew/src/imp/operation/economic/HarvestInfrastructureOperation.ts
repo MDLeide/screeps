@@ -1,36 +1,40 @@
 import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
+import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { MapBlock } from "../../../lib/map/base/MapBlock";
 import { HarvestBlock } from "../../../lib/map/blocks/HarvestBlock";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
+import { HarvestInfrastructureBuilderController } from "../../creep/HarvestInfrastructureBuilderController";
 
-export class HarvestInfrastructureOperation extends Operation {    
-    private _sourceBlock: MapBlock;
-
+export class HarvestInfrastructureOperation extends ControllerOperation {   
     public static fromMemory(memory: HarvestInfrastructureOperationMemory): Operation {
         var op = new this(memory.sourceId);
-        op.standLocation = memory.standlocation;
-        return Operation.fromMemory(memory, op);
+        op.sourceId = memory.sourceId;
+        op.siteId = memory.siteId;
+        op.siteBuilt = memory.siteBuilt;
+        return ControllerOperation.fromMemory(memory, op);
     }
 
     constructor(sourceId: string) {
-        super("harvestInfrastructure", HarvestInfrastructureOperation.getAssignments());        
+        super(OPERATION_HARVEST_INFRASTRUCTURE, HarvestInfrastructureOperation.getAssignments());        
         this.sourceId = sourceId;
         this.source = Game.getObjectById<Source>(sourceId);
     }
 
     private static getAssignments(): Assignment[]{
         return [
-            new Assignment("", BodyRepository.getBody("lightWorker"), "lightMiner"),
-            new Assignment("", BodyRepository.getBody("lightWorker"), "lightMiner")
+            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER),
+            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER)
         ];
     }
     
 
     public source: Source;
     public sourceId: string;
-    public standLocation: { x: number, y: number };
+    public site: ConstructionSite;
+    public siteId: string;
+    public siteBuilt: boolean;
     
 
     public canInit(colony: Colony): boolean {
@@ -38,8 +42,7 @@ export class HarvestInfrastructureOperation extends Operation {
     }
 
     protected onInit(colony: Colony): boolean {
-        var harvestBlock: HarvestBlock;
-
+        let harvestBlock: HarvestBlock;
         for (var i = 0; i < colony.nest.nestMap.harvestBlocks.length; i++) {
             var block = colony.nest.nestMap.harvestBlocks[i];
             var s = block.getSourceLocation();
@@ -48,11 +51,20 @@ export class HarvestInfrastructureOperation extends Operation {
                 break;
             }
         }
-
-        var container = harvestBlock.getContainerLocation();
-        this.source.room.createConstructionSite(container.x, container.y, STRUCTURE_CONTAINER);
-        this.standLocation = { x: container.x, y: container.y };
-        return true;
+        let containerLocation = harvestBlock.getContainerLocation();
+        if (!this.siteBuilt) {            
+            this.source.room.createConstructionSite(containerLocation.x, containerLocation.y, STRUCTURE_CONTAINER);
+            this.siteBuilt = true;
+            return false;
+        } else {
+            let site = this.source.room.lookForAt(LOOK_CONSTRUCTION_SITES, containerLocation.x, containerLocation.y);
+            if (site.length) {
+                this.site = site[0];
+                this.siteId = this.site.id;
+                return true;
+            }
+            return false;
+        }
     }
 
     public canStart(colony: Colony): boolean {
@@ -64,18 +76,22 @@ export class HarvestInfrastructureOperation extends Operation {
     }
 
     public isFinished(colony: Colony): boolean {
-        var look = this.source.room.lookAt(this.standLocation.x, this.standLocation.y);
-
-        for (var i = 0; i < look.length; i++) {
-            if (look[i].structure)
-                if (look[i].structure.structureType == STRUCTURE_CONTAINER)
-                    return true;
-        }
-        return false;
+        return this.siteBuilt && this.initialized && (!this.site || this.site.progress >= this.site.progressTotal);
     }
 
     protected onFinish(colony: Colony): boolean {
-        var container = this.source.room.lookForAt<LOOK_STRUCTURES>(LOOK_STRUCTURES, this.standLocation.x, this.standLocation.y);
+        let harvestBlock: HarvestBlock;
+        for (var i = 0; i < colony.nest.nestMap.harvestBlocks.length; i++) {
+            var block = colony.nest.nestMap.harvestBlocks[i];
+            var s = block.getSourceLocation();
+            if (this.source.pos.x == s.x && this.source.pos.y == s.y) {
+                harvestBlock = block;
+                break;
+            }
+        }
+        let containerLocation = harvestBlock.getContainerLocation();
+
+        var container = this.source.room.lookForAt<LOOK_STRUCTURES>(LOOK_STRUCTURES, containerLocation.x, containerLocation.y);
 
         for (var i = 0; i < container.length; i++) {
             if (container[i].structureType == STRUCTURE_CONTAINER) {
@@ -87,10 +103,10 @@ export class HarvestInfrastructureOperation extends Operation {
         return true;
     }
 
-
-
     protected onLoad(): void {
         this.source = Game.getObjectById<Source>(this.sourceId);
+        if (this.siteId)
+            this.site = Game.getObjectById<ConstructionSite>(this.siteId);
     }
 
     protected onUpdate(colony: Colony): void {
@@ -105,22 +121,28 @@ export class HarvestInfrastructureOperation extends Operation {
     protected onAssignment(assignment: Assignment): void {
     }
 
+    protected getController(assignment: Assignment): HarvestInfrastructureBuilderController {
+        return new HarvestInfrastructureBuilderController(this.sourceId, this.siteId);
+    }
+
     protected onSave(): HarvestInfrastructureOperationMemory {
-        return {
-            sourceId: this.sourceId,
-            standlocation: this.standLocation,
+        return {            
             type: this.type,
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
             cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
-            controllers: this.getControllerMemory()
+            controllers: this.getControllerMemory(),
+            sourceId: this.sourceId,
+            siteId: this.siteId,
+            siteBuilt: this.siteBuilt
         };
     }
 }
 
-interface HarvestInfrastructureOperationMemory extends OperationMemory {
+interface HarvestInfrastructureOperationMemory extends ControllerOperationMemory {
     sourceId: string;
-    standlocation: { x: number, y: number}
+    siteId: string;
+    siteBuilt: boolean;
 }

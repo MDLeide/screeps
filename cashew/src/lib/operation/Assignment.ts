@@ -15,7 +15,7 @@ export class Assignment {
     constructor(
         public creepName: string,
         public body: Body,
-        public controllerType: ControllerType) {
+        public controllerType?: ControllerType) {
     }
     
     /** True if there is no creep assigned. */

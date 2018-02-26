@@ -6,14 +6,13 @@ import { BodyRepository } from "../../spawn/BodyRepository";
 import { HarvesterController } from "../../creep/HarvesterController";
 
 export class HarvestOperation extends Operation {
-
     public static fromMemory(memory: HarvestOperationMemory): Operation {
         var op = new this(memory.minimumEnergy, memory.sourceId, memory.containerId);
         return Operation.fromMemory(memory, op);
     }
 
     constructor(minimumEnergyForSpawn: number, source: (Source | string), containerId?: string) {
-        super("harvest", HarvestOperation.getAssignments(minimumEnergyForSpawn));
+        super(OPERATION_HARVEST, HarvestOperation.getAssignments(minimumEnergyForSpawn));
 
         this.minimumEnergy = minimumEnergyForSpawn;
         let s: Source = null;
@@ -38,11 +37,11 @@ export class HarvestOperation extends Operation {
     }
 
     private static getAssignments(minEnergy: number): Assignment[] {
-        var body = BodyRepository.getBody("heavyHarvester");
+        var body = BodyRepository.heavyHarvester();;
         body.minimumEnergy = minEnergy;
         return [
-            new Assignment("", body, "heavyHarvester")
-        ]
+            new Assignment("", body)
+        ];
     }
 
 
@@ -93,16 +92,16 @@ export class HarvestOperation extends Operation {
 
     protected onSave(): HarvestOperationMemory {
         return {
-            minimumEnergy: this.minimumEnergy,
-            sourceId: this.sourceId,
-            containerId: this.containerId,
+
             type: this.type,
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
             cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
-            controllers: this.getControllerMemory()
+            minimumEnergy: this.minimumEnergy,
+            sourceId: this.sourceId,
+            containerId: this.containerId
         };
     }
 }
