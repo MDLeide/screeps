@@ -8,7 +8,7 @@ export class HarvestInfrastructureBuilderController extends CreepController {
     }
 
     constructor(sourceId: string, siteId: string) {
-        super(CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER);
+        super(CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER);
         this.sourceId = sourceId;
         this.siteId = siteId;
     }

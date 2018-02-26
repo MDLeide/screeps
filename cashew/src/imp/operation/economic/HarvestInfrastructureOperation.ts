@@ -24,8 +24,8 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
 
     private static getAssignments(): Assignment[]{
         return [
-            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER),
-            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER)
+            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER),
+            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER)
         ];
     }
     

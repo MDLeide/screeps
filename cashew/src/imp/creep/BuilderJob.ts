@@ -1,14 +1,14 @@
 import { Job } from "../../lib/creep/Job";
 import { Task } from "../../lib/creep/Task";
 
-export class BuildJob extends Job {
-    public static fromMemory(memory: BuildJobMemory): BuildJob {
+export class BuilderJob extends Job {
+    public static fromMemory(memory: BuildJobMemory): BuilderJob {
         var job = new this(memory.siteId);
         return Job.fromMemory(memory, job);
     }
 
     constructor(siteId: string) {
-        super(CONTROLLER_BUILD);
+        super(CREEP_CONTROLLER_BUILDER);
         this.siteId = siteId;
         this.targetSite = Game.getObjectById<ConstructionSite>(siteId);
     }

@@ -2,7 +2,7 @@ import { HarvestInfrastructureOperation } from "../../operation/economic/Harvest
 import { HarvestOperation } from "../../operation/economic/HarvestOperation";
 import { LightUpgradeOperation } from "../../operation/economic/LightUpgradeOperation";
 import { ExtensionConstruction } from "../../operation/economic/ExtensionsOperation";
-import { BasicMaintenanceOperation } from "../../operation/economic/BasicMaintenanceOperation";
+//import { BasicMaintenanceOperation } from "../../operation/economic/BasicMaintenanceOperation";
 import { ControllerInfrastructureOperation } from "../../operation/economic/ControllerInfrastructureOperation";
 import { EnergyTransportOperation } from "../../operation/economic/EnergyTransportOperation";
 import { HeavyUpgradeOperation } from "../../operation/economic/HeavyUpgradeOperation";
@@ -179,8 +179,8 @@ export class StandardPlan {
             ops.push(secondHarvestOp);
         }
         
-        var maintainOp = new BasicMaintenanceOperation(); // continue forever for now
-        ops.push(maintainOp);
+        //var maintainOp = new BasicMaintenanceOperation(); // continue forever for now
+        //ops.push(maintainOp);
 
         var upgradeOp = new LightUpgradeOperation();
         upgradeOp.cancelMilestoneId = "upgradeContainer";

@@ -7,7 +7,7 @@ export class ColonyPlanRegistration {
     
     public static register(): void {
         ColonyPlanRepository.register(
-            "standardPlan",
+            PLAN_STANDARD,
             (memory: any) => {
                 return ColonyPlan.fromMemory(
                     memory,
@@ -16,7 +16,7 @@ export class ColonyPlanRegistration {
             },
             () => {
                 return new ColonyPlan(
-                    "standardPlan",
+                    PLAN_STANDARD,
                     StandardPlan.description,
                     StandardPlan.getMilestones(),
                     StandardPlan.getOperations);

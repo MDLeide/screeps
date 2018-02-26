@@ -4,6 +4,8 @@ import { HarvesterController, HarvesterControllerMemory } from "../creep/Harvest
 
 export class ControllerRegistration {
     public static Register(): void {
-        CreepControllerRepository.register(HarvesterController.myName, (mem: HarvesterControllerMemory ) => HarvesterController.fromMemory(mem));
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_HARVESTER,
+            (mem: HarvesterControllerMemory) => HarvesterController.fromMemory(mem));
     }
 }

@@ -3,7 +3,7 @@ import { Operation } from "../../../lib/operation/Operation";
 import { JobOperation } from "../../../lib/operation/JobOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
-import { BuildJob } from "../../creep/BuildJob";
+import { BuilderJob } from "../../creep/BuilderJob";
 
 export class TowerConstructionOperation extends JobOperation {
     public static fromMemory(memory: TowerConstructionOperationMemory): Operation {
@@ -18,8 +18,8 @@ export class TowerConstructionOperation extends JobOperation {
 
     private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_BUILD),
-            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_BUILD)
+            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_BUILDER),
+            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_BUILDER)
         ];
     }
 
@@ -84,8 +84,8 @@ export class TowerConstructionOperation extends JobOperation {
     protected onAssignment(assignment: Assignment): void {
     }
 
-    protected getJob(assignment: Assignment): BuildJob {
-        return new BuildJob(this.siteId);
+    protected getJob(assignment: Assignment): BuilderJob {
+        return new BuilderJob(this.siteId);
     }
 
     protected onSave(): TowerConstructionOperationMemory {

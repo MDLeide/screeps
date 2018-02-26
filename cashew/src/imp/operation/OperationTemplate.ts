@@ -10,7 +10,7 @@ export class OperationTemplate extends Operation {
     }
 
     constructor() {
-        super("opName", OperationTemplate.getAssignments());        
+        super(OPERATION_HARVEST, OperationTemplate.getAssignments());        
     }
 
     private static getAssignments(): Assignment[] {

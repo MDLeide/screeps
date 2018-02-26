@@ -20,6 +20,8 @@ export class GlobalExtension {
             global.cleaner.cleanAll();
         }
 
+        // constants below
+
         global.TASK_IDLE = "Idle";
         global.TASK_MOVE_TO = "MoveTo";
         global.TASK_TRANSFER = "Transfer";
@@ -40,9 +42,12 @@ export class GlobalExtension {
 
         global.PLAN_STANDARD = "Standard";
 
-        global.CONTROLLER_HARVESTER = "Harvester";
-        global.CONTROLLER_INITIAL_INFRASTRUCTURE_BUILDER = "InitialInfrastructureBuilder";
-        global.CONTROLLER_LIGHT_UPGRADER = "LightUpgrader";
+        global.CREEP_CONTROLLER_HARVESTER = "Harvester";
+        global.CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "HarvestInfrastructureBuilder";
+        global.CREEP_CONTROLLER_LIGHT_UPGRADER = "LightUpgrader";
+        global.CREEP_CONTROLLER_BUILDER = "Builder";
+        global.CREEP_CONTROLLER_HAULER = "Hauler";
+        global.CREEP_CONTROLLER_UPGRADER = "Upgrader";
 
         global.BODY_LIGHT_WORKER = "LightWorker";
         global.BODY_HEAVY_HARVESTER = "HeavyHarvester";

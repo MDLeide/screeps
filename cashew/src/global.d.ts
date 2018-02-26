@@ -21,6 +21,8 @@ declare global {
         pause(): void;
         reset(): void;
 
+        // constants below
+
         TASK_IDLE: string;
         TASK_MOVE_TO: string;
         TASK_TRANSFER: string;
@@ -41,9 +43,12 @@ declare global {
 
         PLAN_STANDARD: string;
 
-        CONTROLLER_HARVESTER: string;
-        CONTROLLER_INITIAL_INFRASTRUCTURE_BUILDER: string;
-        CONTROLLER_LIGHT_UPGRADER: string;
+        CREEP_CONTROLLER_HARVESTER: string;
+        CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: string;
+        CREEP_CONTROLLER_LIGHT_UPGRADER: string;
+        CREEP_CONTROLLER_BUILDER: string;
+        CREEP_CONTROLLER_HAULER: string;
+        CREEP_CONTROLLER_UPGRADER: string;
 
         BODY_LIGHT_WORKER: string;
         BODY_HEAVY_HARVESTER: string;

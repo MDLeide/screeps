@@ -18,9 +18,12 @@ declare const OPERATION_BASIC_MAINTENANCE: "BasicMaintenance";
 
 declare const PLAN_STANDARD: "Standard";
 
-declare const CONTROLLER_HARVESTER: "Harvester";
-declare const CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: "InitialInfrastructureBuilder";
-declare const CONTROLLER_LIGHT_UPGRADER: "LightUpgrader";
+declare const CREEP_CONTROLLER_HARVESTER: "Harvester";
+declare const CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: "HarvestInfrastructureBuilder";
+declare const CREEP_CONTROLLER_LIGHT_UPGRADER: "LightUpgrader";
+declare const CREEP_CONTROLLER_BUILDER: "Builder";
+declare const CREEP_CONTROLLER_HAULER: "Hauler";
+declare const CREEP_CONTROLLER_UPGRADER: "Upgrader";
 
 declare const BODY_LIGHT_WORKER: "LightWorker";
 declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
@@ -48,9 +51,12 @@ type OPERATION_BASIC_MAINTENANCE = "BasicMaintenance";
 
 type PLAN_STANDARD = "Standard";
 
-type CONTROLLER_HARVESTER = "Harvester";
-type CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "InitialInfrastructureBuilder";
-type CONTROLLER_LIGHT_UPGRADER = "LightUpgrader";
+type CREEP_CONTROLLER_HARVESTER = "Harvester";
+type CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "HarvestInfrastructureBuilder";
+type CREEP_CONTROLLER_LIGHT_UPGRADER = "LightUpgrader";
+type CREEP_CONTROLLER_BUILDER = "Builder";
+type CREEP_CONTROLLER_HAULER = "Hauler";
+type CREEP_CONTROLLER_UPGRADER = "Upgrader";
 
 type BODY_LIGHT_WORKER = "LightWorker";
 type BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -82,9 +88,12 @@ type PlanType =
     PLAN_STANDARD;
 
 type ControllerType =
-    CONTROLLER_HARVESTER |
-    CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER |
-    CONTROLLER_LIGHT_UPGRADER;
+    CREEP_CONTROLLER_HARVESTER |
+    CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER |
+    CREEP_CONTROLLER_LIGHT_UPGRADER |
+    CREEP_CONTROLLER_BUILDER |
+    CREEP_CONTROLLER_HAULER |
+    CREEP_CONTROLLER_UPGRADER;
 
 type BodyType =
     BODY_LIGHT_WORKER |
@@ -92,4 +101,3 @@ type BodyType =
     BODY_HEAVY_UPGRADER |
     BODY_HAULER |
     BODY_WARRIOR;
-

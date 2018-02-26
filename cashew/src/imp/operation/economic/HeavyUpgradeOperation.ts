@@ -20,8 +20,8 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     private static getAssignments(): Assignment[] {
         var body = BodyRepository.heavyUpgrader();
         return [
-            new Assignment("", body, CONTROLLER_UPGRADER),
-            new Assignment("", body, CONTROLLER_UPGRADER)
+            new Assignment("", body, CREEP_CONTROLLER_UPGRADER),
+            new Assignment("", body, CREEP_CONTROLLER_UPGRADER)
         ]
     }
 

@@ -3,7 +3,7 @@ import { Task } from "../../lib/creep/Task";
 
 export class HaulerRole extends Role {
     constructor() {
-        super(CONTROLLER_HAULER);
+        super(CREEP_CONTROLLER_HAULER);
     }
 
     protected getNextTask(creep: Creep): Task {

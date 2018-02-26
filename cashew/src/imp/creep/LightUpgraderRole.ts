@@ -7,7 +7,7 @@ energy from a container. Also keeps the Spawn fed.
  */
 export class LightUpgraderRole extends Role {
     constructor() {
-        super(CONTROLLER_LIGHT_UPGRADER);
+        super(CREEP_CONTROLLER_LIGHT_UPGRADER);
     }
 
     ///** If true, the creep will fill the spawn. */

@@ -7,7 +7,7 @@ energy from a container. Also keeps the Spawn fed.
  */
 export class UpgraderRole extends Role {
     constructor(containerId: string, controllerId: string) {
-        super(CONTROLLER_UPGRADER);
+        super(CREEP_CONTROLLER_UPGRADER);
         this.containerId = containerId;
         this.controllerId = controllerId;
     }

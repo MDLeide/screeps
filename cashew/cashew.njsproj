@@ -89,7 +89,7 @@
     <TypeScriptCompile Include="src\imp\colony\plans\StandardPlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\creep\BuildJob.ts">
+    <TypeScriptCompile Include="src\imp\creep\BuilderJob.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\HaulerRole.ts">

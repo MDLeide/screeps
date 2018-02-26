@@ -17,8 +17,8 @@ export class EnergyTransportOperation extends ControllerOperation {
 
     private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", BodyRepository.hauler(), CONTROLLER_HAULER),
-            new Assignment("", BodyRepository.hauler(), CONTROLLER_HAULER)
+            new Assignment("", BodyRepository.hauler(), CREEP_CONTROLLER_HAULER),
+            new Assignment("", BodyRepository.hauler(), CREEP_CONTROLLER_HAULER)
         ];
     }
 

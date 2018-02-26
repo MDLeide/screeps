@@ -4,6 +4,7 @@ import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
 import { Job } from "../../../lib/creep/Job";
 import { Operation } from "../../../lib/operation/Operation";
+import { BuilderJob } from "../../creep/BuilderJob";
 
 export class ControllerInfrastructureOperation extends JobOperation {
     public static fromMemory(memory: ControllerInfrastructureOperationMemory): Operation {
@@ -19,8 +20,8 @@ export class ControllerInfrastructureOperation extends JobOperation {
 
     private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_BUILD),
-            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_BUILD)
+            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_BUILDER),
+            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_BUILDER)
         ];
     }
 
@@ -92,7 +93,7 @@ export class ControllerInfrastructureOperation extends JobOperation {
     }
 
     protected getJob(assignment: Assignment): Job {
-        return null;
+        return new BuilderJob(this.siteId);
     }
     
     protected onSave(): ControllerInfrastructureOperationMemory {

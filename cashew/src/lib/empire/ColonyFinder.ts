@@ -33,7 +33,7 @@ export class ColonyFinder {
 
         var nestMap = nestMapBuilder.getMap(room);
         var nest = new Nest(room.name, nestMap);
-        var plan = ColonyPlanRepository.getNew(planName);
+        var plan = ColonyPlanRepository.getNew(planName as PlanType);
         var colony = new Colony(nest, colonyName, plan);
 
         global.events.empire.colonyEstablished(colonyName);

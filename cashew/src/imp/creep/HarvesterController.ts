@@ -8,7 +8,7 @@ export class HarvesterController extends CreepController {
     }
 
     constructor(containerId: string, sourceId: string) {
-        super(CONTROLLER_HARVESTER);
+        super(CREEP_CONTROLLER_HARVESTER);
         this.containerId = containerId;
         this.sourceId = sourceId;
     }

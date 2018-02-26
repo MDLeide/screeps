@@ -2,7 +2,7 @@ import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
 import { JobOperation } from "../../../lib/operation/JobOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
-import { BuildJob } from "../../creep/BuildJob";
+import { BuilderJob } from "../../creep/BuilderJob";
 import { BodyRepository } from "../../spawn/BodyRepository";
 
 export class ExtensionConstruction extends JobOperation {
@@ -24,8 +24,8 @@ export class ExtensionConstruction extends JobOperation {
 
     private static getAssignments(): Assignment[]{
         return [
-            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_BUILD),
-            new Assignment("", BodyRepository.lightWorker(), CONTROLLER_BUILD)
+            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_BUILDER),
+            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_BUILDER)
         ];
     }
 
@@ -94,9 +94,9 @@ export class ExtensionConstruction extends JobOperation {
     protected onAssignment(assignment: Assignment): void {
     }
 
-    protected getJob(assignment: Assignment): BuildJob {
+    protected getJob(assignment: Assignment): BuilderJob {
         if (this.siteIds.length)
-            return new BuildJob(this.siteIds[0]);
+            return new BuilderJob(this.siteIds[0]);
         return null;
     }
 

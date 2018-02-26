@@ -6,7 +6,7 @@ export class ControllerTemplate extends CreepController {
     }
 
     constructor() {
-        super(CONTROLLER_HARVESTER);
+        super(CREEP_CONTROLLER_HARVESTER);
     }
 
     protected onLoad(creep: Creep): void {
