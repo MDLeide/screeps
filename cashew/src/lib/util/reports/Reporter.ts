@@ -26,11 +26,9 @@ export class Reporter {
             var colony = this.empire.colonies[i];
             if (colony.name == colonyName) {
                 var html = "";
-                html += this.printOperations(colony.plan.operationGroup.newOperations);
-                html += "</br></br>";
-                html += this.printOperations(colony.plan.operationGroup.initializedOperations);
-                html += "</br></br>";
-                html += this.printOperations(colony.plan.operationGroup.startedOperations);
+                for (var i = 0; i < colony.operationPlans.length; i++) {
+                    html += this.printOperations(colony.operationPlans[i].operationGroup.operations);
+                }
                 return html;
             }
         }

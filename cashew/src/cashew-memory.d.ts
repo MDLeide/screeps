@@ -30,8 +30,9 @@ declare global {
     interface ColonyMemory {        
         name: string;
         nest: NestMemory;
-        plan: ColonyPlanMemory;
+        progress: ColonyProgressMemory;
         resourceManager: ResourceManagerMemory;
+        operationPlans: OperationPlanMemory[];
     }
 
     interface ResourceManagerMemory {
@@ -44,6 +45,16 @@ declare global {
         type: PlanType;
         description: string;
         milestoneIndex: number;
+        operationGroup: OperationGroupMemory;
+    }
+
+    interface ColonyProgressMemory {
+        type: ProgressType;
+        milestoneIndex: number;
+    }
+
+    interface OperationPlanMemory {
+        type: PlanType;
         operationGroup: OperationGroupMemory;
     }
 
@@ -62,7 +73,6 @@ declare global {
         initialized: boolean;
         started: boolean;
         finished: boolean;
-        cancelMilestoneId: string;
         assignments: AssignmentMemory[];        
     }
 
@@ -75,10 +85,7 @@ declare global {
     }
 
     interface OperationGroupMemory {
-        newOperations: OperationMemory[];
-        initializedOperations: OperationMemory[];
-        startedOperations: OperationMemory[];
-        completedOperations: OperationType[];
+        operations: OperationMemory[];
     }
 
     interface AssignmentMemory {
@@ -128,19 +135,7 @@ declare global {
     
     /** END MAPS **/
 
-    interface BodyMemory {
-        type: BodyType,
-        minimumEnergy: number,
-        constantParts: BodyPartConstant[],
-        scalingParts: BodyPartConstant[],
-        maxCompleteScaling: number,
-        completeScalingPartsOnly: boolean
-    }
-
-    interface VisualsMemory {
-        drawNestMapStructures: boolean;
-        drawNestMapSpecials: boolean;
-    }
+    /** CREEP CONTROLLERS **/
 
     interface CreepControllerMemory {
         type: ControllerType;
@@ -166,4 +161,22 @@ declare global {
     interface TargetedTaskMemory extends TaskMemory {
         targetId: string;
     }
+
+    /** END CREEP CONTROLLERS **/
+
+    interface BodyMemory {
+        type: BodyType,
+        minimumEnergy: number,
+        constantParts: BodyPartConstant[],
+        scalingParts: BodyPartConstant[],
+        maxCompleteScaling: number,
+        completeScalingPartsOnly: boolean
+    }
+
+    interface VisualsMemory {
+        drawNestMapStructures: boolean;
+        drawNestMapSpecials: boolean;
+    }
+
+
 }

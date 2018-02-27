@@ -96,7 +96,6 @@ export abstract class ControllerOperation extends Operation {
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
-            cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
             controllers: this.getControllerMemory()
         };

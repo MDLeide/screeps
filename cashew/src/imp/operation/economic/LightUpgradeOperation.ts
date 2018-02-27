@@ -47,6 +47,9 @@ export class LightUpgradeOperation extends ControllerOperation {
     protected onFinish(colony: Colony): boolean {
         return true;
     }
+
+    protected onCancel(): void {
+    }
     
     protected onLoad(): void {
     }

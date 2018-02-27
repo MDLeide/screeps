@@ -13,7 +13,6 @@ export abstract class Operation {
         instance.started = memory.started;
         instance.finished = memory.finished;
         instance.assignments = [];
-        instance.cancelMilestoneId = memory.cancelMilestoneId;
         for (var i = 0; i < memory.assignments.length; i++) 
             instance.assignments.push(Assignment.fromMemory(memory.assignments[i]));        
         return instance;
@@ -31,9 +30,7 @@ export abstract class Operation {
     public started: boolean;
     public finished: boolean;
     public assignments: Assignment[]; // filled if creep name is not blank
-    
-    // this really, really doesn't belong here, but it was way easier to implement like this
-    public cancelMilestoneId: string = "";
+
 
     public init(colony: Colony): boolean {
         if (this.initialized)
@@ -78,6 +75,12 @@ export abstract class Operation {
         else {
             global.events.operation.failedToFinish(this.type);
         }
+    }
+
+    public cancel(): void {
+        this.onCancel();
+        this.finished = true;
+        //todo: events for cancelation
     }
 
     // creep may not yet be available via Game.creeps - may have just requested spawning this tick
@@ -157,7 +160,6 @@ export abstract class Operation {
                 initialized: this.initialized,
                 started: this.started,
                 finished: this.finished,
-                cancelMilestoneId: this.cancelMilestoneId,
                 assignments: this.getAssignmentMemory()
             };
         }
@@ -193,6 +195,7 @@ export abstract class Operation {
     protected abstract onStart(colony: Colony): boolean;
     /** Called once, after isFinished() returns true. */
     protected abstract onFinish(colony: Colony): boolean;
+    protected abstract onCancel(): void;
 
     /** Update game object references. */
     protected abstract onLoad(): void;

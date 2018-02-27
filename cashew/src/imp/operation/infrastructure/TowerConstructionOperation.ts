@@ -68,6 +68,9 @@ export class TowerConstructionOperation extends JobOperation {
     protected onFinish(colony: Colony): boolean {
         return true;
     }
+
+    protected onCancel(): void {
+    }
     
     protected onLoad(): void {
         if (this.siteId)
@@ -93,7 +96,6 @@ export class TowerConstructionOperation extends JobOperation {
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
-            cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory(),
             rcl: this.rcl,

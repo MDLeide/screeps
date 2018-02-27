@@ -44,6 +44,8 @@ export class OperationTemplate extends Operation {
         return true;
     }
 
+    protected onCancel() {
+    }
 
     protected onLoad(): void {
     }

@@ -19,7 +19,10 @@ declare const OPERATION_ENERGY_TRANSPORT: "EnergyTransport";
 declare const OPERATION_CONTROLLER_INFRASTRUCTURE: "ControllerInfrastructure";
 declare const OPERATION_BASIC_MAINTENANCE: "BasicMaintenance";
 
-declare const PLAN_STANDARD: "Standard";
+declare const PROGRESS_STANDARD: "Standard";
+
+declare const PLAN_INFRASTRUCTURE: "Infrastructure";
+declare const PLAN_ECONOMY: "Economy";
 
 declare const CREEP_CONTROLLER_HARVESTER: "Harvester";
 declare const CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: "HarvestInfrastructureBuilder";
@@ -55,7 +58,10 @@ type OPERATION_ENERGY_TRANSPORT = "EnergyTransport";
 type OPERATION_CONTROLLER_INFRASTRUCTURE = "ControllerInfrastructure";
 type OPERATION_BASIC_MAINTENANCE = "BasicMaintenance";
 
-type PLAN_STANDARD = "Standard";
+type PROGRESS_STANDARD = "Standard";
+
+type PLAN_INFRASTRUCTURE = "Infrastructure";
+type PLAN_ECONOMY = "Economy";
 
 type CREEP_CONTROLLER_HARVESTER = "Harvester";
 type CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "HarvestInfrastructureBuilder";
@@ -93,10 +99,14 @@ type OperationType =
     OPERATION_CONTROLLER_INFRASTRUCTURE |
     OPERATION_BASIC_MAINTENANCE;
 
-type PlanType =
-    PLAN_STANDARD;
+type ProgressType =
+    PROGRESS_STANDARD;
 
-type Creep_ControllerType =
+type PlanType =
+    PLAN_INFRASTRUCTURE |
+    PLAN_ECONOMY;
+
+type ControllerType =
     CREEP_CONTROLLER_HARVESTER |
     CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER |
     CREEP_CONTROLLER_LIGHT_UPGRADER |
@@ -110,4 +120,3 @@ type BodyType =
     BODY_HEAVY_UPGRADER |
     BODY_HAULER |
     BODY_WARRIOR;
-

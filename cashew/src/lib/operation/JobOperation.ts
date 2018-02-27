@@ -96,7 +96,6 @@ export abstract class JobOperation extends Operation {
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
-            cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory()
         };

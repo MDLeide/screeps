@@ -73,7 +73,10 @@ export class ExtensionConstruction extends JobOperation {
     protected onFinish(colony: Colony): boolean {
         return true;
     }
-    
+
+    protected onCancel(): void {
+    }
+
     protected onLoad(): void {
         this.sites = [];
         for (var i = 0; i < this.siteIds.length; i++) {
@@ -106,7 +109,6 @@ export class ExtensionConstruction extends JobOperation {
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
-            cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory(),
             rcl: this.rcl,

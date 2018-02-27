@@ -25,8 +25,10 @@ export class HeavyUpgradeOperation extends ControllerOperation {
         ]
     }
 
+
     public containerId: string;
     public controllerId: string;
+
 
     public canInit(colony: Colony): boolean {
         return true;
@@ -54,6 +56,9 @@ export class HeavyUpgradeOperation extends ControllerOperation {
         return true;
     }
 
+    protected onCancel(): void {
+    }
+
     protected onLoad(): void {
     }
 
@@ -75,8 +80,7 @@ export class HeavyUpgradeOperation extends ControllerOperation {
             type: this.type,
             initialized: this.initialized,
             started: this.started,
-            finished: this.finished,
-            cancelMilestoneId: this.cancelMilestoneId,
+            finished: this.finished,            
             assignments: this.getAssignmentMemory(),
             controllers: this.getControllerMemory(),
             containerId: this.containerId,

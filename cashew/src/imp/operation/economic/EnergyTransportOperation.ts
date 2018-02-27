@@ -47,6 +47,9 @@ export class EnergyTransportOperation extends ControllerOperation {
         return true;
     }
 
+    protected onCancel(): void {
+    }
+
 
     protected onLoad(): void {
     }

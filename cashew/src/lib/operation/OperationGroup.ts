@@ -5,165 +5,89 @@ import { OperationRepository } from "./OperationRepository";
 
 export class OperationGroup {
     public static fromMemory(memory: OperationGroupMemory) {
-        var group = new this([]);
-        for (var i = 0; i < memory.newOperations.length; i++)
-            group.newOperations.push(OperationRepository.load(memory.newOperations[i]));
+        let ops: Operation[] = [];
+        for (var i = 0; i < memory.operations.length; i++) 
+            ops.push(OperationRepository.load(memory.operations[i]));
 
-        for (var i = 0; i < memory.initializedOperations.length; i++)
-            group.initializedOperations.push(OperationRepository.load(memory.initializedOperations[i]));
-
-        for (var i = 0; i < memory.startedOperations.length; i++)
-            group.startedOperations.push(OperationRepository.load(memory.startedOperations[i]));
-
-        for (var i = 0; i < memory.completedOperations.length; i++) 
-            group.completedOperations.push(memory.completedOperations[i]);
-
-        return group;
+        return new this(ops);
     }
 
     constructor(operations: Operation[]) {
-        this.newOperations = [];
-        for (var i = 0; i < operations.length; i++) 
-            this.newOperations.push(operations[i]);
-        this.initializedOperations = [];
-        this.startedOperations = [];
-        this.completedOperations = [];
+        this.operations = [];
+        for (var i = 0; i < operations.length; i++)
+            this.operations.push(operations[i]);
     }    
 
+    public operations: Operation[];
+    public canceled: Operation[] = [];
     
-    public newOperations: Operation[];
-    public initializedOperations: Operation[];
-    public startedOperations: Operation[];
-    public completedOperations: OperationType[];
-
     public addOperation(operation: Operation): void {
-        this.newOperations.push(operation);
+        this.operations.push(operation);
     }
 
-    public checkForCanceledOperations(milestoneId: string, colony: Colony): void {
-        for (var i = 0; i < this.newOperations.length; i++) {
-            if (this.newOperations[i].cancelMilestoneId == milestoneId) {
-                this.newOperations[i].finish(colony);
-                this.completedOperations.push(this.newOperations[i].type);
-                this.newOperations.splice(i--, 1);
-            }
-        }
-
-        for (var i = 0; i < this.initializedOperations.length; i++) {
-            if (this.initializedOperations[i].cancelMilestoneId == milestoneId) {
-                this.initializedOperations[i].finish(colony);
-                this.completedOperations.push(this.initializedOperations[i].type);
-                this.initializedOperations.splice(i--, 1);
-            }
-        }
-
-        for (var i = 0; i < this.startedOperations.length; i++) {
-            if (this.startedOperations[i].cancelMilestoneId == milestoneId) {
-                this.startedOperations[i].finish(colony);
-                this.completedOperations.push(this.startedOperations[i].type);
-                this.startedOperations.splice(i--, 1);
-            }
-        }        
+    public cancelOperation(operation: Operation): void {
+        operation.cancel();
+        this.canceled.push(operation);
     }
-
+    
     public load(): void {
-        for (var i = 0; i < this.newOperations.length; i++)
-            this.newOperations[i].load();
-
-        for (var i = 0; i < this.initializedOperations.length; i++)
-            this.initializedOperations[i].load();
-
-        for (var i = 0; i < this.startedOperations.length; i++)
-            this.startedOperations[i].load();
+        for (var i = 0; i < this.operations.length; i++) 
+            if (!this.operations[i].finished)
+                this.operations[i].load();
     }
 
     public update(colony: Colony): void {
-        // once an operation has moved to the next phase, we will remove
-        // it from the previous array
+        for (var i = 0; i < this.operations.length; i++)
+            if (!this.operations[i].finished)
+                this.operations[i].update(colony);
 
-        for (var i = 0; i < this.newOperations.length; i++) 
-            this.newOperations[i].update(colony);        
-
-        for (var i = 0; i < this.initializedOperations.length; i++) 
-            this.initializedOperations[i].update(colony);
-        
-        for (var i = 0; i < this.startedOperations.length; i++) 
-            this.startedOperations[i].update(colony);
-
-                
-        for (var i = 0; i < this.newOperations.length; i++) {
-            var op = this.newOperations[i];
-            if (op.canInit(colony)) {
-                if (op.init(colony)) {                    
-                    this.initializedOperations.push(op);
-                    this.newOperations.splice(i--, 1);
-                }
-            }
-        }
-        
-        for (var i = 0; i < this.initializedOperations.length; i++) {
-            var op = this.initializedOperations[i];
-            if (op.canStart(colony)) {
-                if (op.start(colony)) {
-                    this.startedOperations.push(op);
-                    this.initializedOperations.splice(i--, 1);
-                }
-            }
-        }        
+        for (var i = 0; i < this.operations.length; i++) {
+            if (this.operations[i].finished) {
+                continue;
+            } else if (this.operations[i].started) {
+                continue; // we'll check for finished ops in cleanup
+            } else if (this.operations[i].initialized) {
+                if (this.operations[i].canStart(colony))
+                    this.operations[i].start(colony);
+            } else {
+                if (this.operations[i].canInit(colony))
+                    this.operations[i].init(colony);
+            }                
+        }                
     }
 
     public execute(colony: Colony): void {
-        for (var i = 0; i < this.initializedOperations.length; i++) 
-            this.getCreepsForOperation(this.initializedOperations[i], colony);
+        for (var i = 0; i < this.operations.length; i++) 
+            if (this.operations[i].initialized && !this.operations[i].finished)
+                this.getCreepsForOperation(this.operations[i], colony);
+        
 
-        for (var i = 0; i < this.startedOperations.length; i++) 
-            this.getCreepsForOperation(this.startedOperations[i], colony);
-
-        for (var i = 0; i < this.startedOperations.length; i++) 
-            this.startedOperations[i].execute(colony);
+        for (var i = 0; i < this.operations.length; i++)
+            if (this.operations[i].started && !this.operations[i].finished)
+                this.operations[i].execute(colony);
     }
 
     public cleanup(colony: Colony) {
-        for (var i = 0; i < this.newOperations.length; i++)
-            this.newOperations[i].cleanup(colony);
-
-        for (var i = 0; i < this.initializedOperations.length; i++)
-            this.initializedOperations[i].cleanup(colony);
-
-        for (var i = 0; i < this.startedOperations.length; i++)
-            this.startedOperations[i].cleanup(colony);
-        
-        for (var i = 0; i < this.startedOperations.length; i++) {
-            if (this.startedOperations[i].isFinished(colony)) {
-                this.startedOperations[i].finish(colony);
-                this.completedOperations.push(this.startedOperations[i].type);
-                this.startedOperations.splice(i--, 1);
+        for (var i = 0; i < this.operations.length; i++) {
+            if (this.operations[i].finished) { // remove operations one tick after they've finished
+                // skip if it was canceled this tick
+                // this is to allow something that might be interested in it being finished the chance to see it
+                // in case it were canceled, for instance, during execution, and the consumer checks in update
+                if (this.canceled.indexOf(this.operations[i]) >= 0)
+                    continue;                
+                this.operations.splice(i--, 1);
             }
-        }        
+            else {
+                this.operations[i].cleanup(colony);
+            }
+        }
+
+        for (var i = 0; i < this.operations.length; i++) 
+            if (this.operations[i].started) 
+                if (this.operations[i].isFinished(colony)) 
+                    this.operations[i].finish(colony);
     }
-
-    public save(): OperationGroupMemory {
-        var newOps = [];
-        for (var i = 0; i < this.newOperations.length; i++) 
-            newOps.push(this.newOperations[i].save());
-
-        var initOps = [];
-        for (var i = 0; i < this.initializedOperations.length; i++) 
-            initOps.push(this.initializedOperations[i].save());
-
-        var startedOps = [];
-        for (var i = 0; i < this.startedOperations.length; i++) 
-            startedOps.push(this.startedOperations[i].save());
-
-        return {
-            newOperations: newOps,
-            initializedOperations: initOps,
-            startedOperations: startedOps,
-            completedOperations: this.completedOperations
-        };
-    }
-
-
+    
      /** Spawns creeps required for an operation. */
     private getCreepsForOperation(op: Operation, colony: Colony): void {
         var openAssignments = op.getUnfilledAssignments(colony);
@@ -192,5 +116,15 @@ export class OperationGroup {
                 return name;            
         }
         return null;
+    }
+
+    public save(): OperationGroupMemory {
+        let opMemory: OperationMemory[] = [];
+        for (var i = 0; i < this.operations.length; i++)
+            opMemory.push(this.operations[i].save());
+
+        return {
+            operations: opMemory
+        };
     }
 }

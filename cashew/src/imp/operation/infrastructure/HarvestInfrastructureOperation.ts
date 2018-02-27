@@ -103,6 +103,9 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
         return false;
     }
 
+    protected onCancel(): void {
+    }
+
     protected onLoad(): void {
         this.source = Game.getObjectById<Source>(this.sourceId);
         if (this.siteId) {            
@@ -129,7 +132,6 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
-            cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
             controllers: this.getControllerMemory(),
             sourceId: this.sourceId,

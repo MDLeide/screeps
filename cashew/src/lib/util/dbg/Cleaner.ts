@@ -38,7 +38,7 @@ export class Cleaner {
         let sites = room.find(FIND_MY_CONSTRUCTION_SITES);
         for (var i = 0; i < sites.length; i++) 
             sites[i].remove();
-        var structures = room.find(FIND_MY_STRUCTURES);
+        var structures = room.find(FIND_STRUCTURES);
         for (var i = 0; i < structures.length; i++) {
             if (structures[i].structureType != STRUCTURE_SPAWN)
                 structures[i].destroy();

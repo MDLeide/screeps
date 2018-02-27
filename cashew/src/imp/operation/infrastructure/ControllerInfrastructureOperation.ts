@@ -74,7 +74,10 @@ export class ControllerInfrastructureOperation extends JobOperation {
         }
         return false;
     }
-    
+
+    protected onCancel(): void {
+    }
+
     protected onLoad(): void {
         if (this.siteId)
             this.site = Game.getObjectById<ConstructionSite>(this.siteId);
@@ -99,7 +102,6 @@ export class ControllerInfrastructureOperation extends JobOperation {
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
-            cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory(),
             siteId: this.siteId,

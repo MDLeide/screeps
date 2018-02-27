@@ -74,7 +74,10 @@ export class HarvestOperation extends ControllerOperation {
     protected onFinish(colony: Colony): boolean {
         return true;
     }
-    
+
+    protected onCancel(): void {
+    }
+
     protected onLoad(): void {
     }
 
@@ -98,7 +101,6 @@ export class HarvestOperation extends ControllerOperation {
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
-            cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
             controllers: this.getControllerMemory(),
             minimumEnergy: this.minimumEnergy,

@@ -3,7 +3,8 @@ import { Settings } from "../Settings";
 import { Colony } from "../colony/Colony";
 import { Nest } from "../colony/Nest";
 import { NestMapBuilder } from "../map/NestMapBuilder";
-import { ColonyPlanRepository } from "../colonyPlan/ColonyPlanRepository";
+import { ColonyProgress, ColonyProgressRepository } from "../colony/ColonyProgress"
+import { OperationPlan, OperationPlanRepository } from "../colony/OperationPlan";
 
 /** Finds new colonies and adds them to the empire. */
 export class ColonyFinder {
@@ -25,16 +26,21 @@ export class ColonyFinder {
 
         if (!this.needsColonyBuilt(empire, colonyName))
             return null;
-        
-        var planName = this.getPlanName(flag);
+                
         if (!flag) {//todo: follow up on created flags and add memory        
             var result = room.createFlag(25, 25, colonyName, ColonyFinder.flagMainColor, ColonyFinder.flagSecondaryColor);            
         }
 
         var nestMap = nestMapBuilder.getMap(room);
         var nest = new Nest(room.name, nestMap);
-        var plan = ColonyPlanRepository.getNew(planName);
-        var colony = new Colony(nest, colonyName, plan);
+
+        let progress = ColonyProgressRepository.getNew(Settings.DefaultProgress);
+        var colony = new Colony(nest, colonyName, progress);
+
+        for (var i = 0; i < Settings.DefaultOperationPlans.length; i++) {
+            let plan = OperationPlanRepository.getNew(Settings.DefaultOperationPlans[i]);
+            colony.addOperationPlan(plan);
+        }
 
         global.events.empire.colonyEstablished(colonyName);
 
@@ -62,9 +68,5 @@ export class ColonyFinder {
         return "Colony " + room.name;
     }
 
-    private static getPlanName(flag: Flag) : PlanType {
-        if (flag && flag.memory && flag.memory.colonyData && flag.memory.colonyData.plan)
-            return flag.memory.colonyData.plan;
-        return Settings.DefaultColonyPlan;
-    }
+
 }

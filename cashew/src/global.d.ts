@@ -23,7 +23,7 @@ declare global {
         reset(): void;
 
         // constants below
-
+        
         TASK_IDLE: string;
         TASK_MOVE_TO: string;
         TASK_TRANSFER: string;
@@ -45,7 +45,10 @@ declare global {
         OPERATION_CONTROLLER_INFRASTRUCTURE: string;
         OPERATION_BASIC_MAINTENANCE: string;
 
-        PLAN_STANDARD: string;
+        PROGRESS_STANDARD: string;
+
+        PLAN_INFRASTRUCTURE: string;
+        PLAN_ECONOMY: string;
 
         CREEP_CONTROLLER_HARVESTER: string;
         CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: string;

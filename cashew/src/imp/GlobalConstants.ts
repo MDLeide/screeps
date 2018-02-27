@@ -22,7 +22,10 @@ export class GlobalConstants {
         global.OPERATION_CONTROLLER_INFRASTRUCTURE = "ControllerInfrastructure";
         global.OPERATION_BASIC_MAINTENANCE = "BasicMaintenance";
 
-        global.PLAN_STANDARD = "Standard";
+        global.PROGRESS_STANDARD = "Standard";
+
+        global.PLAN_INFRASTRUCTURE = "Infrastructure";
+        global.PLAN_ECONOMY = "Economy";
 
         global.CREEP_CONTROLLER_HARVESTER = "Harvester";
         global.CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "HarvestInfrastructureBuilder";
