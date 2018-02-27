@@ -3,7 +3,7 @@ import { Operation } from "../../../lib/operation/Operation";
 import { JobOperation } from "../../../lib/operation/JobOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BuilderJob } from "../../creep/BuilderJob";
-import { BodyRepository } from "../../spawn/BodyRepository";
+import { BodyRepository } from "../../creep/BodyRepository";
 
 export class ExtensionConstruction extends JobOperation {
     public static fromMemory(memory: ExtensionsOperationMemory): Operation {

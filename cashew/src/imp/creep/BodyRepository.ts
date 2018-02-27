@@ -1,4 +1,4 @@
-import { Body } from "../../lib/spawn/Body";
+import { Body } from "../../lib/creep/Body";
 
 export class BodyRepository {
     public static getBody(type: BodyType): Body {

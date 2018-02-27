@@ -1,4 +1,4 @@
-import { Body } from "./Body";
+import { Body } from "../creep/Body";
 import { CreepNamer } from "./CreepNamer";
 
 export class Spawner {

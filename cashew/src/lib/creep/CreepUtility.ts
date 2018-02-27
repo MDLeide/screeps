@@ -1,4 +1,4 @@
-export class UCreep {
+export class CreepUtility {
     /**
      * Attemps to swap positions with a creep.
      * @param creep

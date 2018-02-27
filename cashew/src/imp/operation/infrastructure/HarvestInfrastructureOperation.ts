@@ -4,7 +4,7 @@ import { ControllerOperation } from "../../../lib/operation/ControllerOperation"
 import { MapBlock } from "../../../lib/map/base/MapBlock";
 import { HarvestBlock } from "../../../lib/map/blocks/HarvestBlock";
 import { Assignment } from "../../../lib/operation/Assignment";
-import { BodyRepository } from "../../spawn/BodyRepository";
+import { BodyRepository } from "../../creep/BodyRepository";
 import { HarvestInfrastructureBuilderController } from "../../creep/HarvestInfrastructureBuilderController";
 
 export class HarvestInfrastructureOperation extends ControllerOperation {   

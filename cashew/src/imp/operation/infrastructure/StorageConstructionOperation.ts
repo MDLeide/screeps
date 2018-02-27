@@ -2,7 +2,7 @@ import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
 import { JobOperation } from "../../../lib/operation/JobOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
-import { BodyRepository } from "../../spawn/BodyRepository";
+import { BodyRepository } from "../../creep/BodyRepository";
 import { BuilderJob } from "../../creep/BuilderJob";
 
 export class StorageConstructionOperation extends JobOperation {

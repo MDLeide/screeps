@@ -2,7 +2,7 @@ import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
-import { BodyRepository } from "../../spawn/BodyRepository";
+import { BodyRepository } from "../../creep/BodyRepository";
 import { LightUpgraderRole } from "../../creep/LightUpgraderRole";
 
 export class LightUpgradeOperation extends ControllerOperation {

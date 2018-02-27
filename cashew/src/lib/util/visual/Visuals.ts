@@ -1,5 +1,5 @@
 import { NestMapVisual } from "./NestMapVisual";
-import { Empire } from "../empire/Empire"
+import { Empire } from "../../empire/Empire"
 export class Visuals {
     public help(): string {
         return "toggleNestStructures() - turns on/off drawing of structures from the nest plan </br>" +

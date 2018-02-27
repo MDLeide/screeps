@@ -1,10 +1,10 @@
-import { Playback } from "../lib/debug/Playback";
-import { Cleaner } from "../lib/debug/Cleaner";
-import { Logger } from "../lib/debug/Logger";
+import { Playback } from "../lib/util/dbg/Playback";
+import { Cleaner } from "../lib/util/dbg/Cleaner";
+import { Logger } from "../lib/util/dbg/Logger";
 
 import { EventLog } from "../lib/util/EventLog";
-import { Visuals } from "../lib/visual/Visuals";
-import { UCreep } from "../lib/wrapper/Creep";
+import { Visuals } from "../lib/util/visual/Visuals";
+import { CreepUtility } from "../lib/creep/CreepUtility";
 
 export class GlobalExtension {
     public static extend() {
@@ -12,7 +12,7 @@ export class GlobalExtension {
         global.logger = new Logger();
         global.visuals = new Visuals();
         global.events = new EventLog();
-        global.ucreep = new UCreep();
+        global.ucreep = new CreepUtility();
 
         global.help = function () {
             return "cleaner</br>visuals</br>events";

@@ -1,8 +1,8 @@
 import { Empire } from "../empire/Empire";
 import { Colony } from "./Colony";
 import { NestMap } from "../map/NestMap";
-import { Spawner } from "../spawn/Spawner";
-import { Body } from "../spawn/Body";
+import { Spawner } from "./Spawner";
+import { Body } from "../creep/Body";
 
 
 export class Nest {

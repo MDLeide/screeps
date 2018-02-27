@@ -1,5 +1,5 @@
-import { Operation } from "../operation/Operation";
-import { StringBuilder } from "../util/StringBuilder";
+import { Operation } from "../../operation/Operation";
+import { StringBuilder } from "../StringBuilder";
 
 export class OperationReport {
     constructor(public operation: Operation) {

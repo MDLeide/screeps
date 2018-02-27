@@ -1,7 +1,7 @@
 import { Colony } from "../../../lib/colony/Colony";
 import { JobOperation } from "../../../lib/operation/JobOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
-import { BodyRepository } from "../../spawn/BodyRepository";
+import { BodyRepository } from "../../creep/BodyRepository";
 import { Job } from "../../../lib/creep/Job";
 import { Operation } from "../../../lib/operation/Operation";
 import { BuilderJob } from "../../creep/BuilderJob";

@@ -3,7 +3,7 @@ import { Operation } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { CreepController } from "../../../lib/creep/CreepController";
-import { BodyRepository } from "../../spawn/BodyRepository";
+import { BodyRepository } from "../../creep/BodyRepository";
 import { HarvesterController } from "../../creep/HarvesterController";
 
 export class HarvestOperation extends ControllerOperation {

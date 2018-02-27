@@ -3,8 +3,8 @@ import { Population } from "./Population";
 import { ResourceManager } from "./ResourceManager";
 
 import { Empire } from "../empire/Empire";
-import { Spawner } from "../spawn/Spawner";
-import { Body } from "../spawn/Body";
+import { Spawner } from "./Spawner";
+import { Body } from "../creep/Body";
 import { ColonyPlan } from "../colonyPlan/ColonyPlan";
 import { ColonyPlanRepository } from "../colonyPlan/ColonyPlanRepository";
 import { MapBlock } from "../map/base/MapBlock";

@@ -5,10 +5,10 @@ import { NestMapBuilder } from "../lib/map/NestMapBuilder";
 import { StandardNestMapBuilder } from "./map/StandardNestMapBuilder";
 
 import { MemoryManager } from "../lib/util/MemoryManager";
-import { Playback } from "../lib/debug/Playback";
+import { Playback } from "../lib/util/dbg/Playback";
 import { Register } from "./registration/Register";
 
-import { Reporter } from "../lib/debug/Reporter";
+import { Reporter } from "../lib/util/reports/Reporter";
 
 export class Execute {    
     public init(): void {        

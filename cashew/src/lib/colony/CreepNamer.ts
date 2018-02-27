@@ -1,5 +1,5 @@
 import { Spawner } from "./Spawner";
-import { Body } from "./Body";
+import { Body } from "../creep/Body";
 
 export class CreepNamer {
     public static setCustomNamingMethod(delegate: (body: Body, spawner: Spawner) => string) {

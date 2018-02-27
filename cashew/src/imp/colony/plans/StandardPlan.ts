@@ -171,7 +171,7 @@ export class StandardPlan {
         var sources = colony.nest.room.find(FIND_SOURCES);
         
         var harvestOp = new HarvestOperation(300, sources[0]);
-        harvestOp.cancelMilestoneId = "firstLinks"
+        harvestOp.cancelMilestoneId = "firstLinks";
         ops.push(harvestOp);
 
         if (sources.length > 1) {

@@ -1,7 +1,7 @@
-import { Map } from "../map/base/Map";
-import { MapBlock } from "../map/base/MapBlock";
-import { Layer } from "../map/base/Layer";
-import { NestMap } from "../map/NestMap";
+import { Map } from "../../map/base/Map";
+import { MapBlock } from "../../map/base/MapBlock";
+import { Layer } from "../../map/base/Layer";
+import { NestMap } from "../../map/NestMap";
 import { StructureArtist } from "./StructureArtist";
 
 export class NestMapVisual {

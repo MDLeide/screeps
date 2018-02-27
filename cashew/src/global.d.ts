@@ -1,11 +1,11 @@
 import { Empire } from "./lib/empire/Empire";
-import { UCreep } from "./lib/wrapper/Creep";
+import { CreepUtility } from "./lib/creep/CreepUtility";
 
-import { Cleaner } from "./lib/debug/Cleaner";
-import { Logger } from "./lib/debug/Logger";
-import { Reporter } from "./lib/debug/Reporter";
+import { Cleaner } from "./lib/util/dbg/Cleaner";
+import { Logger } from "./lib/util/dbg/Logger";
+import { Reporter } from "./lib/util/reports/Reporter";
 import { EventLog } from "./lib/util/EventLog";
-import { Visuals } from "./lib/visual/Visuals";
+import { Visuals } from "./lib/util/visual/Visuals";
 
 declare global {
     const global: global;
@@ -16,7 +16,7 @@ declare global {
         reports: Reporter;
         visuals: Visuals;
         events: EventLog;
-        ucreep: UCreep;
+        ucreep: CreepUtility;
         empire: Empire;
         help(): string;
         pause(): void;

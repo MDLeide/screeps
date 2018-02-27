@@ -1,6 +1,6 @@
 import { Assignment } from "./Assignment";
 import { Colony } from "../colony/Colony";
-import { Body } from "../spawn/Body";
+import { Body } from "../creep/Body";
 import { CreepController } from "../creep/CreepController";
 import { CreepControllerRepository } from "../creep/CreepControllerRepository";
 

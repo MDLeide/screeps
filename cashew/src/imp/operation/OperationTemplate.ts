@@ -1,7 +1,7 @@
 import { Colony } from "../../lib/colony/Colony";
 import { Operation } from "../../lib/operation/Operation";
 import { Assignment } from "../../lib/operation/Assignment";
-import { BodyRepository } from "../spawn/BodyRepository";
+import { BodyRepository } from "../creep/BodyRepository";
 
 export class OperationTemplate extends Operation {
     public static fromMemory(memory: OperationMemory): Operation {
