@@ -1,3 +1,4 @@
+import { CreepController } from "./CreepController";
 import { Role } from "./Role";
 import { Task } from "./Task"
 
@@ -6,31 +7,31 @@ import { Task } from "./Task"
 and has a discrete finishing point.
  */
 export abstract class Job extends Role {
-    public static fromMemory<T extends Job>(memory: JobMemory, instance: T): T {
+    public static fromMemory(memory: JobMemory, instance: Job): CreepController {
         instance.complete = memory.complete;
         return Role.fromMemory(memory, instance);
     }
 
     public complete: boolean;
 
-    protected onUpdate(creep: Creep): void {
+    public update(creep: Creep): void {
         if (this.isCompleted())
             this.complete = true;
         if (this.complete)
             return;
-        super.onUpdate(creep);
+        super.update(creep);
     }
 
-    protected onExecute(creep: Creep): void {
+    public execute(creep: Creep): void {
         if (this.complete)
             return;
-        super.onExecute(creep);
+        super.execute(creep);
     }
 
-    protected onCleanup(creep: Creep): void {
+    public cleanup(creep: Creep): void {
         if (this.complete)
             return;
-        super.onCleanup(creep);
+        super.cleanup(creep);
     }
 
     protected onSave(): JobMemory {

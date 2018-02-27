@@ -9,5 +9,5 @@ export class CreepControllerRepository {
         return this.delegates[memory.type](memory);
     }
 
-    private static delegates: { [controllerType: string]: (memory: any) => CreepController };
+    private static delegates: { [controllerType: string]: (memory: any) => CreepController } = {};
 }

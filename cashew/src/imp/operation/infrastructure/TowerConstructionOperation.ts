@@ -5,16 +5,17 @@ import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
 import { BuilderJob } from "../../creep/BuilderJob";
 
-export class StorageConstructionOperation extends JobOperation {
-    public static fromMemory(memory: StorageConstructionMemory): Operation {
-        var op = new this();
+export class TowerConstructionOperation extends JobOperation {
+    public static fromMemory(memory: TowerConstructionOperationMemory): Operation {
+        var op = new this(memory.rcl);
         op.siteBuilt = memory.siteBuilt;
         op.siteId = memory.siteId;
         return JobOperation.fromMemory(memory, op);
     }
 
-    constructor() {
-        super(OPERATION_STORAGE_CONSTRUCTION, StorageConstructionOperation.getAssignments());
+    constructor(rcl: number) {
+        super(OPERATION_TOWER_CONSTRUCTION, TowerConstructionOperation.getAssignments());
+        this.rcl = rcl;
     }
 
     private static getAssignments(): Assignment[] {
@@ -25,11 +26,12 @@ export class StorageConstructionOperation extends JobOperation {
     }
 
 
+    public rcl: number;
+    public siteBuilt: boolean;
     public siteId: string;
     public site: ConstructionSite;
-    public siteBuilt: boolean;
 
-    
+
     public canInit(colony: Colony): boolean {
         return true;
     }
@@ -43,13 +45,13 @@ export class StorageConstructionOperation extends JobOperation {
     }
     
     protected onInit(colony: Colony): boolean {
-        let storage = colony.nest.nestMap.mainBlock.getStorageLocation();
+        let tower = colony.nest.nestMap.mainBlock.getTowerLocation(this.rcl);
         if (!this.siteBuilt) {            
-            let result = colony.nest.room.createConstructionSite(storage.x, storage.y, STRUCTURE_STORAGE);
-            this.siteBuilt = result == OK;
+            colony.nest.room.createConstructionSite(tower.x, tower.y, STRUCTURE_TOWER);
+            this.siteBuilt = true;
             return false;
         } else {
-            let site = colony.nest.room.lookForAt(LOOK_CONSTRUCTION_SITES, storage.x, storage.y);
+            let site = colony.nest.room.lookForAt(LOOK_CONSTRUCTION_SITES, tower.x, tower.y);
             if (site.length) {
                 this.site = site[0];
                 this.siteId = this.site.id;
@@ -80,15 +82,12 @@ export class StorageConstructionOperation extends JobOperation {
 
     protected onCleanup(colony: Colony): void {
     }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
+    
     protected getJob(assignment: Assignment): BuilderJob {
         return new BuilderJob(this.siteId);
     }
 
-    protected onSave(): StorageConstructionMemory {
+    protected onSave(): TowerConstructionOperationMemory {
         return {
             type: this.type,
             initialized: this.initialized,
@@ -97,13 +96,15 @@ export class StorageConstructionOperation extends JobOperation {
             cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory(),
-            siteId: this.siteId,
-            siteBuilt: this.siteBuilt
+            rcl: this.rcl,
+            siteBuilt: this.siteBuilt,
+            siteId: this.siteId
         };
     }
 }
 
-export interface StorageConstructionMemory extends JobOperationMemory {
-    siteId: string;
+interface TowerConstructionOperationMemory extends JobOperationMemory {
+    rcl: number;
     siteBuilt: boolean;
+    siteId: string;
 }

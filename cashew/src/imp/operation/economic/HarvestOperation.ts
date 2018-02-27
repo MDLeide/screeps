@@ -1,14 +1,15 @@
 import { Colony } from "../../../lib/colony/Colony";
 import { Operation } from "../../../lib/operation/Operation";
+import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { CreepController } from "../../../lib/creep/CreepController";
 import { BodyRepository } from "../../spawn/BodyRepository";
 import { HarvesterController } from "../../creep/HarvesterController";
 
-export class HarvestOperation extends Operation {
+export class HarvestOperation extends ControllerOperation {
     public static fromMemory(memory: HarvestOperationMemory): Operation {
-        var op = new this(memory.minimumEnergy, memory.sourceId, memory.containerId);
-        return Operation.fromMemory(memory, op);
+        var op = new this(memory.minimumEnergy, memory.sourceId, memory.containerId);        
+        return ControllerOperation.fromMemory(memory, op);
     }
 
     constructor(minimumEnergyForSpawn: number, source: (Source | string), containerId?: string) {
@@ -40,7 +41,7 @@ export class HarvestOperation extends Operation {
         var body = BodyRepository.heavyHarvester();;
         body.minimumEnergy = minEnergy;
         return [
-            new Assignment("", body)
+            new Assignment("", body, CREEP_CONTROLLER_HARVESTER)
         ];
     }
 
@@ -74,7 +75,8 @@ export class HarvestOperation extends Operation {
         return true;
     }
     
-    protected onLoad(): void { }
+    protected onLoad(): void {
+    }
 
     protected onUpdate(colony: Colony): void {
     }
@@ -85,20 +87,20 @@ export class HarvestOperation extends Operation {
        
     protected onCleanup(colony: Colony): void {
     }
-
-    protected onAssignment(assignment: Assignment): CreepController {
+    
+    protected getController(assignment: Assignment): CreepController {
         return new HarvesterController(this.containerId, this.sourceId);
     }
 
     protected onSave(): HarvestOperationMemory {
         return {
-
             type: this.type,
             initialized: this.initialized,
             started: this.started,
             finished: this.finished,
             cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
+            controllers: this.getControllerMemory(),
             minimumEnergy: this.minimumEnergy,
             sourceId: this.sourceId,
             containerId: this.containerId
@@ -106,7 +108,7 @@ export class HarvestOperation extends Operation {
     }
 }
 
-interface HarvestOperationMemory extends OperationMemory {
+interface HarvestOperationMemory extends ControllerOperationMemory {
     minimumEnergy: number;
     sourceId: string;
     containerId: string;

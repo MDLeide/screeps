@@ -1,10 +1,10 @@
 import { CreepController } from "../../lib/creep/CreepController";
 
 export class HarvestInfrastructureBuilderController extends CreepController {
-    public static fromMemory(memory: HarvestInfrastructureBuilderControllerMemory ): HarvestInfrastructureBuilderController {
+    public static fromMemory(memory: HarvestInfrastructureBuilderControllerMemory ): CreepController {
         let cont = new this(memory.sourceId, memory.siteId);
         cont.harvest = memory.harvest;
-        return cont;
+        return CreepController.fromMemory(memory, cont);
     }
 
     constructor(sourceId: string, siteId: string) {
@@ -17,7 +17,7 @@ export class HarvestInfrastructureBuilderController extends CreepController {
     public siteId: string;
     public harvest: boolean;
 
-    protected onLoad(creep: Creep): void {
+    protected onLoad(): void {
     }
 
     protected onUpdate(creep: Creep): void {

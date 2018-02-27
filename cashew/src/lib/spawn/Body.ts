@@ -42,10 +42,12 @@ export class Body {
         var parts = this.getConstantParts();
 
         var remainingEnergy = energy - this.constantPartCost;
+        console.log(this.scalingParts);
+        console.log(this.scalingPartCost);
         var fullParts = Math.floor(remainingEnergy / this.scalingPartCost);
         if (this.maxCompleteScaling > 0)
             fullParts = Math.min(fullParts, this.maxCompleteScaling);
-
+        console.log(fullParts);
         this.pushFullParts(parts, fullParts);
                        
         if (this.completeScalingPartsOnly)

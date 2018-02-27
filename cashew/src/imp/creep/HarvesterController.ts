@@ -1,10 +1,10 @@
 import { CreepController } from "../../lib/creep/CreepController";
 
 export class HarvesterController extends CreepController {
-    public static fromMemory(memory: HarvesterControllerMemory): HarvesterController {
+    public static fromMemory(memory: HarvesterControllerMemory): CreepController {
         var controller = new this(memory.containerId, memory.sourceId);
         controller.arrived = memory.arrived;
-        return controller;
+        return CreepController.fromMemory(memory, controller);
     }
 
     constructor(containerId: string, sourceId: string) {
@@ -19,7 +19,7 @@ export class HarvesterController extends CreepController {
     public sourceId: string;
     public arrived: boolean;
 
-    protected onLoad(creep: Creep): void {
+    protected onLoad(): void {
         this.container = Game.getObjectById<StructureContainer>(this.containerId);
         this.source = Game.getObjectById<Source>(this.sourceId);
     }
@@ -27,17 +27,17 @@ export class HarvesterController extends CreepController {
     protected onUpdate(creep: Creep): void {
     }
 
-    protected onExecute(creep: Creep): void {
+    protected onExecute(creep: Creep): void {        
         if (this.arrived) {
             this.harvest(creep);
         } else {
             let distance = creep.pos.getRangeTo(this.container);
-            if (distance == 0) {
+            if (distance == 0) {                
                 this.arrived = true;
                 this.harvest(creep);
             } else if (distance == 1) {
                 this.nextTile(creep);
-            } else {
+            } else {                
                 this.moving(creep);
             }
         }      
@@ -45,7 +45,7 @@ export class HarvesterController extends CreepController {
 
     protected onCleanup(creep: Creep): void { }
 
-    private moving(creep: Creep) {
+    private moving(creep: Creep) {        
         creep.moveTo(this.container);
     }
 

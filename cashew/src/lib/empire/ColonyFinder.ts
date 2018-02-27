@@ -33,7 +33,7 @@ export class ColonyFinder {
 
         var nestMap = nestMapBuilder.getMap(room);
         var nest = new Nest(room.name, nestMap);
-        var plan = ColonyPlanRepository.getNew(planName as PlanType);
+        var plan = ColonyPlanRepository.getNew(planName);
         var colony = new Colony(nest, colonyName, plan);
 
         global.events.empire.colonyEstablished(colonyName);
@@ -56,13 +56,13 @@ export class ColonyFinder {
         return null;
     }
 
-    private static getColonyName(room: Room, flag: Flag) {
+    private static getColonyName(room: Room, flag: Flag): string {
         if (flag && flag.memory && flag.memory.colonyData && flag.memory.colonyData.name)
             return flag.memory.colonyData.name;
         return "Colony " + room.name;
     }
 
-    private static getPlanName(flag: Flag) {
+    private static getPlanName(flag: Flag) : PlanType {
         if (flag && flag.memory && flag.memory.colonyData && flag.memory.colonyData.plan)
             return flag.memory.colonyData.plan;
         return Settings.DefaultColonyPlan;

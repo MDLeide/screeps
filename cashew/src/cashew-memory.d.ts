@@ -31,6 +31,13 @@ declare global {
         name: string;
         nest: NestMemory;
         plan: ColonyPlanMemory;
+        resourceManager: ResourceManagerMemory;
+    }
+
+    interface ResourceManagerMemory {
+        sourceContainerIds: string[];
+        controllerContainerId: string;
+        transferPriority: number[];
     }
 
     interface ColonyPlanMemory {

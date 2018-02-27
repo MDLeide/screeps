@@ -1,5 +1,33 @@
+export abstract class BaseClass {
+    public static fromMemory(instance: BaseClass): BaseClass {
+        instance.baseProperty = "value";
+        return instance;
+    }
+
+    public baseProperty: string;
+}
+
+export abstract class IntermediateClass extends BaseClass {
+    public static fromMemory(instance: IntermediateClass): BaseClass {
+        instance.intermediateProperty = "value";
+        return BaseClass.fromMemory(instance) as IntermediateClass;
+    }
+
+    public intermediateProperty: string;
+}
+
+export class ConcreteClass extends IntermediateClass {
+    public static fromMemory() : BaseClass {
+        let instance = new this();
+        instance.concreteProperty = "value";
+        return IntermediateClass.fromMemory(instance);
+    }
+
+    public concreteProperty: string;
+}
+
 export abstract class Task {
-    public static fromMemory<T extends Task>(memory: TaskMemory, instance: T): T {
+    public static fromMemory(memory: TaskMemory, instance: Task): Task {
         instance.complete = memory.complete;
         instance.incomplete = memory.incomplete;
         instance.error = memory.error;
@@ -54,17 +82,20 @@ export abstract class Task {
 
 
     public static loadTask(memory: TaskMemory): Task {
-        switch (memory.type) {
-            case TASK_MOVE_TO:
-                return MoveTo.fromMemory(memory as MoveToMemory);
-            case TASK_IDLE:
-                return Idle.fromMemory(memory);
-            case TASK_TRANSFER:
-                return Transfer.fromMemory(memory as TargetedTaskMemory);
-            case TASK_WITHDRAW:
-                return Withdraw.fromMemory(memory as TargetedTaskMemory);
+        switch (memory.type) {            
             case TASK_BUILD:
                 return Build.fromMemory(memory as TargetedTaskMemory);
+            case TASK_IDLE:
+                return Idle.fromMemory(memory);
+            case TASK_MOVE_TO:
+                return MoveTo.fromMemory(memory as MoveToMemory);            
+            case TASK_TRANSFER:
+                return Transfer.fromMemory(memory as TargetedTaskMemory);                       
+            case TASK_UPGRADE:
+                return Upgrade.fromMemory(memory as TargetedTaskMemory);
+            case TASK_WITHDRAW:
+                return Withdraw.fromMemory(memory as TargetedTaskMemory);
+                
             default:
                 throw new Error(`Task name ${memory.type} not recognized`)
         }
@@ -96,7 +127,12 @@ export abstract class Task {
 }
 
 export abstract class TargetedTask<T extends { id: string }> extends Task {
-    public static fromMemory<TTarget extends { id: string }, TInstance extends TargetedTask<TTarget>>(memory: TargetedTaskMemory, instance: TInstance): TInstance {
+    public static fromMemory<TTarget extends { id: string }> (
+        memory: TargetedTaskMemory,
+        instance: TargetedTask<TTarget>): Task {
+        
+        instance.target = Game.getObjectById<TTarget>(memory.targetId);
+
         return Task.fromMemory(memory, instance);
     }
 
@@ -114,7 +150,7 @@ export abstract class TargetedTask<T extends { id: string }> extends Task {
             incomplete: this.incomplete,
             error: this.error,
             finished: this.finished,
-            targetId: this.target.id
+            targetId: this.target ? this.target.id : undefined
         };
     }
 }
@@ -122,7 +158,7 @@ export abstract class TargetedTask<T extends { id: string }> extends Task {
 export class Idle extends Task {
     public static fromMemory(memory: TaskMemory): Idle {
         let idle = new this();
-        return Task.fromMemory(memory, idle);
+        return Task.fromMemory(memory, idle) as Idle;
     }
 
     constructor() {
@@ -147,7 +183,7 @@ export class MoveTo extends Task {
     public static fromMemory(memory: MoveToMemory): MoveTo {
         var pos = new RoomPosition(memory.x, memory.y, memory.room);
         var task = new this(pos, memory.range);
-        return Task.fromMemory(memory, task);
+        return Task.fromMemory(memory, task) as MoveTo;
     }
 
     constructor(target: (RoomPosition | { pos: RoomPosition }), range?: number) {
@@ -217,7 +253,7 @@ export class Transfer extends TargetedTask<TransferTarget> {
     public static fromMemory(memory: TargetedTaskMemory): Transfer {
         var target = Game.getObjectById<TransferTarget>(memory.targetId);
         var transfer = new this(target);
-        return TargetedTask.fromMemory(memory, transfer);
+        return TargetedTask.fromMemory(memory, transfer) as Transfer;
     }
 
     constructor(target: TransferTarget) {
@@ -259,7 +295,7 @@ export class Withdraw extends TargetedTask<WithdrawTarget> {
     public static fromMemory(memory: TargetedTaskMemory): Withdraw {
         var target = Game.getObjectById<WithdrawTarget>(memory.targetId);
         var withdraw = new this(target);
-        return TargetedTask.fromMemory(memory, withdraw);
+        return TargetedTask.fromMemory(memory, withdraw) as Withdraw;
     }
 
     constructor(target: WithdrawTarget) {
@@ -299,8 +335,8 @@ export class Withdraw extends TargetedTask<WithdrawTarget> {
 export class Build extends TargetedTask<ConstructionSite> {
     public static fromMemory(memory: TargetedTaskMemory): Build {
         var target = Game.getObjectById<ConstructionSite>(memory.targetId);
-        var withdraw = new this(target);
-        return TargetedTask.fromMemory(memory, withdraw);
+        var build = new this(target);
+        return TargetedTask.fromMemory(memory, build) as Build;
     }
 
     constructor(target: ConstructionSite) {
@@ -336,7 +372,7 @@ export class Upgrade extends TargetedTask<StructureController> {
     public static fromMemory(memory: TargetedTaskMemory): Upgrade {
         var target = Game.getObjectById<StructureController>(memory.targetId);
         var upgrade = new this(target);
-        return TargetedTask.fromMemory(memory, upgrade);
+        return TargetedTask.fromMemory(memory, upgrade) as Upgrade;
     }
 
     constructor(target: StructureController) {

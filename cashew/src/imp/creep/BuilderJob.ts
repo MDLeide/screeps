@@ -1,8 +1,10 @@
+import { CreepController } from "../../lib/creep/CreepController";
 import { Job } from "../../lib/creep/Job";
 import { Task } from "../../lib/creep/Task";
 
+
 export class BuilderJob extends Job {
-    public static fromMemory(memory: BuildJobMemory): BuilderJob {
+    public static fromMemory(memory: BuildJobMemory): CreepController {
         var job = new this(memory.siteId);
         return Job.fromMemory(memory, job);
     }
@@ -16,7 +18,7 @@ export class BuilderJob extends Job {
     public siteId: string;
     public targetSite: ConstructionSite;
 
-    protected onLoad(creep: Creep): void {
+    protected onLoad(): void {
         this.targetSite = Game.getObjectById<ConstructionSite>(this.siteId);
     }
 
@@ -34,7 +36,7 @@ export class BuilderJob extends Job {
 
     protected getNextTask(creep: Creep): Task {
         let colony = global.empire.getColony(creep);
-
+        
         if (!this.currentTask || this.currentTask.type == TASK_BUILD) {
             let withdrawTarget = colony.getWithdrawTarget(creep);
             if (withdrawTarget)

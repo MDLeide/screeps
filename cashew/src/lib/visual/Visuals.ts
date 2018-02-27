@@ -1,6 +1,11 @@
 import { NestMapVisual } from "./NestMapVisual";
 import { Empire } from "../empire/Empire"
 export class Visuals {
+    public help(): string {
+        return "toggleNestStructures() - turns on/off drawing of structures from the nest plan </br>" +
+            "toggleNestSpecials() - turns on/off drawing of special values from the nest plan";
+    }
+
     public toggleNestStructures(): void {
         Memory.visuals.drawNestMapStructures = !Memory.visuals.drawNestMapStructures;
     }

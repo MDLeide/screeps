@@ -5,12 +5,12 @@ import { Task } from "./Task"
  * Role is a type of controller that uses tasks to control the creep.
  */
 export abstract class Role extends CreepController {
-    public static fromMemory<T extends Role>(memory: RoleMemory, instance: T): T {
+    public static fromMemory(memory: RoleMemory, instance: Role): CreepController {
         if (memory.lastTask)
             instance.lastTask = Task.loadTask(memory.lastTask);
         if (memory.currentTask)
             instance.currentTask = Task.loadTask(memory.currentTask);
-        return instance;
+        return CreepController.fromMemory(memory, instance);
     }
 
     constructor(type: ControllerType, initialTask?: Task) {
@@ -21,10 +21,10 @@ export abstract class Role extends CreepController {
     public lastTask: Task;
     public currentTask: Task;
 
-    protected onLoad(creep: Creep): void {        
+    protected onLoad(): void {        
     }
 
-    protected onUpdate(creep: Creep): void {
+    public update(creep: Creep): void {        
         if (this.currentTask)
             this.currentTask.update(creep);
 
@@ -42,14 +42,19 @@ export abstract class Role extends CreepController {
                 this.currentTask = nextTask;
             }                
         }
+        super.update(creep);
     }
 
-    protected onExecute(creep: Creep): void {
-        this.currentTask.execute(creep);
+    public execute(creep: Creep): void {        
+        if (this.currentTask)
+            this.currentTask.execute(creep);
+        super.execute(creep);
     }
 
-    protected onCleanup(creep: Creep): void {
-        this.currentTask.cleanup(creep);
+    public cleanup(creep: Creep): void {        
+        if (this.currentTask)
+            this.currentTask.cleanup(creep);
+        super.cleanup(creep);
     }
 
     protected onSave(): RoleMemory {
@@ -63,5 +68,3 @@ export abstract class Role extends CreepController {
     protected abstract getNextTask(creep: Creep): Task;
     protected abstract isIdle(creep: Creep): Task;
 }
-
-

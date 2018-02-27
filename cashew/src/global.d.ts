@@ -18,6 +18,7 @@ declare global {
         events: EventLog;
         ucreep: UCreep;
         empire: Empire;
+        help(): string;
         pause(): void;
         reset(): void;
 

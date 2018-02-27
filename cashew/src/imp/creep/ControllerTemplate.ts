@@ -9,7 +9,7 @@ export class ControllerTemplate extends CreepController {
         super(CREEP_CONTROLLER_HARVESTER);
     }
 
-    protected onLoad(creep: Creep): void {
+    protected onLoad(): void {
     }
 
     protected onUpdate(creep: Creep): void {

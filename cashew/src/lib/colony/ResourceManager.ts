@@ -1,6 +1,14 @@
 import { Colony } from "./Colony";
 
 export class ResourceManager {
+    public static fromMemory(memory: ResourceManagerMemory, colony: Colony): ResourceManager {
+        let manager = new this(colony);
+        manager.sourceContainerIds = memory.sourceContainerIds;
+        manager.controllerContainerId = memory.controllerContainerId;
+        manager.fillPriority = memory.transferPriority;
+        return manager;
+    }
+
     //todo: memory for these properties. code is fine right now.
     constructor(colony: Colony) {
         this.colony = colony;
@@ -37,10 +45,45 @@ export class ResourceManager {
     public terminalMaxEnergy: number = 200000;
     /** If the nuker has more than this much energy, transfers will be temporarily suspended. */
     public nukerMaxEnergy: number = 200000;
-    
-    public sourceContainers: StructureContainer[];
+
+    public sourceContainerIds: string[] = [];
+    public sourceContainers: StructureContainer[] = [];
+    public controllerContainerId: string;
     public controllerContainer: StructureContainer;
 
+    public load(): void {
+        this.sourceContainers = [];
+        for (var i = 0; i < this.sourceContainerIds.length; i++) {
+            this.sourceContainers.push(Game.getObjectById<StructureContainer>(this.sourceContainerIds[i]));
+        }
+            
+        if (this.controllerContainerId)
+            this.controllerContainer = Game.getObjectById<StructureContainer>(this.controllerContainerId);
+    }
+
+    public update(): void { }
+
+    public execute(): void { }
+
+    public cleanup(): void { }
+
+    public addSourceContainer(container: (string | StructureContainer)): void {
+        if (container instanceof StructureContainer) {
+            this.sourceContainerIds.push(container.id);
+            this.sourceContainers.push(container);
+        } else {
+            this.addSourceContainer(Game.getObjectById<StructureContainer>(container));
+        }
+    }
+
+    public setControllerContainer(container: (string | StructureContainer)): void {
+        if (container instanceof StructureContainer) {
+            this.controllerContainer = container;
+            this.controllerContainerId = container.id;
+        } else {
+            this.setControllerContainer(Game.getObjectById<StructureContainer>(container));
+        }
+    }
     
     public getWithdrawTarget(creep: Creep): WithdrawTarget {
         var container = this.getContainerWithdrawTarget(creep);
@@ -52,6 +95,39 @@ export class ResourceManager {
 
         return null;       
     }
+       
+    public getTransferTarget(creep: Creep): TransferTarget {
+        for (var i = 0; i < this.fillPriority.length; i++) {
+            let target = this.getTarget(creep, this.fillPriority[i]);
+            if (target)
+                return target;
+        }
+        return null;
+    }
+    
+    public getSpawnExtensionTransferTargets(creep: Creep): (StructureSpawn | StructureExtension) {
+        for (var i = 0; i < this.colony.nest.spawners.length; i++)
+            if (this.colony.nest.spawners[i].spawn.energy < this.colony.nest.spawners[i].spawn.energyCapacity)
+                return this.colony.nest.spawners[i].spawn;
+
+        let closest = creep.pos.findClosestByRange<StructureExtension>(FIND_MY_STRUCTURES,
+            {
+                filter: (ext) => {
+                    return ext.structureType == STRUCTURE_EXTENSION && ext.energy < ext.energyCapacity;
+                }
+            });
+        return closest;
+    }
+
+
+    public save(): ResourceManagerMemory {
+        return {
+            sourceContainerIds: this.sourceContainerIds,
+            controllerContainerId: this.controllerContainerId,
+            transferPriority: this.fillPriority
+        };
+    }
+
 
     private getContainerWithdrawTarget(creep: Creep): StructureContainer {
         let overflow: StructureContainer[] = [];
@@ -90,16 +166,6 @@ export class ResourceManager {
         return container;
     }
 
-    
-    public getTransferTarget(creep: Creep): TransferTarget {
-        for (var i = 0; i < this.fillPriority.length; i++) {
-            let target = this.getTarget(creep, this.fillPriority[i]);
-            if (target)
-                return target;
-        }
-        return null;
-    }
-
     private getTarget(creep: Creep, target: TransferPriorityTarget) : TransferTarget {
         switch (target) {
             case TransferPriorityTarget.SpawnsAndExtensions:
@@ -119,20 +185,6 @@ export class ResourceManager {
             default:
                 return null;
         }
-    }
-
-    public getSpawnExtensionTransferTargets(creep: Creep): (StructureSpawn | StructureExtension) {
-        for (var i = 0; i < this.colony.nest.spawners.length; i++) 
-            if (this.colony.nest.spawners[i].spawn.energy < this.colony.nest.spawners[i].spawn.energyCapacity)
-                return this.colony.nest.spawners[i].spawn;
-
-        let closest = creep.pos.findClosestByRange<StructureExtension>(FIND_MY_STRUCTURES,
-            {
-                filter: (ext) => {
-                    return ext.structureType == STRUCTURE_EXTENSION && ext.energy < ext.energyCapacity;
-                }
-            });
-        return closest;
     }
 
     private getTowerTransferTarget(creep: Creep): StructureTower {

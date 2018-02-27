@@ -6,7 +6,7 @@ import { BodyRepository } from "../../spawn/BodyRepository";
 import { LightUpgraderRole } from "../../creep/LightUpgraderRole";
 
 export class LightUpgradeOperation extends ControllerOperation {
-    public static fromMemory(memory: OperationMemory): Operation {
+    public static fromMemory(memory: ControllerOperationMemory): Operation {
         var op = new this();
         return ControllerOperation.fromMemory(memory, op);
     }
@@ -59,10 +59,7 @@ export class LightUpgradeOperation extends ControllerOperation {
 
     protected onCleanup(colony: Colony): void {
     }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
+    
     protected getController(assignment: Assignment): LightUpgraderRole {
         return new LightUpgraderRole();
     }

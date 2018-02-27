@@ -7,7 +7,7 @@ import { CreepControllerRepository } from "../creep/CreepControllerRepository";
 export abstract class Operation {        
     /** Just does some initialization to the base properties. Call it from an implementing
     class to save some typing.*/
-    public static fromMemory<T extends Operation>(memory: OperationMemory, instance: T): Operation {
+    public static fromMemory(memory: OperationMemory, instance: Operation): Operation {
         instance.type = memory.type;
         instance.initialized = memory.initialized;
         instance.started = memory.started;
@@ -116,7 +116,7 @@ export abstract class Operation {
     public getUnfilledAssignments(colony: Colony): Assignment[] {
         var unfilled: Assignment[] = [];
         for (var i = 0; i < this.assignments.length; i++) 
-            if (this.assignments[i].creepName == "")
+            if (!this.assignments[i].creepName)
                 unfilled.push(this.assignments[i]);
         return unfilled;
     }
@@ -136,23 +136,16 @@ export abstract class Operation {
     /** Provides early-tick opportunity to update state. Will be called on all colonies and operations prior to Execute being called. */
     public update(colony: Colony): void {        
         this.cleanDeadCreeps(colony);
-
-
-
         this.onUpdate(colony);
     }
 
     /** Main operation logic should execute here. */
     public execute(colony: Colony): void {
-
-
         this.onExecute(colony);
     }
 
     /** Called after all operatoins have executed. */
     public cleanup(colony: Colony): void {
-
-
         this.onCleanup(colony);
     }
 

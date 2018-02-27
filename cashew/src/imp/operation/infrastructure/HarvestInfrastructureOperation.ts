@@ -52,6 +52,7 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
             }
         }
         let containerLocation = harvestBlock.getContainerLocation();
+
         if (!this.siteBuilt) {            
             this.source.room.createConstructionSite(containerLocation.x, containerLocation.y, STRUCTURE_CONTAINER);
             this.siteBuilt = true;
@@ -92,21 +93,21 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
         let containerLocation = harvestBlock.getContainerLocation();
 
         var container = this.source.room.lookForAt<LOOK_STRUCTURES>(LOOK_STRUCTURES, containerLocation.x, containerLocation.y);
-
         for (var i = 0; i < container.length; i++) {
             if (container[i].structureType == STRUCTURE_CONTAINER) {
-                (container[i] as StructureContainer).nut.tag = "source";
-                (container[i] as StructureContainer).nut.tagId = this.source.id;
+                colony.resourceManager.addSourceContainer(container[i] as StructureContainer);
+                return true;
             }
         }
         
-        return true;
+        return false;
     }
 
     protected onLoad(): void {
         this.source = Game.getObjectById<Source>(this.sourceId);
-        if (this.siteId)
+        if (this.siteId) {            
             this.site = Game.getObjectById<ConstructionSite>(this.siteId);
+        }
     }
 
     protected onUpdate(colony: Colony): void {
@@ -117,10 +118,7 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
 
     protected onCleanup(colony: Colony): void {
     }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
+    
     protected getController(assignment: Assignment): HarvestInfrastructureBuilderController {
         return new HarvestInfrastructureBuilderController(this.sourceId, this.siteId);
     }

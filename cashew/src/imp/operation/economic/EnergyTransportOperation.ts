@@ -6,9 +6,9 @@ import { BodyRepository } from "../../spawn/BodyRepository";
 import { HaulerRole } from "../../creep/HaulerRole";
 
 export class EnergyTransportOperation extends ControllerOperation {
-    public static fromMemory(memory: OperationMemory): Operation {
+    public static fromMemory(memory: ControllerOperationMemory): Operation {
         var op = new this();
-        return Operation.fromMemory(memory, op);
+        return ControllerOperation.fromMemory(memory, op);
     }
 
     constructor() {

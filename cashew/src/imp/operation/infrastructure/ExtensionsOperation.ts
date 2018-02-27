@@ -8,7 +8,9 @@ import { BodyRepository } from "../../spawn/BodyRepository";
 export class ExtensionConstruction extends JobOperation {
     public static fromMemory(memory: ExtensionsOperationMemory): Operation {
         var op = new this(memory.rcl);
-        return Operation.fromMemory(memory, op);
+        op.siteIds = memory.siteIds;
+        op.sitesBuilt = memory.sitesBuilt;
+        return JobOperation.fromMemory(memory, op);
     }
 
     constructor(rcl: number) {
@@ -48,6 +50,7 @@ export class ExtensionConstruction extends JobOperation {
             for (let i = 0; i < locs.length; i++) {
                 colony.nest.room.createConstructionSite(locs[i].x, locs[i].y, STRUCTURE_EXTENSION);
             }
+            this.sitesBuilt = true;
             return false;
         } else {
             for (let i = 0; i < locs.length; i++) {
@@ -90,10 +93,7 @@ export class ExtensionConstruction extends JobOperation {
 
     protected onCleanup(colony: Colony): void {
     }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
+    
     protected getJob(assignment: Assignment): BuilderJob {
         if (this.siteIds.length)
             return new BuilderJob(this.siteIds[0]);

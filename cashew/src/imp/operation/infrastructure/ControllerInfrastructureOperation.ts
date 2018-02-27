@@ -1,19 +1,21 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation } from "../../../lib/operation/Operation";
 import { JobOperation } from "../../../lib/operation/JobOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../spawn/BodyRepository";
+import { Job } from "../../../lib/creep/Job";
+import { Operation } from "../../../lib/operation/Operation";
 import { BuilderJob } from "../../creep/BuilderJob";
 
-export class TowerConstructionOperation extends JobOperation {
-    public static fromMemory(memory: TowerConstructionOperationMemory): Operation {
-        var op = new this(memory.rcl);
-        return Operation.fromMemory(memory, op);
+export class ControllerInfrastructureOperation extends JobOperation {
+    public static fromMemory(memory: ControllerInfrastructureOperationMemory): Operation {
+        var op = new this();
+        op.siteId = memory.siteId;
+        op.siteBuilt = memory.siteBuilt;
+        return JobOperation.fromMemory(memory, op);
     }
 
-    constructor(rcl: number) {
-        super(OPERATION_TOWER_CONSTRUCTION, TowerConstructionOperation.getAssignments());
-        this.rcl = rcl;
+    constructor() {
+        super(OPERATION_CONTROLLER_INFRASTRUCTURE, ControllerInfrastructureOperation.getAssignments());        
     }
 
     private static getAssignments(): Assignment[] {
@@ -23,12 +25,9 @@ export class TowerConstructionOperation extends JobOperation {
         ];
     }
 
-
-    public rcl: number;
-    public siteBuilt: boolean;
     public siteId: string;
     public site: ConstructionSite;
-
+    public siteBuilt: boolean;
 
     public canInit(colony: Colony): boolean {
         return true;
@@ -39,24 +38,25 @@ export class TowerConstructionOperation extends JobOperation {
     }
 
     public isFinished(colony: Colony): boolean {
-        return this.initialized && this.siteBuilt && !this.site;
+        return this.siteBuilt && this.initialized && (!this.site || this.site.progress >= this.site.progressTotal);
     }
     
     protected onInit(colony: Colony): boolean {
-        let tower = colony.nest.nestMap.mainBlock.getTowerLocation(this.rcl);
+        let containerLocation = colony.nest.nestMap.controllerBlock.getContainerLocation();
+
         if (!this.siteBuilt) {            
-            let result = colony.nest.room.createConstructionSite(tower.x, tower.y, STRUCTURE_TOWER);
+            let result = colony.nest.room.createConstructionSite(containerLocation.x, containerLocation.y, STRUCTURE_CONTAINER);
             this.siteBuilt = result == OK;
             return false;
         } else {
-            let site = colony.nest.room.lookForAt(LOOK_CONSTRUCTION_SITES, tower.x, tower.y);
+            let site = colony.nest.room.lookForAt(LOOK_CONSTRUCTION_SITES, containerLocation.x, containerLocation.y);
             if (site.length) {
+                this.siteId = site[0].id;
                 this.site = site[0];
-                this.siteId = this.site.id;
                 return true;
             }
+            return false;
         }
-        return false;
     }
 
     protected onStart(colony: Colony): boolean {
@@ -64,7 +64,15 @@ export class TowerConstructionOperation extends JobOperation {
     }
 
     protected onFinish(colony: Colony): boolean {
-        return true;
+        var containerLocation = colony.nest.nestMap.controllerBlock.getContainerLocation();
+        var look = colony.nest.room.lookForAt(LOOK_STRUCTURES, containerLocation.x, containerLocation.y);
+        for (var i = 0; i < look.length; i++) {
+            if (look[i].structureType == STRUCTURE_CONTAINER) {
+                colony.resourceManager.setControllerContainer(look[i] as StructureContainer);
+                return true;
+            }
+        }
+        return false;
     }
     
     protected onLoad(): void {
@@ -80,15 +88,12 @@ export class TowerConstructionOperation extends JobOperation {
 
     protected onCleanup(colony: Colony): void {
     }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-    protected getJob(assignment: Assignment): BuilderJob {
+    
+    protected getJob(assignment: Assignment): Job {
         return new BuilderJob(this.siteId);
     }
-
-    protected onSave(): TowerConstructionOperationMemory {
+    
+    protected onSave(): ControllerInfrastructureOperationMemory {
         return {
             type: this.type,
             initialized: this.initialized,
@@ -97,15 +102,13 @@ export class TowerConstructionOperation extends JobOperation {
             cancelMilestoneId: this.cancelMilestoneId,
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory(),
-            rcl: this.rcl,
-            siteBuilt: this.siteBuilt,
-            siteId: this.siteId
+            siteId: this.siteId,
+            siteBuilt: this.siteBuilt
         };
     }
 }
 
-interface TowerConstructionOperationMemory extends JobOperationMemory {
-    rcl: number;
+export interface ControllerInfrastructureOperationMemory extends JobOperationMemory {
+    siteId: string;    
     siteBuilt: boolean;
-    siteId: string;
 }

@@ -13,8 +13,7 @@ export class Spawner {
 
     public spawnId: string;
     public spawn: StructureSpawn;
-    public get startedThisTick(): string { return this._startedThisTick; }
-    
+    public get startedThisTick(): string { return this._startedThisTick; }    
 
     public getCurrentlySpawning(): { name: string, remainingTime: number, needTime: number } {
         return this.spawn.spawning;
@@ -35,7 +34,7 @@ export class Spawner {
 
         var name = CreepNamer.getCreepName(body, this);
         var result = this.spawn.spawnCreep(
-            body.getBody(this.spawn.energy),
+            body.getBody(this.spawn.room.energyAvailable),
             name,
             {
                 memory: {

@@ -65,10 +65,7 @@ export class HeavyUpgradeOperation extends ControllerOperation {
 
     protected onCleanup(colony: Colony): void {
     }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
+    
     protected getController(assignment: Assignment): UpgraderRole {
         return new UpgraderRole(this.containerId, this.controllerId);
     }

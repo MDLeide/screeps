@@ -11,11 +11,13 @@ import { MapBlock } from "../map/base/MapBlock";
 
 export class Colony  {
     public static fromMemory(memory: ColonyMemory): Colony {
-        return new this(
+        let colony = new this(
             Nest.fromMemory(memory.nest),
             memory.name,
             ColonyPlanRepository.load(memory.plan)
         );
+        colony.resourceManager = ResourceManager.fromMemory(memory.resourceManager, colony);
+        return colony;
     }
 
     constructor(nest: Nest, name: string, plan: ColonyPlan) {
@@ -38,29 +40,35 @@ export class Colony  {
 
     public load(): void {
         this.nest.load();
+        this.resourceManager.load();
+        this.plan.load();
     }
 
     public update(): void {        
+        this.nest.update();
+        this.resourceManager.update();
         this.population.update();        
         this.plan.update(this);        
-        this.nest.update();
     }
 
     public execute(): void {
-        this.plan.execute(this);
         this.nest.execute();
+        this.resourceManager.execute();
+        this.plan.execute(this);        
     }
 
     public cleanup(): void {
-        this.plan.cleanup(this);
         this.nest.cleanup();
+        this.resourceManager.cleanup();
+        this.plan.cleanup(this);        
     }
 
     public save(): ColonyMemory {
         return {
             name: this.name,
             nest: this.nest.save(),
-            plan: this.plan.save()
+            plan: this.plan.save(),
+            resourceManager: this.resourceManager.save()
         };
     }
 

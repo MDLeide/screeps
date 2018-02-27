@@ -48,6 +48,7 @@
     <Folder Include="src\imp\map\" />
     <Folder Include="src\imp\operation\" />
     <Folder Include="src\imp\operation\economic\" />
+    <Folder Include="src\imp\operation\infrastructure\" />
     <Folder Include="src\imp\registration\" />
     <Folder Include="src\imp\tower\" />
     <Folder Include="src\imp\spawn\" />
@@ -109,14 +110,18 @@
     <TypeScriptCompile Include="src\imp\Execution.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\GlobalConstants.ts" />
     <TypeScriptCompile Include="src\imp\GlobalExtension.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\operation\economic\ControllerInfrastructureOperation.ts" />
-    <TypeScriptCompile Include="src\imp\operation\economic\StorageConstructionOperation.ts" />
-    <TypeScriptCompile Include="src\imp\operation\economic\TowerConstructionOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\BasicMaintenanceOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\EnergyTransportOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\HeavyUpgradeOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\ControllerInfrastructureOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\ExtensionsOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\HarvestInfrastructureOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\StorageConstructionOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\TowerConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\registration\ControllerRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -190,11 +195,8 @@
     <TypeScriptCompile Include="src\imp\map\StandardNestMapBuilder.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\operation\economic\ExtensionsOperation.ts" />
-    <TypeScriptCompile Include="src\imp\operation\economic\HarvestInfrastructureOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\HarvestOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\LightUpgradeOperation.ts" />
-    <TypeScriptCompile Include="src\imp\operation\economic\BasicMaintenanceOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\OperationTemplate.ts" />
     <TypeScriptCompile Include="src\lib\colonyPlan\ColonyPlan.ts" />
     <TypeScriptCompile Include="src\lib\colonyPlan\ColonyPlanRepository.ts" />

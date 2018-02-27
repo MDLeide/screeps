@@ -2,14 +2,28 @@ import { Assignment } from "./Assignment";
 import { Colony } from "../colony/Colony";
 import { Operation } from "./Operation"
 import { CreepController } from "../creep/CreepController";
+import { CreepControllerRepository } from "../creep/CreepControllerRepository";
 
 /**
 An operation that uses Controllers to manage creeps.
 */
 export abstract class ControllerOperation extends Operation {
+    public static fromMemory(memory: ControllerOperationMemory, instance: ControllerOperation): Operation {
+        for (let key in memory.controllers) {
+            instance.controllers[key] = CreepControllerRepository.load(memory.controllers[key]);
+        }
+        return Operation.fromMemory(memory, instance);
+    }
+
     public controllers: { [creepName: string]: CreepController } = {};
 
     protected abstract getController(assignment: Assignment): CreepController;
+
+    public load(): void {
+        super.load();
+        for (let key in this.controllers)
+            this.controllers[key].load();
+    }
 
     public update(colony: Colony): void {
         super.update(colony);

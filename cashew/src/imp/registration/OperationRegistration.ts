@@ -1,15 +1,15 @@
 import { OperationRepository } from "../../lib/operation/OperationRepository";
 
-import { ExtensionConstruction } from "../operation/economic/ExtensionsOperation";
-import { HarvestInfrastructureOperation } from "../operation/economic/HarvestInfrastructureOperation";
+import { ExtensionConstruction } from "../operation/infrastructure/ExtensionsOperation";
+import { HarvestInfrastructureOperation } from "../operation/infrastructure/HarvestInfrastructureOperation";
 import { HarvestOperation } from "../operation/economic/HarvestOperation";
 import { LightUpgradeOperation } from "../operation/economic/LightUpgradeOperation";
 //import { BasicMaintenanceOperation } from "../operation/economic/BasicMaintenanceOperation";
-import { ControllerInfrastructureOperation } from "../operation/economic/ControllerInfrastructureOperation";
+import { ControllerInfrastructureOperation } from "../operation/infrastructure/ControllerInfrastructureOperation";
 import { EnergyTransportOperation } from "../operation/economic/EnergyTransportOperation";
 import { HeavyUpgradeOperation } from "../operation/economic/HeavyUpgradeOperation";
-import { TowerConstructionOperation } from "../operation/economic/TowerConstructionOperation";
-import { StorageConstructionOperation } from "../operation/economic/StorageConstructionOperation";
+import { TowerConstructionOperation } from "../operation/infrastructure/TowerConstructionOperation";
+import { StorageConstructionOperation } from "../operation/infrastructure/StorageConstructionOperation";
 
 export class OperationRegistration {
     public static register() {

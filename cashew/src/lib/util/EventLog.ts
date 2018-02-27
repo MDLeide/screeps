@@ -11,6 +11,12 @@ export class EventLog {
         this.debug = new DebugEvents(colors, this);
     }
 
+    public help(): string {
+        return "mute: boolean - mutes all events</br>" +
+            "messageLevel: number - verbosity level</br>" +
+            "empire, colony, operation, creep, debug - event groups";
+    }
+
     public mute: boolean = false;
     /** Minimum message level for all events.
     A message's level must be greater than

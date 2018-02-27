@@ -2,11 +2,19 @@ import { Assignment } from "./Assignment";
 import { Colony } from "../colony/Colony";
 import { Operation } from "./Operation"
 import { Job } from "../creep/Job";
+import { CreepControllerRepository } from "../creep/CreepControllerRepository";
 
 /**
 An operation that uses Controllers to manage creeps.
 */
 export abstract class JobOperation extends Operation {
+    public static fromMemory(memory: JobOperationMemory, instance: JobOperation): Operation {
+        for (let key in memory.jobs) {
+            instance.jobs[key] = CreepControllerRepository.load(memory.jobs[key]) as Job;
+        }
+        return Operation.fromMemory(memory, instance);
+    }
+
     public jobs: { [creepName: string]: Job } = {};
 
     protected abstract getJob(assignment: Assignment): Job;
@@ -27,7 +35,8 @@ export abstract class JobOperation extends Operation {
 
                 if (controller.complete) {
                     this.jobs[creep.name] = this.getJob(this.assignments[i]);
-                    this.jobs[creep.name].update(creep);
+                    if (this.jobs[creep.name])
+                        this.jobs[creep.name].update(creep);
                 }
             }
         }

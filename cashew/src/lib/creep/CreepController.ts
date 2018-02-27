@@ -1,12 +1,17 @@
 export abstract class CreepController {
+    public static fromMemory(memory: CreepControllerMemory, instance: CreepController): CreepController {
+        instance.type = memory.type;
+        return instance;
+    }
+
     constructor(type: ControllerType) {
         this.type = type;
     }
 
     public type: ControllerType;
 
-    public load(creep: Creep): void {
-        this.onLoad(creep);
+    public load(): void {
+        this.onLoad();
     }
 
     public update(creep: Creep): void{
@@ -31,7 +36,7 @@ export abstract class CreepController {
         };
     }
 
-    protected abstract onLoad(creep: Creep): void;
+    protected abstract onLoad(): void;
     protected abstract onUpdate(creep: Creep): void;
     protected abstract onExecute(creep: Creep): void;
     protected abstract onCleanup(creep: Creep): void;

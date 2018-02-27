@@ -165,9 +165,9 @@ export class OperationGroup {
 
 
      /** Spawns creeps required for an operation. */
-    private getCreepsForOperation(op: Operation, colony: Colony) {
+    private getCreepsForOperation(op: Operation, colony: Colony): void {
         var openAssignments = op.getUnfilledAssignments(colony);
-
+        
         for (var i = 0; i < openAssignments.length; i++) {
             var unassignedCreep = this.getUnassignedCreep(openAssignments[i], colony);
             if (unassignedCreep) {

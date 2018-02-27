@@ -1,3 +1,4 @@
+import { ConcreteClass } from "../lib/creep/Task";
 import { Empire } from "../lib/empire/Empire"
 import { ColonyFinder } from "../lib/empire/ColonyFinder";
 import { NestMapBuilder } from "../lib/map/NestMapBuilder";
@@ -6,7 +7,6 @@ import { StandardNestMapBuilder } from "./map/StandardNestMapBuilder";
 import { Extender } from "./extend/Extender";
 import { MemoryManager } from "../lib/util/MemoryManager";
 import { Playback } from "../lib/debug/Playback";
-import { GlobalExtension } from "./GlobalExtension";
 import { Register } from "./registration/Register";
 
 import { Reporter } from "../lib/debug/Reporter";
@@ -14,8 +14,7 @@ import { Reporter } from "../lib/debug/Reporter";
 export class Execute {    
     public init(): void {        
         console.log("<span style='color:green'>Execution initializing...</span>");
-        
-        GlobalExtension.extend();
+                
         Extender.extend();
         MemoryManager.checkInit();
         Register.register();

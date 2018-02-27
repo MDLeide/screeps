@@ -57,4 +57,13 @@ export class LightUpgraderRole extends Role {
         }
         return null;
     }
+
+    protected onUpdate(creep: Creep): void {
+    }
+
+    protected onExecute(creep: Creep): void {
+    }
+
+    protected onCleanup(creep: Creep): void {
+    }
 }
