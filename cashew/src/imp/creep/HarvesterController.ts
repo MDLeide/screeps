@@ -4,6 +4,7 @@ export class HarvesterController extends CreepController {
     public static fromMemory(memory: HarvesterControllerMemory): CreepController {
         var controller = new this(memory.containerId, memory.sourceId);
         controller.arrived = memory.arrived;
+        controller.repaired = memory.repaired;
         return CreepController.fromMemory(memory, controller);
     }
 
@@ -18,6 +19,7 @@ export class HarvesterController extends CreepController {
     public containerId: string;
     public sourceId: string;
     public arrived: boolean;
+    public repaired: boolean;
 
     protected onLoad(): void {
         this.container = Game.getObjectById<StructureContainer>(this.containerId);
@@ -28,8 +30,15 @@ export class HarvesterController extends CreepController {
     }
 
     protected onExecute(creep: Creep): void {        
-        if (this.arrived) {
+        if (this.repaired) {
             this.harvest(creep);
+        } else if (this.arrived) {
+            if (this.container.hits >= this.container.hitsMax - 10) {
+                this.repaired = true;
+                this.harvest(creep);
+            } else {
+                this.repair(creep);
+            }
         } else {
             let distance = creep.pos.getRangeTo(this.container);
             if (distance == 0) {                
@@ -45,7 +54,15 @@ export class HarvesterController extends CreepController {
 
     protected onCleanup(creep: Creep): void { }
 
-    private moving(creep: Creep) {        
+    private repair(creep: Creep): void {
+        if (creep.carry.energy >= 25) {
+            creep.repair(this.container);
+        } else {
+            creep.harvest(this.source);
+        }
+    }
+
+    private moving(creep: Creep): void {        
         creep.moveTo(this.container);
     }
 
@@ -69,7 +86,8 @@ export class HarvesterController extends CreepController {
             type: this.type,
             arrived: this.arrived,
             containerId: this.containerId,
-            sourceId: this.sourceId
+            sourceId: this.sourceId,
+            repaired: this.repaired
         };
     }
 
@@ -79,4 +97,5 @@ export interface HarvesterControllerMemory extends CreepControllerMemory {
     arrived: boolean;
     containerId: string;
     sourceId: string;
+    repaired: boolean;
 }
