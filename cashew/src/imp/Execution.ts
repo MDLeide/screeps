@@ -4,7 +4,6 @@ import { ColonyFinder } from "../lib/empire/ColonyFinder";
 import { NestMapBuilder } from "../lib/map/NestMapBuilder";
 import { StandardNestMapBuilder } from "./map/StandardNestMapBuilder";
 
-import { Extender } from "./extend/Extender";
 import { MemoryManager } from "../lib/util/MemoryManager";
 import { Playback } from "../lib/debug/Playback";
 import { Register } from "./registration/Register";
@@ -14,8 +13,7 @@ import { Reporter } from "../lib/debug/Reporter";
 export class Execute {    
     public init(): void {        
         console.log("<span style='color:green'>Execution initializing...</span>");
-                
-        Extender.extend();
+
         MemoryManager.checkInit();
         Register.register();
     }

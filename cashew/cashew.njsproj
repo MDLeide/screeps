@@ -41,9 +41,6 @@
     <Folder Include="src\" />
     <Folder Include="src\imp\colony\plans\" />
     <Folder Include="src\imp\creep\" />
-    <Folder Include="src\imp\extend\" />
-    <Folder Include="src\imp\extend\nut\" />
-    <Folder Include="src\imp\extend\seed\" />
     <Folder Include="src\imp\colony\" />
     <Folder Include="src\imp\map\" />
     <Folder Include="src\imp\operation\" />
@@ -67,7 +64,6 @@
     <Folder Include="src\test\" />
     <Folder Include="src\test\Memory\" />
     <Folder Include="src\yagni\body\state\" />
-    <Folder Include="src\lib\extend\" />
     <Folder Include="src\lib\empire\" />
     <Folder Include="src\lib\spawn\" />
     <Folder Include="src\lib\colony\" />
@@ -177,10 +173,6 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\ActivityBuilder.ts" />
     <TypeScriptCompile Include="src\yagni\RoleBuilder.ts" />
-    <TypeScriptCompile Include="src\imp\extend\nut\ControllerNut.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\ControllerSeed.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\map\ExtensionBlockProvider.ts" />
     <TypeScriptCompile Include="src\imp\map\LabBlockProvider.ts">
       <SubType>Code</SubType>
@@ -208,18 +200,6 @@
     <TypeScriptCompile Include="src\yagni\BodyRegistration.ts" />
     <TypeScriptCompile Include="src\imp\registration\ColonyPlanRegistration.ts" />
     <TypeScriptCompile Include="src\imp\registration\OperationRegistration.ts" />
-    <TypeScriptCompile Include="src\imp\extend\Extender.ts" />
-    <TypeScriptCompile Include="src\imp\extend\nut\ContainerNut.ts" />
-    <TypeScriptCompile Include="src\imp\extend\nut\CreepNut.ts" />
-    <TypeScriptCompile Include="src\imp\extend\nut\RoomNut.ts" />
-    <TypeScriptCompile Include="src\imp\extend\nut\SourceNut.ts" />
-    <TypeScriptCompile Include="src\imp\extend\nut\SpawnNut.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\ContainerSeed.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\CreepSeed.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\RoomSeed.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\SourceSeed.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\SpawnSeed.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\StructureSeed.ts" />
     <TypeScriptCompile Include="src\imp\spawn\BodyRepository.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -299,9 +279,6 @@
     <TypeScriptCompile Include="src\imp\tower\TowerController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\screeps-types.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\Colony.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -341,9 +318,6 @@
     <TypeScriptCompile Include="src\lib\empire\Empire.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\extend\Nut.ts" />
-    <TypeScriptCompile Include="src\lib\extend\Seed.ts" />
-    <TypeScriptCompile Include="src\lib\extend\StatefulNut.ts" />
     <TypeScriptCompile Include="src\yagni\Population.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
