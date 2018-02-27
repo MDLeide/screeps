@@ -19,41 +19,42 @@ export class Body {
         public minimumEnergy: number,
         public constantParts: BodyPartConstant[],
         public scalingParts: BodyPartConstant[],
-        public maxCompleteScaling: number,
+        public maxCompleteScalingSections: number,
         public completeScalingPartsOnly: boolean) {
 
-        for (var i = 0; i < constantParts.length; i++) 
-            this.constantPartCost += BODYPART_COST[constantParts[i]];
+        for (var i = 0; i < this.constantParts.length; i++) 
+            this.constantPartCost += BODYPART_COST[this.constantParts[i]];
 
         if (this.constantPartCost > minimumEnergy)
             throw Error("Minimum energy cannot be less than constant part cost.");
 
-        for (var i = 0; i < scalingParts.length; i++)
-            this.scalingPartCost += BODYPART_COST[scalingParts[i]];        
+        for (var i = 0; i < this.scalingParts.length; i++)
+            this.scalingPartCost += BODYPART_COST[this.scalingParts[i]];        
     }
 
-    public constantPartCost: number;
-    public scalingPartCost: number;
+    public constantPartCost: number = 0;
+    public scalingPartCost: number = 0;
 
     public getBody(energy: number): BodyPartConstant[] {
         if (energy < this.minimumEnergy)
             return null;
 
         var parts = this.getConstantParts();
-
         var remainingEnergy = energy - this.constantPartCost;
-        console.log(this.scalingParts);
-        console.log(this.scalingPartCost);
-        var fullParts = Math.floor(remainingEnergy / this.scalingPartCost);
-        if (this.maxCompleteScaling > 0)
-            fullParts = Math.min(fullParts, this.maxCompleteScaling);
-        console.log(fullParts);
-        this.pushFullParts(parts, fullParts);
+
+        var fullScalingSections = Math.floor(remainingEnergy / this.scalingPartCost);
+        if (this.maxCompleteScalingSections > 0)
+            fullScalingSections = Math.min(fullScalingSections, this.maxCompleteScalingSections);
+        if (parts.length + fullScalingSections * this.scalingParts.length > 50) {
+            fullScalingSections = Math.floor((50 - parts.length) / this.scalingParts.length);
+        }
+        
+        this.pushFullParts(parts, fullScalingSections);
                        
         if (this.completeScalingPartsOnly)
             return parts;
 
-        remainingEnergy = remainingEnergy - fullParts * this.scalingPartCost;
+        remainingEnergy = remainingEnergy - fullScalingSections * this.scalingPartCost;
 
         return this.pushRemainingParts(parts, remainingEnergy);
     }
@@ -64,7 +65,7 @@ export class Body {
             minimumEnergy: this.minimumEnergy,
             constantParts: this.constantParts,
             scalingParts: this.scalingParts,
-            maxCompleteScaling: this.maxCompleteScaling,
+            maxCompleteScaling: this.maxCompleteScalingSections,
             completeScalingPartsOnly: this.completeScalingPartsOnly
         };
     }
@@ -85,9 +86,13 @@ export class Body {
 
     private pushRemainingParts(parts: BodyPartConstant[], remainingEnergy: number): BodyPartConstant[] {
         for (var i = 0; i < this.scalingParts.length; i++) {
+            if (parts.length >= 50)
+                return parts;
+
             var cost = BODYPART_COST[this.scalingParts[i]];
             if (cost > remainingEnergy)
                 return parts;
+
             parts.push(this.scalingParts[i]);
             remainingEnergy -= cost;
         }

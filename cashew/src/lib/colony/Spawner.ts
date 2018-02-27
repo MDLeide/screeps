@@ -46,12 +46,15 @@ export class Spawner {
                 }
             });
 
-        if (result != OK) {
-            return null;
-        } else {
+        if (result == OK) {
             this._startedThisTick = name;
             return name;
+        } else if (result == ERR_NAME_EXISTS) {
+            global.events.colony.spawnError(this.spawn.name, body.type, "Name already exists.");
+        } else if (result == ERR_INVALID_ARGS) {
+            global.events.colony.spawnError(this.spawn.name, body.type, "Bad body or no name.");
         }
+        return null;
     }
     
 

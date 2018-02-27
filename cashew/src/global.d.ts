@@ -30,6 +30,9 @@ declare global {
         TASK_WITHDRAW: string;
         TASK_BUILD: string;
         TASK_UPGRADE: string;
+        TASK_REPAIR: string;
+        TASK_ATTACK: string;
+        TASK_RESERVE: string;
 
         OPERATION_STORAGE_CONSTRUCTION: string;
         OPERATION_TOWER_CONSTRUCTION: string;

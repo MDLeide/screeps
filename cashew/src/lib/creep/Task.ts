@@ -82,13 +82,19 @@ export abstract class Task {
 
 
     public static loadTask(memory: TaskMemory): Task {
-        switch (memory.type) {            
+        switch (memory.type) {
+            case TASK_ATTACK:
+                return Attack.fromMemory(memory as TargetedTaskMemory);
             case TASK_BUILD:
                 return Build.fromMemory(memory as TargetedTaskMemory);
             case TASK_IDLE:
                 return Idle.fromMemory(memory);
             case TASK_MOVE_TO:
-                return MoveTo.fromMemory(memory as MoveToMemory);            
+                return MoveTo.fromMemory(memory as MoveToMemory);
+            case TASK_REPAIR:
+                return Repair.fromMemory(memory as TargetedTaskMemory);
+            case TASK_RESERVE:
+                return Reserve.fromMemory(memory as TargetedTaskMemory);
             case TASK_TRANSFER:
                 return Transfer.fromMemory(memory as TargetedTaskMemory);                       
             case TASK_UPGRADE:
@@ -123,6 +129,18 @@ export abstract class Task {
 
     public static Upgrade(target: StructureController): Upgrade {
         return new Upgrade(target);
+    }
+
+    public static Repair(target: Structure): Repair {
+        return new Repair(target);
+    }
+
+    public static Attack(target: (Creep | Structure)): Attack {
+        return new Attack(target);
+    }
+
+    public static Reserve(target: StructureController): Reserve {
+        return new Reserve(target);
     }
 }
 
@@ -398,6 +416,98 @@ export class Upgrade extends TargetedTask<StructureController> {
             this.onError();
         else if (response == ERR_INVALID_TARGET)
             this.onError();
+        else
+            this.onError();
+    }
+
+    public cleanup(creep: Creep): void {
+    }
+}
+
+export class Repair extends TargetedTask<Structure> {
+    public static fromMemory(memory: TargetedTaskMemory): Repair {
+        let target = Game.getObjectById<Structure>(memory.targetId);
+        let repair = new this(target);
+        return TargetedTask.fromMemory(memory, repair) as Repair;
+    }
+
+    constructor(target: Structure) {
+        super(TASK_REPAIR, target);
+    }
+
+    public update(creep: Creep): void {
+        if (creep.carry.energy == 0)
+            return this.onComplete();
+        else if (!this.target)
+            return this.onError();
+        else if (this.target.hits >= this.target.hitsMax)
+            return this.onComplete();
+    }
+
+    public execute(creep: Creep): void {
+        var response = creep.repair(this.target);
+        if (response == OK)
+            return;
+        else if (response == ERR_NOT_IN_RANGE)
+            creep.moveTo(this.target);
+        else if (response == ERR_NOT_ENOUGH_RESOURCES)
+            this.onIncomplete();
+        else
+            this.onError();
+    }
+
+    public cleanup(creep: Creep): void {
+    }
+}
+
+export class Attack extends TargetedTask<(Structure | Creep )> {
+    public static fromMemory(memory: TargetedTaskMemory): Attack {
+        let target = Game.getObjectById<(Structure | Creep)>(memory.targetId);
+        let attack = new this(target);
+        return TargetedTask.fromMemory(memory, attack) as Attack;
+    }
+
+    constructor(target: (Structure | Creep)) {
+        super(TASK_ATTACK, target);
+    }
+
+    public update(creep: Creep): void {
+    }
+
+    public execute(creep: Creep): void {
+        var response = creep.attack(this.target);
+        if (response == OK)
+            this.onComplete();
+        else if (response == ERR_NOT_IN_RANGE)
+            creep.moveTo(this.target);
+        else
+            this.onError();
+    }
+
+    public cleanup(creep: Creep): void {
+    }
+}
+
+export class Reserve extends TargetedTask<StructureController> {
+    public static fromMemory(memory: TargetedTaskMemory): Attack {
+        let target = Game.getObjectById<StructureController>(memory.targetId);
+        let reserve = new this(target);
+        return TargetedTask.fromMemory(memory, reserve) as Attack;
+    }
+
+    constructor(target: StructureController) {
+        super(TASK_RESERVE, target);
+    }
+
+    public update(creep: Creep): void {
+    }
+
+    public execute(creep: Creep): void {
+        let response = creep.reserveController(this.target);
+        if (response == OK)
+            return;
+        else if (response == ERR_NOT_IN_RANGE)
+            creep.moveTo(this.target);
         else
             this.onError();
     }

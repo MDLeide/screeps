@@ -7,6 +7,9 @@ export class GlobalConstants {
         global.TASK_WITHDRAW = "Withdraw";
         global.TASK_BUILD = "Build";
         global.TASK_UPGRADE = "Upgrade";
+        global.TASK_REPAIR = "Repair";
+        global.TASK_ATTACK = "Attack";
+        global.TASK_RESERVE = "Reserve";
 
         global.OPERATION_STORAGE_CONSTRUCTION = "StorageConstruction";
         global.OPERATION_TOWER_CONSTRUCTION = "TowerConstruction";

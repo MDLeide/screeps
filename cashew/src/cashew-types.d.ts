@@ -4,6 +4,9 @@ declare const TASK_TRANSFER: "Transfer";
 declare const TASK_WITHDRAW: "Withdraw";
 declare const TASK_BUILD: "Build";
 declare const TASK_UPGRADE: "Upgrade";
+declare const TASK_REPAIR: "Repair";
+declare const TASK_ATTACK: "Attack";
+declare const TASK_RESERVE: "Reserve";
 
 declare const OPERATION_STORAGE_CONSTRUCTION: "StorageConstruction";
 declare const OPERATION_TOWER_CONSTRUCTION: "TowerConstruction";
@@ -37,6 +40,9 @@ type TASK_TRANSFER = "Transfer";
 type TASK_WITHDRAW = "Withdraw";
 type TASK_BUILD = "Build";
 type TASK_UPGRADE = "Upgrade";
+type TASK_REPAIR = "Repair";
+type TASK_ATTACK = "Attack";
+type TASK_RESERVE = "Reserve";
 
 type OPERATION_STORAGE_CONSTRUCTION = "StorageConstruction";
 type OPERATION_TOWER_CONSTRUCTION = "TowerConstruction";
@@ -70,7 +76,10 @@ type TaskType =
     TASK_TRANSFER |
     TASK_WITHDRAW |
     TASK_BUILD |
-    TASK_UPGRADE;
+    TASK_UPGRADE |
+    TASK_REPAIR |
+    TASK_ATTACK |
+    TASK_RESERVE;
 
 type OperationType =
     OPERATION_STORAGE_CONSTRUCTION |
@@ -87,7 +96,7 @@ type OperationType =
 type PlanType =
     PLAN_STANDARD;
 
-type ControllerType =
+type Creep_ControllerType =
     CREEP_CONTROLLER_HARVESTER |
     CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER |
     CREEP_CONTROLLER_LIGHT_UPGRADER |
@@ -101,3 +110,4 @@ type BodyType =
     BODY_HEAVY_UPGRADER |
     BODY_HAULER |
     BODY_WARRIOR;
+
