@@ -51,6 +51,11 @@ export abstract class OperationPlan {
         this.operationGroup.cancelOperation(operation);
     }
 
+    /** Cancels all operations of the given type. */
+    protected cancelOperationsByType(type: OperationType): void {
+        
+    }
+
 
     protected abstract onLoad(): void;
     protected abstract onUpdate(colony: Colony): void;

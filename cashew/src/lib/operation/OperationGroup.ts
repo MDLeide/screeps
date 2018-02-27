@@ -29,6 +29,13 @@ export class OperationGroup {
         operation.cancel();
         this.canceled.push(operation);
     }
+
+    public cancelOperationByType(type: OperationType): void {
+        for (var i = 0; i < this.operations.length; i++)
+            if (this.operations[i].type == type)
+                this.cancelOperation(this.operations[i]);        
+    }
+
     
     public load(): void {
         for (var i = 0; i < this.operations.length; i++) 

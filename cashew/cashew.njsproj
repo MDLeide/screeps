@@ -80,6 +80,19 @@
     <TypeScriptCompile Include="src\global.d.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\colony\EconomyPlan.ts" />
+    <TypeScriptCompile Include="src\imp\colony\InfrastructurePlan.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\colony\StandardProgress.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\registration\ColonyProgressRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\registration\OperationPlanRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\StandardPlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
