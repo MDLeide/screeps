@@ -42,7 +42,7 @@ export class StandardPlan {
                             }
                         }).length;
 
-                    return containerCount >= colony.nest.room.nut.seed.findSources().length;
+                    return containerCount >= colony.nest.room.find(FIND_SOURCES).length;
                 }),
             new Milestone(
                 "rcl2",
@@ -157,7 +157,7 @@ export class StandardPlan {
 
     private static spawnOperations(colony: Colony): Operation[] {        
         var ops: Operation[] = [];
-        var sources = colony.nest.room.nut.seed.findSources();
+        var sources = colony.nest.room.find(FIND_SOURCES);
         for (var i = 0; i < sources.length; i++) {
             var op = new HarvestInfrastructureOperation(sources[i].id);
             op.cancelMilestoneId = "harvestContainers";
@@ -168,7 +168,7 @@ export class StandardPlan {
 
     private static harvestContainersOperations(colony: Colony): Operation[] {
         var ops: Operation[] = [];
-        var sources = colony.nest.room.nut.seed.findSources();
+        var sources = colony.nest.room.find(FIND_SOURCES);
         
         var harvestOp = new HarvestOperation(300, sources[0]);
         harvestOp.cancelMilestoneId = "firstLinks"

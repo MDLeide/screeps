@@ -72,10 +72,11 @@
     <Folder Include="src\lib\spawn\" />
     <Folder Include="src\lib\colony\" />
     <Folder Include="src\lib\util\" />
-    <Folder Include="src\lib\util\logger\" />
+    <Folder Include="src\yagni\logger\" />
     <Folder Include="src\yagni\" />
     <Folder Include="src\util\" />
     <Folder Include="src\yagni\body\" />
+    <Folder Include="src\yagni\util\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\cashew-types.d.ts">
@@ -154,9 +155,6 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\EventLog.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\util\Util.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\visual\BadgeArtist.ts">
@@ -263,9 +261,6 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\operation\Operation.ts" />
     <TypeScriptCompile Include="src\lib\operation\OperationGroup.ts" />
-    <TypeScriptCompile Include="src\lib\reports\OperationGroupReport.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\reports\OperationReport.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -361,27 +356,27 @@
     <TypeScriptCompile Include="src\yagni\SpawnStrategy.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\util\logger\Config.ts" />
-    <TypeScriptCompile Include="src\lib\util\logger\DebugConfig.ts" />
-    <TypeScriptCompile Include="src\lib\util\logger\Logger.ts" />
-    <TypeScriptCompile Include="src\lib\util\logger\LoggerConfig.ts" />
-    <TypeScriptCompile Include="src\lib\util\logger\StringHelper.ts" />
-    <TypeScriptCompile Include="src\lib\util\logger\TraceHelper.ts" />
+    <TypeScriptCompile Include="src\yagni\logger\Config.ts" />
+    <TypeScriptCompile Include="src\yagni\logger\DebugConfig.ts" />
+    <TypeScriptCompile Include="src\yagni\logger\Logger.ts" />
+    <TypeScriptCompile Include="src\yagni\logger\LoggerConfig.ts" />
+    <TypeScriptCompile Include="src\yagni\logger\StringHelper.ts" />
+    <TypeScriptCompile Include="src\yagni\logger\TraceHelper.ts" />
     <TypeScriptCompile Include="src\main.ts" />
     <TypeScriptCompile Include="src\types.d.ts" />
     <TypeScriptCompile Include="src\util\ErrorMapper.ts" />
-    <TypeScriptCompile Include="src\util\Cache.ts" />
-    <TypeScriptCompile Include="src\util\Collections.ts" />
-    <TypeScriptCompile Include="src\util\Console.ts" />
-    <TypeScriptCompile Include="src\util\DeepCopy.ts" />
-    <TypeScriptCompile Include="src\util\Event.ts" />
-    <TypeScriptCompile Include="src\util\GUID.ts" />
-    <TypeScriptCompile Include="src\util\IdArray.ts">
+    <TypeScriptCompile Include="src\yagni\util\Cache.ts" />
+    <TypeScriptCompile Include="src\yagni\util\Collections.ts" />
+    <TypeScriptCompile Include="src\yagni\util\Console.ts" />
+    <TypeScriptCompile Include="src\yagni\util\DeepCopy.ts" />
+    <TypeScriptCompile Include="src\yagni\util\Event.ts" />
+    <TypeScriptCompile Include="src\yagni\util\GUID.ts" />
+    <TypeScriptCompile Include="src\yagni\util\IdArray.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\util\IIdentifiable.ts" />
-    <TypeScriptCompile Include="src\util\Legume.ts" />
-    <TypeScriptCompile Include="src\util\StatefulArray.ts" />
+    <TypeScriptCompile Include="src\yagni\util\IIdentifiable.ts" />
+    <TypeScriptCompile Include="src\yagni\util\Legume.ts" />
+    <TypeScriptCompile Include="src\yagni\util\StatefulArray.ts" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\lib\map\BlockProviderBase.ts">

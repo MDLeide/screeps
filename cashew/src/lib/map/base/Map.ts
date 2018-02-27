@@ -1,4 +1,3 @@
-import { Guid } from "../../../util/GUID";
 import { Layer } from "./Layer";
 
 /**

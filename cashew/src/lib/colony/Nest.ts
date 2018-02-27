@@ -16,7 +16,9 @@ export class Nest {
         this.nestMap = nestMap;
 
         this.spawners = [];
-        var spawns = this.room.nut.seed.findMySpawns();
+        let spawns = this.room.find(FIND_MY_STRUCTURES, {
+            filter: (struct) => struct.structureType == STRUCTURE_SPAWN
+        });
         for (var i = 0; i < spawns.length; i++) {
             this.spawners.push(new Spawner(spawns[i].id));
         }

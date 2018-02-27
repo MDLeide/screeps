@@ -1,5 +1,4 @@
 import { Layer } from "./Layer";
-import { Guid } from "../../../util/GUID";
 
 export class MapBlock {
     public static fromMemory(memory: MapBlockMemory) : MapBlock {

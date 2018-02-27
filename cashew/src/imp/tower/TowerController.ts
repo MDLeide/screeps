@@ -122,8 +122,8 @@ export class TowerController {
     }
 
 
-    private shouldAttack(): boolean {
-        return this.tower.room.nut.seed.findHostileCreeps().length > 0;
+    private shouldAttack(): boolean {        
+        return this.tower.room.find(FIND_HOSTILE_CREEPS).length > 0;
     }
 
     private doneAttacking(): boolean {
@@ -135,7 +135,7 @@ export class TowerController {
     }
 
     private getAttackTarget(): Creep {
-        return this.tower.room.nut.seed.findHostileCreeps()[0];
+        return this.tower.room.find(FIND_HOSTILE_CREEPS)[0];
     }
 
     private attack(): void {
@@ -161,7 +161,7 @@ export class TowerController {
 
 
     private shouldRepair(): boolean {
-        var structs = this.tower.room.nut.seed.findStructures();        
+        var structs = this.tower.room.find(FIND_MY_STRUCTURES);
         for (var i = 0; i < structs.length; i++) {
             var s = structs[i];
             if (this.repairHitsStartThreshold[s.structureType]) {
@@ -184,7 +184,7 @@ export class TowerController {
     }
 
     private getRepairTarget(): Structure {
-        var structs = this.tower.room.nut.seed.findStructures();
+        var structs = this.tower.room.find(FIND_MY_STRUCTURES);
 
         for (var i = 0; i < structs.length; i++) {
             var s = structs[i];

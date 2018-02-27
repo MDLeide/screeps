@@ -157,7 +157,8 @@ export class NestMapBuilder {
 
     private getHarvestBlocks(room: Room, map: Map): HarvestBlock[] {        
         var blocks = [];
-        var sources = room.nut.seed.findSources();
+        
+        var sources = room.find(FIND_SOURCES);
         for (var i = 0; i < sources.length; i++) {
             var b = this.getHarvestBlock(sources[i], map);
             if (b)

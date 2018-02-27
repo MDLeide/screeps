@@ -1,5 +1,3 @@
-import { Util } from "../util/Util";
-
 export class UCreep {
     /**
      * Attemps to swap positions with a creep.
