@@ -38,6 +38,16 @@ export class RemoteMiningManager {
         }
     }
 
+    public getRemoteSourceById(sourceId: string): RemoteSource {
+        for (var i = 0; i < this.rooms.length; i++) {
+            for (var j = 0; j < this.rooms[i].remoteSources.length; j++) {
+                if (this.rooms[i].remoteSources[j].sourceId == sourceId)
+                    return this.rooms[i].remoteSources[j];
+            }
+        }
+        return null;
+    }
+
     public getClosestUnscoutedRoom(currentRoomName: string): string {
         let min: number = 100;
         let room: string;

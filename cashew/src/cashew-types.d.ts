@@ -33,6 +33,8 @@ declare const CREEP_CONTROLLER_LIGHT_UPGRADER: "LightUpgrader";
 declare const CREEP_CONTROLLER_BUILDER: "Builder";
 declare const CREEP_CONTROLLER_HAULER: "Hauler";
 declare const CREEP_CONTROLLER_UPGRADER: "Upgrader";
+declare const CREEP_CONTROLLER_REMOTE_HAULER: "RemoteHauler";
+declare const CREEP_CONTROLLER_REMOTE_HARVESTER: "RemoteHarvester";
 
 declare const BODY_LIGHT_WORKER: "LightWorker";
 declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
@@ -76,6 +78,8 @@ type CREEP_CONTROLLER_LIGHT_UPGRADER = "LightUpgrader";
 type CREEP_CONTROLLER_BUILDER = "Builder";
 type CREEP_CONTROLLER_HAULER = "Hauler";
 type CREEP_CONTROLLER_UPGRADER = "Upgrader";
+type CREEP_CONTROLLER_REMOTE_HAULER = "RemoteHauler";
+type CREEP_CONTROLLER_REMOTE_HARVESTER = "RemoteHarvester";
 
 type BODY_LIGHT_WORKER = "LightWorker";
 type BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -123,7 +127,9 @@ type ControllerType =
     CREEP_CONTROLLER_LIGHT_UPGRADER |
     CREEP_CONTROLLER_BUILDER |
     CREEP_CONTROLLER_HAULER |
-    CREEP_CONTROLLER_UPGRADER;
+    CREEP_CONTROLLER_UPGRADER |
+    CREEP_CONTROLLER_REMOTE_HAULER |
+    CREEP_CONTROLLER_REMOTE_HARVESTER;
 
 type BodyType =
     BODY_LIGHT_WORKER |

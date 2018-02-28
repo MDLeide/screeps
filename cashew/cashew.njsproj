@@ -90,6 +90,11 @@
     <TypeScriptCompile Include="src\imp\colony\StandardProgress.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\RemoteHaulerRole.ts" />
+    <TypeScriptCompile Include="src\imp\creep\RemoteHarvesterController.ts" />
+    <TypeScriptCompile Include="src\imp\operation\economic\RemoteHarvestOperation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\economic\RemoteHarvestScoutOperation.ts" />
     <TypeScriptCompile Include="src\imp\registration\ColonyProgressRegistration.ts">
       <SubType>Code</SubType>

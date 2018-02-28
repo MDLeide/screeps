@@ -34,6 +34,8 @@ global.CREEP_CONTROLLER_LIGHT_UPGRADER = "LightUpgrader";
 global.CREEP_CONTROLLER_BUILDER = "Builder";
 global.CREEP_CONTROLLER_HAULER = "Hauler";
 global.CREEP_CONTROLLER_UPGRADER = "Upgrader";
+global.CREEP_CONTROLLER_REMOTE_HAULER = "RemoteHauler";
+global.CREEP_CONTROLLER_REMOTE_HARVESTER = "RemoteHarvester";
 
 global.BODY_LIGHT_WORKER = "LightWorker";
 global.BODY_HEAVY_HARVESTER = "HeavyHarvester";

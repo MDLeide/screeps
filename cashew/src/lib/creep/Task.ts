@@ -111,8 +111,8 @@ export abstract class Task {
         return new Idle();
     }
 
-    public static MoveTo(target: (RoomPosition | { pos: RoomPosition })): MoveTo {
-        return new MoveTo(target);
+    public static MoveTo(target: (RoomPosition | { pos: RoomPosition }), range?: number): MoveTo {
+        return new MoveTo(target, range);
     }
 
     public static Transfer(target: TransferTarget): Transfer {

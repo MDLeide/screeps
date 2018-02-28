@@ -23,7 +23,7 @@ declare global {
         reset(): void;
 
         // constants below
-        
+
         TASK_IDLE: string;
         TASK_MOVE_TO: string;
         TASK_TRANSFER: string;
@@ -59,6 +59,8 @@ declare global {
         CREEP_CONTROLLER_BUILDER: string;
         CREEP_CONTROLLER_HAULER: string;
         CREEP_CONTROLLER_UPGRADER: string;
+        CREEP_CONTROLLER_REMOTE_HAULER: string;
+        CREEP_CONTROLLER_REMOTE_HARVESTER: string;
 
         BODY_LIGHT_WORKER: string;
         BODY_HEAVY_HARVESTER: string;
