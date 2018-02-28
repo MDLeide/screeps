@@ -1,3 +1,4 @@
+//import { } from "./imp/GlobalConstants";
 import { GlobalConstants } from "./imp/GlobalConstants";
 GlobalConstants.extend();
 import { GlobalExtension } from "./imp/GlobalExtension";

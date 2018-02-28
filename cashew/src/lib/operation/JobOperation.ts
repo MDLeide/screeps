@@ -86,7 +86,8 @@ export abstract class JobOperation extends Operation {
     protected getJobMemory(): { [creepName: string]: JobMemory } {
         var mem = {};
         for (var key in this.jobs)
-            mem[key] = this.jobs[key].save();
+            if (this.jobs[key])
+                mem[key] = this.jobs[key].save();
         return mem;
     }
 

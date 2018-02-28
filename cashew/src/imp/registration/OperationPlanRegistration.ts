@@ -14,7 +14,7 @@ export class OperationPlanRegistration {
         OperationPlanRepository.register(
             PLAN_INFRASTRUCTURE,
             (mem: OperationPlanMemory) => InfrastructurePlan.fromMemory(mem),
-            () => new EconomyPlan()
+            () => new InfrastructurePlan()
         );
     }
 }

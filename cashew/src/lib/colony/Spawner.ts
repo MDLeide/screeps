@@ -20,7 +20,7 @@ export class Spawner {
     }
 
     public canSpawn(body: Body): boolean {        
-        return (!this.spawn.spawning && !this.startedThisTick && this.spawn.energy >= body.minimumEnergy);
+        return (!this.spawn.spawning && !this.startedThisTick && this.spawn.room.energyAvailable >= body.minimumEnergy);
     }
     
     public spawnCreep(body: Body): string | null {

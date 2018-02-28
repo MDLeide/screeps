@@ -9,21 +9,6 @@ export class HaulerRole extends Role {
     protected getNextTask(creep: Creep): Task {
         let colony = global.empire.getColony(creep);
 
-        if (!this.currentTask || this.currentTask.type == TASK_TRANSFER) {
-            let withdrawTarget = colony.getWithdrawTarget(creep);
-            if (withdrawTarget)
-                return Task.Withdraw(withdrawTarget);
-        } else if (creep.carry.energy > 0) {
-            let transferTarget = colony.getTransferTarget(creep);
-            if (transferTarget)
-                return Task.Transfer(transferTarget);
-        }
-        return null;
-    }
-
-    protected isIdle(creep: Creep): Task {
-        let colony = global.empire.getColony(creep);
-
         if (creep.carry.energy > 0) {
             let transferTarget = colony.getTransferTarget(creep);
             if (transferTarget)
@@ -34,6 +19,10 @@ export class HaulerRole extends Role {
                 return Task.Withdraw(withdrawTarget);
         }
         return null;
+    }
+
+    protected isIdle(creep: Creep): Task {
+        return this.getNextTask(creep);
     }
 
     protected onUpdate(creep: Creep): void {

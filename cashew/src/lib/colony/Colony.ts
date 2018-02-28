@@ -28,8 +28,10 @@ export class Colony  {
         this.nest = nest;
         this.name = name;
 
+        this.progress = progress;
+
         this.population = new Population(this);
-        this.resourceManager = new ResourceManager(this);
+        this.resourceManager = new ResourceManager(this);        
     }
 
 

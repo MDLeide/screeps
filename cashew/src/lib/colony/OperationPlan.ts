@@ -53,7 +53,7 @@ export abstract class OperationPlan {
 
     /** Cancels all operations of the given type. */
     protected cancelOperationsByType(type: OperationType): void {
-        
+        this.operationGroup.cancelOperationByType(type);
     }
 
 

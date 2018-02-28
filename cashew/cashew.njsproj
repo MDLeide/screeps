@@ -93,6 +93,15 @@
     <TypeScriptCompile Include="src\imp\registration\OperationPlanRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\RemoteMiningManager.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\Calculator.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\RoomHelper.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\StandardPlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

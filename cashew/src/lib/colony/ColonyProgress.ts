@@ -32,6 +32,7 @@ export class ColonyProgress {
     public update(colony: Colony): void {
         this.checkForNewMilestone(colony);
     }
+
     public execute(colony: Colony): void { }
     public cleanup(colony: Colony): void { }
 
@@ -49,6 +50,7 @@ export class ColonyProgress {
     private advanceMilestone(colony: Colony) {
         this.milestoneIndex++;
         this.newMilestoneThisTick = true;
+        global.events.colony.milestoneMet(colony.name, this.mostRecentMilestone.name);
     }
 
     public save(): ColonyProgressMemory {
