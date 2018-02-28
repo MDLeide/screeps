@@ -22,7 +22,7 @@
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
     <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
-    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <EnableTypeScript>true</EnableTypeScript>
     <StartWebBrowser>false</StartWebBrowser>
   </PropertyGroup>
@@ -40,231 +40,316 @@
   <ItemGroup>
     <Folder Include="src\" />
     <Folder Include="src\imp\creep\" />
-    <Folder Include="src\imp\creep\activity\" />
-    <Folder Include="src\imp\creep\activity\state\" />
-    <Folder Include="src\imp\creep\queen\" />
-    <Folder Include="src\imp\creep\role\" />
-    <Folder Include="src\imp\creep\role\state\" />
-    <Folder Include="src\imp\extend\" />
-    <Folder Include="src\imp\extend\nut\" />
-    <Folder Include="src\imp\extend\seed\" />
+    <Folder Include="src\imp\colony\" />
+    <Folder Include="src\imp\map\" />
+    <Folder Include="src\imp\operation\" />
+    <Folder Include="src\imp\operation\economic\" />
+    <Folder Include="src\imp\operation\infrastructure\" />
+    <Folder Include="src\imp\registration\" />
     <Folder Include="src\imp\tower\" />
-    <Folder Include="src\imp\spawn\" />
     <Folder Include="src\lib\" />
     <Folder Include="src\imp\" />
-    <Folder Include="src\lib\colony\state\" />
     <Folder Include="src\lib\creep\" />
-    <Folder Include="src\lib\creep\action\" />
-    <Folder Include="src\lib\creep\activity\" />
-    <Folder Include="src\lib\creep\activity\state\" />
-    <Folder Include="src\lib\creep\body\" />
-    <Folder Include="src\lib\creep\body\parts\" />
+    <Folder Include="src\lib\map\base\" />
+    <Folder Include="src\lib\map\blocks\" />
+    <Folder Include="src\lib\map\" />
+    <Folder Include="src\yagni\colonyPlan\" />
+    <Folder Include="src\lib\util\dbg\" />
+    <Folder Include="src\lib\util\reports\" />
+    <Folder Include="src\lib\util\visual\" />
+    <Folder Include="src\lib\operation\" />
+    <Folder Include="src\test\" />
+    <Folder Include="src\test\Memory\" />
     <Folder Include="src\yagni\body\state\" />
-    <Folder Include="src\lib\creep\role\" />
-    <Folder Include="src\lib\creep\role\state\" />
-    <Folder Include="src\lib\extend\" />
     <Folder Include="src\lib\empire\" />
-    <Folder Include="src\lib\spawn\" />
     <Folder Include="src\lib\colony\" />
     <Folder Include="src\lib\util\" />
-    <Folder Include="src\lib\util\logger\" />
+    <Folder Include="src\yagni\logger\" />
     <Folder Include="src\yagni\" />
-    <Folder Include="src\utils\" />
     <Folder Include="src\util\" />
     <Folder Include="src\yagni\body\" />
+    <Folder Include="src\yagni\util\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="src\imp\creep\activity\AttackingNearestEnemy.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\RepairingStructures.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\RepairingRoads.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\RepairingWalls.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\PickingEnergy.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\SupplyingStorage.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\UpgradeWithdrawingEnergy.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\Cobbler.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\Cleaner.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\Waller.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\Builder.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\LightUpgrader.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\Warrior.ts" />
+    <TypeScriptCompile Include="src\cashew-types.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\extended-types.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\global.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\colony\EconomyPlan.ts" />
+    <TypeScriptCompile Include="src\imp\colony\InfrastructurePlan.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\colony\StandardProgress.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\registration\ColonyProgressRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\registration\OperationPlanRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\RemoteMiningManager.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\Calculator.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\RoomHelper.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\yagni\StandardPlan.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\BodyRepository.ts" />
+    <TypeScriptCompile Include="src\imp\creep\BuilderJob.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\HaulerRole.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\UpgraderRole.ts" />
+    <TypeScriptCompile Include="src\imp\creep\LightUpgraderRole.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\HarvesterController.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\ControllerTemplate.ts" />
+    <TypeScriptCompile Include="src\imp\creep\HarvestInfrastructureBuilderController.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\Execution.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\creep\ActivityBuilder.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\BuildingStructure.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\ChargingTower.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\MiningEnergy.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\Settings.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\state\IBuildingStructureState.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\state\IUpgradingControllerState.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\state\ISupplyingSpawnState.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\state\UpgradingControllerState.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\state\SupplyingSpawnState.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\UpgradingController.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\SupplyingController.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\SupplyingSpawn.ts" />
-    <TypeScriptCompile Include="src\imp\creep\activity\WithdrawingEnergy.ts" />
-    <TypeScriptCompile Include="src\imp\creep\queen\BasicQueen.ts" />
-    <TypeScriptCompile Include="src\imp\creep\RoleBuilder.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\LightMiner.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\HeavyUpgrader.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\HeavyHarvester.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\state\HeavyUpgraderState.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\state\IHeavyUpgraderState.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\state\IHeavyHarvesterState.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\state\ITransporterState.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\state\TransporterState.ts" />
-    <TypeScriptCompile Include="src\imp\creep\role\state\HeavyHarvesterState.ts">
+    <TypeScriptCompile Include="src\imp\GlobalConstants.ts" />
+    <TypeScriptCompile Include="src\imp\GlobalExtension.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\creep\role\Transporter.ts" />
-    <TypeScriptCompile Include="src\imp\extend\nut\ControllerNut.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\ControllerSeed.ts">
+    <TypeScriptCompile Include="src\imp\operation\BasicMaintenanceOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\economic\EnergyTransportOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\economic\HeavyUpgradeOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\ControllerInfrastructureOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\ExtensionsOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\HarvestInfrastructureOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\StorageConstructionOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\TowerConstructionOperation.ts" />
+    <TypeScriptCompile Include="src\imp\registration\ControllerRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\spawn\BodyFactory.ts">
+    <TypeScriptCompile Include="src\imp\registration\Register.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\extend\Extender.ts" />
-    <TypeScriptCompile Include="src\imp\extend\nut\ContainerNut.ts" />
-    <TypeScriptCompile Include="src\imp\extend\nut\CreepNut.ts" />
-    <TypeScriptCompile Include="src\imp\extend\nut\RoomNut.ts" />
-    <TypeScriptCompile Include="src\imp\extend\nut\SourceNut.ts" />
-    <TypeScriptCompile Include="src\imp\extend\nut\SpawnNut.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\ContainerSeed.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\CreepSeed.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\RoomSeed.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\SourceSeed.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\SpawnSeed.ts" />
-    <TypeScriptCompile Include="src\imp\extend\seed\StructureSeed.ts" />
-    <TypeScriptCompile Include="src\imp\spawn\RC2SpawnStrategy.ts" />
-    <TypeScriptCompile Include="src\imp\spawn\RC1SpawnStrategy.ts">
+    <TypeScriptCompile Include="src\lib\colony\ColonyProgress.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\spawn\StrategyFactory.ts">
+    <TypeScriptCompile Include="src\lib\colony\CreepNamer.ts" />
+    <TypeScriptCompile Include="src\lib\colony\OperationPlan.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\ResourceManager.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\Spawner.ts" />
+    <TypeScriptCompile Include="src\lib\creep\Body.ts" />
+    <TypeScriptCompile Include="src\lib\creep\CreepControllerRepository.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\creep\CreepController.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\creep\CreepUtility.ts" />
+    <TypeScriptCompile Include="src\lib\creep\Role.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\creep\Job.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\creep\Task.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\operation\JobOperation.ts" />
+    <TypeScriptCompile Include="src\lib\operation\ControllerOperation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\dbg\Cleaner.ts" />
+    <TypeScriptCompile Include="src\lib\util\dbg\Logger.ts" />
+    <TypeScriptCompile Include="src\lib\util\dbg\Playback.ts" />
+    <TypeScriptCompile Include="src\lib\util\EventLog.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\reports\OperationReport.ts" />
+    <TypeScriptCompile Include="src\lib\util\reports\Reporter.ts" />
+    <TypeScriptCompile Include="src\lib\util\visual\BadgeArtist.ts" />
+    <TypeScriptCompile Include="src\lib\util\visual\NestMapVisual.ts" />
+    <TypeScriptCompile Include="src\lib\util\visual\Palette.ts" />
+    <TypeScriptCompile Include="src\lib\util\visual\StructureArtist.ts" />
+    <TypeScriptCompile Include="src\lib\util\visual\StructurePalette.ts" />
+    <TypeScriptCompile Include="src\lib\util\visual\Visuals.ts" />
+    <TypeScriptCompile Include="src\yagni\ActivityBuilder.ts" />
+    <TypeScriptCompile Include="src\yagni\RoleBuilder.ts" />
+    <TypeScriptCompile Include="src\imp\map\ExtensionBlockProvider.ts" />
+    <TypeScriptCompile Include="src\imp\map\LabBlockProvider.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\map\MainBlockProvider.ts" />
+    <TypeScriptCompile Include="src\imp\map\ControllerBlockProvider.ts" />
+    <TypeScriptCompile Include="src\imp\map\HarvestBlockProvider.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\map\StandardNestMapBuilder.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\operation\economic\HarvestOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\economic\LightUpgradeOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\OperationTemplate.ts" />
+    <TypeScriptCompile Include="src\yagni\colonyPlan\ColonyPlan.ts" />
+    <TypeScriptCompile Include="src\yagni\colonyPlan\ColonyPlanRepository.ts" />
+    <TypeScriptCompile Include="src\yagni\colonyPlan\Milestone.ts" />
+    <TypeScriptCompile Include="src\lib\util\StringBuilder.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\yagni\BodyRegistration.ts" />
+    <TypeScriptCompile Include="src\yagni\ColonyPlanRegistration.ts" />
+    <TypeScriptCompile Include="src\imp\registration\OperationRegistration.ts" />
+    <TypeScriptCompile Include="src\lib\map\blocks\ControllerBlock.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\blocks\LabBlock.ts" />
+    <TypeScriptCompile Include="src\lib\map\blocks\ExtensionBlock.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\blocks\HarvestBlock.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\blocks\MainBlock.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\ColonyMap.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\IBlockProvider.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\NestMap.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\map\NestMapBuilder.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\MemoryManager.ts" />
+    <TypeScriptCompile Include="src\lib\operation\Assignment.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\operation\Operation.ts" />
+    <TypeScriptCompile Include="src\lib\operation\OperationGroup.ts" />
+    <TypeScriptCompile Include="src\lib\operation\OperationRepository.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\Settings.ts" />
+    <TypeScriptCompile Include="src\memory.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\screeps-memory.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\cashew-memory.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\test\Memory\MemTestClass.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\test\TestExecution.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\test\testTypes.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\yagni\RC2SpawnStrategy.ts" />
+    <TypeScriptCompile Include="src\yagni\RC1SpawnStrategy.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\yagni\StrategyFactory.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\tower\TowerController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\index.d.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\Colony.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\colony\ColonyPlan.ts">
+    <TypeScriptCompile Include="src\yagni\ColonyMaintenance.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\colony\Milestone.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\Population.ts" />
     <TypeScriptCompile Include="src\lib\colony\Nest.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\colony\ColonyOperation.ts">
+    <TypeScriptCompile Include="src\yagni\Orders.ts" />
+    <TypeScriptCompile Include="src\yagni\Phase.ts" />
+    <TypeScriptCompile Include="src\lib\empire\ColonyFinder.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\colony\Population.ts">
+    <TypeScriptCompile Include="src\lib\map\base\Layer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\colony\state\IColonyState.ts">
+    <TypeScriptCompile Include="src\lib\map\base\Map.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\creep\action\ActionData.ts" />
-    <TypeScriptCompile Include="src\lib\creep\action\IActionResponse.ts" />
-    <TypeScriptCompile Include="src\lib\creep\action\ActionResult.ts" />
-    <TypeScriptCompile Include="src\lib\creep\action\ActionType.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\Activity.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\ActivityRepo.ts">
+    <TypeScriptCompile Include="src\lib\map\base\MapBlock.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\creep\activity\ActivityResponse.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\ActivityResult.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\ActivityStatus.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\SilentEmptyActivity.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\EmptyActivity.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\MultiTargetActivity.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\Orders.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\Phase.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\state\ActivityState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\state\IActivityState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\state\IMultiTargetActivityState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\state\IOrdersState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\state\IPhaseState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\state\ITargetedActivityState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\state\MultiTargetActivityState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\state\OrdersState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\state\PhaseState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\state\TargetedActivityState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\activity\TargetedActivity.ts" />
-    <TypeScriptCompile Include="src\lib\creep\body\Body.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\creep\body\parts\PartDescription.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\yagni\BodyFactory.ts" />
     <TypeScriptCompile Include="src\yagni\body\Body.ts" />
     <TypeScriptCompile Include="src\yagni\body\Part.ts" />
     <TypeScriptCompile Include="src\yagni\body\PartData.ts" />
-    <TypeScriptCompile Include="src\lib\creep\body\parts\PartData.ts" />
     <TypeScriptCompile Include="src\yagni\body\PartDataStorageHelper.ts" />
-    <TypeScriptCompile Include="src\lib\creep\body\PartType.ts" />
     <TypeScriptCompile Include="src\yagni\body\state\BodyState.ts" />
     <TypeScriptCompile Include="src\yagni\body\state\IBodyState.ts" />
     <TypeScriptCompile Include="src\yagni\body\state\IPartState.ts" />
     <TypeScriptCompile Include="src\yagni\body\state\PartState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\role\EmptyRole.ts" />
-    <TypeScriptCompile Include="src\lib\creep\role\IRoleBuilder.ts" />
-    <TypeScriptCompile Include="src\lib\creep\role\Role.ts" />
-    <TypeScriptCompile Include="src\lib\creep\role\RoleRepo.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\creep\role\RoleResponse.ts" />
-    <TypeScriptCompile Include="src\lib\creep\role\state\IRoleState.ts" />
-    <TypeScriptCompile Include="src\lib\creep\role\state\RoleState.ts" />
     <TypeScriptCompile Include="src\lib\empire\Empire.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\extend\Nut.ts" />
-    <TypeScriptCompile Include="src\lib\extend\Seed.ts" />
-    <TypeScriptCompile Include="src\lib\extend\StatefulNut.ts" />
-    <TypeScriptCompile Include="src\lib\spawn\Egg.ts">
+    <TypeScriptCompile Include="src\yagni\Population.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\spawn\Population.ts">
+    <TypeScriptCompile Include="src\yagni\SpawnDefinition.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\spawn\SpawnCondition.ts">
+    <TypeScriptCompile Include="src\yagni\SpawnStrategy.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\spawn\Spawner.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\spawn\SpawnStrategy.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\util\logger\Config.ts" />
-    <TypeScriptCompile Include="src\lib\util\logger\DebugConfig.ts" />
-    <TypeScriptCompile Include="src\lib\util\logger\Logger.ts" />
-    <TypeScriptCompile Include="src\lib\util\logger\LoggerConfig.ts" />
-    <TypeScriptCompile Include="src\lib\util\logger\StringHelper.ts" />
-    <TypeScriptCompile Include="src\lib\util\logger\TraceHelper.ts" />
+    <TypeScriptCompile Include="src\yagni\logger\Config.ts" />
+    <TypeScriptCompile Include="src\yagni\logger\DebugConfig.ts" />
+    <TypeScriptCompile Include="src\yagni\logger\Logger.ts" />
+    <TypeScriptCompile Include="src\yagni\logger\LoggerConfig.ts" />
+    <TypeScriptCompile Include="src\yagni\logger\StringHelper.ts" />
+    <TypeScriptCompile Include="src\yagni\logger\TraceHelper.ts" />
     <TypeScriptCompile Include="src\main.ts" />
     <TypeScriptCompile Include="src\types.d.ts" />
-    <TypeScriptCompile Include="src\utils\ErrorMapper.ts" />
-    <TypeScriptCompile Include="src\util\Cache.ts" />
-    <TypeScriptCompile Include="src\util\Collections.ts" />
-    <TypeScriptCompile Include="src\util\Console.ts" />
-    <TypeScriptCompile Include="src\util\DeepCopy.ts" />
-    <TypeScriptCompile Include="src\util\Event.ts" />
-    <TypeScriptCompile Include="src\util\GUID.ts" />
-    <TypeScriptCompile Include="src\util\IdArray.ts">
+    <TypeScriptCompile Include="src\util\ErrorMapper.ts" />
+    <TypeScriptCompile Include="src\yagni\util\Cache.ts" />
+    <TypeScriptCompile Include="src\yagni\util\Collections.ts" />
+    <TypeScriptCompile Include="src\yagni\util\Console.ts" />
+    <TypeScriptCompile Include="src\yagni\util\DeepCopy.ts" />
+    <TypeScriptCompile Include="src\yagni\util\Event.ts" />
+    <TypeScriptCompile Include="src\yagni\util\GUID.ts" />
+    <TypeScriptCompile Include="src\yagni\util\IdArray.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\util\IIdentifiable.ts" />
-    <TypeScriptCompile Include="src\util\Legume.ts" />
-    <TypeScriptCompile Include="src\util\StatefulArray.ts" />
+    <TypeScriptCompile Include="src\yagni\util\IIdentifiable.ts" />
+    <TypeScriptCompile Include="src\yagni\util\Legume.ts" />
+    <TypeScriptCompile Include="src\yagni\util\StatefulArray.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\lib\map\BlockProviderBase.ts">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
