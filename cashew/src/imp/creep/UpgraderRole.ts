@@ -10,6 +10,7 @@ energy from a container. Also keeps the Spawn fed.
 export class UpgraderRole extends Role {
     public static fromMemory(memory: UpgraderRoleMemory): CreepController {
         let upgrader = new this(memory.containerId, memory.controllerId);
+        upgrader.repaired = memory.repaired;
         return Role.fromMemory(memory, upgrader);
     }
 
@@ -23,6 +24,7 @@ export class UpgraderRole extends Role {
             this.controller = Game.getObjectById<StructureController>(controllerId);
     }
 
+    public repaired: boolean;
     public controllerId: string;
     public controller: StructureController;
     public containerId: string;
@@ -37,13 +39,31 @@ export class UpgraderRole extends Role {
         super.onLoad();
     }
 
-    protected getNextTask(creep: Creep): Task {        
-        if (!this.currentTask || this.currentTask.type == TASK_UPGRADE) {
-            if (this.container && this.container.store.energy > 0)
-                return Task.Withdraw(this.container);
-        } else if (creep.carry.energy > 0) {
-            return Task.Upgrade(this.controller);
+    protected getNextTask(creep: Creep): Task {
+        if (!this.repaired) {
+            if (creep.carry.energy < creep.carryCapacity) {
+                let response = creep.withdraw(this.container, RESOURCE_ENERGY);
+                if (response == ERR_NOT_IN_RANGE)
+                    return Task.MoveTo(this.container);
+            }
+            return Task.Repair(this.container);
+        } else {
+            if (creep.carry.energy > 0) {
+                return Task.Upgrade(this.controller);
+            } else {
+                if (this.container && this.container.store.energy > 0)
+                    return Task.Withdraw(this.container);
+            }
+
+            if (!this.currentTask || this.currentTask.type == TASK_UPGRADE) {
+                if (this.container && this.container.store.energy > 0)
+                    return Task.Withdraw(this.container);
+            } else if (creep.carry.energy > 0) {
+                return Task.Upgrade(this.controller);
+            }
         }
+
+        
         return null;
     }
 
@@ -58,6 +78,8 @@ export class UpgraderRole extends Role {
     }
 
     protected onUpdate(creep: Creep): void {
+        if (!this.repaired && this.container && this.container.hits >= this.container.hitsMax - 10)
+            this.repaired = true;
     }
 
     protected onExecute(creep: Creep): void {
@@ -72,12 +94,14 @@ export class UpgraderRole extends Role {
             lastTask: this.lastTask ? this.lastTask.save() : undefined,
             currentTask: this.currentTask ? this.currentTask.save() : undefined,
             controllerId: this.controllerId,
-            containerId: this.containerId
+            containerId: this.containerId,
+            repaired: this.repaired
         };
     }
 }
 
 export interface UpgraderRoleMemory extends RoleMemory {
+    repaired: boolean;
     controllerId: string;
     containerId: string;
 }
