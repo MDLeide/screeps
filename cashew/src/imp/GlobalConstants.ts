@@ -19,11 +19,14 @@ global.OPERATION_EXTENSION_CONSTRUCTION = "ExtensionConstruction";
 global.OPERATION_ENERGY_TRANSPORT = "EnergyTransport";
 global.OPERATION_CONTROLLER_INFRASTRUCTURE = "ControllerInfrastructure";
 global.OPERATION_BASIC_MAINTENANCE = "BasicMaintenance";
+global.OPERATION_REMOTE_HARVEST_SCOUT = "RemoteHarvestScout";
+global.OPERATION_REMOTE_HARVEST = "RemoteHarvest";
 
 global.PROGRESS_STANDARD = "Standard";
 
 global.PLAN_INFRASTRUCTURE = "Infrastructure";
 global.PLAN_ECONOMY = "Economy";
+global.PLAN_REMOTE_MINING = "RemoteMining";
 
 global.CREEP_CONTROLLER_HARVESTER = "Harvester";
 global.CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "HarvestInfrastructureBuilder";
@@ -37,6 +40,7 @@ global.BODY_HEAVY_HARVESTER = "HeavyHarvester";
 global.BODY_HEAVY_UPGRADER = "HeavyUpgrader";
 global.BODY_HAULER = "Hauler";
 global.BODY_WARRIOR = "Warrior";
+global.BODY_SCOUT = "Scout";
 
 // end constants
 

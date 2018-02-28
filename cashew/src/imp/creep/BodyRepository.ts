@@ -3,6 +3,8 @@ import { Body } from "../../lib/creep/Body";
 export class BodyRepository {
     public static getBody(type: BodyType): Body {
         switch (type) {
+            case BODY_SCOUT:
+                return this.scout();
             case BODY_LIGHT_WORKER:
                 return this.lightWorker();
             case BODY_HEAVY_HARVESTER:
@@ -16,6 +18,17 @@ export class BodyRepository {
             default:
                 return null;
         }
+    }
+
+    public static scout(): Body {
+        return new Body(
+            BODY_SCOUT,
+            150,
+            [MOVE, MOVE, MOVE],
+            [],
+            0,
+            true
+        );
     }
 
     public static lightWorker():Body {

@@ -44,11 +44,14 @@ declare global {
         OPERATION_ENERGY_TRANSPORT: string;
         OPERATION_CONTROLLER_INFRASTRUCTURE: string;
         OPERATION_BASIC_MAINTENANCE: string;
+        OPERATION_REMOTE_HARVEST_SCOUT: string;
+        OPERATION_REMOTE_HARVEST: string;
 
         PROGRESS_STANDARD: string;
 
         PLAN_INFRASTRUCTURE: string;
         PLAN_ECONOMY: string;
+        PLAN_REMOTE_MINING: string;
 
         CREEP_CONTROLLER_HARVESTER: string;
         CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: string;
@@ -62,5 +65,6 @@ declare global {
         BODY_HEAVY_UPGRADER: string;
         BODY_HAULER: string;
         BODY_WARRIOR: string;
+        BODY_SCOUT: string;
     }
 }

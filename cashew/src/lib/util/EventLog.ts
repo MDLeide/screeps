@@ -9,6 +9,7 @@ export class EventLog {
         this.operation = new OperationEvents(colors, this);
         this.creep = new CreepEvents(colors, this);
         this.debug = new DebugEvents(colors, this);
+        this.remoteMining = new RemoteMiningEvents(colors, this);
     }
 
     public help(): string {
@@ -29,6 +30,7 @@ export class EventLog {
     public operation: OperationEvents;
     public creep: CreepEvents;
     public debug: DebugEvents;
+    public remoteMining: RemoteMiningEvents;
 
     public log(msg: string, level: number, category: string): void {
         if (this.mute)
@@ -359,7 +361,6 @@ class OperationEvents extends EventGroup {
 class CreepEvents extends EventGroup {
     public bornLevel: number = 2;
     public diedLevel: number = 2;
-    public roleErrorLevel: number = 1;
 
     protected getCategory(): string {
         return "Creep";
@@ -381,21 +382,72 @@ class CreepEvents extends EventGroup {
             .append(colonyName, this.colors.name);
 
         this.log(sb.getString(), this.diedLevel);
-    }
+    }    
+}
 
-    public roleError(creepName: string, roleName: string, error: string): void {
+class RemoteMiningEvents extends EventGroup {
+    public scoutFailedLevel: number = 8;
+    public roomScoutedAndAddedLevel: number = 6;
+    public roomScoutedAndDiscardedLevel: number = 6;
+    public scoutJobClaimedLevel: number = 4;
+    public scoutJobReleasedLevel: number = 4;
+
+    public scoutFailed(colonyName: string, roomName: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
-        sb.append("Creep ", this.colors.identifier)
-            .append(creepName, this.colors.name)            
-            .append(" in the ")
-            .append("role ", this.colors.identifier)
-            .append(roleName, this.colors.name)
-            .append(" encountered an error ", this.colors.negativeVerb)
-            .append(error, this.colors.name);
+        sb.append("Colony ", this.colors.identifier);
+        sb.append(colonyName, this.colors.name);
+        sb.append(" failed to scout ", this.colors.negativeVerb);
+        sb.append("room ", this.colors.identifier);
+        sb.append(roomName);
+        sb.append(" for ");
+        sb.append("remote mining", this.colors.name);
 
-        this.log(sb.getString(), this.roleErrorLevel);
+        this.log(sb.getString(), this.scoutFailedLevel);
+    }
+
+    public roomScoutedAndAdded(colonyName: string, roomName: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Colony ", this.colors.identifier);
+        sb.append(colonyName, this.colors.name);
+        sb.append(" scouted ", this.colors.neutralVerb);
+        sb.append("and added ", this.colors.positiveVerb);
+        sb.append("room ", this.colors.identifier);
+        sb.append(roomName);
+        sb.append(" for ");
+        sb.append("remote mining", this.colors.name);
+
+        this.log(sb.getString(), this.scoutFailedLevel);
+    }
+
+    public roomScoutedAndDiscarded(colonyName: string, roomName: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Colony ", this.colors.identifier);
+        sb.append(colonyName, this.colors.name);
+        sb.append(" scouted and discarded ", this.colors.neutralVerb);
+        sb.append("room ", this.colors.identifier);
+        sb.append(roomName);
+        sb.append(" for ");
+        sb.append("remote mining", this.colors.name);
+
+        this.log(sb.getString(), this.scoutFailedLevel);
+    }
+
+    public scoutJobClaimed(colonyName: string, roomName: string): void {
+
+    }
+
+    public scoutJobReleased(colonyName: string, roomName: string): void {
+
+    }
+
+    protected getCategory(): string {
+        return "Remote Mining";
     }
 }
 

@@ -33,6 +33,7 @@ declare global {
         progress: ColonyProgressMemory;
         resourceManager: ResourceManagerMemory;
         operationPlans: OperationPlanMemory[];
+        remoteMiningManager: RemoteMiningManagerMemory;
     }
 
     interface ResourceManagerMemory {
@@ -61,6 +62,25 @@ declare global {
     interface NestMemory {
         roomName: string;
         map: NestMapMemory;
+    }
+
+    interface RemoteMiningManagerMemory {
+        rooms: RemoteRoomMemory[];
+    }
+
+    interface RemoteRoomMemory {
+        name: string;
+        scouted: boolean;
+        beingScouted: boolean;
+        remoteSources: RemoteSourceMemory[];
+    }
+
+    interface RemoteSourceMemory {
+        sourceId: string;
+        containerId: string;
+        containerPosition: { x: number, y: number };
+        beingMined: boolean;
+        profit: number;
     }
     
     /**  END MANAGEMENT UNITS **/

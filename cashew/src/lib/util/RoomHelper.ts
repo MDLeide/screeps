@@ -1,6 +1,30 @@
 export class RoomHelper {
+    public static isCenterRoom(roomName: string): boolean {
+        let parsed = /^[WE]([0-9]+)[NS]([0-9]+)$/.exec(roomName);
+        let xRemainder = Number(parsed[1]) % 10;
+        let yRemainder = Number(parsed[2]) % 10;
+
+        return xRemainder == 5 && yRemainder == 5;
+    }
+
+    public static isSourceKeeperRoom(roomName: string): boolean {
+        let parsed = /^[WE]([0-9]+)[NS]([0-9]+)$/.exec(roomName);
+        let xRemainder = Number(parsed[1]) % 10;
+        let yRemainder = Number(parsed[2]) % 10;
+
+        if (xRemainder == 5 && yRemainder == 5)
+            return false;
+
+        return (xRemainder == 4 || xRemainder == 5 || xRemainder == 6) &&
+            (yRemainder == 4 || yRemainder == 5 || yRemainder == 6);
+    }
+
+    public static isHighway(roomName: string): boolean {
+        let coords = this.convertNameToCoordinates(roomName);
+        return (coords.x - 1) % 10 == 0 || (coords.y - 1) % 10 == 0;
+    }
+
     /**
-     * 
      * @param roomName
      * @param direction 0 - North, 1 - NorthEast, 2 - East,... 7 - NorthWest
      */

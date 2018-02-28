@@ -18,11 +18,14 @@ declare const OPERATION_EXTENSION_CONSTRUCTION: "ExtensionConstruction";
 declare const OPERATION_ENERGY_TRANSPORT: "EnergyTransport";
 declare const OPERATION_CONTROLLER_INFRASTRUCTURE: "ControllerInfrastructure";
 declare const OPERATION_BASIC_MAINTENANCE: "BasicMaintenance";
+declare const OPERATION_REMOTE_HARVEST_SCOUT: "RemoteHarvestScout";
+declare const OPERATION_REMOTE_HARVEST: "RemoteHarvest";
 
 declare const PROGRESS_STANDARD: "Standard";
 
 declare const PLAN_INFRASTRUCTURE: "Infrastructure";
 declare const PLAN_ECONOMY: "Economy";
+declare const PLAN_REMOTE_MINING: "RemoteMining";
 
 declare const CREEP_CONTROLLER_HARVESTER: "Harvester";
 declare const CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: "HarvestInfrastructureBuilder";
@@ -36,6 +39,7 @@ declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
 declare const BODY_HEAVY_UPGRADER: "HeavyUpgrader";
 declare const BODY_HAULER: "Hauler";
 declare const BODY_WARRIOR: "Warrior";
+declare const BODY_SCOUT: "Scout";
 
 type TASK_IDLE = "Idle";
 type TASK_MOVE_TO = "MoveTo";
@@ -57,11 +61,14 @@ type OPERATION_EXTENSION_CONSTRUCTION = "ExtensionConstruction";
 type OPERATION_ENERGY_TRANSPORT = "EnergyTransport";
 type OPERATION_CONTROLLER_INFRASTRUCTURE = "ControllerInfrastructure";
 type OPERATION_BASIC_MAINTENANCE = "BasicMaintenance";
+type OPERATION_REMOTE_HARVEST_SCOUT = "RemoteHarvestScout";
+type OPERATION_REMOTE_HARVEST = "RemoteHarvest";
 
 type PROGRESS_STANDARD = "Standard";
 
 type PLAN_INFRASTRUCTURE = "Infrastructure";
 type PLAN_ECONOMY = "Economy";
+type PLAN_REMOTE_MINING = "RemoteMining";
 
 type CREEP_CONTROLLER_HARVESTER = "Harvester";
 type CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "HarvestInfrastructureBuilder";
@@ -75,6 +82,7 @@ type BODY_HEAVY_HARVESTER = "HeavyHarvester";
 type BODY_HEAVY_UPGRADER = "HeavyUpgrader";
 type BODY_HAULER = "Hauler";
 type BODY_WARRIOR = "Warrior";
+type BODY_SCOUT = "Scout";
 
 type TaskType =
     TASK_IDLE |
@@ -97,14 +105,17 @@ type OperationType =
     OPERATION_EXTENSION_CONSTRUCTION |
     OPERATION_ENERGY_TRANSPORT |
     OPERATION_CONTROLLER_INFRASTRUCTURE |
-    OPERATION_BASIC_MAINTENANCE;
+    OPERATION_BASIC_MAINTENANCE |
+    OPERATION_REMOTE_HARVEST_SCOUT |
+    OPERATION_REMOTE_HARVEST;
 
 type ProgressType =
     PROGRESS_STANDARD;
 
 type PlanType =
     PLAN_INFRASTRUCTURE |
-    PLAN_ECONOMY;
+    PLAN_ECONOMY |
+    PLAN_REMOTE_MINING;
 
 type ControllerType =
     CREEP_CONTROLLER_HARVESTER |
@@ -119,4 +130,5 @@ type BodyType =
     BODY_HEAVY_HARVESTER |
     BODY_HEAVY_UPGRADER |
     BODY_HAULER |
-    BODY_WARRIOR;
+    BODY_WARRIOR |
+    BODY_SCOUT;

@@ -40,6 +40,9 @@ export class Body {
             return null;
 
         var parts = this.getConstantParts();
+        if (this.scalingPartCost == 0)
+            return parts;
+
         var remainingEnergy = energy - this.constantPartCost;
 
         var fullScalingSections = Math.floor(remainingEnergy / this.scalingPartCost);

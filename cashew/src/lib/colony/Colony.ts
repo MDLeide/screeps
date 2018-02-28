@@ -1,12 +1,13 @@
 import { Nest } from "./Nest";
 import { Population } from "./Population";
 import { ResourceManager } from "./ResourceManager";
+import { RemoteMiningManager } from "./RemoteMiningManager";
+import { ColonyProgress, ColonyProgressRepository } from "./ColonyProgress";
+import { OperationPlan, OperationPlanRepository } from "./OperationPlan";
 
 import { Empire } from "../empire/Empire";
 import { Spawner } from "./Spawner";
 import { Body } from "../creep/Body";
-import { ColonyProgress, ColonyProgressRepository } from "./ColonyProgress";
-import { OperationPlan, OperationPlanRepository } from "./OperationPlan";
 import { MapBlock } from "../map/base/MapBlock";
 
 export class Colony  {
@@ -14,8 +15,10 @@ export class Colony  {
         let colony = new this(
             Nest.fromMemory(memory.nest),
             memory.name,
-            ColonyProgressRepository.load(memory.progress)
+            ColonyProgressRepository.load(memory.progress),
+            RemoteMiningManager.fromMemory(memory.remoteMiningManager)
         );
+
         colony.resourceManager = ResourceManager.fromMemory(memory.resourceManager, colony);
 
         for (var i = 0; i < memory.operationPlans.length; i++)
@@ -24,14 +27,22 @@ export class Colony  {
         return colony;
     }
 
-    constructor(nest: Nest, name: string, progress: ColonyProgress) {
+    constructor(nest: Nest, name: string, progress: ColonyProgress, remoteMiningManager?: RemoteMiningManager) {
         this.nest = nest;
         this.name = name;
 
         this.progress = progress;
 
         this.population = new Population(this);
-        this.resourceManager = new ResourceManager(this);        
+        this.resourceManager = new ResourceManager(this);
+
+        if (remoteMiningManager) {
+            this.remoteMiningManager = remoteMiningManager;
+            this.remoteMiningManager.colony = this;
+        } else {
+            this.remoteMiningManager = new RemoteMiningManager();
+            this.remoteMiningManager.initialize(this);
+        }
     }
 
 
@@ -41,6 +52,7 @@ export class Colony  {
     public resourceManager: ResourceManager;
     public progress: ColonyProgress;
     public operationPlans: OperationPlan[] = [];
+    public remoteMiningManager: RemoteMiningManager;
     
 
     public load(): void {
@@ -48,7 +60,8 @@ export class Colony  {
         this.progress.load();
         this.resourceManager.load();
         for (var i = 0; i < this.operationPlans.length; i++)
-            this.operationPlans[i].load();        
+            this.operationPlans[i].load();
+        this.remoteMiningManager.load();
     }
 
     public update(): void {
@@ -147,7 +160,8 @@ export class Colony  {
             nest: this.nest.save(),
             progress: this.progress.save(),
             resourceManager: this.resourceManager.save(),
-            operationPlans: this.getOperationPlanMemory()
+            operationPlans: this.getOperationPlanMemory(),
+            remoteMiningManager: this.remoteMiningManager.save()
         };
     }
 }

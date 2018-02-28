@@ -84,9 +84,13 @@
     <TypeScriptCompile Include="src\imp\colony\InfrastructurePlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\colony\RemoteMiningPlan.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\colony\StandardProgress.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\operation\economic\RemoteHarvestScoutOperation.ts" />
     <TypeScriptCompile Include="src\imp\registration\ColonyProgressRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

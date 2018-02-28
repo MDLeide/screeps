@@ -19,7 +19,7 @@ export class Calculator {
         let energyPerTick = (reserved ? 5 : 3) * 2;
 
         let energyPerLifetime = reserved ? 15000 : 7500;
-        let trips = 1500 / travelTime * 2;
+        let trips = 1500 / (travelTime * 2);
 
         let workParts = reserved ? 5 : 3;
 

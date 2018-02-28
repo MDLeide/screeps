@@ -187,7 +187,7 @@ export abstract class Operation {
     public abstract canStart(colony: Colony): boolean;
     public abstract isFinished(colony: Colony): boolean;
 
-    protected abstract onAssignment(assignment: Assignment): void;
+    protected abstract onAssignment(assignment: Assignment): void;    
 
     /** Called once, to initialize the operation - returns true if successful. */
     protected abstract onInit(colony: Colony): boolean;
