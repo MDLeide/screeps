@@ -16,130 +16,89 @@ export class CreepUtility {
 
         var resultB = creepB.move(moveB);
         return resultB == OK;
-    }
+    }    
 }
 
-//export class WCreep {
-//    public move(creep: Creep, direction: DirectionConstant): CreepMoveReturnCode {
-//        return creep.move(direction);
-//    }
+export interface ThreatProfile {
+    attack: number;
+    heal: number;
+    rangedDamage: number;
+    dismantle: number;
+}
 
-//    public moveByPath(creep: Creep, path: PathStep[] | RoomPosition[] | string): CreepMoveReturnCode | ERR_NOT_FOUND | ERR_INVALID_ARGS {
-//        return creep.moveByPath(path);
-//    }
-        
-//    public moveTo(creep: Creep, target: RoomPosition | { pos: RoomPosition }, opts?: MoveToOpts): CreepMoveReturnCode | ERR_NO_PATH | ERR_INVALID_TARGET | ERR_NOT_FOUND {
-//        return creep.moveTo(target, opts);
-//    }
-//}
+export class ThreatEvaluator {
+    public static scoreThreatProfile(profile: ThreatProfile): number {
+        return profile.attack + profile.heal + profile.rangedDamage + profile.dismantle;
+    }
 
-//export class WCreep {
-//    public attack(creep: Creep, target: Creep | Structure): CreepActionReturnCode {
-//        return creep.attack(target);
-//    }
+    public static getThreatProfileOfCreep(creep: Creep): ThreatProfile {
+        var threatProfile = {
+            attack: 0,
+            heal: 0,
+            rangedDamage: 0,
+            dismantle: 0
+        };
 
-//    public attackController(creep: Creep, target: StructureController): CreepActionReturnCode {
-//        return creep.attackController(target);
-//    }
+        for (var i = 0; i < creep.body.length; i++) {
+            if (creep.body[i].type != WORK && creep.body[i].type != ATTACK && creep.body[i].type != RANGED_ATTACK && creep.body[i].type != HEAL)
+                continue;
 
-//    public build(creep: Creep, target: ConstructionSite): CreepActionReturnCode | ERR_RCL_NOT_ENOUGH {
-//        return creep.build(target);
-//    }
+            var modifier = 1;
 
-//    public cancelOrder(creep: Creep, methodName: string): OK | ERR_NOT_FOUND {
-//        return creep.cancelOrder(methodName);
-//    }
+            if (creep.body[i].boost) {
+                modifier = this.getBoostModifier(creep.body[i]);
+            }
 
-//    public claimController(creep: Creep, target: StructureController): CreepActionReturnCode | ERR_FULL | ERR_RCL_NOT_ENOUGH {
-//        return creep.claimController(target);
-//    }
+            var power = this.getDefaultPowerOfPart(creep.body[i].type) * modifier;
+            switch (creep.body[i].type) {
+                case ATTACK:
+                    threatProfile.attack += power;
+                    break;
+                case RANGED_ATTACK:
+                    threatProfile.rangedDamage += power;
+                    break;
+                case HEAL:
+                    threatProfile.heal += power;
+                    break;
+                case WORK:
+                    threatProfile.dismantle += power;
+                    break;
+            }
 
-//    public dismantle(creep: Creep, target: Structure): CreepActionReturnCode {
-//        return creep.dismantle(target);
-//    }
+        }
+        return threatProfile;
+    }
+    
+    public static getDefaultPowerOfPart(part: BodyPartConstant) {
+        switch (part) {
+            case ATTACK:
+                return ATTACK_POWER;
+            case RANGED_ATTACK:
+                return RANGED_ATTACK_POWER;
+            case HEAL:
+                return HEAL_POWER;
+            case WORK:
+                return DISMANTLE_POWER;
+        }
+        return 0;
+    }
 
-//    public drop(creep: Creep, resourceType: ResourceConstant, amount?: number): OK | ERR_NOT_OWNER | ERR_BUSY | ERR_NOT_ENOUGH_RESOURCES {
+    public static getBoostModifier(boostedPart: BodyPartDefinition): number {
+        switch (boostedPart.type) {
+            case WORK:
+                if (BOOSTS[WORK][boostedPart.boost].dismantle) {
+                    return BOOSTS[WORK][boostedPart.boost].dismantle;
+                }
+                return 1;
+            case ATTACK:
+                return BOOSTS[ATTACK][boostedPart.boost].attack;
 
-//    }
+            case RANGED_ATTACK:
+                return BOOSTS[RANGED_ATTACK][boostedPart.boost].rangedAttack;
 
-//    public generateSafeMode(creep: Creep, target: StructureController): CreepActionReturnCode {
-
-//    }
-
-//    public getActiveBodyparts(creep: Creep, type: BodyPartConstant): number {
-
-//    }
-
-//    public harvest(creep: Creep, target: Source | Mineral): CreepActionReturnCode | ERR_NOT_FOUND | ERR_NOT_ENOUGH_RESOURCES {
-
-//    }
-
-//    public heal(creep: Creep, target: Creep): CreepActionReturnCode {
-
-//    }
-
-//    public move(creep: Creep, direction: DirectionConstant): CreepMoveReturnCode {
-
-//    }
-
-//    public moveByPath(creep: Creep, path: PathStep[] | RoomPosition[] | string): CreepMoveReturnCode | ERR_NOT_FOUND | ERR_INVALID_ARGS {
-
-//    }
-
-//    public moveTo(creep: Creep, target: RoomPosition | { pos: RoomPosition }, opts?: MoveToOpts): CreepMoveReturnCode | ERR_NO_PATH | ERR_INVALID_TARGET | ERR_NOT_FOUND
-//    public moveTo(creep: Creep, x: number, y: number, opts?: MoveToOpts): CreepMoveReturnCode | ERR_NO_PATH | ERR_INVALID_TARGET {
-
-//    }
-
-//    public notifyWhenAttacked(creep: Creep, enabled: boolean): OK | ERR_NOT_OWNER | ERR_BUSY | ERR_INVALID_ARGS {
-
-//    }
-
-//    public pickup(creep: Creep, target: Resource): CreepActionReturnCode | ERR_FULL {
-
-//    }
-
-//    public rangedAttack(creep: Creep, target: Creep | Structure): CreepActionReturnCode {
-
-//    }
-
-//    public rangedHeal(creep: Creep, target: Creep): CreepActionReturnCode {
-
-//    }
-
-//    public rangedMassAttack(creep: Creep, ): OK | ERR_NOT_OWNER | ERR_BUSY | ERR_NO_BODYPART {
-
-//    }
-
-//    public repair(creep: Creep, target: Structure): CreepActionReturnCode | ERR_NOT_ENOUGH_RESOURCES {
-
-//    }
-
-//    public reserveController(creep: Creep, target: StructureController): CreepActionReturnCode {
-
-//    }
-
-//    public say(creep: Creep, message: string, toPublic?: boolean): OK | ERR_NOT_OWNER | ERR_BUSY {
-
-//    }
-
-//    public signController(creep: Creep, target: StructureController, text: string): OK | ERR_BUSY | ERR_INVALID_TARGET | ERR_NOT_IN_RANGE {
-
-//    }
-
-//    public suicide(creep: Creep, ): OK | ERR_NOT_OWNER | ERR_BUSY {
-
-//    }
-
-//    public transfer(creep: Creep, target: Creep | Structure, resourceType: ResourceConstant, amount?: number): ScreepsReturnCode {
-
-//    }
-
-//    public upgradeController(creep: Creep, target: StructureController): ScreepsReturnCode {
-
-//    }
-
-//    public withdraw(creep: Creep, target: Structure, resourceType: ResourceConstant, amount?: number): ScreepsReturnCode {
-
-//    }
-//}
+            case HEAL:
+                return BOOSTS[HEAL][boostedPart.boost].heal;
+        }
+        return 1;
+    }
+}

@@ -60,7 +60,7 @@ export class RemoteHarvesterController extends CreepController {
                     this.containerId = containers[i].id;
                     this.container = containers[i] as StructureContainer;
 
-                    let colony = global.empire.getColony(creep);
+                    let colony = global.empire.getCreepsColony(creep);
                     let remoteSource = colony.remoteMiningManager.getRemoteSourceById(this.sourceId);
                     if (remoteSource)
                         remoteSource.containerId = this.containerId;

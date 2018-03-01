@@ -105,6 +105,12 @@
     <TypeScriptCompile Include="src\lib\colony\RemoteMiningManager.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\TowerController.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\Watchtower.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\Calculator.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

@@ -12,7 +12,14 @@ export class Empire {
 
     public colonies: Colony[];
 
-    public getColony(creep: (Creep | string)): Colony {
+    public getColonyByName(colony: string): Colony {
+        for (var i = 0; i < this.colonies.length; i++)
+            if (this.colonies[i].name == colony)
+                return this.colonies[i];
+        return null;
+    }
+
+    public getCreepsColony(creep: (Creep | string)): Colony {
         for (var i = 0; i < this.colonies.length; i++) {
             if (this.colonies[i].creepBelongsToColony(creep))
                 return this.colonies[i];
