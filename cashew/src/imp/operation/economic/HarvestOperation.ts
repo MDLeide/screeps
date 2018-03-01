@@ -8,7 +8,8 @@ import { HarvesterController } from "../../creep/HarvesterController";
 
 export class HarvestOperation extends ControllerOperation {
     public static fromMemory(memory: HarvestOperationMemory): Operation {
-        var op = new this(memory.minimumEnergy, memory.sourceId, memory.containerId);        
+        var op = new this(memory.minimumEnergy, memory.sourceId, memory.containerId);
+        op.travelTime = memory.travelTime;
         return ControllerOperation.fromMemory(memory, op);
     }
 
@@ -46,6 +47,7 @@ export class HarvestOperation extends ControllerOperation {
     }
 
 
+    public travelTime: number;
     public minimumEnergy: number;
     public containerId: string;
     public sourceId: string;
@@ -64,6 +66,11 @@ export class HarvestOperation extends ControllerOperation {
     }
     
     protected onInit(colony: Colony): boolean {
+        let source = Game.getObjectById<Source>(this.sourceId);
+        if (!source)
+            return true;
+        let path = source.pos.findPathTo(colony.nest.spawners[0].spawn);
+        this.travelTime = path.length * 5;
         return true;
     }
 
@@ -82,16 +89,31 @@ export class HarvestOperation extends ControllerOperation {
     }
 
     protected onUpdate(colony: Colony): void {
+        if (this.assignments.length == 1) {
+            if (this.assignments[0].creepName) {
+                let creep = Game.creeps[this.assignments[0].creepName];
+                if (creep) {
+                    if (creep.ticksToLive <= this.travelTime + 50) {
+                        this.assignments.push(new Assignment("", BodyRepository.heavyHarvester(), CREEP_CONTROLLER_HARVESTER));
+                    }
+                }
+            }
+        }
     }
 
-    protected onExecute(colony: Colony): void {
-  
+    protected onExecute(colony: Colony): void {  
     }
        
     protected onCleanup(colony: Colony): void {
     }
 
     protected onRelease(assignment: Assignment): void {
+        if (this.assignments.length > 1) {
+            let index = this.assignments.indexOf(assignment);
+            if (index >= 0) {
+                this.assignments.splice(index, 1);
+            }
+        }
     }
 
     protected getController(assignment: Assignment): CreepController {
@@ -108,7 +130,8 @@ export class HarvestOperation extends ControllerOperation {
             controllers: this.getControllerMemory(),
             minimumEnergy: this.minimumEnergy,
             sourceId: this.sourceId,
-            containerId: this.containerId
+            containerId: this.containerId,
+            travelTime: this.travelTime
         };
     }
 }
@@ -117,4 +140,5 @@ interface HarvestOperationMemory extends ControllerOperationMemory {
     minimumEnergy: number;
     sourceId: string;
     containerId: string;
+    travelTime: number;
 }
