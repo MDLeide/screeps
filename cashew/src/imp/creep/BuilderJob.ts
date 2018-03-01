@@ -35,7 +35,7 @@ export class BuilderJob extends Job {
     }
 
     protected getNextTask(creep: Creep): Task {
-        let colony = global.empire.getColony(creep);
+        let colony = global.empire.getCreepsColony(creep);
         
         if (!this.currentTask || this.currentTask.type == TASK_BUILD) {
             let withdrawTarget = colony.getWithdrawTarget(creep);
@@ -53,7 +53,7 @@ export class BuilderJob extends Job {
             return Task.Build(this.targetSite);
         }
         else {
-            let colony = global.empire.getColony(creep);
+            let colony = global.empire.getCreepsColony(creep);
             let withdrawTarget = colony.getWithdrawTarget(creep);
             if (withdrawTarget)
                 return Task.Withdraw(withdrawTarget);

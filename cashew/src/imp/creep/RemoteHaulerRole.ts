@@ -25,7 +25,7 @@ export class RemoteHaulerRole extends Role {
     }
 
     protected getNextTask(creep: Creep): Task {
-        let colony = global.empire.getColony(creep);
+        let colony = global.empire.getCreepsColony(creep);
         
         if (creep.carry.energy > 0) {
             let transferTarget = colony.getTransferTarget(creep);
