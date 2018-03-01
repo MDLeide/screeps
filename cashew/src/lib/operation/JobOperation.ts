@@ -32,17 +32,26 @@ export abstract class JobOperation extends Operation {
             if (!this.assignments[i].creepName)
                 continue;
 
-            var creep = Game.creeps[this.assignments[i].creepName];
+            let creep = Game.creeps[this.assignments[i].creepName];
 
             if (creep && !creep.spawning) {
-                let controller = this.jobs[creep.name];
-                if (controller)
-                    controller.update(creep);
+                let job = this.jobs[creep.name];
+                if (job)
+                    job.update(creep);
 
-                if (controller.complete) {
+                if (job.complete) {
                     this.jobs[creep.name] = this.getJob(this.assignments[i]);
                     if (this.jobs[creep.name])
                         this.jobs[creep.name].update(creep);
+                }
+            }
+
+            if (this.assignments[i].replacementName) {
+                creep = Game.creeps[this.assignments[i].replacementName];
+                if (creep && !creep.spawning) {
+                    let job = this.jobs[creep.name];
+                    if (job)
+                        job.update(creep);
                 }
             }
         }
@@ -61,6 +70,15 @@ export abstract class JobOperation extends Operation {
                 if (controller)
                     controller.execute(creep);
             }
+
+            if (this.assignments[i].replacementName) {
+                creep = Game.creeps[this.assignments[i].replacementName];
+                if (creep && !creep.spawning) {
+                    let job = this.jobs[creep.name];
+                    if (job)
+                        job.execute(creep);
+                }
+            }
         }
         
     }
@@ -75,6 +93,15 @@ export abstract class JobOperation extends Operation {
                 let controller = this.jobs[creep.name];
                 if (controller)
                     controller.cleanup(creep);                
+            }
+
+            if (this.assignments[i].replacementName) {
+                creep = Game.creeps[this.assignments[i].replacementName];
+                if (creep && !creep.spawning) {
+                    let job = this.jobs[creep.name];
+                    if (job)
+                        job.cleanup(creep);
+                }
             }
         }        
     }

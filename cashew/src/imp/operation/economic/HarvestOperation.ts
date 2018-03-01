@@ -76,7 +76,7 @@ export class HarvestOperation extends ControllerOperation {
         let path = source.pos.findPathTo(colony.nest.spawners[0].spawn);
         let travelTime = path.length * 5;
         let spawnTime = 21;
-        let buffer = 10;
+        let buffer = 25;
         let body = BodyRepository.heavyHarvester();
         body.minimumEnergy = this.minimumEnergy;
         let assignment = new Assignment("", body, CREEP_CONTROLLER_HARVESTER, travelTime + spawnTime + buffer);

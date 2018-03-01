@@ -32,11 +32,20 @@ export abstract class ControllerOperation extends Operation {
             if (!this.assignments[i].creepName)
                 continue;
 
-            var creep = Game.creeps[this.assignments[i].creepName];
+            let creep = Game.creeps[this.assignments[i].creepName];
             if (creep && !creep.spawning) {
                 let controller = this.controllers[creep.name];
                 if (controller)
                     controller.update(creep);
+            }
+
+            if (this.assignments[i].replacementName) {
+                creep = Game.creeps[this.assignments[i].replacementName];
+                if (creep && !creep.spawning) {
+                    let controller = this.controllers[creep.name];
+                    if (controller)
+                        controller.update(creep);
+                }
             }
         }
     }
@@ -54,6 +63,15 @@ export abstract class ControllerOperation extends Operation {
                 if (controller)
                     controller.execute(creep);
             }
+
+            if (this.assignments[i].replacementName) {
+                creep = Game.creeps[this.assignments[i].replacementName];
+                if (creep && !creep.spawning) {
+                    let controller = this.controllers[creep.name];
+                    if (controller)
+                        controller.execute(creep);
+                }
+            }
         }
         
     }
@@ -67,8 +85,16 @@ export abstract class ControllerOperation extends Operation {
             if (creep && !creep.spawning) {
                 let controller = this.controllers[creep.name];
                 if (controller)
-                    controller.cleanup(creep);
-                
+                    controller.cleanup(creep);                
+            }
+
+            if (this.assignments[i].replacementName) {
+                creep = Game.creeps[this.assignments[i].replacementName];
+                if (creep && !creep.spawning) {
+                    let controller = this.controllers[creep.name];
+                    if (controller)
+                        controller.cleanup(creep);
+                }
             }
         }        
     }
