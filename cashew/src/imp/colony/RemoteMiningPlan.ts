@@ -19,22 +19,17 @@ export class RemoteMiningPlan extends OperationPlan {
 
     protected onUpdate(colony: Colony): void {
         if (colony.progress.newMilestoneThisTick && colony.progress.mostRecentMilestone.id == "rcl2") {
-            for (var i = 0; i < 3; i++) {
+            for (var i = 0; i < 2; i++) {
                 this.addOperation(new RemoteHarvestScoutOperation());
             }            
         }
 
-        for (var i = 0; i < colony.remoteMiningManager.rooms.length; i++) {
-            let room = colony.remoteMiningManager.rooms[i];
-            if (!room.scouted)
-                continue;
+        colony.remoteMiningManager.maxActiveRooms = 1; // test value
 
-            for (var j = 0; j < room.remoteSources.length; j++) {
-                if (!room.remoteSources[j].beingMined) {
-                    this.addOperation(new RemoteHarvestOperation(room.remoteSources[j].sourceId, room.name));
-                    room.remoteSources[j].beingMined = true;
-                }
-            }
+        let remoteSource = colony.remoteMiningManager.getNextMiningAssignment();
+        if (remoteSource) {
+            this.addOperation(new RemoteHarvestOperation(remoteSource.source.sourceId, remoteSource.room.name));
+            remoteSource.source.beingMined = true;
         }
     }
 

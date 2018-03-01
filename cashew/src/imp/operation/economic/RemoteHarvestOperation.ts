@@ -62,6 +62,12 @@ export class RemoteHarvestOperation extends ControllerOperation {
     }
 
     protected onFinish(colony: Colony): boolean {
+        if (this.sourceId) {
+            let remoteSource = colony.remoteMiningManager.getRemoteSourceById(this.sourceId);
+            if (remoteSource)
+                remoteSource.beingMined = false;
+        }
+            
         return true;
     }
 

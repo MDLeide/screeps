@@ -77,8 +77,7 @@ declare global {
 
     interface RemoteSourceMemory {
         sourceId: string;
-        containerId: string;
-        containerPosition: { x: number, y: number };
+        containerId: string;        
         beingMined: boolean;
         profit: number;
     }

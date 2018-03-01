@@ -12,6 +12,14 @@ export class RemoteMiningManager {
     
     public colony: Colony;
     public rooms: RemoteRoom[] = [];
+    public maxActiveRooms: number = 0;
+    public get activeRoomCount(): number {
+        let count = 0;
+        for (var i = 0; i < this.rooms.length; i++)
+            if (this.rooms[i].active)
+                count++;
+        return count;
+    }
 
     public load(): void {
         for (var i = 0; i < this.rooms.length; i++)
@@ -27,6 +35,28 @@ export class RemoteMiningManager {
                 continue;
             this.rooms.push(new RemoteRoom(name));
         }            
+    }
+
+
+    public getNextMiningAssignment(): { source: RemoteSource, room: RemoteRoom } {
+        for (var i = 0; i < this.rooms.length; i++) {
+            if (this.rooms[i].active) {
+                for (var j = 0; j < this.rooms[i].remoteSources.length; j++) {
+                    if (!this.rooms[i].remoteSources[j].beingMined)
+                        return { room: this.rooms[i], source: this.rooms[i].remoteSources[j] };
+                }
+            }
+        }
+
+        if (this.activeRoomCount >= this.maxActiveRooms)
+            return null;
+
+        let closestRoom = this.getClosestInactiveRoom();
+        if (closestRoom && closestRoom.remoteSources.length) {
+            return { room: closestRoom, source: closestRoom.remoteSources[0] };
+        }
+
+        return null;
     }
 
     public scoutRoom(roomName: string): void {
@@ -88,6 +118,27 @@ export class RemoteMiningManager {
         }
     }
 
+
+    private getClosestInactiveRoom(): RemoteRoom {
+        let min = 100;
+        let room: RemoteRoom;
+
+        for (var i = 0; i < this.rooms.length; i++) {
+            if (this.rooms[i].active)
+                continue;
+
+            let route = Game.map.findRoute(this.colony.nest.roomName, this.rooms[i].name);
+            if (route == -2) {
+                continue;
+            } else if (route.length < min) {
+                min = route.length;
+                room = this.rooms[i];
+            }
+        }
+
+        return room;
+    }
+
     private doScout(remoteRoom: RemoteRoom): void {
         let room = Game.rooms[remoteRoom.name];
         if (!room) {
@@ -104,11 +155,6 @@ export class RemoteMiningManager {
             if (result.profit < 350)
                 continue;
             let remoteSource = new RemoteSource(sources[i].id);
-            remoteSource.containerPosition =
-                {
-                    x: result.path.path[result.path.path.length - 2].x,
-                    y: result.path.path[result.path.path.length - 2].y
-                };
             remoteSource.profit = result.profit;
             remoteRoom.remoteSources.push(remoteSource);
         }
@@ -158,6 +204,12 @@ export class RemoteRoom {
     public name: string;
     public scouted: boolean;
     public beingScouted: boolean;
+    public get active(): boolean {
+        for (var i = 0; i < this.remoteSources.length; i++) 
+            if (this.remoteSources[i].beingMined)
+                return true;
+        return false;
+    }
 
     public remoteSources: RemoteSource[] = [];
 
@@ -188,7 +240,6 @@ export class RemoteSource {
     public static fromMemory(memory: RemoteSourceMemory): RemoteSource {
         let rs = new this(memory.sourceId);
         rs.containerId = memory.containerId;
-        rs.containerPosition = memory.containerPosition;
         rs.beingMined = memory.beingMined;
         rs.profit = memory.profit;
         return rs;
@@ -199,8 +250,7 @@ export class RemoteSource {
     }
     
     public sourceId: string;
-    public containerId: string;
-    public containerPosition: { x: number, y: number };
+    public containerId: string;    
     public beingMined: boolean;
     public profit: number;
 
@@ -218,7 +268,6 @@ export class RemoteSource {
         return {
             sourceId: this.sourceId,
             containerId: this.containerId,
-            containerPosition: this.containerPosition,
             beingMined: this.beingMined,
             profit: this.profit
         };

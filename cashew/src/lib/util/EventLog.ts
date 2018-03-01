@@ -211,7 +211,7 @@ class OperationEvents extends EventGroup {
 
     public creepAssignedLevel: number = 2;
     public creepAssignmentFailedLevel: number = 6;
-    public creepReleasedLevel: number = 4;
+    public creepReleasedLevel: number = 3;
     public creepReleaseFailedLevel: number = 6;
 
     protected getCategory(): string {
