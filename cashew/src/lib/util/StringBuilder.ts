@@ -8,8 +8,12 @@ export class StringBuilder {
         return this;
     }
     
-    public appendLine(str: string, color: string = this.defaultColor): StringBuilder {
-        this.str += `<font color='${color}'>${str}</font></br>`;
+    public appendLine(str?: string, color: string = this.defaultColor): StringBuilder {
+        if (str)
+            this.str += `<font color='${color}'>${str}</font></br>`;
+        else
+            this.str += "</br>";
+
         return this;
     }
 
