@@ -105,10 +105,11 @@ export abstract class Operation {
     
     public releaseCreep(creepName: string): void {
         for (var i = 0; i < this.assignments.length; i++) {
-            if (this.assignments[i].creepName == creepName) {
-                this.onRelease(this.assignments[i]);
+            let assignment = this.assignments[i];
+            if (assignment.creepName == creepName) {
+                this.onRelease(assignment);
 
-                this.assignments[i].release();
+                assignment.release();
                 if (Memory.creeps[creepName])
                     Memory.creeps[creepName].operation = "";
                 
