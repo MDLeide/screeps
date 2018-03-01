@@ -63,6 +63,9 @@ export class EnergyTransportOperation extends ControllerOperation {
     protected onCleanup(colony: Colony): void {
     }
 
+    protected onRelease(assignment: Assignment): void {
+    }
+
     protected getController(assignment: Assignment): HaulerRole {
         return new HaulerRole();
     }

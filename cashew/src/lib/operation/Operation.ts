@@ -67,7 +67,7 @@ export abstract class Operation {
         if (this.finished) {
             for (var i = 0; i < this.assignments.length; i++) {
                 if (this.assignments[i].creepName != "")
-                    this.removeCreep(this.assignments[i].creepName);
+                    this.releaseCreep(this.assignments[i].creepName);
             }
 
             global.events.operation.finish(this.type);
@@ -103,9 +103,11 @@ export abstract class Operation {
         global.events.operation.creepAssignmentFailed(this.type, creep.name, creep.bodyType);
     }
     
-    public removeCreep(creepName: string): void {
+    public releaseCreep(creepName: string): void {
         for (var i = 0; i < this.assignments.length; i++) {
             if (this.assignments[i].creepName == creepName) {
+                this.onRelease(this.assignments[i]);
+
                 this.assignments[i].release();
                 Memory.creeps[creepName].operation = "";
                 
@@ -178,7 +180,7 @@ export abstract class Operation {
         for (var i = 0; i < this.assignments.length; i++) {
             if (this.assignments[i].creepName) {
                 if (!colony.population.isAliveOrSpawning(this.assignments[i].creepName))
-                    this.removeCreep(this.assignments[i].creepName);                
+                    this.releaseCreep(this.assignments[i].creepName);                
             }            
         }        
     }
@@ -188,6 +190,7 @@ export abstract class Operation {
     public abstract isFinished(colony: Colony): boolean;
 
     protected abstract onAssignment(assignment: Assignment): void;    
+    protected abstract onRelease(assignment: Assignment): void;
 
     /** Called once, to initialize the operation - returns true if successful. */
     protected abstract onInit(colony: Colony): boolean;

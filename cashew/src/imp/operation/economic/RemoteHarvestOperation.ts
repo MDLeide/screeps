@@ -88,6 +88,9 @@ export class RemoteHarvestOperation extends ControllerOperation {
 
     protected onCleanup(colony: Colony): void {
     }
+
+    protected onRelease(assignment: Assignment): void {
+    }
     
     protected onSave(): RemoteHarvestOperationMemory {
         return {

@@ -90,7 +90,10 @@ export class HarvestOperation extends ControllerOperation {
        
     protected onCleanup(colony: Colony): void {
     }
-    
+
+    protected onRelease(assignment: Assignment): void {
+    }
+
     protected getController(assignment: Assignment): CreepController {
         return new HarvesterController(this.containerId, this.sourceId);
     }

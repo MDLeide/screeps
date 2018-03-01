@@ -96,6 +96,9 @@ export class ExtensionConstruction extends JobOperation {
 
     protected onCleanup(colony: Colony): void {
     }
+
+    protected onRelease(assignment: Assignment): void {
+    }
     
     protected getJob(assignment: Assignment): BuilderJob {
         if (this.siteIds.length)

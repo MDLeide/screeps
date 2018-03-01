@@ -102,6 +102,9 @@ export class RemoteHarvestScoutOperation extends Operation {
     protected onAssignment(assignment: Assignment): void {
     }
 
+    protected onRelease(assignment: Assignment): void {
+    }
+
     private getNextTarget(colony: Colony, creep: Creep): void {        
         this.targetRoom = colony.remoteMiningManager.getClosestUnscoutedRoom(creep.room.name);
         this.nextRoom = "";

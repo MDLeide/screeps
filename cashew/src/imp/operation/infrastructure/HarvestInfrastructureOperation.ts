@@ -121,7 +121,10 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
 
     protected onCleanup(colony: Colony): void {
     }
-    
+
+    protected onRelease(assignment: Assignment): void {
+    }
+
     protected getController(assignment: Assignment): HarvestInfrastructureBuilderController {
         return new HarvestInfrastructureBuilderController(this.sourceId, this.siteId);
     }

@@ -83,7 +83,10 @@ export class StorageConstructionOperation extends JobOperation {
 
     protected onCleanup(colony: Colony): void {
     }
-    
+
+    protected onRelease(assignment: Assignment): void {
+    }
+
     protected getJob(assignment: Assignment): BuilderJob {
         return new BuilderJob(this.siteId);
     }

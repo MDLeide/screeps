@@ -73,8 +73,8 @@ export abstract class JobOperation extends Operation {
         }        
     }
     
-    public removeCreep(creepName: string): void {
-        super.removeCreep(creepName);
+    public releaseCreep(creepName: string): void {
+        super.releaseCreep(creepName);
         if (this.jobs[creepName])
             delete this.jobs[creepName];
     }

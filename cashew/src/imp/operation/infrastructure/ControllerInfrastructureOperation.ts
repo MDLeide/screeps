@@ -91,7 +91,10 @@ export class ControllerInfrastructureOperation extends JobOperation {
 
     protected onCleanup(colony: Colony): void {
     }
-    
+
+    protected onRelease(assignment: Assignment): void {
+    }
+
     protected getJob(assignment: Assignment): Job {
         return new BuilderJob(this.siteId);
     }

@@ -61,6 +61,9 @@ export class OperationTemplate extends Operation {
 
     protected onAssignment(assignment: Assignment): void {
     }
+
+    protected onRelease(assignment: Assignment): void {
+    }
     
     protected onSave(): OperationMemory {
         return null;

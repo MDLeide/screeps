@@ -73,8 +73,8 @@ export abstract class ControllerOperation extends Operation {
         }        
     }
     
-    public removeCreep(creepName: string): void {
-        super.removeCreep(creepName);
+    public releaseCreep(creepName: string): void {
+        super.releaseCreep(creepName);
         if (this.controllers[creepName])
             delete this.controllers[creepName];
     }
