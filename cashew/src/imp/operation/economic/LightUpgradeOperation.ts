@@ -22,7 +22,20 @@ export class LightUpgradeOperation extends ControllerOperation {
             new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_LIGHT_UPGRADER)
         ]
     }
-    
+
+
+    protected onLoad(): void {
+    }
+
+    protected onUpdate(colony: Colony): void {
+    }
+
+    protected onExecute(colony: Colony): void {
+    }
+
+    protected onCleanup(colony: Colony): void {
+    }
+
 
     public canInit(colony: Colony): boolean {
         return true;
@@ -35,7 +48,8 @@ export class LightUpgradeOperation extends ControllerOperation {
     public isFinished(colony: Colony): boolean {
         return false;
     }
-    
+
+
     protected onInit(colony: Colony): boolean {
         return true;
     }
@@ -51,21 +65,17 @@ export class LightUpgradeOperation extends ControllerOperation {
     protected onCancel(): void {
     }
     
-    protected onLoad(): void {
-    }
-
-    protected onUpdate(colony: Colony): void {
-    }
-
-    protected onExecute(colony: Colony): void {
-    }
-
-    protected onCleanup(colony: Colony): void {
-    }
 
     protected onRelease(assignment: Assignment): void {
     }
-    
+
+    protected onReplacement(assignment: Assignment): void {
+    }
+
+    protected onAssignment(assignment: Assignment): void {
+    }
+        
+
     protected getController(assignment: Assignment): LightUpgraderRole {
         return new LightUpgraderRole();
     }

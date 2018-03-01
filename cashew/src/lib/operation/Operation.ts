@@ -32,6 +32,39 @@ export abstract class Operation {
     public assignments: Assignment[]; // filled if creep name is not blank
 
 
+
+    public load(): void {
+        this.onLoad();
+    }
+        
+    public update(colony: Colony): void {
+        this.cleanDeadCreeps(colony);
+        this.onUpdate(colony);
+    }
+        
+    public execute(colony: Colony): void {
+        this.onExecute(colony);
+    }
+    
+    public cleanup(colony: Colony): void {
+        this.onCleanup(colony);
+    }
+    
+    public save(): OperationMemory {
+        var memory = this.onSave();
+        if (!memory) {
+            memory = {
+                type: this.type,
+                initialized: this.initialized,
+                started: this.started,
+                finished: this.finished,
+                assignments: this.getAssignmentMemory()
+            };
+        }
+        return memory;
+    }
+
+
     public init(colony: Colony): boolean {
         if (this.initialized)
             return true;
@@ -67,7 +100,7 @@ export abstract class Operation {
         if (this.finished) {
             for (var i = 0; i < this.assignments.length; i++) {
                 if (this.assignments[i].creepName)
-                    this.releaseCreep(this.assignments[i].creepName);
+                    this.releaseAssignment(this.assignments[i]);
             }
 
             global.events.operation.finish(this.type);
@@ -76,50 +109,128 @@ export abstract class Operation {
             global.events.operation.failedToFinish(this.type);
         }
     }
-
+    
     public cancel(): void {
         this.onCancel();
         this.finished = true;
+        for (var i = 0; i < this.assignments.length; i++) {
+            if (this.assignments[i].creepName)
+                this.releaseAssignment(this.assignments[i]);
+        }
+
+        global.events.operation.cancel(this.type);
         //todo: events for cancelation
     }
 
-    // creep may not yet be available via Game.creeps - may have just requested spawning this tick
-    public assignCreep(creep: { name: string, bodyType: BodyType }): void {
-        for (var i = 0; i < this.assignments.length; i++) {
-            if (this.assignments[i].isFilled())
-                continue;
 
-            if (this.assignments[i].body.type != creep.bodyType)
-                continue;
-            
-            this.assignments[i].creepName = creep.name;
-            Memory.creeps[creep.name].operation = this.type;
-
-            this.onAssignment(this.assignments[i]);
-            
-            global.events.operation.creepAssigned(this.type, creep.name, creep.bodyType);
-            return;
+    /**
+     * Assigns a creep the the operation as a replacement. Creeps that are not yet available, because they are either
+     * spawning or queued for spawn, can be assigned in this fashion. The creep must have an entry
+     * already created in Memory.creeps. Returns true if succesful.
+     * @param assignment
+     * @param creepName
+     */
+    public assignReplacement(assignment: Assignment, creepName: string): boolean {
+        if (this.assignments.indexOf(assignment) < 0) {
+            global.events.operation.creepReplacementAssignmentFailed(this.type, creepName, assignment.body.type, "Assignment does not exist on operation");
+            return false;
         }
-        global.events.operation.creepAssignmentFailed(this.type, creep.name, creep.bodyType);
-    }
-    
-    public releaseCreep(creepName: string): void {
-        for (var i = 0; i < this.assignments.length; i++) {
-            if (this.assignments[i].creepName == creepName) {
-                this.onRelease(this.assignments[i]);
 
-                this.assignments[i].release();
-                if (Memory.creeps[creepName])
-                    Memory.creeps[creepName].operation = "";
-                
-                global.events.operation.creepReleased(this.type, creepName, Memory.creeps[creepName].body);
-                return;
+        if (!assignment.replacementOpen()) {
+            global.events.operation.creepReplacementAssignmentFailed(this.type, creepName, assignment.body.type, "Assignment does not require replacement");
+            return false;
+        }
+
+        let creepMemory = Memory.creeps[creepName];
+        if (!creepMemory) {
+            global.events.operation.creepReplacementAssignmentFailed(this.type, creepName, assignment.body.type, "Creep not found in memory");
+            return false;
+        }            
+
+        assignment.replacementName = creepName;
+        creepMemory.operation = this.type;
+        this.onReplacement(assignment);
+        global.events.operation.creepReplacementAssigned(this.type, creepName, assignment.body.type);
+        return true;
+    }
+
+    /**
+     * Assigns a creep to the operation. Creeps that are not yet available, because they are either
+     * spawning or queued for spawn, can be assigned in this fashion. The creep must have an entry
+     * already created in Memory.creeps. Returns true if succesful.
+     * @param creep
+     */
+    public assignCreep(assignment: Assignment, creepName: string): boolean {
+        if (this.assignments.indexOf(assignment) < 0) {
+            global.events.operation.creepAssignmentFailed(this.type, creepName, assignment.body.type, "Assignment does not exist on operation");
+            return false;
+        }
+
+        if (assignment.isFilled()) {
+            global.events.operation.creepAssignmentFailed(this.type, creepName, assignment.body.type, "Assignment already filled");
+            return false;
+        }
+
+        let creepMemory = Memory.creeps[creepName];
+        if (!creepMemory) {
+            global.events.operation.creepAssignmentFailed(this.type, creepName, assignment.body.type, "Creep not found in memory");
+            return false;
+        }
+
+        assignment.creepName = creepName;
+        creepMemory.operation = this.type;
+        this.onAssignment(assignment);
+        global.events.operation.creepAssigned(this.type, creepName, assignment.body.type);
+        return true;
+    }
+
+    /**
+     * Releases the creep from an assignment. If there is a replacement creep on the assignment,
+     * it will take over the primary position. Returns true if succesful.
+     * @param assignment
+     */
+    public releaseAssignment(assignment: Assignment): boolean {
+        if (this.assignments.indexOf(assignment) < 0) {
+            global.events.operation.assignmentReleaseFailed(this.type, assignment.creepName, assignment.body.type, "Assignment does not exist on operation");
+            return false;
+        }
+
+        if (assignment.isOpen()) {
+            global.events.operation.assignmentReleaseFailed(this.type, assignment.creepName, assignment.body.type, "Assignment already open");
+            return false;
+        }
+
+        let creepName = assignment.creepName;
+        let bodyType = assignment.body.type;
+        this.onRelease(assignment);
+        assignment.release();
+        if (Memory.creeps[creepName])
+            Memory.creeps[creepName].operation = undefined;
+
+        global.events.operation.assignmentReleased(this.type, creepName, bodyType);
+        return true;
+    }
+
+
+    /**
+     * Gets all assignments which require a replacement to be provided immediately.
+     */
+    public getAssignmentsNeedingReplacements(): Assignment[] {
+        let replacements: Assignment[] = [];
+        for (var i = 0; i < this.assignments.length; i++) {
+            let assignment = this.assignments[i];
+
+            if (assignment.isFilled() && assignment.replacementOpen()) {
+                let creep = Game.creeps[this.assignments[i].creepName];
+
+                if (creep && creep.ticksToLive <= this.assignments[i].replaceAt)
+                    replacements.push(this.assignments[i]);
             }
         }
-        global.events.operation.creepReleaseFailed(this.type, creepName, Memory.creeps[creepName].body);
+        return replacements;
     }
-    
-    public getUnfilledAssignments(colony: Colony): Assignment[] {
+
+    public getUnfilledAssignments(): Assignment[] {
         var unfilled: Assignment[] = [];
         for (var i = 0; i < this.assignments.length; i++) 
             if (!this.assignments[i].creepName)
@@ -134,40 +245,7 @@ export abstract class Operation {
                 count++;
         return count;
     }
-        
-    public load(): void {
-        this.onLoad();
-    }
 
-    /** Provides early-tick opportunity to update state. Will be called on all colonies and operations prior to Execute being called. */
-    public update(colony: Colony): void {        
-        this.cleanDeadCreeps(colony);
-        this.onUpdate(colony);
-    }
-
-    /** Main operation logic should execute here. */
-    public execute(colony: Colony): void {
-        this.onExecute(colony);
-    }
-
-    /** Called after all operatoins have executed. */
-    public cleanup(colony: Colony): void {
-        this.onCleanup(colony);
-    }
-
-    public save(): OperationMemory {
-        var memory = this.onSave();
-        if (!memory) {
-            memory = {
-                type: this.type,
-                initialized: this.initialized,
-                started: this.started,
-                finished: this.finished,
-                assignments: this.getAssignmentMemory()
-            };
-        }
-        return memory;
-    }
 
     protected getAssignmentMemory(): AssignmentMemory[] {
         var assignmentMemory: AssignmentMemory[] = [];
@@ -175,43 +253,36 @@ export abstract class Operation {
             assignmentMemory.push(this.assignments[i].save());
         return assignmentMemory;
     }
-        
-    /** Ensures we don't have any dead creeps assigned to the operation. */
+
+
     private cleanDeadCreeps(colony: Colony) {
         for (var i = 0; i < this.assignments.length; i++) {
             if (this.assignments[i].creepName) {
                 if (!colony.population.isAliveOrSpawning(this.assignments[i].creepName))
-                    this.releaseCreep(this.assignments[i].creepName);                
+                    this.releaseAssignment(this.assignments[i]);
             }            
         }        
     }
-    
+
+
     public abstract canInit(colony: Colony): boolean;
     public abstract canStart(colony: Colony): boolean;
     public abstract isFinished(colony: Colony): boolean;
 
-    protected abstract onAssignment(assignment: Assignment): void;    
+    protected abstract onAssignment(assignment: Assignment): void;
+    protected abstract onReplacement(assignment: Assignment): void;
     protected abstract onRelease(assignment: Assignment): void;
-
-    /** Called once, to initialize the operation - returns true if successful. */
-    protected abstract onInit(colony: Colony): boolean;
-    /** Called once, to start the operation, and begin calls of execute. */
-    protected abstract onStart(colony: Colony): boolean;
-    /** Called once, after isFinished() returns true. */
+        
+    protected abstract onInit(colony: Colony): boolean;    
+    protected abstract onStart(colony: Colony): boolean;    
     protected abstract onFinish(colony: Colony): boolean;
     protected abstract onCancel(): void;
-
-    /** Update game object references. */
-    protected abstract onLoad(): void;
-    /** Provides early-tick opportunity to update state. Will be called on all colonies and operations prior to Execute being called. */
-    protected abstract onUpdate(colony: Colony): void;
-    /** Main operation logic should execute here. */
-    protected abstract onExecute(colony: Colony): void;
-    /** Called after all operatoins have executed. */
+        
+    protected abstract onLoad(): void;    
+    protected abstract onUpdate(colony: Colony): void;    
+    protected abstract onExecute(colony: Colony): void;    
     protected abstract onCleanup(colony: Colony): void;
-    
-    /** Allows the concrete class to provide an extended memory object.
-    Optionally it can return null for defualt Operation memory. */
+        
     protected abstract onSave(): OperationMemory;
 }
 

@@ -28,6 +28,7 @@ export class RemoteHarvestScoutOperation extends Operation {
         ];
     }
 
+
     public canInit(colony: Colony): boolean {
         return true;
     }
@@ -55,6 +56,7 @@ export class RemoteHarvestScoutOperation extends Operation {
 
     protected onCancel() {
     }
+
 
     protected onLoad(): void {
     }
@@ -99,11 +101,16 @@ export class RemoteHarvestScoutOperation extends Operation {
     protected onCleanup(colony: Colony): void {
     }
 
-    protected onAssignment(assignment: Assignment): void {
-    }
 
     protected onRelease(assignment: Assignment): void {
     }
+
+    protected onReplacement(assignment: Assignment): void {
+    }
+
+    protected onAssignment(assignment: Assignment): void {
+    }
+
 
     private getNextTarget(colony: Colony, creep: Creep): void {        
         this.targetRoom = colony.remoteMiningManager.getClosestUnscoutedRoom(creep.room.name);

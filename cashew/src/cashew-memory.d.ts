@@ -118,6 +118,8 @@ declare global {
         creepName: string;
         body: BodyMemory;
         controllerType: ControllerType;
+        replaceAt: number;
+        replacementName: string;
     }
 
     /** END OPERATIONS **/

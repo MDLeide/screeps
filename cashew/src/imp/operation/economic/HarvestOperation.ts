@@ -8,13 +8,12 @@ import { HarvesterController } from "../../creep/HarvesterController";
 
 export class HarvestOperation extends ControllerOperation {
     public static fromMemory(memory: HarvestOperationMemory): Operation {
-        var op = new this(memory.minimumEnergy, memory.sourceId, memory.containerId);
-        op.travelTime = memory.travelTime;
+        var op = new this(memory.minimumEnergy, memory.sourceId, memory.containerId);        
         return ControllerOperation.fromMemory(memory, op);
     }
 
     constructor(minimumEnergyForSpawn: number, source: (Source | string), containerId?: string) {
-        super(OPERATION_HARVEST, HarvestOperation.getAssignments(minimumEnergyForSpawn));
+        super(OPERATION_HARVEST, []);
 
         this.minimumEnergy = minimumEnergyForSpawn;
         let s: Source = null;
@@ -37,21 +36,25 @@ export class HarvestOperation extends ControllerOperation {
                 }
             }).id;
     }
-
-    private static getAssignments(minEnergy: number): Assignment[] {
-        var body = BodyRepository.heavyHarvester();;
-        body.minimumEnergy = minEnergy;
-        return [
-            new Assignment("", body, CREEP_CONTROLLER_HARVESTER)
-        ];
-    }
-
-
-    public travelTime: number;
+    
+    
     public minimumEnergy: number;
     public containerId: string;
     public sourceId: string;
+    
 
+    protected onLoad(): void {
+    }
+
+    protected onUpdate(colony: Colony): void {        
+    }
+
+    protected onExecute(colony: Colony): void {  
+    }
+       
+    protected onCleanup(colony: Colony): void {
+    }
+    
 
     public canInit(colony: Colony): boolean {
         return true;
@@ -64,13 +67,21 @@ export class HarvestOperation extends ControllerOperation {
     public isFinished(colony: Colony): boolean {
         return false;
     }
-    
+
+
     protected onInit(colony: Colony): boolean {
         let source = Game.getObjectById<Source>(this.sourceId);
         if (!source)
-            return true;
+            return false;
         let path = source.pos.findPathTo(colony.nest.spawners[0].spawn);
-        this.travelTime = path.length * 5;
+        let travelTime = path.length * 5;
+        let spawnTime = 21;
+        let buffer = 25;
+        let body = BodyRepository.heavyHarvester();
+        body.minimumEnergy = this.minimumEnergy;
+        let assignment = new Assignment("", body, CREEP_CONTROLLER_HARVESTER, travelTime + spawnTime + buffer);
+        this.assignments.push(assignment);
+
         return true;
     }
 
@@ -85,40 +96,21 @@ export class HarvestOperation extends ControllerOperation {
     protected onCancel(): void {
     }
 
-    protected onLoad(): void {
+
+    protected onReplacement(assignment: Assignment): void {
     }
 
-    protected onUpdate(colony: Colony): void {
-        if (this.assignments.length == 1) {
-            if (this.assignments[0].creepName) {
-                let creep = Game.creeps[this.assignments[0].creepName];
-                if (creep) {
-                    if (creep.ticksToLive <= this.travelTime + 50) {
-                        this.assignments.push(new Assignment("", BodyRepository.heavyHarvester(), CREEP_CONTROLLER_HARVESTER));
-                    }
-                }
-            }
-        }
-    }
-
-    protected onExecute(colony: Colony): void {  
-    }
-       
-    protected onCleanup(colony: Colony): void {
+    protected onAssignment(assignment: Assignment): void {
     }
 
     protected onRelease(assignment: Assignment): void {
-        if (this.assignments.length > 1) {
-            let index = this.assignments.indexOf(assignment);
-            if (index >= 0) {
-                this.assignments.splice(index, 1);
-            }
-        }
     }
+
 
     protected getController(assignment: Assignment): CreepController {
         return new HarvesterController(this.containerId, this.sourceId);
-    }
+    }    
+
 
     protected onSave(): HarvestOperationMemory {
         return {
@@ -130,8 +122,7 @@ export class HarvestOperation extends ControllerOperation {
             controllers: this.getControllerMemory(),
             minimumEnergy: this.minimumEnergy,
             sourceId: this.sourceId,
-            containerId: this.containerId,
-            travelTime: this.travelTime
+            containerId: this.containerId
         };
     }
 }
@@ -140,5 +131,4 @@ interface HarvestOperationMemory extends ControllerOperationMemory {
     minimumEnergy: number;
     sourceId: string;
     containerId: string;
-    travelTime: number;
 }

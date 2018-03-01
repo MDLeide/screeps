@@ -7,17 +7,32 @@ export class Assignment {
         let assignment = new this(
             memory.creepName,
             Body.fromMemory(memory.body),
-            memory.controllerType);
+            memory.controllerType,
+            memory.replaceAt);
 
+        assignment.replacementName = memory.replacementName;
         return assignment;
     }
 
     constructor(
-        public creepName: string,
-        public body: Body,
-        public controllerType?: ControllerType) {
+        creepName: string,
+        body: Body,
+        controllerType?: ControllerType,
+        replaceAt?:number) {
+        this.creepName = creepName;
+        this.body = body;
+        this.controllerType = controllerType;
+        this.replaceAt = replaceAt;
     }
-    
+
+    public creepName: string;
+    public replacementName: string;
+    /** Number of ticks before assigned creep dies to assign a replacement. */
+    public replaceAt: number;
+    public body: Body;
+    public controllerType: ControllerType;
+
+
     /** True if there is no creep assigned. */
     public isOpen(): boolean {
         return !this.creepName;
@@ -28,16 +43,28 @@ export class Assignment {
         return !this.isOpen();
     }
 
+    /** True if the assignment uses a replacement and does not have one assigned. */
+    public replacementOpen(): boolean {
+        return this.replaceAt && !this.replacementName;
+    }
+    
     /** Clears the current creep from the assignment. */
     public release(): void {
-        this.creepName = undefined;        
+        if (this.replacementName) {
+            this.creepName = this.replacementName;
+            this.replacementName = undefined;
+        } else {
+            this.creepName = undefined;        
+        }        
     }
 
     public save(): AssignmentMemory {
         return {
             creepName: this.creepName,
             body: this.body.save(),
-            controllerType: this.controllerType
+            controllerType: this.controllerType,
+            replacementName: this.replacementName,
+            replaceAt: this.replaceAt
         };
     }
 }

@@ -36,10 +36,36 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
     public siteId: string;
     public siteBuilt: boolean;
     
+    
+    protected onLoad(): void {
+        this.source = Game.getObjectById<Source>(this.sourceId);
+        if (this.siteId) {
+            this.site = Game.getObjectById<ConstructionSite>(this.siteId);
+        }
+    }
+
+    protected onUpdate(colony: Colony): void {
+    }
+
+    protected onExecute(colony: Colony): void {
+    }
+
+    protected onCleanup(colony: Colony): void {
+    }
+
 
     public canInit(colony: Colony): boolean {
         return true;
     }
+    
+    public canStart(colony: Colony): boolean {
+        return this.getFilledAssignmentCount() >= 1;
+    }
+    
+    public isFinished(colony: Colony): boolean {
+        return this.siteBuilt && this.initialized && (!this.site || this.site.progress >= this.site.progressTotal);
+    }
+
 
     protected onInit(colony: Colony): boolean {
         let harvestBlock: HarvestBlock;
@@ -53,7 +79,7 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
         }
         let containerLocation = harvestBlock.getContainerLocation();
 
-        if (!this.siteBuilt) {            
+        if (!this.siteBuilt) {
             this.source.room.createConstructionSite(containerLocation.x, containerLocation.y, STRUCTURE_CONTAINER);
             this.siteBuilt = true;
             return false;
@@ -68,16 +94,8 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
         }
     }
 
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
     protected onStart(colony: Colony): boolean {
         return true;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        return this.siteBuilt && this.initialized && (!this.site || this.site.progress >= this.site.progressTotal);
     }
 
     protected onFinish(colony: Colony): boolean {
@@ -105,29 +123,22 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
 
     protected onCancel(): void {
     }
-
-    protected onLoad(): void {
-        this.source = Game.getObjectById<Source>(this.sourceId);
-        if (this.siteId) {            
-            this.site = Game.getObjectById<ConstructionSite>(this.siteId);
-        }
-    }
-
-    protected onUpdate(colony: Colony): void {
-    }
-
-    protected onExecute(colony: Colony): void {
-    }
-
-    protected onCleanup(colony: Colony): void {
-    }
+    
 
     protected onRelease(assignment: Assignment): void {
     }
 
+    protected onReplacement(assignment: Assignment): void {
+    }
+
+    protected onAssignment(assignment: Assignment): void {
+    }
+
+
     protected getController(assignment: Assignment): HarvestInfrastructureBuilderController {
         return new HarvestInfrastructureBuilderController(this.sourceId, this.siteId);
     }
+
 
     protected onSave(): HarvestInfrastructureOperationMemory {
         return {            

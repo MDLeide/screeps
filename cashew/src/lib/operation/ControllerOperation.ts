@@ -15,9 +15,9 @@ export abstract class ControllerOperation extends Operation {
         return Operation.fromMemory(memory, instance);
     }
 
-    public controllers: { [creepName: string]: CreepController } = {};
 
-    protected abstract getController(assignment: Assignment): CreepController;
+    public controllers: { [creepName: string]: CreepController } = {};
+    
 
     public load(): void {
         super.load();
@@ -32,11 +32,20 @@ export abstract class ControllerOperation extends Operation {
             if (!this.assignments[i].creepName)
                 continue;
 
-            var creep = Game.creeps[this.assignments[i].creepName];
+            let creep = Game.creeps[this.assignments[i].creepName];
             if (creep && !creep.spawning) {
                 let controller = this.controllers[creep.name];
                 if (controller)
                     controller.update(creep);
+            }
+
+            if (this.assignments[i].replacementName) {
+                creep = Game.creeps[this.assignments[i].replacementName];
+                if (creep && !creep.spawning) {
+                    let controller = this.controllers[creep.name];
+                    if (controller)
+                        controller.update(creep);
+                }
             }
         }
     }
@@ -54,6 +63,15 @@ export abstract class ControllerOperation extends Operation {
                 if (controller)
                     controller.execute(creep);
             }
+
+            if (this.assignments[i].replacementName) {
+                creep = Game.creeps[this.assignments[i].replacementName];
+                if (creep && !creep.spawning) {
+                    let controller = this.controllers[creep.name];
+                    if (controller)
+                        controller.execute(creep);
+                }
+            }
         }
         
     }
@@ -67,28 +85,20 @@ export abstract class ControllerOperation extends Operation {
             if (creep && !creep.spawning) {
                 let controller = this.controllers[creep.name];
                 if (controller)
-                    controller.cleanup(creep);
-                
+                    controller.cleanup(creep);                
+            }
+
+            if (this.assignments[i].replacementName) {
+                creep = Game.creeps[this.assignments[i].replacementName];
+                if (creep && !creep.spawning) {
+                    let controller = this.controllers[creep.name];
+                    if (controller)
+                        controller.cleanup(creep);
+                }
             }
         }        
     }
-    
-    public releaseCreep(creepName: string): void {
-        super.releaseCreep(creepName);
-        if (this.controllers[creepName])
-            delete this.controllers[creepName];
-    }
 
-    protected onAssignment(assignment: Assignment): void {
-        this.controllers[assignment.creepName] = this.getController(assignment);
-    }
-
-    protected getControllerMemory(): { [creepName: string]: CreepControllerMemory } {
-        var mem = {};
-        for (var key in this.controllers)
-            mem[key] = this.controllers[key].save();
-        return mem;
-    }
 
     protected onSave(): ControllerOperationMemory {
         return {
@@ -100,4 +110,42 @@ export abstract class ControllerOperation extends Operation {
             controllers: this.getControllerMemory()
         };
     }
+
+
+    public assignReplacement(assignment: Assignment, creepName: string): boolean {
+        if (super.assignReplacement(assignment, creepName)) {
+            this.controllers[creepName] = this.getController(assignment);
+            return true;
+        }
+        return false;
+    }
+
+    public assignCreep(assignment: Assignment, creepName: string): boolean {
+        if (super.assignCreep(assignment, creepName)) {
+            this.controllers[creepName] = this.getController(assignment);
+            return true;
+        }
+        return false;
+    }
+
+    public releaseAssignment(assignment: Assignment): boolean {
+        let creepName = assignment.creepName;
+        if (super.releaseAssignment(assignment)) {
+            if (this.controllers[creepName])
+                delete this.controllers[creepName];
+            return true;
+        }
+        return false;
+    }
+
+
+    protected getControllerMemory(): { [creepName: string]: CreepControllerMemory } {
+        var mem = {};
+        for (var key in this.controllers)
+            mem[key] = this.controllers[key].save();
+        return mem;
+    }
+
+
+    protected abstract getController(assignment: Assignment): CreepController;
 }

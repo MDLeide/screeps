@@ -18,27 +18,13 @@ export class OperationGroup {
             this.operations.push(operations[i]);
     }    
 
+
     public operations: Operation[];
     public canceled: Operation[] = [];
-    
-    public addOperation(operation: Operation): void {
-        this.operations.push(operation);
-    }
 
-    public cancelOperation(operation: Operation): void {
-        operation.cancel();
-        this.canceled.push(operation);
-    }
 
-    public cancelOperationByType(type: OperationType): void {
-        for (var i = 0; i < this.operations.length; i++)
-            if (this.operations[i].type == type)
-                this.cancelOperation(this.operations[i]);        
-    }
-
-    
     public load(): void {
-        for (var i = 0; i < this.operations.length; i++) 
+        for (var i = 0; i < this.operations.length; i++)
             if (!this.operations[i].finished)
                 this.operations[i].load();
     }
@@ -59,16 +45,15 @@ export class OperationGroup {
             } else {
                 if (this.operations[i].canInit(colony))
                     this.operations[i].init(colony);
-            }                
-        }                
+            }
+        }
     }
 
     public execute(colony: Colony): void {
-        for (var i = 0; i < this.operations.length; i++) 
+        for (var i = 0; i < this.operations.length; i++)
             if (this.operations[i].initialized && !this.operations[i].finished)
                 this.getCreepsForOperation(this.operations[i], colony);
         
-
         for (var i = 0; i < this.operations.length; i++)
             if (this.operations[i].started && !this.operations[i].finished)
                 this.operations[i].execute(colony);
@@ -81,7 +66,7 @@ export class OperationGroup {
                 // this is to allow something that might be interested in it being finished the chance to see it
                 // in case it were canceled, for instance, during execution, and the consumer checks in update
                 if (this.canceled.indexOf(this.operations[i]) >= 0)
-                    continue;                
+                    continue;
                 this.operations.splice(i--, 1);
             }
             else {
@@ -89,32 +74,72 @@ export class OperationGroup {
             }
         }
 
-        for (var i = 0; i < this.operations.length; i++) 
-            if (this.operations[i].started) 
-                if (this.operations[i].isFinished(colony)) 
+        for (var i = 0; i < this.operations.length; i++)
+            if (this.operations[i].started)
+                if (this.operations[i].isFinished(colony))
                     this.operations[i].finish(colony);
     }
+
+
+    public addOperation(operation: Operation): void {
+        this.operations.push(operation);
+    }
+
+    public cancelOperation(operation: Operation): void {
+        operation.cancel();
+        this.canceled.push(operation);
+    }
+
+    public cancelOperationByType(type: OperationType): void {
+        for (var i = 0; i < this.operations.length; i++)
+            if (this.operations[i].type == type)
+                this.cancelOperation(this.operations[i]);        
+    }
+
     
      /** Spawns creeps required for an operation. */
     private getCreepsForOperation(op: Operation, colony: Colony): void {
-        var openAssignments = op.getUnfilledAssignments(colony);
+        var openAssignments = op.getUnfilledAssignments();
         
         for (var i = 0; i < openAssignments.length; i++) {
-            var unassignedCreep = this.getUnassignedCreep(openAssignments[i], colony);
-            if (unassignedCreep) {
-                op.assignCreep({ name: unassignedCreep, bodyType: openAssignments[i].body.type });
-                continue;
-            }
-            
-            if (!colony.canSpawn(openAssignments[i].body))
-                continue;
+            let creep = this.getCreepForAssignment(openAssignments[i], colony);
+            if (creep)
+                op.assignCreep(openAssignments[i], creep);
+        }
 
-            var response = colony.spawnCreep(openAssignments[i].body);
-            if (response)
-                op.assignCreep({ name: response.name, bodyType: openAssignments[i].body.type });
+        let replacements = op.getAssignmentsNeedingReplacements();
+
+        for (var i = 0; i < replacements.length; i++) {
+            let creep = this.getCreepForAssignment(replacements[i], colony);
+            if (creep)
+                op.assignReplacement(replacements[i], creep);
         }
     }
 
+    /**
+     * Tries to find or spawn a creep for an assignment.
+     * @param assignment
+     * @param colony
+     */
+    private getCreepForAssignment(assignment: Assignment, colony: Colony): string {
+        let unassignedCreep = this.getUnassignedCreep(assignment, colony);
+        if (unassignedCreep)
+            return unassignedCreep;
+
+        if (!colony.canSpawn(assignment.body))
+            return null;
+
+        let response = colony.spawnCreep(assignment.body);
+        if (response)
+            return response.name;
+        return null;
+    }
+
+    /**
+     * Tries to find a creep without an operation that matches the assignment's body requirements.
+     * @param assignment
+     * @param colony
+     */
     private getUnassignedCreep(assignment: Assignment, colony: Colony): string {
         var unassigned = colony.population.notAssignedToOperation();
         for (var i = 0; i < unassigned.length; i++) {

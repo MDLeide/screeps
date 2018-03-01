@@ -41,7 +41,8 @@ export class StorageConstructionOperation extends JobOperation {
     public isFinished(colony: Colony): boolean {
         return this.initialized && this.siteBuilt && !this.site;
     }
-    
+
+
     protected onInit(colony: Colony): boolean {
         let storage = colony.nest.nestMap.mainBlock.getStorageLocation();
         if (!this.siteBuilt) {            
@@ -70,6 +71,7 @@ export class StorageConstructionOperation extends JobOperation {
     protected onCancel(): void {
     }
 
+
     protected onLoad(): void {
         if (this.siteId)
             this.site = Game.getObjectById<ConstructionSite>(this.siteId);
@@ -84,8 +86,16 @@ export class StorageConstructionOperation extends JobOperation {
     protected onCleanup(colony: Colony): void {
     }
 
+
     protected onRelease(assignment: Assignment): void {
     }
+
+    protected onReplacement(assignment: Assignment): void {
+    }
+
+    protected onAssignment(assignment: Assignment): void {
+    }
+
 
     protected getJob(assignment: Assignment): BuilderJob {
         return new BuilderJob(this.siteId);
