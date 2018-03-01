@@ -1,6 +1,8 @@
 # Black Cat
 *An AI created for the game Screeps by Cashew The Cat*
 
+(This documentation is outdated in places, containing bad information on program architecture and operation. To be updated sometime in the next century.)
+
 This repository contains the code I am using for the excellent, unique game [Screeps](http://screeps.com "Screeps"), which has similar design to a real-time strategy, but where the player must write JavaScript* to control their structures and units. There is no direct 'point and click' interface.
 
 The codebase is written entirely in TypeScript, and uses the starter package, linked below.
