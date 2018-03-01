@@ -54,16 +54,7 @@ export class UpgraderRole extends Role {
                 if (this.container && this.container.store.energy > 0)
                     return Task.Withdraw(this.container);
             }
-
-            if (!this.currentTask || this.currentTask.type == TASK_UPGRADE) {
-                if (this.container && this.container.store.energy > 0)
-                    return Task.Withdraw(this.container);
-            } else if (creep.carry.energy > 0) {
-                return Task.Upgrade(this.controller);
-            }
-        }
-
-        
+        }        
         return null;
     }
 
