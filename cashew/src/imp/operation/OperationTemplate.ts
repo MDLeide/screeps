@@ -64,7 +64,10 @@ export class OperationTemplate extends Operation {
 
     protected onRelease(assignment: Assignment): void {
     }
-    
+
+    protected onReplacement(assignment: Assignment): void {
+    }
+
     protected onSave(): OperationMemory {
         return null;
     }

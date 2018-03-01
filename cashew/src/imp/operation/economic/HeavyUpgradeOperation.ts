@@ -28,6 +28,19 @@ export class HeavyUpgradeOperation extends ControllerOperation {
 
     public containerId: string;
     public controllerId: string;
+    
+
+    protected onLoad(): void {
+    }
+
+    protected onUpdate(colony: Colony): void {
+    }
+
+    protected onExecute(colony: Colony): void {
+    }
+
+    protected onCleanup(colony: Colony): void {
+    }
 
 
     public canInit(colony: Colony): boolean {
@@ -41,7 +54,8 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     public isFinished(colony: Colony): boolean {
         return false;
     }
-    
+
+
     protected onInit(colony: Colony): boolean {
         this.containerId = colony.getControllerEnergySource().id;
         this.controllerId = colony.nest.room.controller.id;
@@ -59,20 +73,17 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     protected onCancel(): void {
     }
 
-    protected onLoad(): void {
+
+    
+    protected onReplacement(assignment: Assignment): void {
     }
 
-    protected onUpdate(colony: Colony): void {
-    }
-
-    protected onExecute(colony: Colony): void {
-    }
-
-    protected onCleanup(colony: Colony): void {
+    protected onAssignment(assignment: Assignment): void {
     }
 
     protected onRelease(assignment: Assignment): void {
     }
+
 
     protected getController(assignment: Assignment): UpgraderRole {
         return new UpgraderRole(this.containerId, this.controllerId);

@@ -15,12 +15,27 @@ export class EnergyTransportOperation extends ControllerOperation {
         super(OPERATION_ENERGY_TRANSPORT, EnergyTransportOperation.getAssignments());        
     }
 
+
     private static getAssignments(): Assignment[] {
         return [
             new Assignment("", BodyRepository.hauler(), CREEP_CONTROLLER_HAULER),
             new Assignment("", BodyRepository.hauler(), CREEP_CONTROLLER_HAULER)
         ];
     }
+
+
+    protected onLoad(): void {
+    }
+
+    protected onUpdate(colony: Colony): void {
+    }
+
+    protected onExecute(colony: Colony): void {
+    }
+
+    protected onCleanup(colony: Colony): void {
+    }
+
 
     public canInit(colony: Colony): boolean {
         return true;
@@ -51,20 +66,15 @@ export class EnergyTransportOperation extends ControllerOperation {
     }
 
 
-    protected onLoad(): void {
+    protected onReplacement(assignment: Assignment): void {
     }
 
-    protected onUpdate(colony: Colony): void {
-    }
-
-    protected onExecute(colony: Colony): void {
-    }
-
-    protected onCleanup(colony: Colony): void {
+    protected onAssignment(assignment: Assignment): void {
     }
 
     protected onRelease(assignment: Assignment): void {
     }
+
 
     protected getController(assignment: Assignment): HaulerRole {
         return new HaulerRole();

@@ -32,6 +32,21 @@ export class TowerConstructionOperation extends JobOperation {
     public site: ConstructionSite;
 
 
+    protected onLoad(): void {
+        if (this.siteId)
+            this.site = Game.getObjectById<ConstructionSite>(this.siteId);
+    }
+
+    protected onUpdate(colony: Colony): void {
+    }
+
+    protected onExecute(colony: Colony): void {
+    }
+
+    protected onCleanup(colony: Colony): void {
+    }
+
+
     public canInit(colony: Colony): boolean {
         return true;
     }
@@ -43,7 +58,8 @@ export class TowerConstructionOperation extends JobOperation {
     public isFinished(colony: Colony): boolean {
         return this.initialized && this.siteBuilt && !this.site;
     }
-    
+
+
     protected onInit(colony: Colony): boolean {
         let tower = colony.nest.nestMap.mainBlock.getTowerLocation(this.rcl);
         if (!this.siteBuilt) {            
@@ -71,27 +87,22 @@ export class TowerConstructionOperation extends JobOperation {
 
     protected onCancel(): void {
     }
+
     
-    protected onLoad(): void {
-        if (this.siteId)
-            this.site = Game.getObjectById<ConstructionSite>(this.siteId);
-    }
-
-    protected onUpdate(colony: Colony): void {
-    }
-
-    protected onExecute(colony: Colony): void {
-    }
-
-    protected onCleanup(colony: Colony): void {
-    }
-
     protected onRelease(assignment: Assignment): void {
     }
+
+    protected onReplacement(assignment: Assignment): void {
+    }
+
+    protected onAssignment(assignment: Assignment): void {
+    }
+
 
     protected getJob(assignment: Assignment): BuilderJob {
         return new BuilderJob(this.siteId);
     }
+
 
     protected onSave(): TowerConstructionOperationMemory {
         return {

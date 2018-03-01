@@ -59,7 +59,7 @@ export class BodyRepository {
             200,
             [CARRY, MOVE, WORK],
             [WORK],
-            0,
+            5,
             true
         );
     }
@@ -70,7 +70,7 @@ export class BodyRepository {
             100,
             [CARRY, MOVE],
             [CARRY, MOVE],
-            0,
+            15,
             true
         );
     }

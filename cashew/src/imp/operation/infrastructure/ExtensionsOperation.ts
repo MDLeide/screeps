@@ -31,6 +31,7 @@ export class ExtensionConstruction extends JobOperation {
         ];
     }
 
+
     public canInit(colony: Colony): boolean {
         return true;
     }
@@ -77,6 +78,7 @@ export class ExtensionConstruction extends JobOperation {
     protected onCancel(): void {
     }
 
+
     protected onLoad(): void {
         this.sites = [];
         for (var i = 0; i < this.siteIds.length; i++) {
@@ -97,8 +99,16 @@ export class ExtensionConstruction extends JobOperation {
     protected onCleanup(colony: Colony): void {
     }
 
+
     protected onRelease(assignment: Assignment): void {
     }
+
+    protected onReplacement(assignment: Assignment): void {
+    }
+
+    protected onAssignment(assignment: Assignment): void {
+    }
+
     
     protected getJob(assignment: Assignment): BuilderJob {
         if (this.siteIds.length)

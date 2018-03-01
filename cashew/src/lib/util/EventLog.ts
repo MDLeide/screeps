@@ -23,7 +23,7 @@ export class EventLog {
     A message's level must be greater than
     this number to be printed. Lower number means
     more messages */
-    public messageLevel: number = 4;    
+    public messageLevel: number = 0;    
 
     public empire: EmpireEvents;
     public colony: ColonyEvents;
@@ -53,7 +53,8 @@ class Colors {
     importantNegativeVerb: string ="#DD0000";
     positiveVerb: string = "#DDDD00";
     negativeVerb: string = "#800080";
-    neutralVerb: string ="#D2B48C";
+    neutralVerb: string = "#D2B48C";
+    information: string = "#AAAAFF";
 }
 
 abstract class EventGroup {
@@ -204,6 +205,7 @@ class OperationEvents extends EventGroup {
     public initLevel: number = 4;
     public startLevel: number = 5;
     public finishLevel: number = 7;
+    public cancelLevel: number = 7;
 
     public failedInitLevel: number = 4;
     public failedStartLevel: number = 5;
@@ -211,8 +213,12 @@ class OperationEvents extends EventGroup {
 
     public creepAssignedLevel: number = 2;
     public creepAssignmentFailedLevel: number = 6;
-    public creepReleasedLevel: number = 3;
-    public creepReleaseFailedLevel: number = 6;
+
+    public creepReplacementAssignedLevel: number = 2;
+    public creepReplacementAssignmentFailedLevel: number = 6;
+
+    public assignmentReleasedLevel: number = 3;
+    public assignmentReleaseFailedLevel: number = 6;
 
     protected getCategory(): string {
         return "Operation";
@@ -254,6 +260,17 @@ class OperationEvents extends EventGroup {
         this.log(sb.getString(), this.finishLevel);
     }
 
+    public cancel(operationName: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Operation ", this.colors.identifier);
+        sb.append(operationName, this.colors.name);
+        sb.append(" has ");
+        sb.append("been canceled", this.colors.neutralVerb);
+
+        this.log(sb.getString(), this.cancelLevel);
+    }
 
     public failedToInit(operationName: string): void {
         var sb = new StringBuilder();
@@ -309,7 +326,23 @@ class OperationEvents extends EventGroup {
         this.log(sb.getString(), this.creepAssignedLevel);
     }
 
-    public creepAssignmentFailed(operationName: string, creepName: string, bodyType: string) {
+    public creepReplacementAssigned(operationName: string, creepName: string, bodyType: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Creep ", this.colors.identifier);
+        sb.append(creepName, this.colors.name);
+        sb.append(" with ");
+        sb.append("body ", this.colors.identifier);
+        sb.append(bodyType, this.colors.name);
+        sb.append(" was assigned as replacement to ", this.colors.neutralVerb);
+        sb.append("operation ", this.colors.identifier);
+        sb.append(operationName, this.colors.name);
+
+        this.log(sb.getString(), this.creepReplacementAssignedLevel);
+    }
+
+    public creepAssignmentFailed(operationName: string, creepName: string, bodyType: string, msg: string) {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
@@ -321,11 +354,31 @@ class OperationEvents extends EventGroup {
         sb.append(" failed to assign to ", this.colors.negativeVerb);
         sb.append("operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(" : ");
+        sb.append(msg, this.colors.information);
 
         this.log(sb.getString(), this.creepAssignmentFailedLevel);
     }
 
-    public creepReleased(operationName: string, creepName: string, bodyType: string): void {
+    public creepReplacementAssignmentFailed(operationName: string, creepName: string, bodyType: string, msg: string) {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Creep ", this.colors.identifier);
+        sb.append(creepName, this.colors.name);
+        sb.append(" with ");
+        sb.append("body ", this.colors.identifier);
+        sb.append(bodyType, this.colors.name);
+        sb.append(" failed to assign as a replacement to ", this.colors.negativeVerb);
+        sb.append("operation ", this.colors.identifier);
+        sb.append(operationName, this.colors.name);
+        sb.append(" : ");
+        sb.append(msg, this.colors.information);
+
+        this.log(sb.getString(), this.creepReplacementAssignmentFailedLevel);
+    }
+
+    public assignmentReleased(operationName: string, creepName: string, bodyType: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
@@ -338,10 +391,10 @@ class OperationEvents extends EventGroup {
         sb.append("operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
 
-        this.log(sb.getString(), this.creepReleasedLevel);
+        this.log(sb.getString(), this.assignmentReleasedLevel);
     }
 
-    public creepReleaseFailed(operationName: string, creepName: string, bodyType: string) {
+    public assignmentReleaseFailed(operationName: string, creepName: string, bodyType: string, msg: string) {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
@@ -353,8 +406,10 @@ class OperationEvents extends EventGroup {
         sb.append(" failed to release from ", this.colors.negativeVerb);
         sb.append("operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(" : ");
+        sb.append(msg, this.colors.information);
 
-        this.log(sb.getString(), this.creepAssignmentFailedLevel);
+        this.log(sb.getString(), this.assignmentReleaseFailedLevel);
     }
 }
 

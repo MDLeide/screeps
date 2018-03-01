@@ -45,14 +45,6 @@ export class RemoteHarvestOperation extends ControllerOperation {
     }
 
 
-    protected getController(assignment: Assignment): CreepController {
-        if (assignment.controllerType == CREEP_CONTROLLER_REMOTE_HARVESTER) {
-            return new RemoteHarvesterController(this.sourceId, this.roomName, this.containerId)
-        } else {
-            return new RemoteHaulerRole(this.containerId, this.roomName);
-        }
-    }
-
     protected onInit(colony: Colony): boolean {
         return true;
     }
@@ -95,8 +87,25 @@ export class RemoteHarvestOperation extends ControllerOperation {
     protected onCleanup(colony: Colony): void {
     }
 
+
     protected onRelease(assignment: Assignment): void {
     }
+
+    protected onReplacement(assignment: Assignment): void {
+    }
+
+    protected onAssignment(assignment: Assignment): void {
+    }
+
+    
+    protected getController(assignment: Assignment): CreepController {
+        if (assignment.controllerType == CREEP_CONTROLLER_REMOTE_HARVESTER) {
+            return new RemoteHarvesterController(this.sourceId, this.roomName, this.containerId)
+        } else {
+            return new RemoteHaulerRole(this.containerId, this.roomName);
+        }
+    }
+
     
     protected onSave(): RemoteHarvestOperationMemory {
         return {

@@ -40,7 +40,8 @@ export class ControllerInfrastructureOperation extends JobOperation {
     public isFinished(colony: Colony): boolean {
         return this.siteBuilt && this.initialized && (!this.site || this.site.progress >= this.site.progressTotal);
     }
-    
+
+
     protected onInit(colony: Colony): boolean {
         let containerLocation = colony.nest.nestMap.controllerBlock.getContainerLocation();
 
@@ -78,6 +79,7 @@ export class ControllerInfrastructureOperation extends JobOperation {
     protected onCancel(): void {
     }
 
+
     protected onLoad(): void {
         if (this.siteId)
             this.site = Game.getObjectById<ConstructionSite>(this.siteId);
@@ -92,8 +94,16 @@ export class ControllerInfrastructureOperation extends JobOperation {
     protected onCleanup(colony: Colony): void {
     }
 
+
     protected onRelease(assignment: Assignment): void {
     }
+
+    protected onReplacement(assignment: Assignment): void {
+    }
+
+    protected onAssignment(assignment: Assignment): void {
+    }
+
 
     protected getJob(assignment: Assignment): Job {
         return new BuilderJob(this.siteId);
