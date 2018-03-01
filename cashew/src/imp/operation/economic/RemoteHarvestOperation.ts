@@ -27,7 +27,7 @@ export class RemoteHarvestOperation extends ControllerOperation {
 
     private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", BodyRepository.heavyHarvester(), CREEP_CONTROLLER_REMOTE_HARVESTER)            
+            new Assignment("", BodyRepository.heavyHarvester(), CREEP_CONTROLLER_REMOTE_HARVESTER, 500)            
         ];
     }
 

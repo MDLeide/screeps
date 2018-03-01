@@ -14,17 +14,9 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     }
 
     constructor() {
-        super(OPERATION_HEAVY_UPGRADE, HeavyUpgradeOperation.getAssignments());
+        super(OPERATION_HEAVY_UPGRADE, []);
     }
-
-    private static getAssignments(): Assignment[] {
-        var body = BodyRepository.heavyUpgrader();
-        return [
-            new Assignment("", body, CREEP_CONTROLLER_UPGRADER),
-            new Assignment("", body, CREEP_CONTROLLER_UPGRADER)
-        ]
-    }
-
+    
 
     public containerId: string;
     public controllerId: string;
@@ -59,6 +51,18 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     protected onInit(colony: Colony): boolean {
         this.containerId = colony.getControllerEnergySource().id;
         this.controllerId = colony.nest.room.controller.id;
+
+        let distance = colony.getControllerEnergySource().pos.findPathTo(colony.nest.spawners[0].spawn).length;
+        let body = BodyRepository.heavyUpgrader();
+        body.maxCompleteScalingSections = 20;
+        let parts = body.getBody(colony.nest.room.energyCapacityAvailable);
+        let spawnTime = parts.length * 3;
+        let transitTime = distance * parts.length;
+        let buffer = 35;
+
+        let assignment = new Assignment("", body, CREEP_CONTROLLER_UPGRADER, spawnTime + transitTime + buffer);
+        this.assignments.push(assignment);
+
         return true;
     }
 
@@ -88,6 +92,7 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     protected getController(assignment: Assignment): UpgraderRole {
         return new UpgraderRole(this.containerId, this.controllerId);
     }
+
 
     protected onSave(): HeavyUpgradeOperationMemory {
         return {
