@@ -66,7 +66,7 @@ export abstract class Operation {
         this.finished = this.onFinish(colony);
         if (this.finished) {
             for (var i = 0; i < this.assignments.length; i++) {
-                if (this.assignments[i].creepName != "")
+                if (this.assignments[i].creepName)
                     this.releaseCreep(this.assignments[i].creepName);
             }
 
@@ -109,7 +109,8 @@ export abstract class Operation {
                 this.onRelease(this.assignments[i]);
 
                 this.assignments[i].release();
-                Memory.creeps[creepName].operation = "";
+                if (Memory.creeps[creepName])
+                    Memory.creeps[creepName].operation = "";
                 
                 global.events.operation.creepReleased(this.type, creepName, Memory.creeps[creepName].body);
                 return;
