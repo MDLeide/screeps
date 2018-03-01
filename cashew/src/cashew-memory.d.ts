@@ -34,6 +34,7 @@ declare global {
         resourceManager: ResourceManagerMemory;
         operationPlans: OperationPlanMemory[];
         remoteMiningManager: RemoteMiningManagerMemory;
+        watchtower: WatchtowerMemory;
     }
 
     interface ResourceManagerMemory {
@@ -80,6 +81,12 @@ declare global {
         containerId: string;        
         beingMined: boolean;
         profit: number;
+    }
+
+    interface WatchtowerMemory {
+        threatScore: number;
+        attackTargetId: string;
+        healTargetName: string;
     }
     
     /**  END MANAGEMENT UNITS **/

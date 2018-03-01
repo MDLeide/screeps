@@ -4,6 +4,7 @@ import { ResourceManager } from "./ResourceManager";
 import { RemoteMiningManager } from "./RemoteMiningManager";
 import { ColonyProgress, ColonyProgressRepository } from "./ColonyProgress";
 import { OperationPlan, OperationPlanRepository } from "./OperationPlan";
+import { Watchtower } from "./Watchtower";
 
 import { Empire } from "../empire/Empire";
 import { Spawner } from "./Spawner";
@@ -16,7 +17,8 @@ export class Colony  {
             Nest.fromMemory(memory.nest),
             memory.name,
             ColonyProgressRepository.load(memory.progress),
-            RemoteMiningManager.fromMemory(memory.remoteMiningManager)
+            RemoteMiningManager.fromMemory(memory.remoteMiningManager),
+            Watchtower.fromMemory(memory.watchtower)
         );
 
         colony.resourceManager = ResourceManager.fromMemory(memory.resourceManager, colony);
@@ -27,7 +29,7 @@ export class Colony  {
         return colony;
     }
 
-    constructor(nest: Nest, name: string, progress: ColonyProgress, remoteMiningManager?: RemoteMiningManager) {
+    constructor(nest: Nest, name: string, progress: ColonyProgress, remoteMiningManager?: RemoteMiningManager, watchtower?: Watchtower) {
         this.nest = nest;
         this.name = name;
 
@@ -43,6 +45,8 @@ export class Colony  {
             this.remoteMiningManager = new RemoteMiningManager();
             this.remoteMiningManager.initialize(this);
         }
+
+        this.watchtower = watchtower ? watchtower : new Watchtower();
     }
 
 
@@ -53,6 +57,7 @@ export class Colony  {
     public progress: ColonyProgress;
     public operationPlans: OperationPlan[] = [];
     public remoteMiningManager: RemoteMiningManager;
+    public watchtower: Watchtower;
     
 
     public load(): void {
@@ -161,7 +166,8 @@ export class Colony  {
             progress: this.progress.save(),
             resourceManager: this.resourceManager.save(),
             operationPlans: this.getOperationPlanMemory(),
-            remoteMiningManager: this.remoteMiningManager.save()
+            remoteMiningManager: this.remoteMiningManager.save(),
+            watchtower: this.watchtower.save()
         };
     }
 }
