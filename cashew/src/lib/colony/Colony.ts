@@ -5,6 +5,7 @@ import { RemoteMiningManager } from "./RemoteMiningManager";
 import { ColonyProgress, ColonyProgressRepository } from "./ColonyProgress";
 import { OperationPlan, OperationPlanRepository } from "./OperationPlan";
 import { Watchtower } from "./Watchtower";
+import { TowerController } from "./TowerController";
 
 import { Empire } from "../empire/Empire";
 import { Spawner } from "./Spawner";
@@ -47,6 +48,7 @@ export class Colony  {
         }
 
         this.watchtower = watchtower ? watchtower : new Watchtower();
+        this.towerController = new TowerController();
     }
 
 
@@ -58,15 +60,21 @@ export class Colony  {
     public operationPlans: OperationPlan[] = [];
     public remoteMiningManager: RemoteMiningManager;
     public watchtower: Watchtower;
-    
+    public towerController: TowerController;
+    public towers: StructureTower[] = [];
 
     public load(): void {
+        this.towers = this.nest.room.find<StructureTower>(FIND_MY_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_TOWER });
+
         this.nest.load();
         this.progress.load();
         this.resourceManager.load();
+        this.watchtower.load();
+
         for (var i = 0; i < this.operationPlans.length; i++)
             this.operationPlans[i].load();
-        this.remoteMiningManager.load();
+
+        this.remoteMiningManager.load();        
     }
 
     public update(): void {
@@ -74,6 +82,11 @@ export class Colony  {
         this.resourceManager.update();
         this.population.update();
         this.progress.update(this);
+        this.watchtower.update(this);
+
+        for (var i = 0; i < this.towers.length; i++)
+            this.towerController.update(this, this.towers[i]);
+
         for (var i = 0; i < this.operationPlans.length; i++)
             this.operationPlans[i].update(this);
     }
@@ -82,6 +95,11 @@ export class Colony  {
         this.nest.execute();
         this.resourceManager.execute();
         this.progress.execute(this);
+        this.watchtower.execute(this);
+
+        for (var i = 0; i < this.towers.length; i++)
+            this.towerController.execute(this, this.towers[i]);
+
         for (var i = 0; i < this.operationPlans.length; i++)
             this.operationPlans[i].execute(this);
     }
@@ -90,6 +108,11 @@ export class Colony  {
         this.nest.cleanup();
         this.resourceManager.cleanup();
         this.progress.cleanup(this);
+        this.watchtower.cleanup(this);
+
+        for (var i = 0; i < this.towers.length; i++)
+            this.towerController.cleanup(this, this.towers[i]);
+
         for (var i = 0; i < this.operationPlans.length; i++)
             this.operationPlans[i].cleanup(this);
     }
