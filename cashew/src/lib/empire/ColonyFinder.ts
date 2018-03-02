@@ -36,7 +36,7 @@ export class ColonyFinder {
 
         let progress = ColonyProgressRepository.getNew(Settings.DefaultProgress);
         var colony = new Colony(nest, colonyName, progress);
-
+        colony.initialize();
         for (var i = 0; i < Settings.DefaultOperationPlans.length; i++) {
             let plan = OperationPlanRepository.getNew(Settings.DefaultOperationPlans[i]);
             colony.addOperationPlan(plan);
@@ -67,6 +67,4 @@ export class ColonyFinder {
             return flag.memory.colonyData.name;
         return "Colony " + room.name;
     }
-
-
 }

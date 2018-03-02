@@ -9,17 +9,17 @@ export class HarvestBlockProvider extends BlockProviderBase<HarvestBlock> {
 
         switch (this.index) {
             case 1:
-                var block = new HarvestBlock(
-                    3, 3,
-                    1, 1, // source
-                    1, 2); // container
-                return block;
+                return new HarvestBlock(
+                    5, 5,
+                    2, 2, // source
+                    3, 2, // container
+                    4, 2);// link                
             case 2:
-                var block = new HarvestBlock(
-                    3, 3,
-                    1, 1, // source
-                    0, 2); // container
-                return block;
+                return new HarvestBlock(
+                    5, 5,
+                    2, 2, // source
+                    1, 3, // container
+                    0, 4);// link                
             default:
                 return null;
         }        

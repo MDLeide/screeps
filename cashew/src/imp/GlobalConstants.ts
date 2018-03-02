@@ -21,6 +21,8 @@ global.OPERATION_CONTROLLER_INFRASTRUCTURE = "ControllerInfrastructure";
 global.OPERATION_BASIC_MAINTENANCE = "BasicMaintenance";
 global.OPERATION_REMOTE_HARVEST_SCOUT = "RemoteHarvestScout";
 global.OPERATION_REMOTE_HARVEST = "RemoteHarvest";
+global.OPERATION_HARVEST_LINK_CONSTRUCTION = "HarvestLinkConstruction";
+global.OPERATION_UPGRADE_LINK_CONSTRUCTION = "UpgradeLinkConstruction";
 
 global.PROGRESS_STANDARD = "Standard";
 

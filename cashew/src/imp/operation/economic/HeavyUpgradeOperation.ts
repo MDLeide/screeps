@@ -3,29 +3,28 @@ import { Operation } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../creep/BodyRepository";
-import { UpgraderRole } from "../../creep/UpgraderRole";
+import { UpgraderController } from "../../creep/UpgraderController";
 
 export class HeavyUpgradeOperation extends ControllerOperation {
-    public static fromMemory(memory: HeavyUpgradeOperationMemory): Operation {
+    public static fromMemory(memory: ControllerOperationMemory): Operation {
         var op = new this();
-        op.containerId = memory.containerId;
-        op.controllerId = memory.controllerId;
         return ControllerOperation.fromMemory(memory, op);
     }
 
     constructor() {
         super(OPERATION_HEAVY_UPGRADE, []);
     }
-    
 
-    public containerId: string;
-    public controllerId: string;
-    
+
+    public colony: Colony;
+
 
     protected onLoad(): void {
+        
     }
 
     protected onUpdate(colony: Colony): void {
+        this.colony = colony;
     }
 
     protected onExecute(colony: Colony): void {
@@ -49,10 +48,7 @@ export class HeavyUpgradeOperation extends ControllerOperation {
 
 
     protected onInit(colony: Colony): boolean {
-        this.containerId = colony.getControllerEnergySource().id;
-        this.controllerId = colony.nest.room.controller.id;
-
-        let distance = colony.getControllerEnergySource().pos.findPathTo(colony.nest.spawners[0].spawn).length;
+        let distance = colony.nest.room.controller.pos.findPathTo(colony.nest.spawners[0].spawn).length;
         let body = BodyRepository.heavyUpgrader();
         body.maxCompleteScalingSections = 20;
         let parts = body.getBody(colony.nest.room.energyCapacityAvailable);
@@ -88,27 +84,12 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     protected onRelease(assignment: Assignment): void {
     }
 
-
-    protected getController(assignment: Assignment): UpgraderRole {
-        return new UpgraderRole(this.containerId, this.controllerId);
-    }
-
-
-    protected onSave(): HeavyUpgradeOperationMemory {
-        return {
-            type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,            
-            assignments: this.getAssignmentMemory(),
-            controllers: this.getControllerMemory(),
-            containerId: this.containerId,
-            controllerId: this.controllerId
-        };
-    }
+    
+    protected getController(assignment: Assignment): UpgraderController {
+        return new UpgraderController(
+            this.colony.resourceManager.controllerContainerId,
+            this.colony.nest.room.controller.id,
+            this.colony.resourceManager.controllerLinkId);
+    }    
 }
 
-interface HeavyUpgradeOperationMemory extends ControllerOperationMemory {
-    containerId: string;
-    controllerId: string;
-}

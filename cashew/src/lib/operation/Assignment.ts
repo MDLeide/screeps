@@ -17,7 +17,7 @@ export class Assignment {
     constructor(
         creepName: string,
         body: Body,
-        controllerType?: ControllerType,
+        controllerType?: CreepControllerType,
         replaceAt?:number) {
         this.creepName = creepName;
         this.body = body;
@@ -30,7 +30,7 @@ export class Assignment {
     /** Number of ticks before assigned creep dies to assign a replacement. */
     public replaceAt: number;
     public body: Body;
-    public controllerType: ControllerType;
+    public controllerType: CreepControllerType;
 
 
     /** True if there is no creep assigned. */

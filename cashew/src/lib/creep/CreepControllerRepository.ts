@@ -1,7 +1,7 @@
 import { CreepController } from "./CreepController";
 
 export class CreepControllerRepository {
-    public static register(controllerType: ControllerType, loadDelegate: (memory: CreepControllerMemory) => CreepController) {
+    public static register(controllerType: CreepControllerType, loadDelegate: (memory: CreepControllerMemory) => CreepController) {
         this.delegates[controllerType] = loadDelegate;
     }
 

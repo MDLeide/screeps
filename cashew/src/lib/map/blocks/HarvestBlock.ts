@@ -21,16 +21,32 @@ export class HarvestBlock extends MapBlock {
         sourceX: number,
         sourceY: number,
         containerX: number,
-        containerY: number) {
+        containerY: number,
+        linkX: number,
+        linkY: number) {
         super(height, width, { x: 0, y: 0 });
 
         this.structures.setAt(containerX, containerY, STRUCTURE_CONTAINER);
         this.special.setAt(containerX, containerY, HarvestBlock.ContainerToken);
         this.special.setAt(sourceX, sourceY, HarvestBlock.SourceToken);
+        this.special.setAt(linkX, linkY, HarvestBlock.LinkToken);
     }
+
 
     public static readonly SourceToken: number = 1;
     public static readonly ContainerToken: number = 2;
+    public static readonly LinkToken: number = 3;
+
+
+    public getLocalLinkLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.special.getAt(x, y) == HarvestBlock.LinkToken)
+                    return { x: x, y: y };
+            }
+        }
+        return null;
+    }
 
     public getLocalContainerLocation(): { x: number, y: number } {
         for (var x = 0; x < this.width; x++) {
@@ -47,6 +63,17 @@ export class HarvestBlock extends MapBlock {
             for (var y = 0; y < this.height; y++) {
                 if (this.special.getAt(x, y) == HarvestBlock.SourceToken)
                     return { x: x, y: y };
+            }
+        }
+        return null;
+    }
+
+
+    public getLinkLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.special.getAt(x, y) == HarvestBlock.LinkToken)
+                    return { x: x + this.offset.x, y: y + this.offset.y };
             }
         }
         return null;

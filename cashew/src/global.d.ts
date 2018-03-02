@@ -46,6 +46,8 @@ declare global {
         OPERATION_BASIC_MAINTENANCE: string;
         OPERATION_REMOTE_HARVEST_SCOUT: string;
         OPERATION_REMOTE_HARVEST: string;
+        OPERATION_HARVEST_LINK_CONSTRUCTION: string;
+        OPERATION_UPGRADE_LINK_CONSTRUCTION: string;
 
         PROGRESS_STANDARD: string;
 

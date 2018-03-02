@@ -13,7 +13,7 @@ export abstract class Role extends CreepController {
         return CreepController.fromMemory(memory, instance);
     }
 
-    constructor(type: ControllerType, initialTask?: Task) {
+    constructor(type: CreepControllerType, initialTask?: Task) {
         super(type);
         this.currentTask = initialTask;
     }

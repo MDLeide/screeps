@@ -6,10 +6,12 @@ type TransferTarget =
     StructureLab |
     StructureTerminal |
     StructureTower |
-    StructureNuker;
+    StructureNuker |
+    StructureLink;
 
 type WithdrawTarget =
     StructureContainer |
     StructureStorage |
     StructureTerminal |
-    StructureLab;
+    StructureLab |
+    StructureLink;

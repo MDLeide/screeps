@@ -103,6 +103,7 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
         for (var i = 0; i < colony.nest.nestMap.harvestBlocks.length; i++) {
             var block = colony.nest.nestMap.harvestBlocks[i];
             var s = block.getSourceLocation();
+
             if (this.source.pos.x == s.x && this.source.pos.y == s.y) {
                 harvestBlock = block;
                 break;
@@ -113,7 +114,7 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
         var container = this.source.room.lookForAt<LOOK_STRUCTURES>(LOOK_STRUCTURES, containerLocation.x, containerLocation.y);
         for (var i = 0; i < container.length; i++) {
             if (container[i].structureType == STRUCTURE_CONTAINER) {
-                colony.resourceManager.addSourceContainer(container[i] as StructureContainer);
+                colony.resourceManager.updateSourceContainerOrLink(this.sourceId, container[i].id);
                 return true;
             }
         }

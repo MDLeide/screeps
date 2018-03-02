@@ -37,9 +37,11 @@ export class EconomyPlan extends OperationPlan {
                 break;
 
             case "harvestContainers":
-                let sources = colony.nest.room.find(FIND_SOURCES);                
-                for (var i = 0; i < sources.length; i++)
-                    this.addOperation(new HarvestOperation(300, sources[i]));
+                let sources = colony.nest.room.find(FIND_SOURCES);
+                this.addOperation(new HarvestOperation(300, colony.resourceManager.sourceAId, colony.resourceManager.sourceAContainerOrLinkId));
+                if (colony.resourceManager.sourceBId)
+                    this.addOperation(new HarvestOperation(300, colony.resourceManager.sourceBId, colony.resourceManager.sourceBContainerOrLinkId));
+                
                 this.addOperation(new LightUpgradeOperation());
                 break;
 
@@ -74,6 +76,15 @@ export class EconomyPlan extends OperationPlan {
                 break;
 
             case "firstLinks":
+                // update operations with the link id
+                for (var i = 0; i < this.operationGroup.operations.length; i++) {
+                    if (this.operationGroup.operations[i].type == OPERATION_HARVEST) {
+                        let harvestOp = this.operationGroup.operations[i] as HarvestOperation;
+                        if (harvestOp.sourceId == colony.resourceManager.sourceAId) {
+                            harvestOp.changeContainerOrLink(colony.resourceManager.sourceAContainerOrLinkId);
+                        }
+                    }
+                }                
                 break;
 
             default:

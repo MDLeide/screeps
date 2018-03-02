@@ -12,6 +12,8 @@ import { TowerConstructionOperation } from "../operation/infrastructure/TowerCon
 import { StorageConstructionOperation } from "../operation/infrastructure/StorageConstructionOperation";
 import { RemoteHarvestScoutOperation } from "../operation/economic/RemoteHarvestScoutOperation";
 import { RemoteHarvestOperation } from "../operation/economic/RemoteHarvestOperation";
+import { HarvestLinkConstructionOperation } from "../operation/infrastructure/HarvestLinkConstructionOperation";
+import { UpgradeLinkConstructionOperation } from "../operation/infrastructure/UpgradeLinkConstruction";
 
 export class OperationRegistration {
     public static register() {
@@ -85,6 +87,18 @@ export class OperationRegistration {
             OPERATION_REMOTE_HARVEST,
             (memory: any) => {
                 return RemoteHarvestOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_HARVEST_LINK_CONSTRUCTION,
+            (memory: any) => {
+                return HarvestLinkConstructionOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_UPGRADE_LINK_CONSTRUCTION,
+            (memory: any) => {
+                return UpgradeLinkConstructionOperation.fromMemory(memory);
             });
     }
 }

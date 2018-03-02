@@ -3,16 +3,26 @@ import { Colony } from "./Colony";
 export class ResourceManager {
     public static fromMemory(memory: ResourceManagerMemory, colony: Colony): ResourceManager {
         let manager = new this(colony);
-        manager.sourceContainerIds = memory.sourceContainerIds;
-        manager.controllerContainerId = memory.controllerContainerId;
+
+        manager.extensionLinkId = memory.extensionLinkId;
+        manager.storageLinkId = memory.storageLinkId;
+        manager.controllerLinkId = memory.controllerLinkId;
+
         manager.fillPriority = memory.transferPriority;
+
+        manager.sourceAId = memory.sourceAId;
+        manager.sourceBId = memory.sourceBId;
+
+        manager.sourceAContainerOrLinkId = memory.sourceAContainerOrLinkId;
+        manager.sourceBContainerOrLinkId = memory.sourceBContainerOrLinkId;
         return manager;
     }
 
-    //todo: memory for these properties. code is fine right now.
+
     constructor(colony: Colony) {
         this.colony = colony;
     }
+
 
     public colony: Colony;
 
@@ -25,40 +35,74 @@ export class ResourceManager {
         TransferPriorityTarget.Storage
     ];
 
-    /** If a storage has less than this much energy, it will be ignored in withdraw requests. */
+    
     public storageWithdrawThreshold: number = 100;
-    /** If a source container has less than this much energy, it will be ignored in withdraw requests. */
     public sourceContainerWithdrawThreshold: number = 50;
-
-    /** If a source container has more than this much energy, it will be prioritized as a withdraw target. */
+    
     public sourceContainerOverflowThreshold: number = 1600;
-        
-    /** If the upgrade container has more than this much energy, transfers will be temporarily suspended. */
-    public upgradeContainerMaxEnergy: number = 1800;    
-    /** If the storage has more than this much energy, transfers will be temporarily suspended. */
-    public storageMaxEnergy: number = 1000000;
-    /** If a lab has more than this much energy, transfers will be temporarily suspended. */
-    public labMaxEnergy: number = 200000;
-    /** If a tower has more than this much energy, transfers will be temporarily suspended. */
-    public towerMaxEnergy: number = 1000;
-    /** If the terminal has more than this much energy, transfers will be temporarily suspended. */
-    public terminalMaxEnergy: number = 200000;
-    /** If the nuker has more than this much energy, transfers will be temporarily suspended. */
+
+    public controllerLinkTransferThreshold: number = 400;
+
+    public controllerContainerMaxEnergy: number = 1800;    
+    public storageMaxEnergy: number = 1000000;    
+    public labMaxEnergy: number = 200000;    
+    public towerMaxEnergy: number = 1000;    
+    public terminalMaxEnergy: number = 200000;    
     public nukerMaxEnergy: number = 200000;
 
-    public sourceContainerIds: string[] = [];
-    public sourceContainers: StructureContainer[] = [];
+    public sourceAId: string;
+    public sourceBId: string;
+    public sourceAContainerOrLinkId: string;
+    public sourceBContainerOrLinkId: string;
+
+    public sourceAContainerOrLink: (StructureContainer | StructureLink);
+    public sourceBContainerOrLink: (StructureContainer | StructureLink);
+
     public controllerContainerId: string;
     public controllerContainer: StructureContainer;
 
-    public load(): void {
-        this.sourceContainers = [];
-        for (var i = 0; i < this.sourceContainerIds.length; i++) {
-            this.sourceContainers.push(Game.getObjectById<StructureContainer>(this.sourceContainerIds[i]));
+
+    public controllerLinkId: string;
+    public controllerLink: StructureLink;
+
+    public extensionLinkId: string;
+    public extensionLink: StructureLink;
+
+    public storageLinkId:string;
+    public storageLink: StructureLink;
+
+
+    /** Call once, after initial creation. */
+    public initialize(): void {
+        let sources = this.colony.nest.room.find(FIND_SOURCES);
+        if (sources.length == 1) {
+            this.sourceAId = sources[0].id;
+        } else if (sources.length == 2) {
+            this.sourceAId = sources[0].id;
+            this.sourceBId = sources[1].id;
         }
-            
+    }
+
+
+    public load(): void {
+        if (this.sourceAContainerOrLinkId)
+            this.sourceAContainerOrLink = Game.getObjectById<(StructureContainer | StructureLink)>(this.sourceAContainerOrLinkId);
+
+        if (this.sourceBContainerOrLinkId)
+            this.sourceBContainerOrLink = Game.getObjectById<(StructureContainer | StructureLink)>(this.sourceBContainerOrLinkId);
+
         if (this.controllerContainerId)
             this.controllerContainer = Game.getObjectById<StructureContainer>(this.controllerContainerId);
+
+
+        if (this.controllerLinkId)
+            this.controllerLink = Game.getObjectById<StructureLink>(this.controllerLinkId);
+
+        if (this.extensionLinkId)
+            this.extensionLink = Game.getObjectById<StructureLink>(this.extensionLinkId);
+
+        if (this.storageLinkId)
+            this.storageLink = Game.getObjectById<StructureLink>(this.storageLinkId);
     }
 
     public update(): void { }
@@ -67,24 +111,22 @@ export class ResourceManager {
 
     public cleanup(): void { }
 
-    public addSourceContainer(container: (string | StructureContainer)): void {
-        if (container instanceof StructureContainer) {
-            this.sourceContainerIds.push(container.id);
-            this.sourceContainers.push(container);
+
+    public updateSourceContainerOrLink(sourceId: string, containerOrLink: (string | StructureContainer | StructureLink)): void {
+        if (containerOrLink instanceof StructureContainer || containerOrLink instanceof StructureLink) {
+            if (this.sourceAId == sourceId) {
+                this.sourceAContainerOrLinkId = containerOrLink.id;
+                this.sourceAContainerOrLink = containerOrLink;
+            } else if (this.sourceBId == sourceId) {
+                this.sourceBContainerOrLinkId = containerOrLink.id;
+                this.sourceBContainerOrLink = containerOrLink;
+            }
         } else {
-            this.addSourceContainer(Game.getObjectById<StructureContainer>(container));
+            this.updateSourceContainerOrLink(sourceId, Game.getObjectById<(StructureContainer | StructureLink)>(containerOrLink));
         }
     }
 
-    public setControllerContainer(container: (string | StructureContainer)): void {
-        if (container instanceof StructureContainer) {
-            this.controllerContainer = container;
-            this.controllerContainerId = container.id;
-        } else {
-            this.setControllerContainer(Game.getObjectById<StructureContainer>(container));
-        }
-    }
-    
+
     public getWithdrawTarget(creep: Creep): WithdrawTarget {
         var container = this.getContainerWithdrawTarget(creep);
         if (container)
@@ -119,29 +161,37 @@ export class ResourceManager {
         return closest;
     }
 
-
-    public save(): ResourceManagerMemory {
-        return {
-            sourceContainerIds: this.sourceContainerIds,
-            controllerContainerId: this.controllerContainerId,
-            transferPriority: this.fillPriority
-        };
+    public getLinkTransferTarget(): StructureLink {
+        if (this.extensionLink && this.extensionLink.energy < this.extensionLink.energyCapacity)
+            return this.extensionLink;
+        else if (this.controllerLink instanceof StructureLink && this.controllerLink.energy < this.controllerLink.energyCapacity)
+            return this.controllerLink;
+        return null;
     }
 
 
     private getContainerWithdrawTarget(creep: Creep): StructureContainer {
         let overflow: StructureContainer[] = [];
         let containers: StructureContainer[] = [];
-
-        for (var i = 0; i < this.sourceContainers.length; i++) {
-            if (this.sourceContainers[i].store.energy > this.sourceContainerWithdrawThreshold) {
-                if (this.sourceContainers[i].store.energy > this.sourceContainerOverflowThreshold)
-                    overflow.push(this.sourceContainers[i]);
+        
+        if (this.sourceAContainerOrLink && this.sourceAContainerOrLink instanceof StructureContainer) {
+            if (this.sourceAContainerOrLink.store.energy > this.sourceContainerWithdrawThreshold) {
+                if (this.sourceAContainerOrLink.store.energy > this.sourceContainerOverflowThreshold)
+                    overflow.push(this.sourceAContainerOrLink);
                 else
-                    containers.push(this.sourceContainers[i]);
+                    containers.push(this.sourceAContainerOrLink);
             }
         }
 
+        if (this.sourceBContainerOrLink && this.sourceBContainerOrLink instanceof StructureContainer) {
+            if (this.sourceBContainerOrLink.store.energy > this.sourceContainerWithdrawThreshold) {
+                if (this.sourceBContainerOrLink.store.energy > this.sourceContainerOverflowThreshold)
+                    overflow.push(this.sourceBContainerOrLink);
+                else
+                    containers.push(this.sourceBContainerOrLink);
+            }
+        }
+        
         let container: StructureContainer = null;
         let distance: number = 100;
 
@@ -197,10 +247,8 @@ export class ResourceManager {
     }
 
     private getControllerTransferTarget(creep: Creep): StructureContainer {
-        if (this.controllerContainer)
-            if (this.controllerContainer.store.energy < this.upgradeContainerMaxEnergy)
-                return this.controllerContainer;
-
+        if (this.controllerContainer && this.controllerContainer.store.energy < this.controllerContainerMaxEnergy)
+            return this.controllerContainer;
         return null;
     }
 
@@ -232,6 +280,21 @@ export class ResourceManager {
                 return lab.structureType == STRUCTURE_LAB && lab.energy < this.labMaxEnergy;
             }
         });
+    }
+
+
+    public save(): ResourceManagerMemory {
+        return {
+            controllerLinkId: this.controllerLinkId,
+            extensionLinkId: this.extensionLinkId,
+            storageLinkId: this.storageLinkId,
+            controllerContainerId: this.controllerContainerId,
+            transferPriority: this.fillPriority,
+            sourceAId: this.sourceAId,
+            sourceBId: this.sourceBId,
+            sourceAContainerOrLinkId: this.sourceAContainerOrLinkId,
+            sourceBContainerOrLinkId: this.sourceBContainerOrLinkId
+        };
     }
 }
 

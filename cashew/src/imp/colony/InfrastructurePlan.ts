@@ -7,6 +7,8 @@ import { ExtensionConstruction } from "../operation/infrastructure/ExtensionsOpe
 import { ControllerInfrastructureOperation } from "../operation/infrastructure/ControllerInfrastructureOperation";
 import { StorageConstructionOperation } from "../operation/infrastructure/StorageConstructionOperation";
 import { TowerConstructionOperation } from "../operation/infrastructure/TowerConstructionOperation";
+import { HarvestLinkConstructionOperation } from "../operation/infrastructure/HarvestLinkConstructionOperation";
+import { UpgradeLinkConstructionOperation } from "../operation/infrastructure/UpgradeLinkConstruction";
 
 export class InfrastructurePlan extends OperationPlan {
     public static fromMemory(memory: OperationPlanMemory): InfrastructurePlan {
@@ -18,6 +20,7 @@ export class InfrastructurePlan extends OperationPlan {
     constructor() {
         super(PLAN_INFRASTRUCTURE);
     }
+
 
     protected onLoad(): void {
     }
@@ -76,9 +79,26 @@ export class InfrastructurePlan extends OperationPlan {
                 break;
 
             case "secondTower":
+                this.addOperation(new HarvestLinkConstructionOperation(colony.resourceManager.sourceAId));
+                this.addOperation(new UpgradeLinkConstructionOperation());
                 break;
 
             case "firstLinks":
+                //for (var i = 0; i < colony.nest.nestMap.harvestBlocks.length; i++) {
+                //    let sourceLocation = colony.nest.nestMap.harvestBlocks[i].getSourceLocation();
+                //    let lookSource = colony.nest.room.lookForAt(LOOK_SOURCES, sourceLocation.x, sourceLocation.y);
+                //    if (lookSource.length) {
+                //        let source = lookSource[0];
+                //        if (source.id == colony.resourceManager.sourceAId) {
+                //            let containerLocation = colony.nest.nestMap.harvestBlocks[i].getContainerLocation();
+                //            let lookContainer = colony.nest.room.lookForAt(LOOK_STRUCTURES, containerLocation.x, containerLocation.y);
+                //            for (var j = 0; j < lookContainer.length; j++)
+                //                if (lookContainer[j].structureType == STRUCTURE_CONTAINER)
+                //                    lookContainer[j].destroy();
+                //        }
+                //    }
+                //}
+                
                 break;
 
             default:

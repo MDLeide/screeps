@@ -4,11 +4,11 @@ export abstract class CreepController {
         return instance;
     }
 
-    constructor(type: ControllerType) {
+    constructor(type: CreepControllerType) {
         this.type = type;
     }
 
-    public type: ControllerType;
+    public type: CreepControllerType;
 
     public load(): void {
         this.onLoad();

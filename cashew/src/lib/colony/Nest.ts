@@ -6,7 +6,7 @@ import { Body } from "../creep/Body";
 
 
 export class Nest {
-    public static fromMemory(memory: NestMemory): Nest {        
+    public static fromMemory(memory: NestMemory): Nest {
         return new this(memory.roomName, NestMap.fromMemory(memory.map));
     }
 
@@ -29,7 +29,7 @@ export class Nest {
     public nestMap: NestMap;
     public roomName: string;    
     public room: Room;
-    
+
 
     public canSpawn(body: Body): boolean {
         for (var i = 0; i < this.spawners.length; i++) {

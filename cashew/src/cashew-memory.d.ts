@@ -38,9 +38,15 @@ declare global {
     }
 
     interface ResourceManagerMemory {
-        sourceContainerIds: string[];
+        storageLinkId: string;
+        extensionLinkId: string;
+        controllerLinkId: string;
         controllerContainerId: string;
         transferPriority: number[];
+        sourceAId: string;
+        sourceBId: string;
+        sourceAContainerOrLinkId: string;
+        sourceBContainerOrLinkId: string;
     }
 
     interface ColonyPlanMemory {
@@ -117,7 +123,7 @@ declare global {
     interface AssignmentMemory {
         creepName: string;
         body: BodyMemory;
-        controllerType: ControllerType;
+        controllerType: CreepControllerType;
         replaceAt: number;
         replacementName: string;
     }
@@ -166,7 +172,7 @@ declare global {
     /** CREEP CONTROLLERS **/
 
     interface CreepControllerMemory {
-        type: ControllerType;
+        type: CreepControllerType;
     }
 
     interface RoleMemory extends CreepControllerMemory {

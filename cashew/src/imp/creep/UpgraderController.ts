@@ -8,75 +8,77 @@ energy from a container. Also keeps the Spawn fed.
  */
 export class UpgraderController extends CreepController {
     public static fromMemory(memory: UpgraderRoleMemory): CreepController {
-        let upgrader = new this(memory.containerOrLinkId, memory.controllerId);
+        let upgrader = new this(memory.containerId, memory.controllerId, memory.linkId);
         upgrader.repaired = memory.repaired;
         return CreepController.fromMemory(memory, upgrader);
     }
 
-    constructor(containerId: string, controllerId: string) {
+
+    constructor(containerId: string, controllerId: string, linkId: string) {
         super(CREEP_CONTROLLER_UPGRADER);
-        this.containerOrLinkId = containerId;
+        this.containerId = containerId;
         if (containerId)
-            this.containerOrLink = Game.getObjectById<StructureContainer>(containerId);
+            this.container = Game.getObjectById<StructureContainer>(containerId);
         this.controllerId = controllerId;
         if (controllerId)
             this.controller = Game.getObjectById<StructureController>(controllerId);
+        this.linkId = linkId;
+        if (linkId)
+            this.link = Game.getObjectById<StructureLink>(linkId);
     }
+
 
     public repaired: boolean;
     public controllerId: string;
     public controller: StructureController;
-    public containerOrLinkId: string;
-    public containerOrLink: (StructureContainer | StructureLink);
+    public containerId: string;
+    public container: StructureContainer;
+    public linkId: string;
+    public link: StructureLink;
     
 
     protected onLoad(): void {
-        if (this.containerOrLinkId)
-            this.containerOrLink = Game.getObjectById<StructureContainer>(this.containerOrLinkId);
+        if (this.containerId)
+            this.container = Game.getObjectById<StructureContainer>(this.containerId);
         if (this.controllerId)
             this.controller = Game.getObjectById<StructureController>(this.controllerId);
+        if (this.linkId)
+            this.link = Game.getObjectById<StructureLink>(this.linkId);
     }
-
-    protected getNextTask(creep: Creep): Task {
-        if (!this.repaired) {
-            if (creep.carry.energy < creep.carryCapacity) {
-                let response = creep.withdraw(this.containerOrLink, RESOURCE_ENERGY);
-                if (response == ERR_NOT_IN_RANGE)
-                    return Task.MoveTo(this.containerOrLink);
-            }
-            return Task.Repair(this.containerOrLink);
-        } else {
-            if (creep.carry.energy > 0) {
-                return Task.Upgrade(this.controller);
-            } else {                
-                return Task.Withdraw(this.containerOrLink);
-            }
-        }                
-    }
-
-    protected isIdle(creep: Creep): Task {
-        if (creep.carry.energy > 0) {
-            return Task.Upgrade(this.controller);
-        } else {            
-            return Task.Withdraw(this.containerOrLink);
-        }
-    }
+    
 
     protected onUpdate(creep: Creep): void {
-        if (!this.repaired && this.containerOrLink && this.containerOrLink.hits >= this.containerOrLink.hitsMax - 10)
+        if (!this.repaired && this.container && this.container.hits >= this.container.hitsMax - 10)
             this.repaired = true;
     }
 
 
-    protected onExecute(creep: Creep): void {        
-        let workCount = 0;
-        for (var i = 0; i < creep.body.length; i++)
-            if (creep.body[i].type == WORK)
-                workCount++;
+    protected onExecute(creep: Creep): void {
+        let workCount = creep.getActiveBodyparts(WORK);
 
-        if (creep.carry.energy < workCount * 2)
-            creep.withdraw(this.containerOrLink, RESOURCE_ENERGY);
-        creep.upgradeController(this.controller);
+        if (creep.carry.energy < workCount * 2) {
+            let withdrawTarget: WithdrawTarget;
+
+            if (this.link && this.link.energy >= workCount * 10)
+                withdrawTarget = this.link;
+            else if (this.container && this.container.store.energy >= workCount * 10)
+                withdrawTarget = this.container;
+
+            if (withdrawTarget) {
+                if (creep.withdraw(withdrawTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(withdrawTarget);
+                    return;
+                }                
+            }
+        }
+
+        if (this.repaired) {
+            if (creep.upgradeController(this.controller) == ERR_NOT_IN_RANGE)
+                creep.moveTo(this.controller);
+        } else {
+            if (creep.repair(this.container) == ERR_NOT_IN_RANGE)
+                creep.moveTo(this.container);
+        }    
     }
 
     protected onCleanup(creep: Creep): void {
@@ -86,7 +88,8 @@ export class UpgraderController extends CreepController {
         return {
             type: this.type,            
             controllerId: this.controllerId,
-            containerOrLinkId: this.containerOrLinkId,
+            containerId: this.containerId,
+            linkId: this.linkId,
             repaired: this.repaired
         };
     }
@@ -95,5 +98,6 @@ export class UpgraderController extends CreepController {
 export interface UpgraderRoleMemory extends CreepControllerMemory {
     repaired: boolean;
     controllerId: string;
-    containerOrLinkId: string;
+    containerId: string;
+    linkId: string;
 }

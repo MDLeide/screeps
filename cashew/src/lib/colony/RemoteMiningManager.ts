@@ -3,13 +3,19 @@ import { RoomHelper } from "../util/RoomHelper";
 import { Calculator } from "../util/Calculator";
 
 export class RemoteMiningManager {
-    public static fromMemory(memory: RemoteMiningManagerMemory): RemoteMiningManager {
-        let manager = new this();
+    public static fromMemory(memory: RemoteMiningManagerMemory, colony: Colony): RemoteMiningManager {
+        let manager = new this(colony);
         for (var i = 0; i < memory.rooms.length; i++)
             manager.rooms.push(RemoteRoom.fromMemory(memory.rooms[i]));
         return manager;
     }
-    
+
+
+    constructor(colony: Colony) {
+        this.colony = colony;
+    }
+
+
     public colony: Colony;
     public rooms: RemoteRoom[] = [];
     public maxActiveRooms: number = 0;
@@ -26,8 +32,7 @@ export class RemoteMiningManager {
             this.rooms[i].load();
     }
 
-    public initialize(colony: Colony): void {
-        this.colony = colony;
+    public initialize(): void {
         this.rooms = [];
         for (var i = 0; i < 8; i++) {
             let name = RoomHelper.getAdjacentRoom(this.colony.nest.roomName, i);

@@ -19,14 +19,10 @@ export class StandardProgress {
                 "harvestContainers",
                 "Harvest containers have been built",
                 (colony: Colony) => {
-                    var containerCount = colony.nest.room.find<StructureContainer>(
-                        FIND_STRUCTURES, {
-                            filter: (struct) => {
-                                return struct.structureType == STRUCTURE_CONTAINER;
-                            }
-                        }).length;
-
-                    return containerCount >= colony.nest.room.find(FIND_SOURCES).length;
+                    if (colony.resourceManager.sourceBId)
+                        return !_.isUndefined(colony.resourceManager.sourceAContainerOrLinkId) && !_.isUndefined(colony.resourceManager.sourceBContainerOrLinkId);
+                    else
+                        return !_.isUndefined(colony.resourceManager.sourceAContainerOrLinkId);
                 }),
             new Milestone(
                 "rcl2",
@@ -99,11 +95,7 @@ export class StandardProgress {
                 "firstLinks",
                 "Room has its first set of links",
                 (colony: Colony) => {
-                    return colony.nest.room.find<StructureLink>(FIND_MY_STRUCTURES, {
-                        filter: (struct) => {
-                            return struct.structureType == STRUCTURE_LINK;
-                        }
-                    }).length >= 2;
+                    return colony.resourceManager.sourceAContainerOrLink instanceof StructureLink && colony.resourceManager.controllerLink instanceof StructureLink;
                 })
         ];
     }

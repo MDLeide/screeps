@@ -21,19 +21,35 @@ export class ControllerBlock extends MapBlock {
         controllerY: number,
         containerX: number,
         containerY: number,
+        linkX: number,
+        linkY: number,
         standLocations: {x: number, y: number}[]) {
         super(height, width, { x: 0, y: 0 });
 
         this.special.setAt(controllerX, controllerY, ControllerBlock.ControllerToken);
         this.special.setAt(containerX, containerY, ControllerBlock.ContainerToken);
+        this.special.setAt(linkX, linkY, ControllerBlock.LinkToken);
         this.structures.setAt(containerX, containerY, STRUCTURE_CONTAINER);
         for (var i = 0; i < standLocations.length; i++) 
             this.special.setAt(standLocations[i].x, standLocations[i].y, ControllerBlock.StandToken);        
     }
 
+
     public static readonly ControllerToken: number = 1;
     public static readonly ContainerToken: number = 2;
     public static readonly StandToken: number = 3;
+    public static readonly LinkToken: number = 4;
+
+
+    public getLocalLinkLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.special.getAt(x, y) == ControllerBlock.LinkToken)
+                    return { x: x, y: y };
+            }
+        }
+        return null;
+    }
 
     public getLocalControllerLocation(): { x: number, y: number } {
         for (var x = 0; x < this.width; x++) {
@@ -65,7 +81,18 @@ export class ControllerBlock extends MapBlock {
         }
         return locs;
     }
-    
+
+
+    public getLinkLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.special.getAt(x, y) == ControllerBlock.LinkToken)
+                    return { x: x + this.offset.x, y: y + this.offset.y };
+            }
+        }
+        return null;
+    }
+
     public getControllerLocation(): { x: number, y: number } {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {

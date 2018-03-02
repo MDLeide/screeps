@@ -96,10 +96,15 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\economic\RemoteHarvestScoutOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\UpgradeLinkConstruction.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\HarvestLinkConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\registration\ColonyProgressRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\registration\OperationPlanRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\LinkManager.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\RemoteMiningManager.ts">
@@ -127,7 +132,7 @@
     <TypeScriptCompile Include="src\imp\creep\HaulerRole.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\creep\UpgraderRole.ts" />
+    <TypeScriptCompile Include="src\imp\creep\UpgraderController.ts" />
     <TypeScriptCompile Include="src\imp\creep\LightUpgraderRole.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

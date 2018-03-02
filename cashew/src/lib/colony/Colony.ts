@@ -6,6 +6,7 @@ import { ColonyProgress, ColonyProgressRepository } from "./ColonyProgress";
 import { OperationPlan, OperationPlanRepository } from "./OperationPlan";
 import { Watchtower } from "./Watchtower";
 import { TowerController } from "./TowerController";
+import { LinkManager } from "./LinkManager";
 
 import { Empire } from "../empire/Empire";
 import { Spawner } from "./Spawner";
@@ -17,11 +18,11 @@ export class Colony  {
         let colony = new this(
             Nest.fromMemory(memory.nest),
             memory.name,
-            ColonyProgressRepository.load(memory.progress),
-            RemoteMiningManager.fromMemory(memory.remoteMiningManager),
-            Watchtower.fromMemory(memory.watchtower)
+            ColonyProgressRepository.load(memory.progress)
         );
 
+        colony.remoteMiningManager = RemoteMiningManager.fromMemory(memory.remoteMiningManager, colony);
+        colony.watchtower = Watchtower.fromMemory(memory.watchtower);
         colony.resourceManager = ResourceManager.fromMemory(memory.resourceManager, colony);
 
         for (var i = 0; i < memory.operationPlans.length; i++)
@@ -30,25 +31,14 @@ export class Colony  {
         return colony;
     }
 
-    constructor(nest: Nest, name: string, progress: ColonyProgress, remoteMiningManager?: RemoteMiningManager, watchtower?: Watchtower) {
+    constructor(nest: Nest, name: string, progress: ColonyProgress) {
         this.nest = nest;
         this.name = name;
 
         this.progress = progress;
-
-        this.population = new Population(this);
-        this.resourceManager = new ResourceManager(this);
-
-        if (remoteMiningManager) {
-            this.remoteMiningManager = remoteMiningManager;
-            this.remoteMiningManager.colony = this;
-        } else {
-            this.remoteMiningManager = new RemoteMiningManager();
-            this.remoteMiningManager.initialize(this);
-        }
-
-        this.watchtower = watchtower ? watchtower : new Watchtower();
+        this.population = new Population(this);            
         this.towerController = new TowerController();
+        this.linkManager = new LinkManager();
     }
 
 
@@ -62,6 +52,17 @@ export class Colony  {
     public watchtower: Watchtower;
     public towerController: TowerController;
     public towers: StructureTower[] = [];
+    public linkManager: LinkManager;
+
+
+    /** Should be called once, after initial object contruction. Do not need to call when loading from memory. */
+    public initialize(): void {
+        this.remoteMiningManager = new RemoteMiningManager(this);
+        this.watchtower = new Watchtower();
+        this.resourceManager = new ResourceManager(this);
+        this.resourceManager.initialize();
+    }
+
 
     public load(): void {
         this.towers = this.nest.room.find<StructureTower>(FIND_MY_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_TOWER });
@@ -69,7 +70,7 @@ export class Colony  {
         this.nest.load();
         this.progress.load();
         this.resourceManager.load();
-        this.watchtower.load();
+        this.watchtower.load();        
 
         for (var i = 0; i < this.operationPlans.length; i++)
             this.operationPlans[i].load();
@@ -80,13 +81,13 @@ export class Colony  {
     public update(): void {
         this.nest.update();
         this.resourceManager.update();
-        this.population.update();
         this.progress.update(this);
+        this.population.update();        
         this.watchtower.update(this);
 
         for (var i = 0; i < this.towers.length; i++)
             this.towerController.update(this, this.towers[i]);
-
+        
         for (var i = 0; i < this.operationPlans.length; i++)
             this.operationPlans[i].update(this);
     }
@@ -102,6 +103,8 @@ export class Colony  {
 
         for (var i = 0; i < this.operationPlans.length; i++)
             this.operationPlans[i].execute(this);
+
+        this.linkManager.execute(this);
     }
 
     public cleanup(): void {
@@ -160,20 +163,7 @@ export class Colony  {
     public getSpawnTransferTarget(creep: Creep): (StructureSpawn | StructureExtension) {
         return this.resourceManager.getSpawnExtensionTransferTargets(creep);
     }
-
-    public getControllerEnergySource(): (StructureContainer | StructureLink) {
-        let loc = this.nest.nestMap.controllerBlock.getContainerLocation();
-        let source = this.nest.room.lookForAt(LOOK_STRUCTURES, loc.x, loc.y);
-        if (source.length) {
-            if (source[0].structureType == STRUCTURE_CONTAINER)
-                return source[0] as StructureContainer;
-            else if (source[0].structureType == STRUCTURE_LINK)
-                return source[0] as StructureLink;
-        }
-            
-        return null;
-    }
-
+    
 
     protected getOperationPlanMemory(): OperationPlanMemory[] {
         let mem: OperationPlanMemory[] = [];

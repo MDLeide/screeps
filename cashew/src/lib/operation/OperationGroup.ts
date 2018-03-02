@@ -31,14 +31,21 @@ export class OperationGroup {
 
     public update(colony: Colony): void {
         for (var i = 0; i < this.operations.length; i++)
+            if (this.operations[i].started && !this.operations[i].finished)
+                if (this.operations[i].isFinished(colony))
+                    this.operations[i].finish(colony);
+
+        for (var i = 0; i < this.operations.length; i++)
             if (!this.operations[i].finished)
                 this.operations[i].update(colony);
+    }
 
+    public execute(colony: Colony): void {
         for (var i = 0; i < this.operations.length; i++) {
             if (this.operations[i].finished) {
                 continue;
             } else if (this.operations[i].started) {
-                continue; // we'll check for finished ops in cleanup
+                continue; // we'll check for finished ops again in cleanup
             } else if (this.operations[i].initialized) {
                 if (this.operations[i].canStart(colony))
                     this.operations[i].start(colony);
@@ -47,9 +54,7 @@ export class OperationGroup {
                     this.operations[i].init(colony);
             }
         }
-    }
-
-    public execute(colony: Colony): void {
+        
         for (var i = 0; i < this.operations.length; i++)
             if (this.operations[i].initialized && !this.operations[i].finished)
                 this.getCreepsForOperation(this.operations[i], colony);
@@ -75,7 +80,7 @@ export class OperationGroup {
         }
 
         for (var i = 0; i < this.operations.length; i++)
-            if (this.operations[i].started)
+            if (this.operations[i].started && !this.operations[i].finished)
                 if (this.operations[i].isFinished(colony))
                     this.operations[i].finish(colony);
     }
