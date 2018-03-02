@@ -85,6 +85,7 @@ abstract class EventGroup {
 
 class EmpireEvents extends EventGroup {
     public colonyEstablishedLevel: number = 10;
+    public colonyFailedToEstablishLevel: number = 10;
     public nestMappingFailedLevel: number = 10;
     public gclUpgradedLevel: number = 10;
 
@@ -103,13 +104,26 @@ class EmpireEvents extends EventGroup {
         this.log(sb.getString(), this.colonyEstablishedLevel);
     }
 
+    public colonyFailedToEstablish(roomName: string, msg: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Colony at room ", this.colors.identifier);
+        sb.append(roomName, this.colors.name);
+        sb.append(" has failed to establish", this.colors.importantNegativeVerb);
+        sb.append(" : ");
+        sb.append(msg, this.colors.information);
+
+        this.log(sb.getString(), this.colonyFailedToEstablishLevel);
+    }
+
     public nestMappingFailed(nestName: string, blockName: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Map Builder", this.colors.identifier);
         sb.append(" failed to create ", this.colors.importantNegativeVerb);
-        sb.append(blockName, this.colors.identifier);
+        sb.append(blockName, this.colors.name);
         sb.append(" for ");
         sb.append("Nest ", this.colors.identifier);
         sb.append(nestName, this.colors.name);

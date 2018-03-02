@@ -32,6 +32,11 @@ export class ColonyFinder {
         }
 
         var nestMap = nestMapBuilder.getMap(room);
+        if (!nestMap) {
+            global.events.empire.colonyFailedToEstablish(room.name, "Failed to create nest map");
+            return null;
+        }
+
         var nest = new Nest(room.name, nestMap);
 
         let progress = ColonyProgressRepository.getNew(Settings.DefaultProgress);
