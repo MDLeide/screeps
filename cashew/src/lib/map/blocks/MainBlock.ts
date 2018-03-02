@@ -76,7 +76,7 @@ export class MainBlock extends MapBlock {
     public getStorageLocation(): { x: number, y: number } {
         for (var x = 0; x < this.width; x++)
             for (var y = 0; y < this.height; y++)
-                if (this.structures.getAt(x, y) == STRUCTURE_TERMINAL)
+                if (this.structures.getAt(x, y) == STRUCTURE_STORAGE)
                     return { x: x + this.offset.x, y: y + this.offset.y };
         return null;
     }
