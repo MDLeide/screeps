@@ -87,6 +87,59 @@ export class EconomyPlan extends OperationPlan {
                 }                
                 break;
 
+            case "rcl6":
+                break;
+
+            case "thirdLink":
+                for (var i = 0; i < this.operationGroup.operations.length; i++) {
+                    if (this.operationGroup.operations[i].type == OPERATION_HARVEST) {
+                        let harvestOp = this.operationGroup.operations[i] as HarvestOperation;
+                        if (harvestOp.sourceId == colony.resourceManager.sourceBId) {
+                            harvestOp.changeContainerOrLink(colony.resourceManager.sourceBContainerOrLinkId);
+                        }
+                    }
+                }   
+                break;
+
+            case "extractor":
+                //todo: start extraction operation
+                break;
+
+            case "terminal":
+                //todo: start market operations
+                break;
+
+            case "firstLabs":
+                //todo: start lab operations
+                break;
+
+            case "rcl7":
+                break;
+
+            case "thirdTower":
+                break;
+
+            case "extensionLink":
+                break;
+
+            case "sixthLab":
+                break;
+
+            case "rcl8":
+                break;
+
+            case "sixthTower":
+                break;
+
+            case "observer":
+                break;
+
+            case "storageLink":
+                break;
+
+            case "labs":
+                break;
+
             default:
                 throw Error(`argument out of range: ${milestoneId}`);
         }

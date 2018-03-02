@@ -83,22 +83,60 @@ export class InfrastructurePlan extends OperationPlan {
                 this.addOperation(new UpgradeLinkConstructionOperation());
                 break;
 
-            case "firstLinks":
-                //for (var i = 0; i < colony.nest.nestMap.harvestBlocks.length; i++) {
-                //    let sourceLocation = colony.nest.nestMap.harvestBlocks[i].getSourceLocation();
-                //    let lookSource = colony.nest.room.lookForAt(LOOK_SOURCES, sourceLocation.x, sourceLocation.y);
-                //    if (lookSource.length) {
-                //        let source = lookSource[0];
-                //        if (source.id == colony.resourceManager.sourceAId) {
-                //            let containerLocation = colony.nest.nestMap.harvestBlocks[i].getContainerLocation();
-                //            let lookContainer = colony.nest.room.lookForAt(LOOK_STRUCTURES, containerLocation.x, containerLocation.y);
-                //            for (var j = 0; j < lookContainer.length; j++)
-                //                if (lookContainer[j].structureType == STRUCTURE_CONTAINER)
-                //                    lookContainer[j].destroy();
-                //        }
-                //    }
-                //}
-                
+            case "firstLinks":                
+                break;
+
+            case "rcl6":
+                this.addOperation(new HarvestLinkConstructionOperation(colony.resourceManager.sourceBId));
+                break;
+
+            case "thirdLink":
+                //todo: build extractor
+                break;
+
+            case "extractor":
+                //todo: build terminal
+                break;
+
+            case "terminal":
+                //todo: build 3 labs
+                break;
+
+            case "firstLabs":                
+                break;
+
+            case "rcl7":
+                //todo: build 3rd tower
+                break;
+
+            case "thirdTower":
+                //todo: build extension link
+                break;
+
+            case "extensionLink":
+                //todo: build 6 labs
+                break;
+
+            case "sixthLab":
+                break;
+
+            case "rcl8":
+                //todo: build 3 more towers
+                break;
+
+            case "sixthTower":
+                //todo: build observer
+                break;
+
+            case "observer":
+                //todo: build storage link
+                break;
+
+            case "storageLink":
+                //todo: build 4 more labs
+                break;
+
+            case "labs":
                 break;
 
             default:

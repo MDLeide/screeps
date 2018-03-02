@@ -96,7 +96,91 @@ export class StandardProgress {
                 "Room has its first set of links",
                 (colony: Colony) => {
                     return colony.resourceManager.sourceAContainerOrLink instanceof StructureLink && colony.resourceManager.controllerLink instanceof StructureLink;
-                })
+                }),
+            new Milestone(
+                "rcl6",
+                "Room has reach RCL 6",
+                (colony: Colony) => {
+                    return colony.nest.room.controller.level >= 6;
+                }),
+            new Milestone(
+                "thirdLink",
+                "Room has third link built",
+                (colony: Colony) => {
+                    return !_.isUndefined(colony.resourceManager.sourceBId) && colony.resourceManager.sourceBContainerOrLink instanceof StructureLink;
+                }),
+            new Milestone(
+                "extractor",
+                "Room has extractor built",
+                (colony: Colony) => {
+                    return colony.nest.room.find(FIND_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_EXTRACTOR }).length > 0;
+                }),
+            new Milestone(
+                "terminal",
+                "Room has a terminal built",
+                (colony: Colony) => {
+                    return !_.isUndefined(colony.nest.room.terminal);
+                }),
+            new Milestone(
+                "firstLabs",
+                "Room has its first three labs built",
+                (colony: Colony) => {
+                    return colony.nest.room.find(FIND_MY_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_LAB }).length >= 3;
+                }),
+            new Milestone(
+                "rcl7",
+                "Room has reached RCL 7",
+                (colony: Colony) => {
+                    return colony.nest.room.controller.level >= 7;
+                }),
+            new Milestone(
+                "thirdTower",
+                "Room has its third tower built",
+                (colony: Colony) => {
+                    return colony.nest.room.find(FIND_MY_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_TOWER }).length >= 3;
+                }),
+            new Milestone(
+                "extensionLink",
+                "Room has its fourth link (extension link) built",
+                (colony: Colony) => {
+                    return !_.isUndefined(colony.resourceManager.extensionLink);
+                }),
+            new Milestone(
+                "sixthLab",
+                "Room has six labs built",
+                (colony: Colony) => {
+                    return colony.nest.room.find(FIND_MY_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_LAB }).length >= 6;
+                }),
+            new Milestone(
+                "rcl8",
+                "Room has reached RCL 8",
+                (colony: Colony) => {
+                    return colony.nest.room.controller.level >= 8;
+                }),
+            new Milestone(
+                "sixthTower",
+                "Room has six towers built",
+                (colony: Colony) => {
+                    return colony.nest.room.find(FIND_MY_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_TOWER }).length >= 6;
+                }),
+            new Milestone(
+                "observer",
+                "Room has an observer",
+                (colony: Colony) => {
+                    return colony.nest.room.find(FIND_MY_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_OBSERVER }).length >= 1;
+                }),
+            new Milestone(
+                "storageLink",
+                "Room has its fifth link (storage link) built",
+                (colony: Colony) => {
+                    return !_.isUndefined(colony.resourceManager.storageLink);
+                }),
+            new Milestone(
+                "labs",
+                "Room has ten labs",
+                (colony: Colony) => {
+                    return colony.nest.room.find(FIND_MY_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_LAB }).length >= 10;
+                }),
         ];
     }
 
