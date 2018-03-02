@@ -46,7 +46,6 @@
     <Folder Include="src\imp\operation\economic\" />
     <Folder Include="src\imp\operation\infrastructure\" />
     <Folder Include="src\imp\registration\" />
-    <Folder Include="src\imp\tower\" />
     <Folder Include="src\lib\" />
     <Folder Include="src\imp\" />
     <Folder Include="src\lib\creep\" />
@@ -294,9 +293,6 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\StrategyFactory.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\tower\TowerController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\Colony.ts">
