@@ -1,5 +1,4 @@
 import { CreepController } from "../../lib/creep/CreepController";
-import { Role } from "../../lib/creep/Role";
 import { Task } from "../../lib/creep/Task";
 
 
@@ -7,18 +6,18 @@ import { Task } from "../../lib/creep/Task";
  * Specialized role for the early parts of a room. Upgrades the controller by getting
 energy from a container. Also keeps the Spawn fed.
  */
-export class UpgraderRole extends Role {
+export class UpgraderController extends CreepController {
     public static fromMemory(memory: UpgraderRoleMemory): CreepController {
-        let upgrader = new this(memory.containerId, memory.controllerId);
+        let upgrader = new this(memory.containerOrLinkId, memory.controllerId);
         upgrader.repaired = memory.repaired;
-        return Role.fromMemory(memory, upgrader);
+        return CreepController.fromMemory(memory, upgrader);
     }
 
     constructor(containerId: string, controllerId: string) {
         super(CREEP_CONTROLLER_UPGRADER);
-        this.containerId = containerId;
+        this.containerOrLinkId = containerId;
         if (containerId)
-            this.container = Game.getObjectById<StructureContainer>(containerId);
+            this.containerOrLink = Game.getObjectById<StructureContainer>(containerId);
         this.controllerId = controllerId;
         if (controllerId)
             this.controller = Game.getObjectById<StructureController>(controllerId);
@@ -27,53 +26,57 @@ export class UpgraderRole extends Role {
     public repaired: boolean;
     public controllerId: string;
     public controller: StructureController;
-    public containerId: string;
-    public container: StructureContainer;
+    public containerOrLinkId: string;
+    public containerOrLink: (StructureContainer | StructureLink);
     
 
     protected onLoad(): void {
-        if (this.containerId)
-            this.container = Game.getObjectById<StructureContainer>(this.containerId);
+        if (this.containerOrLinkId)
+            this.containerOrLink = Game.getObjectById<StructureContainer>(this.containerOrLinkId);
         if (this.controllerId)
             this.controller = Game.getObjectById<StructureController>(this.controllerId);
-        super.onLoad();
     }
 
     protected getNextTask(creep: Creep): Task {
         if (!this.repaired) {
             if (creep.carry.energy < creep.carryCapacity) {
-                let response = creep.withdraw(this.container, RESOURCE_ENERGY);
+                let response = creep.withdraw(this.containerOrLink, RESOURCE_ENERGY);
                 if (response == ERR_NOT_IN_RANGE)
-                    return Task.MoveTo(this.container);
+                    return Task.MoveTo(this.containerOrLink);
             }
-            return Task.Repair(this.container);
+            return Task.Repair(this.containerOrLink);
         } else {
             if (creep.carry.energy > 0) {
                 return Task.Upgrade(this.controller);
-            } else {
-                if (this.container && this.container.store.energy > 0)
-                    return Task.Withdraw(this.container);
+            } else {                
+                return Task.Withdraw(this.containerOrLink);
             }
-        }        
-        return null;
+        }                
     }
 
     protected isIdle(creep: Creep): Task {
         if (creep.carry.energy > 0) {
             return Task.Upgrade(this.controller);
-        } else {
-            if (this.container && this.container.store.energy > 0)
-                return Task.Withdraw(this.container);
+        } else {            
+            return Task.Withdraw(this.containerOrLink);
         }
-        return null;
     }
 
     protected onUpdate(creep: Creep): void {
-        if (!this.repaired && this.container && this.container.hits >= this.container.hitsMax - 10)
+        if (!this.repaired && this.containerOrLink && this.containerOrLink.hits >= this.containerOrLink.hitsMax - 10)
             this.repaired = true;
     }
 
-    protected onExecute(creep: Creep): void {
+
+    protected onExecute(creep: Creep): void {        
+        let workCount = 0;
+        for (var i = 0; i < creep.body.length; i++)
+            if (creep.body[i].type == WORK)
+                workCount++;
+
+        if (creep.carry.energy < workCount * 2)
+            creep.withdraw(this.containerOrLink, RESOURCE_ENERGY);
+        creep.upgradeController(this.controller);
     }
 
     protected onCleanup(creep: Creep): void {
@@ -81,18 +84,16 @@ export class UpgraderRole extends Role {
 
     protected onSave(): UpgraderRoleMemory {
         return {
-            type: this.type,
-            lastTask: this.lastTask ? this.lastTask.save() : undefined,
-            currentTask: this.currentTask ? this.currentTask.save() : undefined,
+            type: this.type,            
             controllerId: this.controllerId,
-            containerId: this.containerId,
+            containerOrLinkId: this.containerOrLinkId,
             repaired: this.repaired
         };
     }
 }
 
-export interface UpgraderRoleMemory extends RoleMemory {
+export interface UpgraderRoleMemory extends CreepControllerMemory {
     repaired: boolean;
     controllerId: string;
-    containerId: string;
+    containerOrLinkId: string;
 }

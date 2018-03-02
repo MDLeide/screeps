@@ -4,7 +4,7 @@ import { HarvesterController, HarvesterControllerMemory } from "../creep/Harvest
 import { HarvestInfrastructureBuilderController, HarvestInfrastructureBuilderControllerMemory } from "../creep/HarvestInfrastructureBuilderController";
 import { HaulerRole } from "../creep/HaulerRole";
 import { LightUpgraderRole } from "../creep/LightUpgraderRole";
-import { UpgraderRole, UpgraderRoleMemory } from "../creep/UpgraderRole";
+import { UpgraderController, UpgraderRoleMemory } from "../creep/UpgraderController";
 import { RemoteHarvesterController, RemoteHarvesterControllerMemory  } from "../creep/RemoteHarvesterController";
 import { RemoteHaulerRole, RemoteHaulerRoleMemory } from "../creep/RemoteHaulerRole";
 
@@ -33,7 +33,7 @@ export class ControllerRegistration {
 
         CreepControllerRepository.register(
             CREEP_CONTROLLER_UPGRADER,
-            (mem: UpgraderRoleMemory) => UpgraderRole.fromMemory(mem));
+            (mem: UpgraderRoleMemory) => UpgraderController.fromMemory(mem));
 
         CreepControllerRepository.register(
             CREEP_CONTROLLER_REMOTE_HARVESTER,
