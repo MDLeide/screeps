@@ -11,6 +11,7 @@ export class MainBlockProvider extends BlockProviderBase<MainBlock> {
             MainBlockProvider.getTowers(),
             { x: 1, y: 0 }, // storage
             { x: 0, y: 1 }, // terminal
+            { x: 4, y: 0 }, // link
             MainBlockProvider.getRcl(),
             MainBlockProvider.getRoads());
     }
@@ -80,7 +81,8 @@ export class MainBlockProvider extends BlockProviderBase<MainBlock> {
                     this.coord(1, 2),
                     this.coord(1, 3),
                     this.coord(2, 1),
-                    this.coord(3, 4)
+                    this.coord(3, 4),
+                    this.coord(4, 0)
                 ]
             },            
         ];
