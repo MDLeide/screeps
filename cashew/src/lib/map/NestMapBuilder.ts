@@ -25,19 +25,47 @@ export class NestMapBuilder {
         var map = this.makeBaseMap(room);
                
         var controllerBlock = this.getControllerBlock(room, map);
+        if (!controllerBlock) {
+            global.events.empire.nestMappingFailed(room.name, "controller block");
+            return null;
+        }
         this.addMapBlock(map, controllerBlock);
 
         var harvestBlocks = this.getHarvestBlocks(room, map);
+        if (!harvestBlocks.length) {
+            global.events.empire.nestMappingFailed(room.name, "harvest block");
+            return null;
+        }
         for (var i = 0; i < harvestBlocks.length; i++)
             this.addMapBlock(map, harvestBlocks[i]);
 
         var extensionBlock = this.getExtensionBlock(room, map);
+        if (!extensionBlock) {
+            global.events.empire.nestMappingFailed(room.name, "extension block");
+            return null;
+        }
         this.addMapBlock(map, extensionBlock);
 
-        var mainBlock = this.getMainBlock(room, map);
+        let mainBlock: MainBlock;
+        let spawn = room.find<StructureSpawn>(FIND_MY_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_SPAWN });
+        if (spawn.length) {
+            mainBlock = this.fitMainBlockToExistingSpawn(map, { x: spawn[0].pos.x, y: spawn[0].pos.y });
+        } else {
+            mainBlock = this.getMainBlock(room, map);
+        }
+        if (!mainBlock) {
+            global.events.empire.nestMappingFailed(room.name, "main block");
+            return null;
+        }
+
         this.addMapBlock(map, mainBlock);
 
         var labBlock = this.getLabBlock(room, map);
+        if (!labBlock) {
+            global.events.empire.nestMappingFailed(room.name, "lab block");
+            return null;
+        }
+
         this.addMapBlock(map, labBlock);
 
         return new NestMap(
@@ -49,6 +77,28 @@ export class NestMapBuilder {
             labBlock);
     }
 
+    private fitMainBlockToExistingSpawn(map: Map, spawnLocation: { x: number, y: number }): MainBlock {
+        let block = this.mainProvider.getNext();
+        while (block) {
+            for (var j = 0; j < 4; j++) {
+                for (var i = 1; i < 9; i++) {
+                    let localSpawn = block.getLocalSpawnLocation(i);
+                    if (localSpawn) {
+                        block.offset.x = spawnLocation.x - localSpawn.x;
+                        block.offset.y = spawnLocation.y - localSpawn.y;
+                        if (this.blockFits(block, map)) {
+                            this.mainProvider.reset();
+                            return block;
+                        }                        
+                    }
+                }
+                block = this.mainProvider.rotateClockwise(block);
+            }
+            block = this.mainProvider.getNext();
+        }
+        return null;
+    }
+    
     private makeBaseMap(room: Room): Map {
         room.lookAtArea(0, 0, 50, 50, true);
         var map = new Map(
@@ -87,9 +137,8 @@ export class NestMapBuilder {
             for (var i = 0; i < 4; i++) {
                 var controllerLoc = block.getLocalControllerLocation();
                 block.offset.x = room.controller.pos.x - controllerLoc.x;
-                block.offset.y = room.controller.pos.y - controllerLoc.y;
-                var controllerAbs = block.getContainerLocation();                                
-                if (this.controllerBlockFits(block, room.controller, map)) {
+                block.offset.y = room.controller.pos.y - controllerLoc.y;                
+                if (this.blockFits(block, map)) {
                     this.controllerProvider.reset();
                     return block;
                 }
@@ -99,22 +148,7 @@ export class NestMapBuilder {
         }
         return null;
     }
-
-    private controllerBlockFits(block: ControllerBlock, controller: StructureController, map: Map) {
-        var containerLoc = block.getContainerLocation();
-        var standLocs = block.getStandLocations();
-        if (!this.isWalkable(map, containerLoc.x, containerLoc.y)) {            
-            return false;
-        }
-
-        for (var i = 0; i < standLocs.length; i++) {
-            if (!this.isWalkable(map, standLocs[i].x, standLocs[i].y)) {                
-                return false;
-            }
-        }
-        return true;
-    }
-
+    
     private getLabBlock(room: Room, map: Map): LabBlock {
         var block: LabBlock = this.labProvider.getNext();;
         while (block) {
@@ -174,8 +208,7 @@ export class NestMapBuilder {
                 var srcLoc = block.getLocalSourceLocation();
                 block.offset.x = source.pos.x - srcLoc.x;
                 block.offset.y = source.pos.y - srcLoc.y;
-
-                if (this.harvestBlockFits(block, source, map)) {                    
+                if (this.blockFits(block, map)){                
                     this.harvestProvider.reset();
                     return block;
                 }
@@ -207,32 +240,27 @@ export class NestMapBuilder {
         }
         return null;
     }
-
-    private harvestBlockFits(block: HarvestBlock, source: Source, map: Map): boolean {        
-        var s = block.getSourceLocation();
-        var c = block.getContainerLocation();
-        var terrain = map.terrain.getAt(c.x, c.y);        
-        if (terrain == "wall")
-            return false;
-
-        var struct = map.structures.getAt(c.x, c.y);
-        return struct == null;
-    }
-        
+            
     private blockFits(block: MapBlock, map: Map): boolean {        
-        for (var x = 0; x < block.width; x++) {
-            for (var y = 0; y < block.height; y++) {
-                if (this.needsWalkable(x, y, block)) {
+        for (var x = -block.border; x < block.width + block.border; x++) {
+            for (var y = -block.border; y < block.height + block.border; y++) {
+                if (x < 0 || y < 0 || x >= block.width || y >= block.height) { // logic for handling block borders
+                    if (!this.isWalkable(map, x + block.offset.x, y + block.offset.y))
+                        return false;
+                } else if (this.needsWalkable(x, y, block)) {
                     if (!this.isWalkable(map, x + block.offset.x, y + block.offset.y))
                         return false;
                 }
             }
         }
+        
         return true;
-
     }
 
-    private isWalkable(map: Map, x: number, y: number) : boolean {
+    private isWalkable(map: Map, x: number, y: number): boolean {
+        if (x < 0 || x > 49 || y < 0 || y > 49)
+            return false;
+
         var terrain = map.terrain.getAt(x, y);
         if (terrain == "wall") {            
             return false;

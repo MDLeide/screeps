@@ -93,8 +93,12 @@ export class MainBlockProvider extends BlockProviderBase<MainBlock> {
         return [
             this.coord(0, 0),
             this.coord(1, 1),
+            this.coord(2, 0),
             this.coord(2, 2),
+            this.coord(2, 4),
+            this.coord(3, 0),
             this.coord(3, 3),
+            this.coord(4, 1),
             this.coord(4, 2)
         ]
     }

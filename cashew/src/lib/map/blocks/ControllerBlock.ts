@@ -30,6 +30,7 @@ export class ControllerBlock extends MapBlock {
         this.special.setAt(containerX, containerY, ControllerBlock.ContainerToken);
         this.special.setAt(linkX, linkY, ControllerBlock.LinkToken);
         this.structures.setAt(containerX, containerY, STRUCTURE_CONTAINER);
+        this.structures.setAt(linkX, linkY, STRUCTURE_LINK);
         for (var i = 0; i < standLocations.length; i++) 
             this.special.setAt(standLocations[i].x, standLocations[i].y, ControllerBlock.StandToken);        
     }

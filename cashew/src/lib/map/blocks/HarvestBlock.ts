@@ -27,6 +27,7 @@ export class HarvestBlock extends MapBlock {
         super(height, width, { x: 0, y: 0 });
 
         this.structures.setAt(containerX, containerY, STRUCTURE_CONTAINER);
+        this.structures.setAt(linkX, linkY, STRUCTURE_LINK);
         this.special.setAt(containerX, containerY, HarvestBlock.ContainerToken);
         this.special.setAt(sourceX, sourceY, HarvestBlock.SourceToken);
         this.special.setAt(linkX, linkY, HarvestBlock.LinkToken);

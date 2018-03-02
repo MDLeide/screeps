@@ -36,6 +36,9 @@ export class MapBlock {
     public height: number;
     public width: number;
 
+    /** Number of tiles around the block to keep clear. */
+    public border: number = 0;
+
     public roads: Layer<boolean>;
     public structures: Layer<StructureConstant>;
     public ramparts: Layer<boolean>;

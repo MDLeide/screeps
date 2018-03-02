@@ -28,7 +28,8 @@ export class Execute {
         var nestMapBuilder = StandardNestMapBuilder.getBuilder();
 
         ColonyFinder.createNewColonies(empire, nestMapBuilder);
-        Playback.placeFlag(empire.colonies[0].nest.roomName);
+        if (empire.colonies.length)
+            Playback.placeFlag(empire.colonies[0].nest.roomName);
         
         global.reports = new Reporter(empire);
         global.visuals.update(empire);
