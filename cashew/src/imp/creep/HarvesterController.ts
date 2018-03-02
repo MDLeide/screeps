@@ -27,7 +27,7 @@ export class HarvesterController extends CreepController {
     }
 
     protected onUpdate(creep: Creep): void {
-        if (!this.repaired && this.containerOrLink && this.containerOrLink.hits >= this.containerOrLink.hitsMax - 10)
+        if (this.arrived && !this.repaired && this.containerOrLink && this.containerOrLink.hits >= this.containerOrLink.hitsMax - 10)
             this.repaired = true;
     }
 
@@ -72,7 +72,7 @@ export class HarvesterController extends CreepController {
     }
     
     private harvest(creep: Creep): void {        
-        creep.harvest(this.source);
+        creep.harvest(this.source);            
         if (creep.carryCapacity - creep.carry.energy < creep.getActiveBodyparts(WORK) * 2)
             creep.transfer(this.containerOrLink, RESOURCE_ENERGY);
     }
