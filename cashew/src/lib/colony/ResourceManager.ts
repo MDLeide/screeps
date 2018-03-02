@@ -4,17 +4,20 @@ export class ResourceManager {
     public static fromMemory(memory: ResourceManagerMemory, colony: Colony): ResourceManager {
         let manager = new this(colony);
 
-        manager.extensionLinkId = memory.extensionLinkId;
-        manager.storageLinkId = memory.storageLinkId;
-        manager.controllerLinkId = memory.controllerLinkId;
-
-        manager.fillPriority = memory.transferPriority;
-
         manager.sourceAId = memory.sourceAId;
         manager.sourceBId = memory.sourceBId;
 
         manager.sourceAContainerOrLinkId = memory.sourceAContainerOrLinkId;
         manager.sourceBContainerOrLinkId = memory.sourceBContainerOrLinkId;
+
+        manager.controllerContainerId = memory.controllerContainerId;
+
+        manager.extensionLinkId = memory.extensionLinkId;
+        manager.storageLinkId = memory.storageLinkId;
+        manager.controllerLinkId = memory.controllerLinkId;
+        
+        manager.fillPriority = memory.transferPriority;
+        
         return manager;
     }
 
