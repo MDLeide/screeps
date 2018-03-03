@@ -10,11 +10,11 @@ export class HaulerRole extends Role {
         let colony = global.empire.getCreepsColony(creep);
 
         if (creep.carry.energy > 0) {
-            let transferTarget = colony.getTransferTarget(creep);
+            let transferTarget = colony.resourceManager.getTransferTarget(creep);
             if (transferTarget)
                 return Task.Transfer(transferTarget);
         } else {
-            let withdrawTarget = colony.getWithdrawTarget(creep);
+            let withdrawTarget = colony.resourceManager.getWithdrawTarget(creep);
             if (withdrawTarget)
                 return Task.Withdraw(withdrawTarget);
         }

@@ -142,7 +142,7 @@ export class Colony  {
     public canSpawn(body: Body): boolean {
         return this.nest.canSpawn(body)
     }
-
+    
     /** Returns the Spawner used if successful, otherwise null */
     public spawnCreep(body: Body): {name: string, spawner: Spawner} | null {
         var result = this.nest.spawnCreep(body);
@@ -151,26 +151,14 @@ export class Colony  {
         return result;
     }
 
-
-    public getWithdrawTarget(creep: Creep): WithdrawTarget {
-        return this.resourceManager.getWithdrawTarget(creep);
-    }
-
-    public getTransferTarget(creep: Creep): TransferTarget {
-        return this.resourceManager.getTransferTarget(creep);
-    }
-
-    public getSpawnTransferTarget(creep: Creep): (StructureSpawn | StructureExtension) {
-        return this.resourceManager.getSpawnExtensionTransferTargets(creep);
-    }
     
-
     protected getOperationPlanMemory(): OperationPlanMemory[] {
         let mem: OperationPlanMemory[] = [];
         for (var i = 0; i < this.operationPlans.length; i++)
             mem.push(this.operationPlans[i].save());
         return mem;
     }
+
 
     public save(): ColonyMemory {
         return {

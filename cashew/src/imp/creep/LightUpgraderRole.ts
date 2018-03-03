@@ -20,13 +20,13 @@ export class LightUpgraderRole extends Role {
             this.currentTask.type == TASK_TRANSFER ||
             this.currentTask.type == TASK_UPGRADE) {
             
-            let withdrawTarget = colony.getWithdrawTarget(creep);
+            let withdrawTarget = colony.resourceManager.getWithdrawTarget(creep);
             if (withdrawTarget)
                 return Task.Withdraw(withdrawTarget);
 
         } else if (creep.carry.energy > 0) {
             //if (this.supplySpawn) {
-            let spawnTarget = colony.getSpawnTransferTarget(creep);
+            let spawnTarget = colony.resourceManager.getSpawnExtensionTransferTargets(creep);
             if (spawnTarget)
                 return Task.Transfer(spawnTarget);
             //}
@@ -43,7 +43,7 @@ export class LightUpgraderRole extends Role {
         let colony = global.empire.getCreepsColony(creep);
         if (creep.carry.energy > 0) {
             //if (this.supplySpawn) {
-            let spawnTarget = colony.getSpawnTransferTarget(creep);
+            let spawnTarget = colony.resourceManager.getSpawnExtensionTransferTargets(creep);
             if (spawnTarget)
                 return Task.Transfer(spawnTarget);
             //}
@@ -51,7 +51,7 @@ export class LightUpgraderRole extends Role {
             let upgradeTarget = colony.nest.room.controller;
             return Task.Upgrade(upgradeTarget);
         } else {
-            let withdrawTarget = colony.getWithdrawTarget(creep);
+            let withdrawTarget = colony.resourceManager.getWithdrawTarget(creep);
             if (withdrawTarget)
                 return Task.Withdraw(withdrawTarget);
         }
