@@ -45,6 +45,7 @@ export class ResourceManager {
     public sourceContainerOverflowThreshold: number = 1600;
 
     public controllerLinkTransferThreshold: number = 400;
+    public extensionLinkTransferThreshold: number = 500;
 
     public controllerContainerMaxEnergy: number = 1800;    
     public storageMaxEnergy: number = 1000000;    
@@ -165,9 +166,9 @@ export class ResourceManager {
     }
 
     public getLinkTransferTarget(): StructureLink {
-        if (this.extensionLink && this.extensionLink.energy < this.extensionLink.energyCapacity)
+        if (this.extensionLink && this.extensionLink.energy < this.extensionLinkTransferThreshold)
             return this.extensionLink;
-        else if (this.controllerLink instanceof StructureLink && this.controllerLink.energy < this.controllerLink.energyCapacity)
+        else if (this.controllerLink && this.controllerLink.energy < this.controllerLinkTransferThreshold)
             return this.controllerLink;
         return null;
     }
