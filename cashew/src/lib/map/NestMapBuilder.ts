@@ -33,6 +33,11 @@ export class NestMapBuilder {
         let harvestBlocks = this.getAndAddMultiBlocks(room, map, this.getHarvestBlocks, "harvest block");
         if (!harvestBlocks || !harvestBlocks.length)
             return null;
+
+        let mineralBlock = this.getAndAddBlock(room, map, this.getMineralBlock, "mineral block");
+        if (!mineralBlock)
+            return null;
+
         
         let extensionBlock = this.getAndAddBlock(room, map, this.getExtensionBlock, "extension block");
         if (!extensionBlock)
@@ -44,10 +49,6 @@ export class NestMapBuilder {
 
         let labBlock = this.getAndAddBlock(room, map, this.getLabBlock, "lab block");
         if (!labBlock)
-            return null;
-
-        let mineralBlock = this.getAndAddBlock(room, map, this.getMineralBlock, "mineral block");
-        if (!mineralBlock)
             return null;
 
         return new NestMap(
