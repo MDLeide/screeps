@@ -23,6 +23,14 @@ global.OPERATION_REMOTE_HARVEST_SCOUT = "RemoteHarvestScout";
 global.OPERATION_REMOTE_HARVEST = "RemoteHarvest";
 global.OPERATION_HARVEST_LINK_CONSTRUCTION = "HarvestLinkConstruction";
 global.OPERATION_UPGRADE_LINK_CONSTRUCTION = "UpgradeLinkConstruction";
+global.OPERATION_EXTENSION_LINK_CONSTRUCTION = "ExtensionLinkConstruction";
+global.OPERATION_LAB_CONSTRUCTION = "LabConstruction";
+global.OPERATION_EXTRACTOR_CONSTRUCTION = "ExtractorConstruction";
+global.OPERATION_EXTRACTION = "Extraction";
+global.OPERATION_EXTENSION_FILL = "ExtensionFill";
+global.OPERATION_TERMINAL_CONSTRUCTION = "TerminalConstruction";
+global.OPERATION_OBSERVER_CONSTRUCTION = "ObserverConstruction";
+global.OPERATION_STORAGE_LINK_CONSTRUCTION = "StorageLinkConstruction";
 
 global.PROGRESS_STANDARD = "Standard";
 

@@ -67,15 +67,16 @@ export class MainBlock extends MapBlock {
         return null;
     }
 
-    public getTowerLocation(rcl: number): { x: number, y: number } {
+    public getTowerLocations(rcl: number): { x: number, y: number }[] {
+        let locations = []
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 if (this.special.getAt(x, y) == rcl)
                     if (this.structures.getAt(x, y) == STRUCTURE_TOWER)
-                        return { x: x + this.offset.x, y: y + this.offset.y };
+                        locations.push({ x: x + this.offset.x, y: y + this.offset.y });
             }
         }
-        return null;
+        return locations;
     }
 
     public getTerminalLocation(): { x: number, y: number } {

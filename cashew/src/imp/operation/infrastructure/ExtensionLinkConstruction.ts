@@ -6,27 +6,26 @@ import { BodyRepository } from "../../creep/BodyRepository";
 import { BuilderJob } from "../../creep/BuilderJob";
 import { ConstructionOperation, ConstructionOperationMemory } from "../ConstructionOperation";
 
-export class UpgradeLinkConstructionOperation extends ConstructionOperation {
+export class ExtensionLinkConstruction extends ConstructionOperation {
     public static fromMemory(memory: ConstructionOperationMemory): Operation {
         var op = new this();
-        return ConstructionOperation.fromMemory(memory, op);
+        return JobOperation.fromMemory(memory, op);
     }
 
 
     constructor() {
-        super(OPERATION_UPGRADE_LINK_CONSTRUCTION, 1);
+        super(OPERATION_EXTENSION_LINK_CONSTRUCTION, 1);
     }
-    
+
 
     protected getSiteLocations(colony: Colony): { x: number, y: number }[] {
-        return [colony.nest.nestMap.controllerBlock.getLinkLocation()];
+        return [colony.nest.nestMap.extensionBlock.getLinkLocation()];
     }
 
     protected getStructureType(): BuildableStructureConstant {
         return STRUCTURE_LINK;
     }
-       
-
+    
     protected onFinish(colony: Colony): boolean {
         let linkLocation = colony.nest.nestMap.controllerBlock.getLinkLocation();               
         let linkLook = colony.nest.room.lookForAt(LOOK_STRUCTURES, linkLocation.x, linkLocation.y);
@@ -37,5 +36,5 @@ export class UpgradeLinkConstructionOperation extends ConstructionOperation {
             }
         }
         return super.onFinish(colony);
-    }
+    }    
 }

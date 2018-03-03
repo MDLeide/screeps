@@ -3,7 +3,7 @@ import { Colony } from "../../lib/colony/Colony";
 import { Operation } from "../../lib/operation/Operation";
 
 import { HarvestInfrastructureOperation } from "../operation/infrastructure/HarvestInfrastructureOperation";
-import { ExtensionConstruction } from "../operation/infrastructure/ExtensionsOperation";
+import { ExtensionConstructionOperation } from "../operation/infrastructure/ExtensionsOperation";
 import { ControllerInfrastructureOperation } from "../operation/infrastructure/ControllerInfrastructureOperation";
 import { StorageConstructionOperation } from "../operation/infrastructure/StorageConstructionOperation";
 import { TowerConstructionOperation } from "../operation/infrastructure/TowerConstructionOperation";
@@ -48,7 +48,7 @@ export class InfrastructurePlan extends OperationPlan {
                 break;
 
             case "rcl2":
-                this.addOperation(new ExtensionConstruction(2));
+                this.addOperation(new ExtensionConstructionOperation(2));
                 break;
 
             case "fiveExtensions":
@@ -63,7 +63,7 @@ export class InfrastructurePlan extends OperationPlan {
                 break;
 
             case "firstTower":
-                this.addOperation(new ExtensionConstruction(3));
+                this.addOperation(new ExtensionConstructionOperation(3));
                 break;
                 
             case "rcl4":
@@ -71,7 +71,7 @@ export class InfrastructurePlan extends OperationPlan {
                 break;
 
             case "storage":
-                this.addOperation(new ExtensionConstruction(4));
+                this.addOperation(new ExtensionConstructionOperation(4));
                 break;
 
             case "rcl5":
@@ -83,11 +83,13 @@ export class InfrastructurePlan extends OperationPlan {
                 this.addOperation(new UpgradeLinkConstructionOperation());
                 break;
 
-            case "firstLinks":                
+            case "firstLinks":
+                this.addOperation(new ExtensionConstructionOperation(5));
                 break;
 
             case "rcl6":
-                this.addOperation(new HarvestLinkConstructionOperation(colony.resourceManager.sourceBId));
+                this.addOperation(new ExtensionConstructionOperation(6));
+                //todo: build extension link
                 break;
 
             case "thirdLink":
@@ -110,10 +112,10 @@ export class InfrastructurePlan extends OperationPlan {
                 break;
 
             case "thirdTower":
-                //todo: build extension link
+                this.addOperation(new HarvestLinkConstructionOperation(colony.resourceManager.sourceBId));
                 break;
 
-            case "extensionLink":
+            case "fourthLink":
                 //todo: build 6 labs
                 break;
 

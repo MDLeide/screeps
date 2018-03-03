@@ -1,10 +1,9 @@
 import { OperationRepository } from "../../lib/operation/OperationRepository";
 
-import { ExtensionConstruction } from "../operation/infrastructure/ExtensionsOperation";
+import { ExtensionConstructionOperation } from "../operation/infrastructure/ExtensionsOperation";
 import { HarvestInfrastructureOperation } from "../operation/infrastructure/HarvestInfrastructureOperation";
 import { HarvestOperation } from "../operation/economic/HarvestOperation";
 import { LightUpgradeOperation } from "../operation/economic/LightUpgradeOperation";
-//import { BasicMaintenanceOperation } from "../operation/economic/BasicMaintenanceOperation";
 import { ControllerInfrastructureOperation } from "../operation/infrastructure/ControllerInfrastructureOperation";
 import { EnergyTransportOperation } from "../operation/economic/EnergyTransportOperation";
 import { HeavyUpgradeOperation } from "../operation/economic/HeavyUpgradeOperation";
@@ -20,7 +19,7 @@ export class OperationRegistration {
         OperationRepository.register(
             OPERATION_EXTENSION_CONSTRUCTION,
             (memory: any) => {
-                return ExtensionConstruction.fromMemory(memory);
+                return ExtensionConstructionOperation.fromMemory(memory);
             });
 
         OperationRepository.register(

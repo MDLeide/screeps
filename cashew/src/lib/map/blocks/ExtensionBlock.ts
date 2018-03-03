@@ -51,4 +51,12 @@ export class ExtensionBlock extends MapBlock {
         return results;
     }
 
+    public getLinkLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++)
+            for (var y = 0; y < this.height; y++)
+                if (this.structures.getAt(x, y) == STRUCTURE_LINK)
+                    return { x: x + this.offset.x, y: y + this.offset.y };
+        return null;
+    }
+
 }

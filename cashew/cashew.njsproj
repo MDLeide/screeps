@@ -95,6 +95,7 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\economic\RemoteHarvestScoutOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\ExtensionLinkConstruction.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\UpgradeLinkConstruction.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\HarvestLinkConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\registration\ColonyProgressRegistration.ts">
@@ -113,6 +114,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\Watchtower.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\operation\ConstructionOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\Calculator.ts">
@@ -149,7 +153,6 @@
     <TypeScriptCompile Include="src\imp\GlobalExtension.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\operation\BasicMaintenanceOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\EnergyTransportOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\HeavyUpgradeOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\ControllerInfrastructureOperation.ts" />
@@ -225,7 +228,6 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\economic\HarvestOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\LightUpgradeOperation.ts" />
-    <TypeScriptCompile Include="src\imp\operation\OperationTemplate.ts" />
     <TypeScriptCompile Include="src\yagni\colonyPlan\ColonyPlan.ts" />
     <TypeScriptCompile Include="src\yagni\colonyPlan\ColonyPlanRepository.ts" />
     <TypeScriptCompile Include="src\yagni\colonyPlan\Milestone.ts" />

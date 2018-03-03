@@ -119,7 +119,7 @@ export class EconomyPlan extends OperationPlan {
             case "thirdTower":
                 break;
 
-            case "extensionLink":
+            case "fourthLink":
                 break;
 
             case "sixthLab":

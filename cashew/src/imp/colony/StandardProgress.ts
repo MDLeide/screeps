@@ -105,7 +105,7 @@ export class StandardProgress {
                 }),
             new Milestone(
                 "thirdLink",
-                "Room has third link built",
+                "Room has third link (extension link) built",
                 (colony: Colony) => {
                     return !_.isUndefined(colony.resourceManager.sourceBId) && colony.resourceManager.sourceBContainerOrLink instanceof StructureLink;
                 }),
@@ -140,8 +140,8 @@ export class StandardProgress {
                     return colony.nest.room.find(FIND_MY_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_TOWER }).length >= 3;
                 }),
             new Milestone(
-                "extensionLink",
-                "Room has its fourth link (extension link) built",
+                "fourthLink",
+                "Room has its fourth link (harvest link) built",
                 (colony: Colony) => {
                     return !_.isUndefined(colony.resourceManager.extensionLink);
                 }),
