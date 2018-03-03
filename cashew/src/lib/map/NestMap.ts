@@ -37,6 +37,22 @@ export class NestMap {
     }
 
 
+    public getAllBlocks(): MapBlock[] {
+        let blocks: MapBlock[] = [
+            this.extensionBlock,
+            this.mainBlock,
+            this.controllerBlock,
+            this.labBlock,
+            this.mineralBlock
+        ];
+
+        for (var i = 0; i < this.harvestBlocks.length; i++)
+            blocks.push(this.harvestBlocks[i]);
+
+        return blocks;
+    }
+
+
     public save(): NestMapMemory {
         var harvestBlocks: MapBlockMemory[] = [];
         for (var i = 0; i < this.harvestBlocks.length; i++) 

@@ -211,7 +211,6 @@ declare global {
     interface VisualsMemory {
         drawNestMapStructures: boolean;
         drawNestMapSpecials: boolean;
+        wallTestRoom: string;
     }
-
-
 }

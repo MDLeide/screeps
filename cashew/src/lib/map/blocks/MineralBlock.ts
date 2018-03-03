@@ -20,12 +20,15 @@ export class MineralBlock extends MapBlock {
         mineralX: number,
         mineralY: number,
         containerX: number,
-        containerY: number) {
+        containerY: number,
+        roads: { x: number, y: number }[]) {
         super(height, width, { x: 0, y: 0 });
 
         this.special.setAt(mineralX, mineralY, 1);
         this.structures.setAt(mineralX, mineralY, STRUCTURE_EXTRACTOR);
         this.structures.setAt(containerX, containerY, STRUCTURE_CONTAINER);
+        for (var i = 0; i < roads.length; i++)
+            this.roads.setAt(roads[i].x, roads[i].y, true);        
     }
 
     public static readonly MineralToken: number = 1;
