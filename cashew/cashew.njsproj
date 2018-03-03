@@ -119,7 +119,7 @@
     <TypeScriptCompile Include="src\imp\operation\infrastructure\RoadConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\WallConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\ObserverConstructionOperation.ts" />
-    <TypeScriptCompile Include="src\imp\operation\infrastructure\StorageLinkConstruction.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\StorageLinkConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\TerminalConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\LabConstructionOperation.ts">
       <SubType>Code</SubType>

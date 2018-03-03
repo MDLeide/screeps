@@ -1,21 +1,39 @@
 import { OperationRepository } from "../../lib/operation/OperationRepository";
 
-import { ExtensionConstructionOperation } from "../operation/infrastructure/ExtensionsOperation";
-import { HarvestInfrastructureOperation } from "../operation/infrastructure/HarvestInfrastructureOperation";
+// economy
+import { ExtractionOperation } from "../operation/economic/ExtractionOperation";
+import { ExtensionFillOperation } from "../operation/economic/ExtensionFillOperation";
 import { HarvestOperation } from "../operation/economic/HarvestOperation";
 import { LightUpgradeOperation } from "../operation/economic/LightUpgradeOperation";
-import { ControllerInfrastructureOperation } from "../operation/infrastructure/ControllerInfrastructureOperation";
 import { EnergyTransportOperation } from "../operation/economic/EnergyTransportOperation";
 import { HeavyUpgradeOperation } from "../operation/economic/HeavyUpgradeOperation";
-import { TowerConstructionOperation } from "../operation/infrastructure/TowerConstructionOperation";
-import { StorageConstructionOperation } from "../operation/infrastructure/StorageConstructionOperation";
 import { RemoteHarvestScoutOperation } from "../operation/economic/RemoteHarvestScoutOperation";
 import { RemoteHarvestOperation } from "../operation/economic/RemoteHarvestOperation";
+
+// infrastructure
+import { ExtensionConstructionOperation } from "../operation/infrastructure/ExtensionsOperation";
+import { HarvestInfrastructureOperation } from "../operation/infrastructure/HarvestInfrastructureOperation";
+import { ControllerInfrastructureOperation } from "../operation/infrastructure/ControllerInfrastructureOperation";
+import { TowerConstructionOperation } from "../operation/infrastructure/TowerConstructionOperation";
+import { StorageConstructionOperation } from "../operation/infrastructure/StorageConstructionOperation";
 import { HarvestLinkConstructionOperation } from "../operation/infrastructure/HarvestLinkConstructionOperation";
 import { UpgradeLinkConstructionOperation } from "../operation/infrastructure/UpgradeLinkConstruction";
+import { ExtensionLinkConstruction } from "../operation/infrastructure/ExtensionLinkConstruction";
+import { LabConstructionOperation } from "../operation/infrastructure/LabConstructionOperation";
+import { ExtractorConstructionOperation } from "../operation/infrastructure/ExtractorConstructionOperation";
+import { TerminalConstructionOperation } from "../operation/infrastructure/TerminalConstructionOperation";
+import { ObserverConstructionOperation } from "../operation/infrastructure/ObserverConstructionOperation";
+import { StorageLinkConstructionOperation } from "../operation/infrastructure/StorageLinkConstructionOperation";
+import { WallConstructionOperation } from "../operation/infrastructure/WallConstructionOperation";
+import { RoadConstructionOperation } from "../operation/infrastructure/RoadConstructionOperation";
 
 export class OperationRegistration {
     public static register() {
+        this.registerEconomy();
+        this.registerInfrastructure();
+    }
+
+    static registerInfrastructure(): void {
         OperationRepository.register(
             OPERATION_EXTENSION_CONSTRUCTION,
             (memory: any) => {
@@ -29,6 +47,80 @@ export class OperationRegistration {
             });
 
         OperationRepository.register(
+            OPERATION_CONTROLLER_INFRASTRUCTURE,
+            (memory: any) => {
+                return ControllerInfrastructureOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_TOWER_CONSTRUCTION,
+            (memory: any) => {
+                return TowerConstructionOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_STORAGE_CONSTRUCTION,
+            (memory: any) => {
+                return StorageConstructionOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_HARVEST_LINK_CONSTRUCTION,
+            (memory: any) => {
+                return HarvestLinkConstructionOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_UPGRADE_LINK_CONSTRUCTION,
+            (memory: any) => {
+                return UpgradeLinkConstructionOperation.fromMemory(memory);
+            });
+        
+        OperationRepository.register(
+            OPERATION_LAB_CONSTRUCTION,
+            (memory: any) => {
+                return LabConstructionOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_EXTRACTOR_CONSTRUCTION,
+            (memory: any) => {
+                return ExtractorConstructionOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_TERMINAL_CONSTRUCTION,
+            (memory: any) => {
+                return TerminalConstructionOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_OBSERVER_CONSTRUCTION,
+            (memory: any) => {
+                return ObserverConstructionOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_STORAGE_LINK_CONSTRUCTION,
+            (memory: any) => {
+                return StorageLinkConstructionOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_WALL_CONSTRUCTION,
+            (memory: any) => {
+                return WallConstructionOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_ROAD_CONSTRUCTION,
+            (memory: any) => {
+                return RoadConstructionOperation.fromMemory(memory);
+            });
+    }
+
+    static registerEconomy(): void {
+        OperationRepository.register(
             OPERATION_HARVEST,
             (memory: any) => {
                 return HarvestOperation.fromMemory(memory);
@@ -38,18 +130,6 @@ export class OperationRegistration {
             OPERATION_LIGHT_UPGRADE,
             (memory: any) => {
                 return LightUpgradeOperation.fromMemory(memory);
-            });
-
-        //OperationRepository.register(
-        //    "basicMaintenance",
-        //    (memory: any) => {
-        //        return BasicMaintenanceOperation.fromMemory(memory);
-        //    });
-
-        OperationRepository.register(
-            OPERATION_CONTROLLER_INFRASTRUCTURE,
-            (memory: any) => {
-                return ControllerInfrastructureOperation.fromMemory(memory);
             });
 
         OperationRepository.register(
@@ -62,18 +142,6 @@ export class OperationRegistration {
             OPERATION_ENERGY_TRANSPORT,
             (memory: any) => {
                 return EnergyTransportOperation.fromMemory(memory);
-            });
-        
-        OperationRepository.register(
-            OPERATION_TOWER_CONSTRUCTION,
-            (memory: any) => {
-                return TowerConstructionOperation.fromMemory(memory);
-            });
-
-        OperationRepository.register(
-            OPERATION_STORAGE_CONSTRUCTION,
-            (memory: any) => {
-                return StorageConstructionOperation.fromMemory(memory);
             });
 
         OperationRepository.register(
@@ -89,15 +157,15 @@ export class OperationRegistration {
             });
 
         OperationRepository.register(
-            OPERATION_HARVEST_LINK_CONSTRUCTION,
+            OPERATION_EXTRACTION,
             (memory: any) => {
-                return HarvestLinkConstructionOperation.fromMemory(memory);
+                return ExtractionOperation.fromMemory(memory);
             });
 
         OperationRepository.register(
-            OPERATION_UPGRADE_LINK_CONSTRUCTION,
+            OPERATION_EXTENSION_FILL,
             (memory: any) => {
-                return UpgradeLinkConstructionOperation.fromMemory(memory);
+                return ExtensionFillOperation.fromMemory(memory);
             });
     }
 }
