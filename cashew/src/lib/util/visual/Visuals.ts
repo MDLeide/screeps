@@ -1,6 +1,5 @@
 import { NestMapVisual } from "./NestMapVisual";
 import { Empire } from "../../empire/Empire"
-
 export class Visuals {
     public help(): string {
         return "toggleNestStructures() - turns on/off drawing of structures from the nest plan </br>" +
@@ -13,14 +12,6 @@ export class Visuals {
 
     public toggleNestSpecials(): void {
         Memory.visuals.drawNestMapSpecials = !Memory.visuals.drawNestMapSpecials;
-    }
-
-    public drawRoomWalls(roomName: string): void {
-        Memory.visuals.wallTestRoom = roomName;
-    }
-
-    public stopRoomWalls(): void {
-        Memory.visuals.wallTestRoom = undefined;
     }
 
     public update(empire: Empire): void {

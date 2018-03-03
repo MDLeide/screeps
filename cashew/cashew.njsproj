@@ -105,9 +105,6 @@
     <TypeScriptCompile Include="src\imp\creep\RemoteHaulerRole.ts" />
     <TypeScriptCompile Include="src\imp\creep\RemoteHarvesterController.ts" />
     <TypeScriptCompile Include="src\imp\map\MineralBlockProvider.ts" />
-    <TypeScriptCompile Include="src\imp\map\WallProvider.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\economic\ExtensionFillOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\ExtractionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\economic\RemoteHarvestOperation.ts">
@@ -154,9 +151,6 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\RoomHelper.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\util\visual\VisualUtility.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\StandardPlan.ts">
