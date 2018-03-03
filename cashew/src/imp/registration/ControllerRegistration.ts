@@ -7,6 +7,10 @@ import { LightUpgraderRole } from "../creep/LightUpgraderRole";
 import { UpgraderController, UpgraderRoleMemory } from "../creep/UpgraderController";
 import { RemoteHarvesterController, RemoteHarvesterControllerMemory  } from "../creep/RemoteHarvesterController";
 import { RemoteHaulerRole, RemoteHaulerRoleMemory } from "../creep/RemoteHaulerRole";
+import { ChemistController } from "../creep/ChemistController";
+import { FillerController } from "../creep/FillerController";
+import { MasonController } from "../creep/MasonController";
+import { ExtractorController } from "../creep/ExtractorController";
 
 
 export class ControllerRegistration {
@@ -42,5 +46,21 @@ export class ControllerRegistration {
         CreepControllerRepository.register(
             CREEP_CONTROLLER_REMOTE_HAULER,
             (mem: RemoteHaulerRoleMemory) => RemoteHaulerRole.fromMemory(mem));
+        
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_EXTRACTOR,
+            (mem: RemoteHaulerRoleMemory) => ExtractorController.fromMemory(mem));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_CHEMIST,
+            (mem: RemoteHaulerRoleMemory) => ChemistController.fromMemory(mem));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_FILLER,
+            (mem: RemoteHaulerRoleMemory) => FillerController.fromMemory(mem));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_MASON,
+            (mem: RemoteHaulerRoleMemory) => MasonController.fromMemory(mem));
     }
 }

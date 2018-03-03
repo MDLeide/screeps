@@ -1,4 +1,3 @@
-// constants below
 global.TASK_IDLE = "Idle";
 global.TASK_MOVE_TO = "MoveTo";
 global.TASK_TRANSFER = "Transfer";
@@ -31,6 +30,8 @@ global.OPERATION_EXTENSION_FILL = "ExtensionFill";
 global.OPERATION_TERMINAL_CONSTRUCTION = "TerminalConstruction";
 global.OPERATION_OBSERVER_CONSTRUCTION = "ObserverConstruction";
 global.OPERATION_STORAGE_LINK_CONSTRUCTION = "StorageLinkConstruction";
+global.OPERATION_WALL_CONSTRUCTION = "WallConstruction";
+global.OPERATION_ROAD_CONSTRUCTION = "RoadConstruction";
 
 global.PROGRESS_STANDARD = "Standard";
 
@@ -46,6 +47,10 @@ global.CREEP_CONTROLLER_HAULER = "Hauler";
 global.CREEP_CONTROLLER_UPGRADER = "Upgrader";
 global.CREEP_CONTROLLER_REMOTE_HAULER = "RemoteHauler";
 global.CREEP_CONTROLLER_REMOTE_HARVESTER = "RemoteHarvester";
+global.CREEP_CONTROLLER_EXTRACTOR = "Extractor";
+global.CREEP_CONTROLLER_FILLER = "Filler";
+global.CREEP_CONTROLLER_CHEMIST = "Chemist";
+global.CREEP_CONTROLLER_MASON = "Mason";
 
 global.BODY_LIGHT_WORKER = "LightWorker";
 global.BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -54,9 +59,8 @@ global.BODY_HAULER = "Hauler";
 global.BODY_WARRIOR = "Warrior";
 global.BODY_SCOUT = "Scout";
 
-// end constants
 
 export class GlobalConstants {
-    public static extend() {        
+    public static extend() {
     }
 }

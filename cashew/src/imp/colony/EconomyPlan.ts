@@ -112,7 +112,7 @@ export class EconomyPlan extends OperationPlan {
             case "firstLabs":
                 //todo: start lab operations
                 break;
-
+                
             case "rcl7":
                 break;
 

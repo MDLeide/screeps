@@ -30,6 +30,8 @@ declare const OPERATION_EXTENSION_FILL: "ExtensionFill";
 declare const OPERATION_TERMINAL_CONSTRUCTION: "TerminalConstruction";
 declare const OPERATION_OBSERVER_CONSTRUCTION: "ObserverConstruction";
 declare const OPERATION_STORAGE_LINK_CONSTRUCTION: "StorageLinkConstruction";
+declare const OPERATION_WALL_CONSTRUCTION: "WallConstruction";
+declare const OPERATION_ROAD_CONSTRUCTION: "RoadConstruction";
 
 declare const PROGRESS_STANDARD: "Standard";
 
@@ -45,6 +47,10 @@ declare const CREEP_CONTROLLER_HAULER: "Hauler";
 declare const CREEP_CONTROLLER_UPGRADER: "Upgrader";
 declare const CREEP_CONTROLLER_REMOTE_HAULER: "RemoteHauler";
 declare const CREEP_CONTROLLER_REMOTE_HARVESTER: "RemoteHarvester";
+declare const CREEP_CONTROLLER_EXTRACTOR: "Extractor";
+declare const CREEP_CONTROLLER_FILLER: "Filler";
+declare const CREEP_CONTROLLER_CHEMIST: "Chemist";
+declare const CREEP_CONTROLLER_MASON: "Mason";
 
 declare const BODY_LIGHT_WORKER: "LightWorker";
 declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
@@ -85,6 +91,8 @@ type OPERATION_EXTENSION_FILL = "ExtensionFill";
 type OPERATION_TERMINAL_CONSTRUCTION = "TerminalConstruction";
 type OPERATION_OBSERVER_CONSTRUCTION = "ObserverConstruction";
 type OPERATION_STORAGE_LINK_CONSTRUCTION = "StorageLinkConstruction";
+type OPERATION_WALL_CONSTRUCTION = "WallConstruction";
+type OPERATION_ROAD_CONSTRUCTION = "RoadConstruction";
 
 type PROGRESS_STANDARD = "Standard";
 
@@ -100,6 +108,10 @@ type CREEP_CONTROLLER_HAULER = "Hauler";
 type CREEP_CONTROLLER_UPGRADER = "Upgrader";
 type CREEP_CONTROLLER_REMOTE_HAULER = "RemoteHauler";
 type CREEP_CONTROLLER_REMOTE_HARVESTER = "RemoteHarvester";
+type CREEP_CONTROLLER_EXTRACTOR = "Extractor";
+type CREEP_CONTROLLER_FILLER = "Filler";
+type CREEP_CONTROLLER_CHEMIST = "Chemist";
+type CREEP_CONTROLLER_MASON = "Mason";
 
 type BODY_LIGHT_WORKER = "LightWorker";
 type BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -141,7 +153,9 @@ type OperationType =
     OPERATION_EXTENSION_FILL |
     OPERATION_TERMINAL_CONSTRUCTION |
     OPERATION_OBSERVER_CONSTRUCTION |
-    OPERATION_STORAGE_LINK_CONSTRUCTION;
+    OPERATION_STORAGE_LINK_CONSTRUCTION |
+    OPERATION_WALL_CONSTRUCTION |
+    OPERATION_ROAD_CONSTRUCTION;
 
 type ProgressType =
     PROGRESS_STANDARD;
@@ -159,7 +173,11 @@ type CreepControllerType =
     CREEP_CONTROLLER_HAULER |
     CREEP_CONTROLLER_UPGRADER |
     CREEP_CONTROLLER_REMOTE_HAULER |
-    CREEP_CONTROLLER_REMOTE_HARVESTER;
+    CREEP_CONTROLLER_REMOTE_HARVESTER |
+    CREEP_CONTROLLER_EXTRACTOR |
+    CREEP_CONTROLLER_FILLER |
+    CREEP_CONTROLLER_CHEMIST |
+    CREEP_CONTROLLER_MASON;
 
 type BodyType =
     BODY_LIGHT_WORKER |

@@ -88,8 +88,7 @@ export class InfrastructurePlan extends OperationPlan {
                 break;
 
             case "rcl6":
-                this.addOperation(new ExtensionConstructionOperation(6));
-                //todo: build extension link
+                this.addOperation(new ExtensionConstructionOperation(6));                
                 break;
 
             case "thirdLink":
