@@ -105,9 +105,9 @@ export class StructureArtist {
 
     public drawRampart(x: number, y: number): void {
         let visual = new RoomVisual(this.room);
-        VisualUtility.roundedRectangle(visual, x - .5, y - .5, 1, 1, .1, {
+        VisualUtility.roundedRectangle(visual, x - .45, y - .45, .9, .9, .3, {
             fill: "#4F3535",
-            opacity: this.opacity * .3,
+            opacity: this.opacity * .6,
             stroke: "#954A4A"
         });
     }

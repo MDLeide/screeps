@@ -23,16 +23,10 @@ export class NestMapVisual {
                 let struct = this.nestMap.map.structures.getAt(x, y);
                 if (struct)
                     this.drawStructure(x, y, struct);
+                if (this.nestMap.map.ramparts.getAt(x, y))
+                    this.drawStructure(x, y, STRUCTURE_RAMPART);
             }
         }
-
-        //this.structures(this.nestMap.controllerBlock);
-        //this.structures(this.nestMap.extensionBlock);        
-        //this.structures(this.nestMap.labBlock);
-        //this.structures(this.nestMap.mainBlock);
-        //for (var i = 0; i < this.nestMap.harvestBlocks.length; i++) {
-        //    this.structures(this.nestMap.harvestBlocks[i]);
-        //}
     }
 
     public drawRcl(): void {
