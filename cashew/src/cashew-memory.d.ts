@@ -165,6 +165,7 @@ declare global {
         mainBlock: MapBlockMemory;
         controllerBlock: MapBlockMemory;
         labBlock: MapBlockMemory;
+        mineralBlock: MapBlockMemory;
     }
     
     /** END MAPS **/

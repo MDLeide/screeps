@@ -6,6 +6,7 @@ import { Map } from "./base/Map";
 import { Layer } from "./base/Layer";
 
 import { HarvestBlock } from "./blocks/HarvestBlock";
+import { MineralBlock } from "./blocks/MineralBlock";
 import { ExtensionBlock } from "./blocks/ExtensionBlock";
 import { MainBlock } from "./blocks/MainBlock";
 import { ControllerBlock } from "./blocks/ControllerBlock";
@@ -18,55 +19,36 @@ export class NestMapBuilder {
         private extensionProvider: IBlockProvider<ExtensionBlock>,
         private mainProvider: IBlockProvider<MainBlock>,
         private controllerProvider: IBlockProvider<ControllerBlock>,
-        private labProvider: IBlockProvider<LabBlock>) {
+        private labProvider: IBlockProvider<LabBlock>,
+        private mineralProvider: IBlockProvider<MineralBlock>) {
     }
 
     public getMap(room: Room): NestMap {        
         var map = this.makeBaseMap(room);
-               
-        var controllerBlock = this.getControllerBlock(room, map);
-        if (!controllerBlock) {
-            global.events.empire.nestMappingFailed(room.name, "controller block");
+
+        let controllerBlock = this.getAndAddBlock(room, map, this.getControllerBlock, "controller block");
+        if (!controllerBlock)
             return null;
-        }
-        this.addMapBlock(map, controllerBlock);
 
-        var harvestBlocks = this.getHarvestBlocks(room, map);
-        if (!harvestBlocks.length) {
-            global.events.empire.nestMappingFailed(room.name, "harvest block");
+        let harvestBlocks = this.getAndAddMultiBlocks(room, map, this.getHarvestBlocks, "harvest block");
+        if (!harvestBlocks || !harvestBlocks.length)
             return null;
-        }
-        for (var i = 0; i < harvestBlocks.length; i++)
-            this.addMapBlock(map, harvestBlocks[i]);
-
-        var extensionBlock = this.getExtensionBlock(room, map);
-        if (!extensionBlock) {
-            global.events.empire.nestMappingFailed(room.name, "extension block");
+        
+        let extensionBlock = this.getAndAddBlock(room, map, this.getExtensionBlock, "extension block");
+        if (!extensionBlock)
             return null;
-        }
-        this.addMapBlock(map, extensionBlock);
 
-        let mainBlock: MainBlock;
-        let spawn = room.find<StructureSpawn>(FIND_MY_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_SPAWN });
-        if (spawn.length) {
-            mainBlock = this.fitMainBlockToExistingSpawn(map, { x: spawn[0].pos.x, y: spawn[0].pos.y });
-        } else {
-            mainBlock = this.getMainBlock(room, map);
-        }
-        if (!mainBlock) {
-            global.events.empire.nestMappingFailed(room.name, "main block");
+        let mainBlock = this.getAndAddBlock(room, map, this.getMainBlock, "main block");
+        if (!mainBlock)
             return null;
-        }
 
-        this.addMapBlock(map, mainBlock);
-
-        var labBlock = this.getLabBlock(room, map);
-        if (!labBlock) {
-            global.events.empire.nestMappingFailed(room.name, "lab block");
+        let labBlock = this.getAndAddBlock(room, map, this.getLabBlock, "lab block");
+        if (!labBlock)
             return null;
-        }
 
-        this.addMapBlock(map, labBlock);
+        let mineralBlock = this.getAndAddBlock(room, map, this.getMineralBlock, "mineral block");
+        if (!mineralBlock)
+            return null;
 
         return new NestMap(
             map,
@@ -74,31 +56,33 @@ export class NestMapBuilder {
             extensionBlock,
             mainBlock,
             controllerBlock,
-            labBlock);
+            labBlock,
+            mineralBlock);
     }
 
-    private fitMainBlockToExistingSpawn(map: Map, spawnLocation: { x: number, y: number }): MainBlock {
-        let block = this.mainProvider.getNext();
-        while (block) {
-            for (var j = 0; j < 4; j++) {
-                for (var i = 1; i < 9; i++) {
-                    let localSpawn = block.getLocalSpawnLocation(i);
-                    if (localSpawn) {
-                        block.offset.x = spawnLocation.x - localSpawn.x;
-                        block.offset.y = spawnLocation.y - localSpawn.y;
-                        if (this.blockFits(block, map)) {
-                            this.mainProvider.reset();
-                            return block;
-                        }                        
-                    }
-                }
-                block = this.mainProvider.rotateClockwise(block);
-            }
-            block = this.mainProvider.getNext();
+
+    private getAndAddBlock<TMapBlock extends MapBlock>(room: Room, map: Map, delegate: (room: Room, map: Map) => TMapBlock, blockName: string): TMapBlock {
+        let block = delegate(room, map);
+        if (!block) {
+            global.events.empire.nestMappingFailed(room.name, blockName);
+            return null;
         }
-        return null;
+        this.addMapBlock(map, block);
+        return block;
     }
-    
+
+    private getAndAddMultiBlocks<TMapBlock extends MapBlock>(room: Room, map: Map, delegate: (room: Room, map: Map) => TMapBlock[], blockName: string): TMapBlock[] {
+        let blocks = delegate(room, map);
+        if (!blocks.length) {
+            global.events.empire.nestMappingFailed(room.name, blockName);
+            return null;
+        }
+        for (var i = 0; i < blocks.length; i++)
+            this.addMapBlock(map, blocks[i]);
+        return blocks;
+    }
+
+
     private makeBaseMap(room: Room): Map {
         room.lookAtArea(0, 0, 50, 50, true);
         var map = new Map(
@@ -130,6 +114,7 @@ export class NestMapBuilder {
             }
         }
     }
+
 
     private getControllerBlock(room: Room, map: Map): ControllerBlock {
         var block: ControllerBlock = this.controllerProvider.getNext();        
@@ -169,7 +154,16 @@ export class NestMapBuilder {
         return null;
     }
 
+
     private getMainBlock(room: Room, map: Map): MainBlock {
+        let spawn = room.find<StructureSpawn>(FIND_MY_STRUCTURES, { filter: (struct) => struct.structureType == STRUCTURE_SPAWN });
+        if (spawn.length)
+            return this.fitMainBlockToExistingSpawn(map, { x: spawn[0].pos.x, y: spawn[0].pos.y });
+        else
+            return this.getMainBlockNoSpawn(room, map);
+    }
+
+    private getMainBlockNoSpawn(room: Room, map: Map): MainBlock {
         var block: MainBlock = this.mainProvider.getNext();;
         while (block) {
             var w = Math.floor(block.width / 2);
@@ -183,11 +177,34 @@ export class NestMapBuilder {
                     this.mainProvider.reset();
                     return block;
                 }
-            }            
+            }
             block = this.mainProvider.getNext();
         }
         return null;
     }
+
+    private fitMainBlockToExistingSpawn(map: Map, spawnLocation: { x: number, y: number }): MainBlock {
+        let block = this.mainProvider.getNext();
+        while (block) {
+            for (var j = 0; j < 4; j++) {
+                for (var i = 1; i < 9; i++) {
+                    let localSpawn = block.getLocalSpawnLocation(i);
+                    if (localSpawn) {
+                        block.offset.x = spawnLocation.x - localSpawn.x;
+                        block.offset.y = spawnLocation.y - localSpawn.y;
+                        if (this.blockFits(block, map)) {
+                            this.mainProvider.reset();
+                            return block;
+                        }
+                    }
+                }
+                block = this.mainProvider.rotateClockwise(block);
+            }
+            block = this.mainProvider.getNext();
+        }
+        return null;
+    }
+
 
     private getHarvestBlocks(room: Room, map: Map): HarvestBlock[] {        
         var blocks = [];
@@ -240,7 +257,30 @@ export class NestMapBuilder {
         }
         return null;
     }
-            
+
+    private getMineralBlock(room: Room, map: Map): MineralBlock {
+        let block: MineralBlock = this.mineralProvider.getNext();
+        let mineralFind = room.find(FIND_MINERALS);
+        if (!mineralFind.length)
+            return null;
+        let mineral = mineralFind[0];
+        
+        while (block) {
+            for (var i = 0; i < 4; i++) {
+                var srcLoc = block.getLocalMineralLocation();
+                block.offset.x = mineral.pos.x - srcLoc.x;
+                block.offset.y = mineral.pos.y - srcLoc.y;
+                if (this.blockFits(block, map)) {
+                    this.harvestProvider.reset();
+                    return block;
+                }
+                block = this.mineralProvider.rotateClockwise(block);
+            }
+            block = this.mineralProvider.getNext();
+        }
+        return null;
+    }
+
     private blockFits(block: MapBlock, map: Map): boolean {        
         for (var x = -block.border; x < block.width + block.border; x++) {
             for (var y = -block.border; y < block.height + block.border; y++) {

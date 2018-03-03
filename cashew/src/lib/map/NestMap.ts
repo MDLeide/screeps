@@ -6,6 +6,7 @@ import { ExtensionBlock } from "./blocks/ExtensionBlock";
 import { MainBlock } from "./blocks/MainBlock";
 import { ControllerBlock } from "./blocks/ControllerBlock";
 import { LabBlock } from "./blocks/LabBlock";
+import { MineralBlock } from "./blocks/MineralBlock";
 
 export class NestMap {
     public static fromMemory(memory: NestMapMemory): NestMap {
@@ -19,9 +20,11 @@ export class NestMap {
             ExtensionBlock.fromMemory(memory.extensionBlock),
             MainBlock.fromMemory(memory.mainBlock),
             ControllerBlock.fromMemory(memory.controllerBlock),
-            LabBlock.fromMemory(memory.labBlock)
+            LabBlock.fromMemory(memory.labBlock),
+            MineralBlock.fromMemory(memory.mineralBlock)
         );
     }
+
 
     constructor(
         public map: Map,
@@ -29,8 +32,10 @@ export class NestMap {
         public extensionBlock: ExtensionBlock,
         public mainBlock: MainBlock,
         public controllerBlock: ControllerBlock,
-        public labBlock: LabBlock) {
+        public labBlock: LabBlock,
+        public mineralBlock: MineralBlock) {
     }
+
 
     public save(): NestMapMemory {
         var harvestBlocks: MapBlockMemory[] = [];
@@ -43,7 +48,8 @@ export class NestMap {
             extensionBlock: this.extensionBlock.save(),
             mainBlock: this.mainBlock.save(),
             controllerBlock: this.controllerBlock.save(),
-            labBlock: this.labBlock.save()
+            labBlock: this.labBlock.save(),
+            mineralBlock: this.mineralBlock.save()
         };
     }
 }

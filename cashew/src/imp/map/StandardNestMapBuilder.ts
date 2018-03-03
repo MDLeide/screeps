@@ -6,6 +6,7 @@ import { ExtensionBlockProvider } from "./ExtensionBlockProvider";
 import { HarvestBlockProvider } from "./HarvestBlockProvider";
 import { MainBlockProvider } from "./MainBlockProvider";
 import { LabBlockProvider } from "./LabBlockProvider";
+import { MineralBlockProvider } from "./MineralBlockProvider";
 
 export class StandardNestMapBuilder {
     public static getBuilder(): NestMapBuilder {
@@ -14,7 +15,8 @@ export class StandardNestMapBuilder {
             new ExtensionBlockProvider(),
             new MainBlockProvider(),
             new ControllerBlockProvider(),
-            new LabBlockProvider());
+            new LabBlockProvider(),
+            new MineralBlockProvider());
         return builder;
     }
 }
