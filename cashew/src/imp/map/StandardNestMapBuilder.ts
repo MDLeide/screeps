@@ -8,6 +8,8 @@ import { MainBlockProvider } from "./MainBlockProvider";
 import { LabBlockProvider } from "./LabBlockProvider";
 import { MineralBlockProvider } from "./MineralBlockProvider";
 
+import { WallProvider } from "./WallProvider";
+
 export class StandardNestMapBuilder {
     public static getBuilder(): NestMapBuilder {
         var builder = new NestMapBuilder(
@@ -16,7 +18,8 @@ export class StandardNestMapBuilder {
             new MainBlockProvider(),
             new ControllerBlockProvider(),
             new LabBlockProvider(),
-            new MineralBlockProvider());
+            new MineralBlockProvider(),
+            (r, m) => WallProvider.generateWalls(r, m));
         return builder;
     }
 }

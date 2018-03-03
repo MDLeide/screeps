@@ -20,7 +20,7 @@ export class Map {
         structures: Layer<StructureConstant>,
         ramparts: Layer<boolean>,
         special: Layer<number>) {
-
+        
         this.terrain = terrain;
         this.roads = roads;
         this.structures = structures;

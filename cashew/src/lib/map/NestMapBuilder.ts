@@ -20,38 +20,38 @@ export class NestMapBuilder {
         private mainProvider: IBlockProvider<MainBlock>,
         private controllerProvider: IBlockProvider<ControllerBlock>,
         private labProvider: IBlockProvider<LabBlock>,
-        private mineralProvider: IBlockProvider<MineralBlock>) {
+        private mineralProvider: IBlockProvider<MineralBlock>,
+        private wallProvider: (room: Room, nestMap: NestMap) => void) {
     }
 
     public getMap(room: Room): NestMap {        
         var map = this.makeBaseMap(room);
 
-        let controllerBlock = this.getAndAddBlock(room, map, this.getControllerBlock, "controller block");
+        let controllerBlock = this.getAndAddBlock(room, map, (r, m) => this.getControllerBlock(r, m), "controller block");
         if (!controllerBlock)
             return null;
 
-        let harvestBlocks = this.getAndAddMultiBlocks(room, map, this.getHarvestBlocks, "harvest block");
+        let harvestBlocks = this.getAndAddMultiBlocks(room, map, (r, m) => this.getHarvestBlocks(r, m), "harvest block");
         if (!harvestBlocks || !harvestBlocks.length)
             return null;
 
-        let mineralBlock = this.getAndAddBlock(room, map, this.getMineralBlock, "mineral block");
+        let mineralBlock = this.getAndAddBlock(room, map, (r, m) => this.getMineralBlock(r, m), "mineral block");
         if (!mineralBlock)
             return null;
-
-        
-        let extensionBlock = this.getAndAddBlock(room, map, this.getExtensionBlock, "extension block");
+                
+        let extensionBlock = this.getAndAddBlock(room, map, (r, m) => this.getExtensionBlock(r, m), "extension block");
         if (!extensionBlock)
             return null;
 
-        let mainBlock = this.getAndAddBlock(room, map, this.getMainBlock, "main block");
+        let mainBlock = this.getAndAddBlock(room, map, (r, m) => this.getMainBlock(r, m), "main block");
         if (!mainBlock)
             return null;
 
-        let labBlock = this.getAndAddBlock(room, map, this.getLabBlock, "lab block");
+        let labBlock = this.getAndAddBlock(room, map, (r, m) => this.getLabBlock(r, m), "lab block");
         if (!labBlock)
             return null;
-
-        return new NestMap(
+        
+        let nestMap = new NestMap(
             map,
             harvestBlocks,
             extensionBlock,
@@ -59,6 +59,9 @@ export class NestMapBuilder {
             controllerBlock,
             labBlock,
             mineralBlock);
+
+        this.wallProvider(room, nestMap);
+        return nestMap;
     }
 
 
@@ -261,16 +264,16 @@ export class NestMapBuilder {
 
     private getMineralBlock(room: Room, map: Map): MineralBlock {
         let block: MineralBlock = this.mineralProvider.getNext();
-        let mineralFind = room.find(FIND_MINERALS);
+        let mineralFind = room.find(FIND_MINERALS);        
         if (!mineralFind.length)
             return null;
         let mineral = mineralFind[0];
         
-        while (block) {
-            for (var i = 0; i < 4; i++) {
-                var srcLoc = block.getLocalMineralLocation();
-                block.offset.x = mineral.pos.x - srcLoc.x;
-                block.offset.y = mineral.pos.y - srcLoc.y;
+        while (block) {            
+            for (var i = 0; i < 4; i++) {                
+                var mineralLocation = block.getLocalMineralLocation();
+                block.offset.x = mineral.pos.x - mineralLocation.x;
+                block.offset.y = mineral.pos.y - mineralLocation.y;
                 if (this.blockFits(block, map)) {
                     this.harvestProvider.reset();
                     return block;
@@ -317,9 +320,10 @@ export class NestMapBuilder {
     private needsWalkable(x: number, y: number, block: MapBlock): boolean{
         if (block.getRoadAt(x, y))
             return true;
-        if (block.getStructureAt(x, y) != null)
-            return true;
-        return false;
+        let struct = block.getStructureAt(x, y);
+        if (struct == null || struct == undefined || struct == STRUCTURE_EXTRACTOR)
+            return false;
+        return true;
     }
 
     private ulamSpiral(n): { x: number, y: number, sq: number } {

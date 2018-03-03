@@ -1,5 +1,6 @@
 import { StructurePalette } from "./StructurePalette";
 import { BadgeArtist } from "./BadgeArtist";
+import { VisualUtility } from "./VisualUtility";
 
 export class StructureArtist {
 
@@ -86,9 +87,44 @@ export class StructureArtist {
             case "powerBank":
                 this.drawPowerBank(x, y, energyLevel);
                 break;
+            case "extractor":
+                this.drawExtractor(x, y);
+                break;
+            case "constructedWall":
+                this.drawWall(x, y);
+                break;
+            case "rampart":
+                this.drawRampart(x, y);
+                break;
             default:
-                throw Error("Structure not recognized.");                
+                throw Error(`Structure ${structure} not recognized.`);
         }
+    }
+
+
+
+    public drawRampart(x: number, y: number): void {
+        let visual = new RoomVisual(this.room);
+        VisualUtility.roundedRectangle(visual, x - .5, y - .5, 1, 1, .1, {
+            fill: "#4F3535",
+            opacity: this.opacity * .3,
+            stroke: "#954A4A"
+        });
+    }
+
+    public drawExtractor(x: number, y: number): void {
+        let visual = new RoomVisual(this.room);
+        visual.circle(x, y);
+        visual.text("E", x, y);
+    }
+
+    public drawWall(x: number, y: number): void {
+        let visual = new RoomVisual(this.room);
+        VisualUtility.roundedRectangle(visual, x - .5, y - .5, 1, 1, .1, {
+            fill: "#111111",
+            opacity: this.opacity,
+            stroke: "#0B0B0B"
+        });
     }
 
     /**
