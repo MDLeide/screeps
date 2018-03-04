@@ -38,9 +38,9 @@ export class EconomyPlan extends OperationPlan {
 
             case "harvestContainers":
                 let sources = colony.nest.room.find(FIND_SOURCES);
-                this.addOperation(new HarvestOperation(300, colony.resourceManager.sourceAId, colony.resourceManager.sourceAContainerOrLinkId));
+                this.addOperation(new HarvestOperation(300, colony.resourceManager.sourceAId, colony.resourceManager.structures.sourceAContainerOrLinkId));
                 if (colony.resourceManager.sourceBId)
-                    this.addOperation(new HarvestOperation(300, colony.resourceManager.sourceBId, colony.resourceManager.sourceBContainerOrLinkId));
+                    this.addOperation(new HarvestOperation(300, colony.resourceManager.sourceBId, colony.resourceManager.structures.sourceBContainerOrLinkId));
                 
                 this.addOperation(new LightUpgradeOperation());
                 break;
@@ -81,7 +81,7 @@ export class EconomyPlan extends OperationPlan {
                     if (this.operationGroup.operations[i].type == OPERATION_HARVEST) {
                         let harvestOp = this.operationGroup.operations[i] as HarvestOperation;
                         if (harvestOp.sourceId == colony.resourceManager.sourceAId) {
-                            harvestOp.changeContainerOrLink(colony.resourceManager.sourceAContainerOrLinkId);
+                            harvestOp.changeContainerOrLink(colony.resourceManager.structures.sourceAContainerOrLinkId);
                         }
                     }
                 }                
@@ -95,7 +95,7 @@ export class EconomyPlan extends OperationPlan {
                     if (this.operationGroup.operations[i].type == OPERATION_HARVEST) {
                         let harvestOp = this.operationGroup.operations[i] as HarvestOperation;
                         if (harvestOp.sourceId == colony.resourceManager.sourceBId) {
-                            harvestOp.changeContainerOrLink(colony.resourceManager.sourceBContainerOrLinkId);
+                            harvestOp.changeContainerOrLink(colony.resourceManager.structures.sourceBContainerOrLinkId);
                         }
                     }
                 }   

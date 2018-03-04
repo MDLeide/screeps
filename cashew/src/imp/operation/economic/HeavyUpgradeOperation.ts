@@ -87,9 +87,9 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     
     protected getController(assignment: Assignment): UpgraderController {
         return new UpgraderController(
-            this.colony.resourceManager.controllerContainerId,
+            this.colony.resourceManager.structures.controllerContainerId,
             this.colony.nest.room.controller.id,
-            this.colony.resourceManager.controllerLinkId);
+            this.colony.resourceManager.structures.controllerLinkId);
     }    
 }
 

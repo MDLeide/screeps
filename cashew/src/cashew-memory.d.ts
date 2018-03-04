@@ -38,15 +38,23 @@ declare global {
     }
 
     interface ResourceManagerMemory {
-        storageLinkId: string;
-        extensionLinkId: string;
-        controllerLinkId: string;
-        controllerContainerId: string;
-        transferPriority: number[];
+        settings: ResourceManagerSettingsMemory;
+        structures: ResourceManagerStructureMemory;
         sourceAId: string;
-        sourceBId: string;
+        sourceBId: string;             
+    }
+
+    interface ResourceManagerSettingsMemory {
+        transferPriority: number[];
+    }
+
+    interface ResourceManagerStructureMemory {
         sourceAContainerOrLinkId: string;
         sourceBContainerOrLinkId: string;
+        controllerContainerId: string;
+        storageLinkId: string;
+        extensionLinkId: string;
+        controllerLinkId: string;   
     }
 
     interface ColonyPlanMemory {

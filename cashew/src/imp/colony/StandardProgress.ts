@@ -20,9 +20,9 @@ export class StandardProgress {
                 "Harvest containers have been built",
                 (colony: Colony) => {
                     if (colony.resourceManager.sourceBId)
-                        return !_.isUndefined(colony.resourceManager.sourceAContainerOrLinkId) && !_.isUndefined(colony.resourceManager.sourceBContainerOrLinkId);
+                        return !_.isUndefined(colony.resourceManager.structures.sourceAContainerOrLinkId) && !_.isUndefined(colony.resourceManager.structures.sourceBContainerOrLinkId);
                     else
-                        return !_.isUndefined(colony.resourceManager.sourceAContainerOrLinkId);
+                        return !_.isUndefined(colony.resourceManager.structures.sourceAContainerOrLinkId);
                 }),
             new Milestone(
                 "rcl2",
@@ -95,7 +95,7 @@ export class StandardProgress {
                 "firstLinks",
                 "Room has its first set of links",
                 (colony: Colony) => {
-                    return colony.resourceManager.sourceAContainerOrLink instanceof StructureLink && colony.resourceManager.controllerLink instanceof StructureLink;
+                    return colony.resourceManager.structures.sourceAContainerOrLink instanceof StructureLink && colony.resourceManager.structures.controllerLink instanceof StructureLink;
                 }),
             new Milestone(
                 "rcl6",
@@ -107,7 +107,7 @@ export class StandardProgress {
                 "thirdLink",
                 "Room has third link (extension link) built",
                 (colony: Colony) => {
-                    return !_.isUndefined(colony.resourceManager.sourceBId) && colony.resourceManager.sourceBContainerOrLink instanceof StructureLink;
+                    return !_.isUndefined(colony.resourceManager.sourceBId) && colony.resourceManager.structures.sourceBContainerOrLink instanceof StructureLink;
                 }),
             new Milestone(
                 "extractor",
@@ -143,7 +143,7 @@ export class StandardProgress {
                 "fourthLink",
                 "Room has its fourth link (harvest link) built",
                 (colony: Colony) => {
-                    return !_.isUndefined(colony.resourceManager.extensionLink);
+                    return !_.isUndefined(colony.resourceManager.structures.extensionLink);
                 }),
             new Milestone(
                 "sixthLab",
@@ -173,7 +173,7 @@ export class StandardProgress {
                 "storageLink",
                 "Room has its fifth link (storage link) built",
                 (colony: Colony) => {
-                    return !_.isUndefined(colony.resourceManager.storageLink);
+                    return !_.isUndefined(colony.resourceManager.structures.storageLink);
                 }),
             new Milestone(
                 "labs",

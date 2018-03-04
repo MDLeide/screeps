@@ -31,8 +31,8 @@ export class ControllerInfrastructureOperation extends ConstructionOperation {
         var look = colony.nest.room.lookForAt(LOOK_STRUCTURES, containerLocation.x, containerLocation.y);
         for (var i = 0; i < look.length; i++) {
             if (look[i].structureType == STRUCTURE_CONTAINER) {
-                colony.resourceManager.controllerContainerId = look[i].id;
-                colony.resourceManager.controllerContainer = look[i] as StructureContainer;
+                colony.resourceManager.structures.controllerContainerId = look[i].id;
+                colony.resourceManager.structures.controllerContainer = look[i] as StructureContainer;
                 return true;
             }
         }

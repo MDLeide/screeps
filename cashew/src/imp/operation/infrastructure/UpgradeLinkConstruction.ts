@@ -32,8 +32,8 @@ export class UpgradeLinkConstructionOperation extends ConstructionOperation {
         let linkLook = colony.nest.room.lookForAt(LOOK_STRUCTURES, linkLocation.x, linkLocation.y);
         if (linkLook.length) {
             if (linkLook[0].structureType == STRUCTURE_LINK) {
-                colony.resourceManager.controllerLink = linkLook[0] as StructureLink;
-                colony.resourceManager.controllerLinkId = linkLook[0].id;
+                colony.resourceManager.structures.controllerLink = linkLook[0] as StructureLink;
+                colony.resourceManager.structures.controllerLinkId = linkLook[0].id;
             }
         }
         return super.onFinish(colony);
