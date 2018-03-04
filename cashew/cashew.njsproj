@@ -53,6 +53,7 @@
     <Folder Include="src\lib\map\base\" />
     <Folder Include="src\lib\map\blocks\" />
     <Folder Include="src\lib\map\" />
+    <Folder Include="src\lib\util\visual\lib\" />
     <Folder Include="src\yagni\colonyPlan\" />
     <Folder Include="src\lib\util\dbg\" />
     <Folder Include="src\lib\util\reports\" />
@@ -167,7 +168,13 @@
     <TypeScriptCompile Include="src\lib\util\RoomHelper.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\util\visual\VisualUtility.ts">
+    <TypeScriptCompile Include="src\lib\util\visual\EnergyStatsVisual.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\visual\lib\VisualText.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\visual\lib\VisualUtility.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\StandardPlan.ts">
@@ -251,11 +258,11 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\reports\OperationReport.ts" />
     <TypeScriptCompile Include="src\lib\util\reports\Reporter.ts" />
-    <TypeScriptCompile Include="src\lib\util\visual\BadgeArtist.ts" />
+    <TypeScriptCompile Include="src\lib\util\visual\lib\BadgeArtist.ts" />
     <TypeScriptCompile Include="src\lib\util\visual\NestMapVisual.ts" />
-    <TypeScriptCompile Include="src\lib\util\visual\Palette.ts" />
-    <TypeScriptCompile Include="src\lib\util\visual\StructureArtist.ts" />
-    <TypeScriptCompile Include="src\lib\util\visual\StructurePalette.ts" />
+    <TypeScriptCompile Include="src\lib\util\visual\lib\Palette.ts" />
+    <TypeScriptCompile Include="src\lib\util\visual\lib\StructureArtist.ts" />
+    <TypeScriptCompile Include="src\lib\util\visual\lib\StructurePalette.ts" />
     <TypeScriptCompile Include="src\lib\util\visual\Visuals.ts" />
     <TypeScriptCompile Include="src\yagni\ActivityBuilder.ts" />
     <TypeScriptCompile Include="src\yagni\RoleBuilder.ts" />

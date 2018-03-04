@@ -32,8 +32,19 @@ export class Body {
             this.scalingPartCost += BODYPART_COST[this.scalingParts[i]];        
     }
 
+
+    public static getBodyCost(parts: BodyPartConstant[]): number {
+        let cost = 0;
+        for (var i = 0; i < parts.length; i++)
+            cost += BODYPART_COST[parts[i]];
+        return cost;
+    }
+
+
+
     public constantPartCost: number = 0;
     public scalingPartCost: number = 0;
+
 
     public getBody(energy: number): BodyPartConstant[] {
         if (energy < this.minimumEnergy)

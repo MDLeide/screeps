@@ -76,7 +76,7 @@ export class UpgraderController extends CreepController {
             }
         }
 
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
 
         if (this.repaired) {
             let upgradeResponse = creep.upgradeController(this.controller);

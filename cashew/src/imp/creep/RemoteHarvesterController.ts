@@ -60,7 +60,7 @@ export class RemoteHarvesterController extends CreepController {
                     this.containerId = containers[i].id;
                     this.container = containers[i] as StructureContainer;
 
-                    let colony = global.empire.getCreepsColony(creep);
+                    let colony = global.empire.getColonyByCreep(creep);
                     let remoteSource = colony.remoteMiningManager.getRemoteSourceById(this.sourceId);
                     if (remoteSource)
                         remoteSource.containerId = this.containerId;
@@ -98,7 +98,7 @@ export class RemoteHarvesterController extends CreepController {
     protected onCleanup(creep: Creep): void { }
 
     private build(creep: Creep): void {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
 
         if (creep.carry.energy >= 25) {
             let response = creep.build(this.site);
@@ -118,7 +118,7 @@ export class RemoteHarvesterController extends CreepController {
     }
 
     private repair(creep: Creep): void {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
 
         if (creep.carry.energy >= 25) {
             let response = creep.repair(this.container);
@@ -142,7 +142,7 @@ export class RemoteHarvesterController extends CreepController {
     }
 
     private harvest(creep: Creep): void {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
         let response = creep.harvest(this.source);
 
         if (response == ERR_NOT_IN_RANGE) {

@@ -83,7 +83,7 @@ export class MasonController extends CreepController {
     }
 
     protected onExecute(creep: Creep): void {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
 
         if (creep.carry.energy > 0) {
             if (this.site) {
@@ -103,7 +103,7 @@ export class MasonController extends CreepController {
             }
         } else {
             if (!this.pickup) {
-                let colony = global.empire.getCreepsColony(creep);
+                let colony = global.empire.getColonyByCreep(creep);
                 this.pickup = colony.resourceManager.getWithdrawTarget(creep);
                 if (this.pickup)
                     this.pickupId = this.pickup.id;

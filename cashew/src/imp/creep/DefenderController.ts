@@ -48,7 +48,7 @@ export class DefenderController extends CreepController {
             }
         }
 
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
         let atkTarget = colony.watchtower.attackTarget;                
 
         if (!didHeal && !didRangedHeal && creep.getActiveBodyparts(ATTACK) > 0) {

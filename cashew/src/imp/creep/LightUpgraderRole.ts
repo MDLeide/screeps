@@ -14,7 +14,7 @@ export class LightUpgraderRole extends Role {
     //public supplySpawn: boolean = true;    // not saving this to memory, so just hardcoding as 'true' for now
 
     protected getNextTask(creep: Creep): Task {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
 
         if (!this.currentTask ||
             this.currentTask.type == TASK_TRANSFER ||
@@ -40,7 +40,7 @@ export class LightUpgraderRole extends Role {
     }
 
     protected isIdle(creep: Creep): Task {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
         if (creep.carry.energy > 0) {
             //if (this.supplySpawn) {
             let spawnTarget = colony.resourceManager.getSpawnExtensionTransferTargets(creep);

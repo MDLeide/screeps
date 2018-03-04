@@ -1,5 +1,6 @@
 import { ColonyFinder } from "./ColonyFinder";
 import { Colony } from "../colony/Colony";
+import { Nest } from "../colony/Nest";
 import { NestMapBuilder } from "../map/NestMapBuilder";
 
 export class Empire {
@@ -12,6 +13,14 @@ export class Empire {
 
     public colonies: Colony[];
 
+    public getColonyBySpawn(spawn: StructureSpawn): Colony {
+        for (var i = 0; i < this.colonies.length; i++)
+            for (var j = 0; j < this.colonies[i].nest.spawners.length; j++)
+                if (this.colonies[i].nest.spawners[j].spawnId == spawn.id)
+                    return this.colonies[i];
+        return null;
+    }
+
     public getColonyByName(colony: string): Colony {
         for (var i = 0; i < this.colonies.length; i++)
             if (this.colonies[i].name == colony)
@@ -19,7 +28,15 @@ export class Empire {
         return null;
     }
 
-    public getCreepsColony(creep: (Creep | string)): Colony {
+    public getColonyByNest(nest: Nest): Colony {
+        for (var i = 0; i < this.colonies.length; i++) {
+            if (this.colonies[i].nest.roomName == nest.roomName)
+                return this.colonies[i];
+        }
+        return null;
+    }
+
+    public getColonyByCreep(creep: (Creep | string)): Colony {
         for (var i = 0; i < this.colonies.length; i++) {
             if (this.colonies[i].creepBelongsToColony(creep))
                 return this.colonies[i];

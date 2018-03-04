@@ -20,7 +20,7 @@ export class MemoryManager {
             Memory.visuals = {
                 drawNestMapSpecials: false,
                 drawNestMapStructures: false,
-                wallTestRoom: undefined
+                drawColonyEnergyStats: true
             }
     }
 

@@ -35,7 +35,7 @@ export class BuilderJob extends Job {
     }
 
     protected getNextTask(creep: Creep): Task {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
         
         if (creep.carry.energy > 0) {
             return Task.Build(this.targetSite);

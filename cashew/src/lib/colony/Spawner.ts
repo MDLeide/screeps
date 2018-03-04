@@ -32,9 +32,10 @@ export class Spawner {
             return null;
         }
 
+        let finalBody = body.getBody(this.spawn.room.energyAvailable);        
         var name = CreepNamer.getCreepName(body, this);
         var result = this.spawn.spawnCreep(
-            body.getBody(this.spawn.room.energyAvailable),
+            finalBody,
             name,
             {
                 memory: {
@@ -48,6 +49,8 @@ export class Spawner {
 
         if (result == OK) {
             this._startedThisTick = name;
+            let colony = global.empire.getColonyBySpawn(this.spawn);
+            colony.resourceManager.ledger.registerSpawn(Body.getBodyCost(finalBody));
             return name;
         } else if (result == ERR_NAME_EXISTS) {
             global.events.colony.spawnError(this.spawn.name, body.type, "Name already exists.");

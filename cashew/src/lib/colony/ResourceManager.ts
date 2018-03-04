@@ -17,8 +17,10 @@ export class ResourceManager {
 
     constructor(colony: Colony) {
         this.colony = colony;
+        this.settings = new ResourceManagerSettings();
         this.transfers = new Transfers(this);
         this.withdraws = new Withdraws(this);
+        this.structures = new Structures();
         this.ledger = new Ledger();
     }
 
@@ -68,11 +70,17 @@ export class ResourceManager {
             this.structures.storageLink = Game.getObjectById<StructureLink>(this.structures.storageLinkId);
     }
 
-    public update(): void { }
+    public update(): void {
+        this.ledger.update();
+    }
 
-    public execute(): void { }
+    public execute(): void {
+        this.ledger.execute();
+    }
 
-    public cleanup(): void { }
+    public cleanup(): void {
+        this.ledger.cleanup();
+    }
 
 
     public getTransferTarget(creep: Creep): TransferTarget {
@@ -118,13 +126,13 @@ export class ResourceManager {
     }
 }
 
-class Ledger {
+export class Ledger {
     public static fromMemory(memory: ResourceManagerLedgerMemory): Ledger {
         let ledger = new this();
-        ledger.lastTick = memory.lastTick;
-        ledger.currentGeneration = memory.currentGeneration;
-        ledger.lastGeneration = memory.lastGeneration;
-        ledger.history = memory.history;
+        ledger.lastTick = memory.lastTick as LedgerPeriod;
+        ledger.currentGeneration = memory.currentGeneration as LedgerPeriod;
+        ledger.lastGeneration = memory.lastGeneration as LedgerPeriod;
+        ledger.history = memory.history as LedgerPeriod[];
         ledger.tickOffset = memory.tickOffset;
         return ledger;
     }
@@ -134,9 +142,13 @@ class Ledger {
         this.thisTick = new LedgerPeriod();
         this.lastTick = new LedgerPeriod();
         this.currentGeneration = new LedgerPeriod();
+        this.currentGeneration.startTick = Game.time;
+        this.currentGeneration.ticks = 0;
         this.lastGeneration = new LedgerPeriod();
         this.history = [];
-        this.tickOffset = Game.time % 1500;
+        this.tickOffset = Game.time % 1500 - 1;
+        if (this.tickOffset < 0)
+            this.tickOffset = 1499;
     }
 
 
@@ -172,6 +184,7 @@ class Ledger {
         this.currentGeneration.terminalTransferEnergy += this.thisTick.terminalTransferEnergy;
 
         this.currentGeneration.netEnergy += this.thisTick.netEnergy;
+        this.currentGeneration.ticks++;
 
         if (Game.time % 1500 == this.tickOffset) {            
             let temp = [];
@@ -182,7 +195,7 @@ class Ledger {
             this.history = temp;
             this.lastGeneration = this.currentGeneration;
             this.currentGeneration = new LedgerPeriod();
-            this.currentGeneration.ticks = 1500;
+            this.currentGeneration.ticks = 0;
             this.currentGeneration.startTick = Game.time;
         }
     }
@@ -262,7 +275,7 @@ class Ledger {
     }
 }
 
-class LedgerPeriod {
+export class LedgerPeriod {
     public startTick: number = 0;
     public ticks: number = 0;
 

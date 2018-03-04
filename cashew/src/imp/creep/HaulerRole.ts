@@ -7,7 +7,7 @@ export class HaulerRole extends Role {
     }
 
     protected getNextTask(creep: Creep): Task {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
 
         if (creep.carry.energy > 0) {
             let transferTarget = colony.resourceManager.getTransferTarget(creep);

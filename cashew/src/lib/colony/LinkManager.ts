@@ -14,6 +14,8 @@ export class LinkManager {
             let target = colony.resourceManager.getLinkTransferTarget();
             if (target) {
                 link.transferEnergy(target);
+                colony.resourceManager.ledger.registerLinkTransferCost(
+                    Math.min(link.energy, target.energyCapacity - target.energy) * .03);
             }
         }
     }

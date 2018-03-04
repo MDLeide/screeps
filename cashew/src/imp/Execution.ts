@@ -1,4 +1,3 @@
-import { ConcreteClass } from "../lib/creep/Task";
 import { Empire } from "../lib/empire/Empire"
 import { ColonyFinder } from "../lib/empire/ColonyFinder";
 import { NestMapBuilder } from "../lib/map/NestMapBuilder";

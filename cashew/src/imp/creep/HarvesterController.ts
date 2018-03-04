@@ -60,7 +60,7 @@ export class HarvesterController extends CreepController {
     protected onCleanup(creep: Creep): void { }
 
     private repair(creep: Creep): void {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
 
         if (creep.carry.energy >= 25) {
             if (creep.repair(this.containerOrLink) == OK)
@@ -78,7 +78,7 @@ export class HarvesterController extends CreepController {
     }
     
     private harvest(creep: Creep): void {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
 
         if (creep.harvest(this.source) == OK)
             colony.resourceManager.ledger.registerHarvest(

@@ -32,7 +32,7 @@ export class HarvestInfrastructureBuilderController extends CreepController {
 
     protected onExecute(creep: Creep): void {
         var source = Game.getObjectById<Source>(this.sourceId);
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
 
         if (this.harvest) {            
             let response = creep.harvest(source);

@@ -339,7 +339,7 @@ export class Build extends TargetedTask<ConstructionSite> {
     }
 
     public execute(creep: Creep): void {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
 
         var response = creep.build(this.target);
         if (response == OK) {
@@ -383,7 +383,7 @@ export class Upgrade extends TargetedTask<StructureController> {
     }
 
     public execute(creep: Creep): void {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
 
         var response = creep.upgradeController(this.target);
         if (response == OK) {
@@ -429,7 +429,7 @@ export class Repair extends TargetedTask<Structure> {
     }
 
     public execute(creep: Creep): void {
-        let colony = global.empire.getCreepsColony(creep);
+        let colony = global.empire.getColonyByCreep(creep);
 
         var response = creep.repair(this.target);
         if (response == OK) {
