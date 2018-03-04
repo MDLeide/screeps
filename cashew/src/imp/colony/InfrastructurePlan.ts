@@ -9,6 +9,7 @@ import { StorageConstructionOperation } from "../operation/infrastructure/Storag
 import { TowerConstructionOperation } from "../operation/infrastructure/TowerConstructionOperation";
 import { HarvestLinkConstructionOperation } from "../operation/infrastructure/HarvestLinkConstructionOperation";
 import { UpgradeLinkConstructionOperation } from "../operation/infrastructure/UpgradeLinkConstruction";
+import { WallConstructionOperation } from "../operation/infrastructure/WallConstructionOperation";
 
 export class InfrastructurePlan extends OperationPlan {
     public static fromMemory(memory: OperationPlanMemory): InfrastructurePlan {
@@ -49,6 +50,7 @@ export class InfrastructurePlan extends OperationPlan {
 
             case "rcl2":
                 this.addOperation(new ExtensionConstructionOperation(2));
+                this.addOperation(new WallConstructionOperation());
                 break;
 
             case "fiveExtensions":

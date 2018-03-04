@@ -90,6 +90,9 @@
     <TypeScriptCompile Include="src\imp\colony\StandardProgress.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\colony\WallPlan.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\ChemistController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

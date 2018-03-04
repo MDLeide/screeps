@@ -18,14 +18,40 @@ export class WallConstructionOperation extends ControllerOperation {
     }
 
     private static getAssignments(): Assignment[]{
-        return [            
+        return [
+            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_MASON)
         ];
+    }
+
+
+    private checkSites(colony: Colony): void {
+        for (var x = 0; x < 50; x++) {
+            for (var y = 0; y < 50; y++) {
+                if (colony.nest.nestMap.map.getStructureAt(x, y) == STRUCTURE_WALL) {
+                    let look = colony.nest.room.lookForAt(LOOK_STRUCTURES, x, y);
+                    for (var i = 0; i < look.length; i++)
+                        if (look[i].structureType == STRUCTURE_WALL)
+                            continue;
+
+                    colony.nest.room.createConstructionSite(x, y, STRUCTURE_WALL);
+                } else if (colony.nest.nestMap.map.getRampartAt(x, y)) {
+                    let look = colony.nest.room.lookForAt(LOOK_STRUCTURES, x, y);
+                    for (var i = 0; i < look.length; i++)
+                        if (look[i].structureType == STRUCTURE_RAMPART)
+                            continue;
+
+                    colony.nest.room.createConstructionSite(x, y, STRUCTURE_RAMPART);
+                }
+            }
+        }
     }
 
 
     protected onLoad(): void { }
 
     protected onUpdate(colony: Colony): void {
+        if (Game.time % 250 == 0)
+            this.checkSites(colony);
     }
 
     protected onExecute(colony: Colony): void {
@@ -36,6 +62,7 @@ export class WallConstructionOperation extends ControllerOperation {
 
 
     public canInit(colony: Colony): boolean {
+        this.checkSites(colony);
         return true;
     }
     
@@ -44,7 +71,7 @@ export class WallConstructionOperation extends ControllerOperation {
     }
     
     public isFinished(colony: Colony): boolean {
-        return true;
+        return false;
     }
 
 
@@ -76,10 +103,5 @@ export class WallConstructionOperation extends ControllerOperation {
 
     protected getController(assignment: Assignment): MasonController {
         return new MasonController();
-    }
-
-
-    protected onSave(): ControllerOperationMemory {
-        return null;
-    }
+    }    
 }

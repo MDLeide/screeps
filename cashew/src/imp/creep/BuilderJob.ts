@@ -37,28 +37,19 @@ export class BuilderJob extends Job {
     protected getNextTask(creep: Creep): Task {
         let colony = global.empire.getCreepsColony(creep);
         
-        if (!this.currentTask || this.currentTask.type == TASK_BUILD) {
+        if (creep.carry.energy > 0) {
+            return Task.Build(this.targetSite);
+        } else {
             let withdrawTarget = colony.resourceManager.getWithdrawTarget(creep);
             if (withdrawTarget)
                 return Task.Withdraw(withdrawTarget);
-        } else if (creep.carry.energy > 0) {
-            return Task.Build(this.targetSite);
         }
 
         return null;
     }
 
     protected isIdle(creep: Creep): Task {
-        if (creep.carry.energy > 0) {
-            return Task.Build(this.targetSite);
-        }
-        else {
-            let colony = global.empire.getCreepsColony(creep);
-            let withdrawTarget = colony.resourceManager.getWithdrawTarget(creep);
-            if (withdrawTarget)
-                return Task.Withdraw(withdrawTarget);
-        }
-        return null;
+        return this.getNextTask(creep);
     }
 
 
