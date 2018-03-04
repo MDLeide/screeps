@@ -17,8 +17,6 @@ export class LightUpgradeOperation extends ControllerOperation {
 
     private static getAssignments(): Assignment[] {
         return [
-            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_LIGHT_UPGRADER),
-            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_LIGHT_UPGRADER),
             new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_LIGHT_UPGRADER)
         ]
     }
