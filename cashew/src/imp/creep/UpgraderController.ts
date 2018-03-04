@@ -55,12 +55,7 @@ export class UpgraderController extends CreepController {
 
     protected onExecute(creep: Creep): void {
         let workCount = creep.getActiveBodyparts(WORK);
-
-        if (this.container && creep.pos.getRangeTo(this.container) > 1) {
-            creep.moveTo(this.container);
-            return;
-        }
-
+        
         if (creep.carry.energy < workCount * 2) {
             let withdrawTarget: WithdrawTarget;
 
@@ -74,6 +69,10 @@ export class UpgraderController extends CreepController {
                     creep.moveTo(withdrawTarget);
                     return;
                 }                
+            } else {
+                if (creep.pos.getRangeTo(creep.room.controller) > 3) {
+                    creep.moveTo(creep.room.controller);
+                }
             }
         }
 
