@@ -239,8 +239,13 @@ class Ledger {
         this.thisTick.netEnergy -= energy;
     }
 
-    public registerTerminalCost(energy: number): void {
+    public registerTerminalTransferCost(energy: number): void {
         this.thisTick.terminalTransferEnergy += energy;
+        this.thisTick.netEnergy -= energy;
+    }
+
+    public registerLinkTransferCost(energy: number): void {
+        this.thisTick.linkTransferEnergy += energy;
         this.thisTick.netEnergy -= energy;
     }
 
@@ -273,6 +278,7 @@ class LedgerPeriod {
     public empireOutgoingEnergy: number = 0;
     public marketSellEnergy: number = 0;
     public terminalTransferEnergy: number = 0;
+    public linkTransferEnergy: number = 0;
 
     public netEnergy: number = 0;
 }

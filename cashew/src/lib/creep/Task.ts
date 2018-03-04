@@ -1,31 +1,3 @@
-export abstract class BaseClass {
-    public static fromMemory(instance: BaseClass): BaseClass {
-        instance.baseProperty = "value";
-        return instance;
-    }
-
-    public baseProperty: string;
-}
-
-export abstract class IntermediateClass extends BaseClass {
-    public static fromMemory(instance: IntermediateClass): BaseClass {
-        instance.intermediateProperty = "value";
-        return BaseClass.fromMemory(instance) as IntermediateClass;
-    }
-
-    public intermediateProperty: string;
-}
-
-export class ConcreteClass extends IntermediateClass {
-    public static fromMemory() : BaseClass {
-        let instance = new this();
-        instance.concreteProperty = "value";
-        return IntermediateClass.fromMemory(instance);
-    }
-
-    public concreteProperty: string;
-}
-
 export abstract class Task {
     public static fromMemory(memory: TaskMemory, instance: Task): Task {
         instance.complete = memory.complete;
@@ -367,9 +339,15 @@ export class Build extends TargetedTask<ConstructionSite> {
     }
 
     public execute(creep: Creep): void {
+        let colony = global.empire.getCreepsColony(creep);
+
         var response = creep.build(this.target);
-        if (response == OK)
+        if (response == OK) {
+            if (colony)
+                colony.resourceManager.ledger.registerBuild(
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * BUILD_POWER));         
             return;
+        }
         else if (response == ERR_NOT_IN_RANGE)
             creep.moveTo(this.target);
         else if (response == ERR_NOT_OWNER)
@@ -405,9 +383,15 @@ export class Upgrade extends TargetedTask<StructureController> {
     }
 
     public execute(creep: Creep): void {
+        let colony = global.empire.getCreepsColony(creep);
+
         var response = creep.upgradeController(this.target);
-        if (response == OK)
+        if (response == OK) {
+            if (colony)
+                colony.resourceManager.ledger.registerUpgrade(
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * UPGRADE_CONTROLLER_POWER));
             return;
+        }            
         else if (response == ERR_NOT_IN_RANGE)
             creep.moveTo(this.target);
         else if (response == ERR_NOT_OWNER)
@@ -445,9 +429,15 @@ export class Repair extends TargetedTask<Structure> {
     }
 
     public execute(creep: Creep): void {
+        let colony = global.empire.getCreepsColony(creep);
+
         var response = creep.repair(this.target);
-        if (response == OK)
+        if (response == OK) {
+            if (colony)
+                colony.resourceManager.ledger.registerRepair(
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * REPAIR_POWER));
             return;
+        }            
         else if (response == ERR_NOT_IN_RANGE)
             creep.moveTo(this.target);
         else if (response == ERR_NOT_ENOUGH_RESOURCES)

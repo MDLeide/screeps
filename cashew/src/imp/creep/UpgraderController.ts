@@ -76,12 +76,22 @@ export class UpgraderController extends CreepController {
             }
         }
 
+        let colony = global.empire.getCreepsColony(creep);
+
         if (this.repaired) {
-            if (creep.upgradeController(this.controller) == ERR_NOT_IN_RANGE)
+            let upgradeResponse = creep.upgradeController(this.controller);
+            if (upgradeResponse == ERR_NOT_IN_RANGE)
                 creep.moveTo(this.controller);
+            else if (upgradeResponse == OK)
+                colony.resourceManager.ledger.registerUpgrade(
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * UPGRADE_CONTROLLER_POWER));
         } else {
-            if (creep.repair(this.container) == ERR_NOT_IN_RANGE)
+            let repairResponse = creep.repair(this.container);
+            if (repairResponse == ERR_NOT_IN_RANGE)
                 creep.moveTo(this.container);
+            else if (repairResponse == OK)
+                colony.resourceManager.ledger.registerRepair(
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * REPAIR_POWER));
         }    
     }
 

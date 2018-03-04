@@ -98,26 +98,42 @@ export class RemoteHarvesterController extends CreepController {
     protected onCleanup(creep: Creep): void { }
 
     private build(creep: Creep): void {
+        let colony = global.empire.getCreepsColony(creep);
+
         if (creep.carry.energy >= 25) {
             let response = creep.build(this.site);
             if (response == ERR_NOT_IN_RANGE)
                 creep.moveTo(this.site);
+            else if (response == OK)
+                colony.resourceManager.ledger.registerBuild(
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * BUILD_POWER));
         } else {
             let response = creep.harvest(this.source);
             if (response == ERR_NOT_IN_RANGE)
                 creep.moveTo(this.source);
+            else if (response == OK)
+                colony.resourceManager.ledger.registerRemoteHarvest(
+                    creep.getActiveBodyparts(WORK) * HARVEST_POWER);            
         }
     }
 
     private repair(creep: Creep): void {
+        let colony = global.empire.getCreepsColony(creep);
+
         if (creep.carry.energy >= 25) {
             let response = creep.repair(this.container);
             if (response == ERR_NOT_IN_RANGE)
                 creep.moveTo(this.container);
+            else if (response == OK)
+                colony.resourceManager.ledger.registerRepair(
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * REPAIR_POWER));
         } else {
             let response = creep.harvest(this.source);
             if (response == ERR_NOT_IN_RANGE)
                 creep.moveTo(this.source);
+            else if (response == OK)
+                colony.resourceManager.ledger.registerRemoteHarvest(
+                    creep.getActiveBodyparts(WORK) * HARVEST_POWER);
         }
     }
 
@@ -126,11 +142,17 @@ export class RemoteHarvesterController extends CreepController {
     }
 
     private harvest(creep: Creep): void {
+        let colony = global.empire.getCreepsColony(creep);
         let response = creep.harvest(this.source);
+
         if (response == ERR_NOT_IN_RANGE) {
             creep.moveTo(this.source);
             return;
+        } else if (response == OK) {
+            colony.resourceManager.ledger.registerRemoteHarvest(
+                creep.getActiveBodyparts(WORK) * HARVEST_POWER);
         }
+
         let transferResponse = creep.transfer(this.container, RESOURCE_ENERGY);
         if (transferResponse == ERR_NOT_IN_RANGE) {
             creep.moveTo(this.container);

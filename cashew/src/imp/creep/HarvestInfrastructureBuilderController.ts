@@ -32,10 +32,15 @@ export class HarvestInfrastructureBuilderController extends CreepController {
 
     protected onExecute(creep: Creep): void {
         var source = Game.getObjectById<Source>(this.sourceId);
+        let colony = global.empire.getCreepsColony(creep);
+
         if (this.harvest) {            
             let response = creep.harvest(source);
             if (response == ERR_NOT_IN_RANGE)
                 creep.moveTo(source);
+            else if (response == OK)
+                colony.resourceManager.ledger.registerHarvest(
+                    creep.getActiveBodyparts(WORK) * HARVEST_POWER);
         } else {
             var spawn = source.room.find<StructureSpawn>(FIND_MY_STRUCTURES, {
                 filter: (spawn) => { return spawn.structureType == STRUCTURE_SPAWN }
@@ -50,6 +55,9 @@ export class HarvestInfrastructureBuilderController extends CreepController {
                 let response = creep.build(site);
                 if (response == ERR_NOT_IN_RANGE)
                     creep.moveTo(site);
+                else if (response == OK)
+                    colony.resourceManager.ledger.registerBuild(
+                        Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * BUILD_POWER));
             }
         }
     }
