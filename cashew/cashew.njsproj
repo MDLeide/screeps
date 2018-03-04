@@ -45,6 +45,7 @@
     <Folder Include="src\imp\operation\" />
     <Folder Include="src\imp\operation\economic\" />
     <Folder Include="src\imp\operation\infrastructure\" />
+    <Folder Include="src\imp\operation\military\" />
     <Folder Include="src\imp\registration\" />
     <Folder Include="src\lib\" />
     <Folder Include="src\imp\" />
@@ -80,6 +81,9 @@
     <TypeScriptCompile Include="src\global.d.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\colony\DefensePlan.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\colony\EconomyPlan.ts" />
     <TypeScriptCompile Include="src\imp\colony\InfrastructurePlan.ts">
       <SubType>Code</SubType>
@@ -88,9 +92,6 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\colony\StandardProgress.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\colony\WallPlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\ChemistController.ts">
@@ -107,6 +108,7 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\RemoteHaulerRole.ts" />
     <TypeScriptCompile Include="src\imp\creep\RemoteHarvesterController.ts" />
+    <TypeScriptCompile Include="src\imp\creep\DefenderController.ts" />
     <TypeScriptCompile Include="src\imp\map\MineralBlockProvider.ts" />
     <TypeScriptCompile Include="src\imp\map\WallProvider.ts">
       <SubType>Code</SubType>
@@ -129,6 +131,9 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\infrastructure\UpgradeLinkConstruction.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\HarvestLinkConstructionOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\military\RoomDefenseOperation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\registration\ColonyProgressRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -154,6 +159,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\Calculator.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\MilitaryCalculator.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\RoomHelper.ts">

@@ -6,6 +6,7 @@ export class Settings {
     public static DefaultOperationPlans: PlanType[] = [
         PLAN_ECONOMY,
         PLAN_INFRASTRUCTURE,
-        PLAN_REMOTE_MINING
+        PLAN_REMOTE_MINING,
+        PLAN_DEFENSE
     ];
 }

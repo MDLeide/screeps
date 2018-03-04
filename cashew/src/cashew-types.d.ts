@@ -8,25 +8,25 @@ declare const TASK_REPAIR: "Repair";
 declare const TASK_ATTACK: "Attack";
 declare const TASK_RESERVE: "Reserve";
 
-declare const OPERATION_STORAGE_CONSTRUCTION: "StorageConstruction";
-declare const OPERATION_TOWER_CONSTRUCTION: "TowerConstruction";
 declare const OPERATION_LIGHT_UPGRADE: "LightUpgrade";
 declare const OPERATION_HEAVY_UPGRADE: "HeavyUpgrade";
-declare const OPERATION_HARVEST_INFRASTRUCTURE: "HarvestInfrastructure";
 declare const OPERATION_HARVEST: "Harvest";
-declare const OPERATION_EXTENSION_CONSTRUCTION: "ExtensionConstruction";
-declare const OPERATION_ENERGY_TRANSPORT: "EnergyTransport";
-declare const OPERATION_CONTROLLER_INFRASTRUCTURE: "ControllerInfrastructure";
-declare const OPERATION_BASIC_MAINTENANCE: "BasicMaintenance";
 declare const OPERATION_REMOTE_HARVEST_SCOUT: "RemoteHarvestScout";
 declare const OPERATION_REMOTE_HARVEST: "RemoteHarvest";
+declare const OPERATION_ENERGY_TRANSPORT: "EnergyTransport";
+declare const OPERATION_EXTRACTION: "Extraction";
+declare const OPERATION_EXTENSION_FILL: "ExtensionFill";
+declare const OPERATION_STORAGE_CONSTRUCTION: "StorageConstruction";
+declare const OPERATION_TOWER_CONSTRUCTION: "TowerConstruction";
+declare const OPERATION_HARVEST_INFRASTRUCTURE: "HarvestInfrastructure";
+declare const OPERATION_EXTENSION_CONSTRUCTION: "ExtensionConstruction";
+declare const OPERATION_CONTROLLER_INFRASTRUCTURE: "ControllerInfrastructure";
 declare const OPERATION_HARVEST_LINK_CONSTRUCTION: "HarvestLinkConstruction";
 declare const OPERATION_UPGRADE_LINK_CONSTRUCTION: "UpgradeLinkConstruction";
 declare const OPERATION_EXTENSION_LINK_CONSTRUCTION: "ExtensionLinkConstruction";
+declare const OPERATION_ROOM_DEFENSE: "RoomDefense";
 declare const OPERATION_LAB_CONSTRUCTION: "LabConstruction";
 declare const OPERATION_EXTRACTOR_CONSTRUCTION: "ExtractorConstruction";
-declare const OPERATION_EXTRACTION: "Extraction";
-declare const OPERATION_EXTENSION_FILL: "ExtensionFill";
 declare const OPERATION_TERMINAL_CONSTRUCTION: "TerminalConstruction";
 declare const OPERATION_OBSERVER_CONSTRUCTION: "ObserverConstruction";
 declare const OPERATION_STORAGE_LINK_CONSTRUCTION: "StorageLinkConstruction";
@@ -38,6 +38,8 @@ declare const PROGRESS_STANDARD: "Standard";
 declare const PLAN_INFRASTRUCTURE: "Infrastructure";
 declare const PLAN_ECONOMY: "Economy";
 declare const PLAN_REMOTE_MINING: "RemoteMining";
+declare const PLAN_ROAD: "Road";
+declare const PLAN_DEFENSE: "Defense";
 
 declare const CREEP_CONTROLLER_HARVESTER: "Harvester";
 declare const CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: "HarvestInfrastructureBuilder";
@@ -51,6 +53,8 @@ declare const CREEP_CONTROLLER_EXTRACTOR: "Extractor";
 declare const CREEP_CONTROLLER_FILLER: "Filler";
 declare const CREEP_CONTROLLER_CHEMIST: "Chemist";
 declare const CREEP_CONTROLLER_MASON: "Mason";
+declare const CREEP_CONTROLLER_REPAIR: "Repair";
+declare const CREEP_CONTROLLER_DEFENDER: "Defender";
 
 declare const BODY_LIGHT_WORKER: "LightWorker";
 declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
@@ -58,6 +62,7 @@ declare const BODY_HEAVY_UPGRADER: "HeavyUpgrader";
 declare const BODY_HAULER: "Hauler";
 declare const BODY_WARRIOR: "Warrior";
 declare const BODY_SCOUT: "Scout";
+declare const BODY_DEFENDER: "Defender";
 
 type TASK_IDLE = "Idle";
 type TASK_MOVE_TO = "MoveTo";
@@ -69,25 +74,25 @@ type TASK_REPAIR = "Repair";
 type TASK_ATTACK = "Attack";
 type TASK_RESERVE = "Reserve";
 
-type OPERATION_STORAGE_CONSTRUCTION = "StorageConstruction";
-type OPERATION_TOWER_CONSTRUCTION = "TowerConstruction";
 type OPERATION_LIGHT_UPGRADE = "LightUpgrade";
 type OPERATION_HEAVY_UPGRADE = "HeavyUpgrade";
-type OPERATION_HARVEST_INFRASTRUCTURE = "HarvestInfrastructure";
 type OPERATION_HARVEST = "Harvest";
-type OPERATION_EXTENSION_CONSTRUCTION = "ExtensionConstruction";
-type OPERATION_ENERGY_TRANSPORT = "EnergyTransport";
-type OPERATION_CONTROLLER_INFRASTRUCTURE = "ControllerInfrastructure";
-type OPERATION_BASIC_MAINTENANCE = "BasicMaintenance";
 type OPERATION_REMOTE_HARVEST_SCOUT = "RemoteHarvestScout";
 type OPERATION_REMOTE_HARVEST = "RemoteHarvest";
+type OPERATION_ENERGY_TRANSPORT = "EnergyTransport";
+type OPERATION_EXTRACTION = "Extraction";
+type OPERATION_EXTENSION_FILL = "ExtensionFill";
+type OPERATION_STORAGE_CONSTRUCTION = "StorageConstruction";
+type OPERATION_TOWER_CONSTRUCTION = "TowerConstruction";
+type OPERATION_HARVEST_INFRASTRUCTURE = "HarvestInfrastructure";
+type OPERATION_EXTENSION_CONSTRUCTION = "ExtensionConstruction";
+type OPERATION_CONTROLLER_INFRASTRUCTURE = "ControllerInfrastructure";
 type OPERATION_HARVEST_LINK_CONSTRUCTION = "HarvestLinkConstruction";
 type OPERATION_UPGRADE_LINK_CONSTRUCTION = "UpgradeLinkConstruction";
 type OPERATION_EXTENSION_LINK_CONSTRUCTION = "ExtensionLinkConstruction";
+type OPERATION_ROOM_DEFENSE = "RoomDefense";
 type OPERATION_LAB_CONSTRUCTION = "LabConstruction";
 type OPERATION_EXTRACTOR_CONSTRUCTION = "ExtractorConstruction";
-type OPERATION_EXTRACTION = "Extraction";
-type OPERATION_EXTENSION_FILL = "ExtensionFill";
 type OPERATION_TERMINAL_CONSTRUCTION = "TerminalConstruction";
 type OPERATION_OBSERVER_CONSTRUCTION = "ObserverConstruction";
 type OPERATION_STORAGE_LINK_CONSTRUCTION = "StorageLinkConstruction";
@@ -99,6 +104,8 @@ type PROGRESS_STANDARD = "Standard";
 type PLAN_INFRASTRUCTURE = "Infrastructure";
 type PLAN_ECONOMY = "Economy";
 type PLAN_REMOTE_MINING = "RemoteMining";
+type PLAN_ROAD = "Road";
+type PLAN_DEFENSE = "Defense";
 
 type CREEP_CONTROLLER_HARVESTER = "Harvester";
 type CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "HarvestInfrastructureBuilder";
@@ -112,6 +119,8 @@ type CREEP_CONTROLLER_EXTRACTOR = "Extractor";
 type CREEP_CONTROLLER_FILLER = "Filler";
 type CREEP_CONTROLLER_CHEMIST = "Chemist";
 type CREEP_CONTROLLER_MASON = "Mason";
+type CREEP_CONTROLLER_REPAIR = "Repair";
+type CREEP_CONTROLLER_DEFENDER = "Defender";
 
 type BODY_LIGHT_WORKER = "LightWorker";
 type BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -119,6 +128,7 @@ type BODY_HEAVY_UPGRADER = "HeavyUpgrader";
 type BODY_HAULER = "Hauler";
 type BODY_WARRIOR = "Warrior";
 type BODY_SCOUT = "Scout";
+type BODY_DEFENDER = "Defender";
 
 type TaskType =
     TASK_IDLE |
@@ -132,25 +142,25 @@ type TaskType =
     TASK_RESERVE;
 
 type OperationType =
-    OPERATION_STORAGE_CONSTRUCTION |
-    OPERATION_TOWER_CONSTRUCTION |
     OPERATION_LIGHT_UPGRADE |
     OPERATION_HEAVY_UPGRADE |
-    OPERATION_HARVEST_INFRASTRUCTURE |
     OPERATION_HARVEST |
-    OPERATION_EXTENSION_CONSTRUCTION |
-    OPERATION_ENERGY_TRANSPORT |
-    OPERATION_CONTROLLER_INFRASTRUCTURE |
-    OPERATION_BASIC_MAINTENANCE |
     OPERATION_REMOTE_HARVEST_SCOUT |
     OPERATION_REMOTE_HARVEST |
+    OPERATION_ENERGY_TRANSPORT |
+    OPERATION_EXTRACTION |
+    OPERATION_EXTENSION_FILL |
+    OPERATION_STORAGE_CONSTRUCTION |
+    OPERATION_TOWER_CONSTRUCTION |
+    OPERATION_HARVEST_INFRASTRUCTURE |
+    OPERATION_EXTENSION_CONSTRUCTION |
+    OPERATION_CONTROLLER_INFRASTRUCTURE |
     OPERATION_HARVEST_LINK_CONSTRUCTION |
     OPERATION_UPGRADE_LINK_CONSTRUCTION |
     OPERATION_EXTENSION_LINK_CONSTRUCTION |
+    OPERATION_ROOM_DEFENSE |
     OPERATION_LAB_CONSTRUCTION |
     OPERATION_EXTRACTOR_CONSTRUCTION |
-    OPERATION_EXTRACTION |
-    OPERATION_EXTENSION_FILL |
     OPERATION_TERMINAL_CONSTRUCTION |
     OPERATION_OBSERVER_CONSTRUCTION |
     OPERATION_STORAGE_LINK_CONSTRUCTION |
@@ -163,7 +173,9 @@ type ProgressType =
 type PlanType =
     PLAN_INFRASTRUCTURE |
     PLAN_ECONOMY |
-    PLAN_REMOTE_MINING;
+    PLAN_REMOTE_MINING |
+    PLAN_ROAD |
+    PLAN_DEFENSE;
 
 type CreepControllerType =
     CREEP_CONTROLLER_HARVESTER |
@@ -177,7 +189,9 @@ type CreepControllerType =
     CREEP_CONTROLLER_EXTRACTOR |
     CREEP_CONTROLLER_FILLER |
     CREEP_CONTROLLER_CHEMIST |
-    CREEP_CONTROLLER_MASON;
+    CREEP_CONTROLLER_MASON |
+    CREEP_CONTROLLER_REPAIR |
+    CREEP_CONTROLLER_DEFENDER;
 
 type BodyType =
     BODY_LIGHT_WORKER |
@@ -185,5 +199,6 @@ type BodyType =
     BODY_HEAVY_UPGRADER |
     BODY_HAULER |
     BODY_WARRIOR |
-    BODY_SCOUT;
+    BODY_SCOUT |
+    BODY_DEFENDER;
 

@@ -2,7 +2,7 @@ import { OperationPlan, OperationPlanRepository } from "../../lib/colony/Operati
 import { InfrastructurePlan } from "../colony/InfrastructurePlan";
 import { RemoteMiningPlan } from "../colony/RemoteMiningPlan";
 import { EconomyPlan } from "../colony/EconomyPlan";
-
+import { DefensePlan } from "../colony/DefensePlan";
 
 export class OperationPlanRegistration {
     public static register(): void {
@@ -22,6 +22,12 @@ export class OperationPlanRegistration {
             PLAN_REMOTE_MINING,
             (mem: OperationPlanMemory) => RemoteMiningPlan.fromMemory(mem),
             () => new RemoteMiningPlan()
+        );
+        
+        OperationPlanRepository.register(
+            PLAN_DEFENSE,
+            (mem: OperationPlanMemory) => DefensePlan.fromMemory(mem),
+            () => new DefensePlan()
         );
     }
 }

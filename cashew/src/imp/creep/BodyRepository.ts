@@ -15,9 +15,22 @@ export class BodyRepository {
                 return this.hauler();
             case BODY_WARRIOR:
                 return this.warrior();
+            case BODY_DEFENDER:
+                return this.defender();
             default:
                 return null;
         }
+    }
+
+    public static defender(): Body {
+        return new Body(
+            BODY_DEFENDER,
+            190,
+            [ATTACK, MOVE],
+            [RANGED_ATTACK, MOVE, HEAL, MOVE, ATTACK, MOVE],
+            0,
+            false
+        );
     }
 
     public static scout(): Body {

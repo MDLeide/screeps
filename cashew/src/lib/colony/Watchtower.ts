@@ -1,5 +1,5 @@
 import { Colony } from "./Colony";
-import { ThreatEvaluator } from "../creep/CreepUtility";
+import { MilitaryCalculator } from "../util/MilitaryCalculator";
 
 export class Watchtower {
     public static fromMemory(memory: WatchtowerMemory): Watchtower {
@@ -77,8 +77,8 @@ export class Watchtower {
         let highDismantle: number = 0;
 
         for (var i = 0; i < hostiles.length; i++) {
-            let threat = ThreatEvaluator.getThreatProfileOfCreep(hostiles[i]);
-            this.threatScore += ThreatEvaluator.scoreThreatProfile(threat);
+            let threat = MilitaryCalculator.ThreatEvaluator.getThreatProfileOfCreep(hostiles[i]);
+            this.threatScore += MilitaryCalculator.ThreatEvaluator.scoreThreatProfile(threat);
 
             if (threat.heal > highHeal) {
                 highHeal = threat.heal;

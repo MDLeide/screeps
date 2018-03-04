@@ -27,10 +27,15 @@ import { StorageLinkConstructionOperation } from "../operation/infrastructure/St
 import { WallConstructionOperation } from "../operation/infrastructure/WallConstructionOperation";
 import { RoadConstructionOperation } from "../operation/infrastructure/RoadConstructionOperation";
 
+// military
+import { RoomDefenseOperation } from "../operation/military/RoomDefenseOperation"; 
+
+
 export class OperationRegistration {
     public static register() {
         this.registerEconomy();
         this.registerInfrastructure();
+        this.registerMilitary();
     }
 
     static registerInfrastructure(): void {
@@ -166,6 +171,14 @@ export class OperationRegistration {
             OPERATION_EXTENSION_FILL,
             (memory: any) => {
                 return ExtensionFillOperation.fromMemory(memory);
+            });
+    }
+
+    static registerMilitary():void{
+        OperationRepository.register(
+            OPERATION_ROOM_DEFENSE,
+            (memory: any) => {
+                return RoomDefenseOperation.fromMemory(memory);
             });
     }
 }
