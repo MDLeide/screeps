@@ -9,6 +9,7 @@ export class ResourceManager {
         
         manager.settings = ResourceManagerSettings.fromMemory(memory.settings);
         manager.structures = Structures.fromMemory(memory.structures);
+        manager.ledger = Ledger.fromMemory(memory.ledger);
         
         return manager;
     }
@@ -18,6 +19,7 @@ export class ResourceManager {
         this.colony = colony;
         this.transfers = new Transfers(this);
         this.withdraws = new Withdraws(this);
+        this.ledger = new Ledger();
     }
 
 
@@ -27,6 +29,7 @@ export class ResourceManager {
     public transfers: Transfers;
     public withdraws: Withdraws;
     public structures: Structures;
+    public ledger: Ledger;
     
     public sourceAId: string;
     public sourceBId: string;
@@ -108,10 +111,170 @@ export class ResourceManager {
         return {
             settings: this.settings.save(),
             structures: this.structures.save(),
+            ledger: this.ledger.save(),
             sourceAId: this.sourceAId,
             sourceBId: this.sourceBId
         };
     }
+}
+
+class Ledger {
+    public static fromMemory(memory: ResourceManagerLedgerMemory): Ledger {
+        let ledger = new this();
+        ledger.lastTick = memory.lastTick;
+        ledger.currentGeneration = memory.currentGeneration;
+        ledger.lastGeneration = memory.lastGeneration;
+        ledger.history = memory.history;
+        ledger.tickOffset = memory.tickOffset;
+        return ledger;
+    }
+
+
+    constructor() {
+        this.thisTick = new LedgerPeriod();
+        this.lastTick = new LedgerPeriod();
+        this.currentGeneration = new LedgerPeriod();
+        this.lastGeneration = new LedgerPeriod();
+        this.history = [];
+        this.tickOffset = Game.time % 1500;
+    }
+
+
+    public thisTick: LedgerPeriod;
+    public lastTick: LedgerPeriod;
+    public currentGeneration: LedgerPeriod;
+    public lastGeneration: LedgerPeriod;
+    public history: LedgerPeriod[];
+    public historyMaxLength = 5;
+    public tickOffset: number;
+
+
+    public update(): void {
+        this.thisTick = new LedgerPeriod();
+        this.thisTick.ticks = 1;
+        this.thisTick.startTick = Game.time;
+    }
+
+    public execute(): void { }
+
+    public cleanup(): void {
+        this.currentGeneration.harvestEnergy += this.thisTick.harvestEnergy;
+        this.currentGeneration.remoteHarvestEnergy += this.thisTick.remoteHarvestEnergy;
+        this.currentGeneration.empireIncomingEnergy += this.thisTick.empireIncomingEnergy;
+        this.currentGeneration.marketBuyEnergy += this.thisTick.marketBuyEnergy;
+
+        this.currentGeneration.spawnEnergy += this.thisTick.spawnEnergy;
+        this.currentGeneration.upgradeEnergy += this.thisTick.upgradeEnergy;
+        this.currentGeneration.buildEnergy += this.thisTick.buildEnergy;
+        this.currentGeneration.repairEnergy += this.thisTick.repairEnergy;
+        this.currentGeneration.empireOutgoingEnergy += this.thisTick.empireOutgoingEnergy;
+        this.currentGeneration.marketSellEnergy += this.thisTick.marketSellEnergy;
+        this.currentGeneration.terminalTransferEnergy += this.thisTick.terminalTransferEnergy;
+
+        this.currentGeneration.netEnergy += this.thisTick.netEnergy;
+
+        if (Game.time % 1500 == this.tickOffset) {            
+            let temp = [];
+            if (this.lastGeneration)
+                temp.push(this.lastGeneration);
+            for (var i = 0; i < this.historyMaxLength - 1 && i < this.history.length; i++)
+                temp.push(this.history[i]);
+            this.history = temp;
+            this.lastGeneration = this.currentGeneration;
+            this.currentGeneration = new LedgerPeriod();
+            this.currentGeneration.ticks = 1500;
+            this.currentGeneration.startTick = Game.time;
+        }
+    }
+
+
+    public registerHarvest(energy: number): void {
+        this.thisTick.harvestEnergy += energy;
+        this.thisTick.netEnergy += energy;
+    }
+
+    public registerRemoteHarvest(energy: number): void {
+        this.thisTick.remoteHarvestEnergy += energy;
+        this.thisTick.netEnergy += energy;
+    }
+
+    public registerEmpireIncoming(energy: number): void {
+        this.thisTick.empireIncomingEnergy += energy;
+        this.thisTick.netEnergy += energy;
+    }
+
+    public registerMarketBuy(energy: number): void {
+        this.thisTick.marketBuyEnergy += energy;
+        this.thisTick.netEnergy += energy;
+    }
+
+
+    public registerSpawn(energy: number): void {
+        this.thisTick.spawnEnergy += energy;
+        this.thisTick.netEnergy -= energy;
+    }
+
+    public registerUpgrade(energy: number): void {
+        this.thisTick.upgradeEnergy += energy;
+        this.thisTick.netEnergy -= energy;
+    }
+
+    public registerBuild(energy: number): void {
+        this.thisTick.buildEnergy += energy;
+        this.thisTick.netEnergy -= energy;
+    }
+
+    public registerRepair(energy: number): void {
+        this.thisTick.repairEnergy += energy;
+        this.thisTick.netEnergy -= energy;
+    }
+
+    public registerEmpireOutgoing(energy: number): void {
+        this.thisTick.empireOutgoingEnergy += energy;
+        this.thisTick.netEnergy -= energy;
+    }
+
+    public registerMarketSell(energy: number): void {
+        this.thisTick.marketSellEnergy += energy;
+        this.thisTick.netEnergy -= energy;
+    }
+
+    public registerTerminalCost(energy: number): void {
+        this.thisTick.terminalTransferEnergy += energy;
+        this.thisTick.netEnergy -= energy;
+    }
+
+
+    public save(): ResourceManagerLedgerMemory {
+        return {
+            lastTick: this.thisTick,
+            currentGeneration: this.currentGeneration,
+            lastGeneration: this.lastGeneration,
+            history: this.history,
+            historyMaxLength: this.historyMaxLength,
+            tickOffset: this.tickOffset
+        };
+    }
+}
+
+class LedgerPeriod {
+    public startTick: number = 0;
+    public ticks: number = 0;
+
+    public harvestEnergy: number = 0;
+    public remoteHarvestEnergy: number = 0;
+    public empireIncomingEnergy: number = 0; // energy received from elsewhere in the empire
+    public marketBuyEnergy: number = 0;
+    
+    public spawnEnergy: number = 0;
+    public upgradeEnergy: number = 0;
+    public buildEnergy: number = 0;
+    public repairEnergy: number = 0;
+    public empireOutgoingEnergy: number = 0;
+    public marketSellEnergy: number = 0;
+    public terminalTransferEnergy: number = 0;
+
+    public netEnergy: number = 0;
 }
 
 class Structures {

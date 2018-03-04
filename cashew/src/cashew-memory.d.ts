@@ -40,6 +40,7 @@ declare global {
     interface ResourceManagerMemory {
         settings: ResourceManagerSettingsMemory;
         structures: ResourceManagerStructureMemory;
+        ledger: ResourceManagerLedgerMemory;
         sourceAId: string;
         sourceBId: string;             
     }
@@ -55,6 +56,35 @@ declare global {
         storageLinkId: string;
         extensionLinkId: string;
         controllerLinkId: string;   
+    }
+
+    interface ResourceManagerLedgerMemory {
+        lastTick: ResourceManagerLedgerPeriodMemory;
+        currentGeneration: ResourceManagerLedgerPeriodMemory;
+        lastGeneration: ResourceManagerLedgerPeriodMemory;
+        history: ResourceManagerLedgerPeriodMemory[];
+        historyMaxLength: number;
+        tickOffset: number;
+    }
+
+    interface ResourceManagerLedgerPeriodMemory {
+        startTick: number;
+        ticks: number;
+
+        harvestEnergy: number;
+        remoteHarvestEnergy: number;
+        empireIncomingEnergy: number; // energy received from elsewhere in the empire
+        marketBuyEnergy: number;
+
+        spawnEnergy: number;
+        upgradeEnergy: number;
+        buildEnergy: number;
+        repairEnergy: number;
+        empireOutgoingEnergy: number;
+        marketSellEnergy: number;
+        terminalTransferEnergy: number;
+
+        netEnergy: number;
     }
 
     interface ColonyPlanMemory {
