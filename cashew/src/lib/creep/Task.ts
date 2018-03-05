@@ -341,20 +341,19 @@ export class Build extends TargetedTask<ConstructionSite> {
     public execute(creep: Creep): void {
         let colony = global.empire.getColonyByCreep(creep);
 
-        var response = creep.build(this.target);
-        if (response == OK) {
+        var buildResponse = creep.build(this.target);
+        if (buildResponse == OK) {
             if (colony)
-                colony.resourceManager.ledger.registerBuild(
-                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * 5));         
+                colony.resourceManager.ledger.registerBuild(creep);
             return;
         }
-        else if (response == ERR_NOT_IN_RANGE)
+        else if (buildResponse == ERR_NOT_IN_RANGE)
             creep.moveTo(this.target);
-        else if (response == ERR_NOT_OWNER)
+        else if (buildResponse == ERR_NOT_OWNER)
             this.onError();
-        else if (response == ERR_BUSY)
+        else if (buildResponse == ERR_BUSY)
             this.onError();
-        else if (response == ERR_INVALID_TARGET)
+        else if (buildResponse == ERR_INVALID_TARGET)
             this.onError();
         else
             this.onError();
@@ -388,8 +387,7 @@ export class Upgrade extends TargetedTask<StructureController> {
         var response = creep.upgradeController(this.target);
         if (response == OK) {
             if (colony)
-                colony.resourceManager.ledger.registerUpgrade(
-                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * 1));
+                colony.resourceManager.ledger.registerUpgrade(creep);
             return;
         }            
         else if (response == ERR_NOT_IN_RANGE)

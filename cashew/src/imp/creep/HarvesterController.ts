@@ -68,8 +68,7 @@ export class HarvesterController extends CreepController {
                     Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK)));
         } else {
             if (creep.harvest(this.source) == OK)
-                colony.resourceManager.ledger.registerHarvest(
-                    creep.getActiveBodyparts(WORK) * HARVEST_POWER);
+                colony.resourceManager.ledger.registerHarvest(creep);
         }
     }
 
@@ -81,8 +80,7 @@ export class HarvesterController extends CreepController {
         let colony = global.empire.getColonyByCreep(creep);
 
         if (creep.harvest(this.source) == OK)
-            colony.resourceManager.ledger.registerHarvest(
-                creep.getActiveBodyparts(WORK) * HARVEST_POWER);
+            colony.resourceManager.ledger.registerHarvest(creep);
 
         if (creep.carryCapacity - creep.carry.energy < creep.getActiveBodyparts(WORK) * 2)
             creep.transfer(this.containerOrLink, RESOURCE_ENERGY);

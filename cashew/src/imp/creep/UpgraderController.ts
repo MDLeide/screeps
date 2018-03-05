@@ -83,8 +83,7 @@ export class UpgraderController extends CreepController {
             if (upgradeResponse == ERR_NOT_IN_RANGE)
                 creep.moveTo(this.controller);
             else if (upgradeResponse == OK)
-                colony.resourceManager.ledger.registerUpgrade(
-                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK)));
+                colony.resourceManager.ledger.registerUpgrade(creep);
         } else {
             let repairResponse = creep.repair(this.container);
             if (repairResponse == ERR_NOT_IN_RANGE)

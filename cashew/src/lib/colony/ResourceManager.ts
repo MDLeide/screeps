@@ -198,6 +198,7 @@ export class Ledger {
     public history: LedgerPeriod[];
     public historyMaxLength = 5;
     public tickOffset: number;
+    public sayOnRegistration: boolean = true;
 
 
     public update(): void {
@@ -254,16 +255,32 @@ export class Ledger {
     }
 
 
-    public registerHarvest(energy: number): void {
-        this.thisTick.harvestEnergy += energy;
-        this.thisTick.netEnergy += energy;
-        this.thisTick.totalRevenue += energy;
+    public registerHarvest(creepOrEnergy: (Creep | number)): void {
+        if (creepOrEnergy instanceof Creep) {
+            let energy = creepOrEnergy.getActiveBodyparts(WORK) * HARVEST_POWER;
+            if (this.sayOnRegistration)                
+                creepOrEnergy.say(String.fromCodePoint(0x1F477) + " " + energy); // construction worker
+            this.registerHarvest(energy);
+            return;
+        }
+        
+        this.thisTick.harvestEnergy += creepOrEnergy;
+        this.thisTick.netEnergy += creepOrEnergy;
+        this.thisTick.totalRevenue += creepOrEnergy;
     }
 
-    public registerRemoteHarvest(energy: number): void {
-        this.thisTick.remoteHarvestEnergy += energy;
-        this.thisTick.netEnergy += energy;
-        this.thisTick.totalRevenue += energy;
+    public registerRemoteHarvest(creepOrEnergy: (Creep | number)): void {
+        if (creepOrEnergy instanceof Creep) {
+            let energy = creepOrEnergy.getActiveBodyparts(WORK) * HARVEST_POWER;
+            if (this.sayOnRegistration)
+                creepOrEnergy.say(String.fromCodePoint(0x1F477) + " " + energy); // construction worker
+            this.registerRemoteHarvest(energy);
+            return;
+        }            
+
+        this.thisTick.remoteHarvestEnergy += creepOrEnergy;
+        this.thisTick.netEnergy += creepOrEnergy;
+        this.thisTick.totalRevenue += creepOrEnergy;
     }
 
     public registerEmpireIncoming(energy: number): void {
@@ -285,30 +302,64 @@ export class Ledger {
         this.thisTick.totalExpenses += energy;
     }
 
-    public registerUpgrade(energy: number): void {
+    public registerUpgrade(creepOrEnergy: (Creep | number)): void {
+        let energy = 0;
+        if (creepOrEnergy instanceof Creep) {
+            energy = Math.min(creepOrEnergy.carry.energy, creepOrEnergy.getActiveBodyparts(WORK));
+            if (this.resourceManager.colony.nest.room.controller.level >= 8) {
+                if (this.thisTick.upgradeEnergy >= 15)
+                    return;
+                energy = Math.min(15 - this.thisTick.upgradeEnergy, energy - this.thisTick.upgradeEnergy);
+            }
+
+            if (this.sayOnRegistration)
+                creepOrEnergy.say(String.fromCodePoint(0x1F3E7) + " " + energy); // ATM
+            this.registerUpgrade(energy);
+            return;                
+        }
+                
         if (this.resourceManager.colony.nest.room.controller.level >= 8) {
             if (this.thisTick.upgradeEnergy >= 15)
                 return;
-            this.thisTick.upgradeEnergy += Math.min(15, energy);
-            this.thisTick.netEnergy -= Math.min(15, energy);
-            this.thisTick.totalExpenses += Math.min(15, energy);
-        } else {
+            energy = Math.min(15 - this.thisTick.upgradeEnergy, creepOrEnergy - this.thisTick.upgradeEnergy);
             this.thisTick.upgradeEnergy += energy;
             this.thisTick.netEnergy -= energy;
             this.thisTick.totalExpenses += energy;
+        } else {
+            this.thisTick.upgradeEnergy += creepOrEnergy;
+            this.thisTick.netEnergy -= creepOrEnergy;
+            this.thisTick.totalExpenses += creepOrEnergy;
         }        
     }
 
-    public registerBuild(energy: number): void {
-        this.thisTick.buildEnergy += energy;
-        this.thisTick.netEnergy -= energy;
-        this.thisTick.totalExpenses += energy;
+    public registerBuild(creepOrEnergy: (Creep | number)): void {
+        if (creepOrEnergy instanceof Creep) {
+            let energy = Math.min(creepOrEnergy.carry.energy, creepOrEnergy.getActiveBodyparts(WORK) * 5);
+            if (this.sayOnRegistration)
+                creepOrEnergy.say(String.fromCodePoint(0x1F6A7) + " " + energy); // construction sign
+            this.registerUpgrade(energy);
+            return;                
+        }
+            
+
+        this.thisTick.buildEnergy += creepOrEnergy;
+        this.thisTick.netEnergy -= creepOrEnergy;
+        this.thisTick.totalExpenses += creepOrEnergy;
     }
 
-    public registerRepair(energy: number): void {
-        this.thisTick.repairEnergy += energy;
-        this.thisTick.netEnergy -= energy;
-        this.thisTick.totalExpenses += energy;
+    public registerRepair(creepOrEnergy: (Creep | number)): void {
+        if (creepOrEnergy instanceof Creep) {
+            let energy = Math.min(creepOrEnergy.carry.energy, creepOrEnergy.getActiveBodyparts(WORK));
+            if (this.sayOnRegistration)
+                creepOrEnergy.say(String.fromCodePoint(0x1F6E0) + " " + energy); // hammer and wrench
+            this.registerUpgrade(energy);
+            return;
+        }
+            
+
+        this.thisTick.repairEnergy += creepOrEnergy;
+        this.thisTick.netEnergy -= creepOrEnergy;
+        this.thisTick.totalExpenses += creepOrEnergy;
     }
 
     public registerEmpireOutgoing(energy: number): void {

@@ -105,15 +105,13 @@ export class RemoteHarvesterController extends CreepController {
             if (response == ERR_NOT_IN_RANGE)
                 creep.moveTo(this.site);
             else if (response == OK)
-                colony.resourceManager.ledger.registerBuild(
-                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * 5));
+                colony.resourceManager.ledger.registerBuild(creep);
         } else {
             let response = creep.harvest(this.source);
             if (response == ERR_NOT_IN_RANGE)
                 creep.moveTo(this.source);
             else if (response == OK)
-                colony.resourceManager.ledger.registerRemoteHarvest(
-                    creep.getActiveBodyparts(WORK) * HARVEST_POWER);            
+                colony.resourceManager.ledger.registerRemoteHarvest(creep);     
         }
     }
 
@@ -132,8 +130,7 @@ export class RemoteHarvesterController extends CreepController {
             if (response == ERR_NOT_IN_RANGE)
                 creep.moveTo(this.source);
             else if (response == OK)
-                colony.resourceManager.ledger.registerRemoteHarvest(
-                    creep.getActiveBodyparts(WORK) * HARVEST_POWER);
+                colony.resourceManager.ledger.registerRemoteHarvest(creep);
         }
     }
 
@@ -143,14 +140,13 @@ export class RemoteHarvesterController extends CreepController {
 
     private harvest(creep: Creep): void {
         let colony = global.empire.getColonyByCreep(creep);
-        let response = creep.harvest(this.source);
+        let harvestResponse = creep.harvest(this.source);
 
-        if (response == ERR_NOT_IN_RANGE) {
+        if (harvestResponse == ERR_NOT_IN_RANGE) {
             creep.moveTo(this.source);
             return;
-        } else if (response == OK) {
-            colony.resourceManager.ledger.registerRemoteHarvest(
-                creep.getActiveBodyparts(WORK) * HARVEST_POWER);
+        } else if (harvestResponse == OK) {
+            colony.resourceManager.ledger.registerRemoteHarvest(creep);
         }
 
         let transferResponse = creep.transfer(this.container, RESOURCE_ENERGY);

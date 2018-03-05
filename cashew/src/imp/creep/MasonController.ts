@@ -91,15 +91,13 @@ export class MasonController extends CreepController {
                 if (buildResponse == ERR_NOT_IN_RANGE)
                     creep.moveTo(this.site);
                 else if (buildResponse == OK)
-                    colony.resourceManager.ledger.registerBuild(
-                        Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * 5));
+                    colony.resourceManager.ledger.registerBuild(creep);
             } else if (this.target) {
                 let repairResponse = creep.repair(this.target);
                 if (repairResponse == ERR_NOT_IN_RANGE)
                     creep.moveTo(this.target);
                 else if (repairResponse == OK)
-                    colony.resourceManager.ledger.registerRepair(
-                        Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK)));
+                    colony.resourceManager.ledger.registerRepair(creep);
             }
         } else {
             if (!this.pickup) {

@@ -19,38 +19,31 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     public colony: Colony;
 
 
-    private manageAssignments(colony: Colony): void {
-        let path = PathFinder.search(colony.nest.spawners[0].spawn.pos, { pos: colony.nest.room.controller.pos, range: 3 });
+    private manageAssignments(colony: Colony): void {        
         let upgradeParts = colony.resourceManager.advisor.getUpgraderParts();
-        let travelTime = path.cost;
-        let maxParts =
-            Math.floor(
-                colony.nest.room.energyCapacityAvailable /
-                (upgradeParts * BODYPART_COST[WORK] + BODYPART_COST[CARRY] + BODYPART_COST[MOVE])
-            ) - 2;
-
-        let creeps = 1;
-        if (maxParts < upgradeParts)
-            creeps = Math.ceil(upgradeParts / maxParts);
-
+        let possiblePartsPerSpawn = Math.floor((colony.nest.room.energyCapacityAvailable - BODYPART_COST[CARRY] - BODYPART_COST[MOVE]) / BODYPART_COST[WORK]);
+        possiblePartsPerSpawn = Math.min(possiblePartsPerSpawn, 30);
+        let creepsRequired = Math.ceil(upgradeParts / possiblePartsPerSpawn);
+        let partsPerSpawn = Math.ceil(upgradeParts / creepsRequired);
         let body = BodyRepository.heavyUpgrader();
-        body.maxCompleteScalingSections = maxParts - 1;
+        body.maxCompleteScalingSections = partsPerSpawn - 1;
 
-        let partCount = maxParts + 2;
+        let path = PathFinder.search(colony.nest.spawners[0].spawn.pos, { pos: colony.nest.room.controller.pos, range: 3 });
+        let partCount = partsPerSpawn + 2;
         let spawnTime = partCount * 3;
         let transitTime = path.cost * partCount;
         let buffer = 15;
         let leadTime = spawnTime + transitTime + buffer;
 
-        if (this.assignments.length > creeps)
-            this.assignments.splice(0, this.assignments.length - creeps);
+        if (this.assignments.length > creepsRequired)
+            this.assignments.splice(0, this.assignments.length - creepsRequired);
 
         for (var i = 0; i < this.assignments.length; i++) {
             this.assignments[i].body = body;
             this.assignments[i].replaceAt = leadTime;
         }
 
-        let newAssignments = creeps - this.assignments.length;
+        let newAssignments = creepsRequired - this.assignments.length;
         for (var i = 0; i < newAssignments; i++)
             this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_UPGRADER, leadTime));
     }

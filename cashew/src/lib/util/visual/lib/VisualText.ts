@@ -46,14 +46,15 @@ export class VisualText {
             let dropStyle = {
                 align: this.alignment,
                 color: this.dropShadowColor,
-                strokeWidth: .3
+                strokeWidth: .5
             };
-            this.doDraw(x + .05, y + .05, visual, dropStyle);
+            this.doDraw(x + .075, y + .075, visual, dropStyle);
         }
 
         let style = {
             align: this.alignment,
-            color: this.color
+            color: this.color,
+            //stroke: "#000000"
         };
         
         this.doDraw(x, y, visual, style);

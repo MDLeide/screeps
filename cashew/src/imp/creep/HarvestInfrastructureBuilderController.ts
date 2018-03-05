@@ -39,8 +39,7 @@ export class HarvestInfrastructureBuilderController extends CreepController {
             if (response == ERR_NOT_IN_RANGE)
                 creep.moveTo(source);
             else if (response == OK)
-                colony.resourceManager.ledger.registerHarvest(
-                    creep.getActiveBodyparts(WORK) * HARVEST_POWER);
+                colony.resourceManager.ledger.registerHarvest(creep);
         } else {
             var spawn = source.room.find<StructureSpawn>(FIND_MY_STRUCTURES, {
                 filter: (spawn) => { return spawn.structureType == STRUCTURE_SPAWN }
@@ -56,8 +55,7 @@ export class HarvestInfrastructureBuilderController extends CreepController {
                 if (response == ERR_NOT_IN_RANGE)
                     creep.moveTo(site);
                 else if (response == OK)
-                    colony.resourceManager.ledger.registerBuild(
-                        Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * 5));
+                    colony.resourceManager.ledger.registerBuild(creep);
             }
         }
     }
