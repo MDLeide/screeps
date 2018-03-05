@@ -83,6 +83,7 @@ declare global {
         empireOutgoingEnergy: number;
         marketSellEnergy: number;
         terminalTransferEnergy: number;
+        linkTransferEnergy: number;
 
         netEnergy: number;
     }

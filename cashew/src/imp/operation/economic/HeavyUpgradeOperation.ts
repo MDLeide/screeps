@@ -19,12 +19,50 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     public colony: Colony;
 
 
+    private manageAssignments(colony: Colony): void {
+        let path = PathFinder.search(colony.nest.spawners[0].spawn.pos, { pos: colony.nest.room.controller.pos, range: 3 });
+        let upgradeParts = colony.resourceManager.advisor.getUpgraderParts();
+        let travelTime = path.cost;
+        let maxParts =
+            Math.floor(
+                colony.nest.room.energyCapacityAvailable /
+                (upgradeParts * BODYPART_COST[WORK] + BODYPART_COST[CARRY] + BODYPART_COST[MOVE])
+            ) - 2;
+
+        let creeps = 1;
+        if (maxParts < upgradeParts)
+            creeps = Math.ceil(upgradeParts / maxParts);
+
+        let body = BodyRepository.heavyUpgrader();
+        body.maxCompleteScalingSections = maxParts - 1;
+
+        let partCount = maxParts + 2;
+        let spawnTime = partCount * 3;
+        let transitTime = path.cost * partCount;
+        let buffer = 15;
+        let leadTime = spawnTime + transitTime + buffer;
+
+        if (this.assignments.length > creeps)
+            this.assignments.splice(0, this.assignments.length - creeps);
+
+        for (var i = 0; i < this.assignments.length; i++) {
+            this.assignments[i].body = body;
+            this.assignments[i].replaceAt = leadTime;
+        }
+
+        let newAssignments = creeps - this.assignments.length;
+        for (var i = 0; i < newAssignments; i++)
+            this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_UPGRADER, leadTime));
+    }
+
     protected onLoad(): void {
         
     }
 
     protected onUpdate(colony: Colony): void {
         this.colony = colony;
+        if (Game.time % 1500 == 0)
+            this.manageAssignments(colony);
     }
 
     protected onExecute(colony: Colony): void {
@@ -48,17 +86,7 @@ export class HeavyUpgradeOperation extends ControllerOperation {
 
 
     protected onInit(colony: Colony): boolean {
-        let distance = colony.nest.room.controller.pos.findPathTo(colony.nest.spawners[0].spawn).length;
-        let body = BodyRepository.heavyUpgrader();
-        body.maxCompleteScalingSections = 20;
-        let parts = body.getBody(colony.nest.room.energyCapacityAvailable);
-        let spawnTime = parts.length * 3;
-        let transitTime = distance * parts.length;
-        let buffer = 35;
-
-        let assignment = new Assignment("", body, CREEP_CONTROLLER_UPGRADER, spawnTime + transitTime + buffer);
-        this.assignments.push(assignment);
-
+        this.manageAssignments(colony);
         return true;
     }
 
@@ -85,7 +113,7 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     }
 
     
-    protected getController(assignment: Assignment): UpgraderController {
+    protected getController(assignment: Assignment): UpgraderController {        
         return new UpgraderController(
             this.colony.resourceManager.structures.controllerContainerId,
             this.colony.nest.room.controller.id,

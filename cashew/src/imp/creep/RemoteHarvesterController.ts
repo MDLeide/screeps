@@ -106,7 +106,7 @@ export class RemoteHarvesterController extends CreepController {
                 creep.moveTo(this.site);
             else if (response == OK)
                 colony.resourceManager.ledger.registerBuild(
-                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * BUILD_POWER));
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * 5));
         } else {
             let response = creep.harvest(this.source);
             if (response == ERR_NOT_IN_RANGE)
@@ -126,7 +126,7 @@ export class RemoteHarvesterController extends CreepController {
                 creep.moveTo(this.container);
             else if (response == OK)
                 colony.resourceManager.ledger.registerRepair(
-                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * REPAIR_POWER));
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK)));
         } else {
             let response = creep.harvest(this.source);
             if (response == ERR_NOT_IN_RANGE)

@@ -15,6 +15,9 @@ export class VisualText {
     public alignCenter(): void { this.alignment = "center"; }
     public alignRight(): void { this.alignment = "right"; }
 
+    public getHeight(): number {
+        return this.lines.length * this.lineSpacing + this.lineSpacing;
+    }
 
     public setHeader(str: string): void {
         this.header = str;
@@ -25,7 +28,8 @@ export class VisualText {
     }
 
     public append(str: any): void {
-        this.current += str.toString();
+        if (str)
+            this.current += str.toString();
     }
 
     public appendLine(str?: any): void {
@@ -66,6 +70,6 @@ export class VisualText {
             visual.text(this.lines[i], x, y + offset, style);
             offset += this.lineSpacing;
         }
-        visual.text(this.current, x, y + offset);
+        visual.text(this.current, x, y + offset, style);
     }
 }

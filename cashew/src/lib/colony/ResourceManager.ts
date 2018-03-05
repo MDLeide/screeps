@@ -9,7 +9,7 @@ export class ResourceManager {
         
         manager.settings = ResourceManagerSettings.fromMemory(memory.settings);
         manager.structures = Structures.fromMemory(memory.structures);
-        manager.ledger = Ledger.fromMemory(memory.ledger);
+        manager.ledger = Ledger.fromMemory(memory.ledger, manager);
         
         return manager;
     }
@@ -21,7 +21,8 @@ export class ResourceManager {
         this.transfers = new Transfers(this);
         this.withdraws = new Withdraws(this);
         this.structures = new Structures();
-        this.ledger = new Ledger();
+        this.ledger = new Ledger(this);
+        this.advisor = new Advisor(this);
     }
 
 
@@ -32,6 +33,7 @@ export class ResourceManager {
     public withdraws: Withdraws;
     public structures: Structures;
     public ledger: Ledger;
+    public advisor: Advisor;
     
     public sourceAId: string;
     public sourceBId: string;
@@ -126,32 +128,69 @@ export class ResourceManager {
     }
 }
 
+export class Advisor {
+    constructor(resourceManager: ResourceManager) {
+        this.resourceManager = resourceManager;
+    }
+
+
+    public resourceManager: ResourceManager;
+    public reserveIncome: number = 0;
+
+
+    public getUpgraderParts(): number {
+        let averageAvailable = this.getAverageNetIncomePlusUpgrade() - this.reserveIncome;
+        if (averageAvailable <= 0)
+            return 0;
+        let parts = Math.round(averageAvailable / 1500);
+        if (parts > 15 && this.resourceManager.colony.nest.room.controller.level >= 8)
+            return 15;
+        return parts;
+    }
+
+    private getAverageNetIncomePlusUpgrade(): number {
+        if (!this.resourceManager.ledger.lastGeneration)
+            return this.resourceManager.ledger.currentGeneration.netEnergy + this.resourceManager.ledger.currentGeneration.upgradeEnergy;
+
+        let count = 1;
+        let sum = this.resourceManager.ledger.lastGeneration.netEnergy + this.resourceManager.ledger.lastGeneration.upgradeEnergy;
+
+        for (var i = 0; i < this.resourceManager.ledger.history.length; i++) {
+            count++;
+            sum += this.resourceManager.ledger.history[i].netEnergy + this.resourceManager.ledger.history[i].upgradeEnergy;
+        }
+
+        return Math.round(sum / count);
+    }
+}
+
 export class Ledger {
-    public static fromMemory(memory: ResourceManagerLedgerMemory): Ledger {
-        let ledger = new this();
+    public static fromMemory(memory: ResourceManagerLedgerMemory, resourceManager: ResourceManager): Ledger {
+        let ledger = new this(resourceManager);
         ledger.lastTick = memory.lastTick as LedgerPeriod;
         ledger.currentGeneration = memory.currentGeneration as LedgerPeriod;
-        ledger.lastGeneration = memory.lastGeneration as LedgerPeriod;
+        ledger.lastGeneration = memory.lastGeneration ? memory.lastGeneration as LedgerPeriod : undefined;
         ledger.history = memory.history as LedgerPeriod[];
         ledger.tickOffset = memory.tickOffset;
         return ledger;
     }
 
 
-    constructor() {
+    constructor(resourceManager: ResourceManager) {
+        this.resourceManager = resourceManager;
         this.thisTick = new LedgerPeriod();
         this.lastTick = new LedgerPeriod();
         this.currentGeneration = new LedgerPeriod();
         this.currentGeneration.startTick = Game.time;
         this.currentGeneration.ticks = 0;
-        this.lastGeneration = new LedgerPeriod();
         this.history = [];
         this.tickOffset = Game.time % 1500 - 1;
         if (this.tickOffset < 0)
             this.tickOffset = 1499;
     }
 
-
+    
+    public resourceManager: ResourceManager;
     public thisTick: LedgerPeriod;
     public lastTick: LedgerPeriod;
     public currentGeneration: LedgerPeriod;
@@ -182,8 +221,13 @@ export class Ledger {
         this.currentGeneration.empireOutgoingEnergy += this.thisTick.empireOutgoingEnergy;
         this.currentGeneration.marketSellEnergy += this.thisTick.marketSellEnergy;
         this.currentGeneration.terminalTransferEnergy += this.thisTick.terminalTransferEnergy;
+        this.currentGeneration.linkTransferEnergy += this.thisTick.linkTransferEnergy;
+        this.currentGeneration.towerEnergy += this.thisTick.towerEnergy;
 
-        this.currentGeneration.netEnergy += this.thisTick.netEnergy;
+        this.currentGeneration.netEnergy += Math.round(this.thisTick.netEnergy);
+        this.currentGeneration.totalRevenue += Math.round(this.thisTick.totalRevenue);
+        this.currentGeneration.totalExpenses += Math.round(this.thisTick.totalExpenses);
+
         this.currentGeneration.ticks++;
 
         if (Game.time % 1500 == this.tickOffset) {            
@@ -201,65 +245,100 @@ export class Ledger {
     }
 
 
+    public reset(): void {
+        this.history = [];
+        this.currentGeneration = new LedgerPeriod();
+        this.lastGeneration = undefined;
+        this.lastTick = new LedgerPeriod();
+        this.tickOffset = Game.time;        
+    }
+
+
     public registerHarvest(energy: number): void {
         this.thisTick.harvestEnergy += energy;
         this.thisTick.netEnergy += energy;
+        this.thisTick.totalRevenue += energy;
     }
 
     public registerRemoteHarvest(energy: number): void {
         this.thisTick.remoteHarvestEnergy += energy;
         this.thisTick.netEnergy += energy;
+        this.thisTick.totalRevenue += energy;
     }
 
     public registerEmpireIncoming(energy: number): void {
         this.thisTick.empireIncomingEnergy += energy;
         this.thisTick.netEnergy += energy;
+        this.thisTick.totalRevenue += energy;
     }
 
     public registerMarketBuy(energy: number): void {
         this.thisTick.marketBuyEnergy += energy;
         this.thisTick.netEnergy += energy;
+        this.thisTick.totalRevenue += energy;
     }
 
 
     public registerSpawn(energy: number): void {
         this.thisTick.spawnEnergy += energy;
         this.thisTick.netEnergy -= energy;
+        this.thisTick.totalExpenses += energy;
     }
 
     public registerUpgrade(energy: number): void {
-        this.thisTick.upgradeEnergy += energy;
-        this.thisTick.netEnergy -= energy;
+        if (this.resourceManager.colony.nest.room.controller.level >= 8) {
+            if (this.thisTick.upgradeEnergy >= 15)
+                return;
+            this.thisTick.upgradeEnergy += Math.min(15, energy);
+            this.thisTick.netEnergy -= Math.min(15, energy);
+            this.thisTick.totalExpenses += Math.min(15, energy);
+        } else {
+            this.thisTick.upgradeEnergy += energy;
+            this.thisTick.netEnergy -= energy;
+            this.thisTick.totalExpenses += energy;
+        }        
     }
 
     public registerBuild(energy: number): void {
         this.thisTick.buildEnergy += energy;
         this.thisTick.netEnergy -= energy;
+        this.thisTick.totalExpenses += energy;
     }
 
     public registerRepair(energy: number): void {
         this.thisTick.repairEnergy += energy;
         this.thisTick.netEnergy -= energy;
+        this.thisTick.totalExpenses += energy;
     }
 
     public registerEmpireOutgoing(energy: number): void {
         this.thisTick.empireOutgoingEnergy += energy;
         this.thisTick.netEnergy -= energy;
+        this.thisTick.totalExpenses += energy;
     }
 
     public registerMarketSell(energy: number): void {
         this.thisTick.marketSellEnergy += energy;
         this.thisTick.netEnergy -= energy;
+        this.thisTick.totalExpenses += energy;
     }
 
     public registerTerminalTransferCost(energy: number): void {
         this.thisTick.terminalTransferEnergy += energy;
         this.thisTick.netEnergy -= energy;
+        this.thisTick.totalExpenses += energy;
     }
 
     public registerLinkTransferCost(energy: number): void {
-        this.thisTick.linkTransferEnergy += energy;
+        this.thisTick.linkTransferEnergy += Math.round(energy);
         this.thisTick.netEnergy -= energy;
+        this.thisTick.totalExpenses += energy;
+    }
+
+    public registerTowerFire(energy: number): void {
+        this.thisTick.towerEnergy += energy;
+        this.thisTick.netEnergy -= energy;
+        this.thisTick.totalExpenses += energy;
     }
 
 
@@ -283,7 +362,8 @@ export class LedgerPeriod {
     public remoteHarvestEnergy: number = 0;
     public empireIncomingEnergy: number = 0; // energy received from elsewhere in the empire
     public marketBuyEnergy: number = 0;
-    
+    public totalRevenue: number = 0;
+
     public spawnEnergy: number = 0;
     public upgradeEnergy: number = 0;
     public buildEnergy: number = 0;
@@ -292,6 +372,8 @@ export class LedgerPeriod {
     public marketSellEnergy: number = 0;
     public terminalTransferEnergy: number = 0;
     public linkTransferEnergy: number = 0;
+    public towerEnergy: number = 0;
+    public totalExpenses: number = 0;
 
     public netEnergy: number = 0;
 }

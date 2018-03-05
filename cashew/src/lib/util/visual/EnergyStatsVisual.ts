@@ -7,61 +7,79 @@ export class EnergyStatsVisual {
         this.drawLedger(colony.resourceManager.ledger, 6.5, 2, colony.nest.roomName);        
     }
 
-    private static drawLedger(ledger: Ledger, x: number, y: number, roomName?: string): void{
-        this.drawPeriod(ledger.lastTick, "Last Tick", x, y, roomName);
-        this.drawPeriod(ledger.currentGeneration, "Current Generation", x + 9, y, roomName);
-        this.drawPeriod(ledger.lastGeneration, "Last Generation", x + 18, y, roomName);
+    private static drawLedger(ledger: Ledger, x: number, y: number, roomName?: string): void{        
+        this.drawTable(x - .05, y, roomName);
+        this.drawValues(ledger.currentGeneration, x + .05, y, roomName);
+        if (ledger.lastGeneration)
+            this.drawValues(ledger.lastGeneration, x + 2.55, y, roomName);
     }
 
-    private static drawPeriod(period: LedgerPeriod, header: string, x: number, y: number, roomName?: string): void {
-        let roomVisual = new RoomVisual(roomName);
-        roomVisual.text(header, x, y);
-        roomVisual.text(period.ticks + " @ " + period.startTick, x, y + 1);
-
+    private static drawTable(x: number, y: number, roomName?: string): void {
         let visual = new VisualText();
         visual.alignRight();
                 
-        visual.appendLine("Revenue");
         visual.appendLine("Harvest: ");
-        visual.appendLine("Remote Harvest: ");
-        visual.appendLine("Empire Incoming: ");
-        visual.appendLine("Market Buy: ");
-        visual.appendLine();
-        visual.appendLine("Expenses");
+        visual.appendLine("R. Harvest: ");
+        visual.appendLine("Emp. In: ");
+        visual.append("Market Buy: ");
+
+        visual.draw(x, y, roomName);
+        let height = visual.getHeight();
+        visual = new VisualText();
+        visual.alignRight();
+
         visual.appendLine("Spawn: ");
         visual.appendLine("Upgrade: ");
         visual.appendLine("Build: ");
         visual.appendLine("Repair: ");
-        visual.appendLine("Empire Outgoing: ");
-        visual.appendLine("Market Sell: ");
-        visual.appendLine("Terminal Transfer: ");
-        visual.appendLine("Link Transfer: ");
-        visual.appendLine();
-        visual.appendLine("Net: ");
+        visual.appendLine("Emp. Out: ");
+        visual.appendLine("Market Out: ");
+        visual.appendLine("Terminal: ");
+        visual.appendLine("Link: ");
+        visual.append("Tower: ");
+        
 
-        visual.draw(x - .1, y + 2, roomName);
+        visual.draw(x, y + height + .25, roomName);
+        height += visual.getHeight() + .25;
+        visual = new VisualText();
+        visual.alignRight();
+        
+        visual.appendLine("Revenue: ");
+        visual.appendLine("Expense: ");
+        visual.append("Net: ");
+        visual.draw(x, y + height + .25, roomName);
+    }
 
-        let rightVisual = new VisualText();
-        rightVisual.alignLeft();
+    private static drawValues(period: LedgerPeriod, x: number, y: number, roomName?: string): void {
+        let visual = new VisualText();
+        
+        visual.appendLine(period.harvestEnergy);
+        visual.appendLine(period.remoteHarvestEnergy);
+        visual.appendLine(period.empireIncomingEnergy);
+        visual.append(period.marketBuyEnergy);
                 
-        rightVisual.appendLine();
-        rightVisual.appendLine(period.harvestEnergy);
-        rightVisual.appendLine(period.remoteHarvestEnergy);
-        rightVisual.appendLine(period.empireIncomingEnergy);
-        rightVisual.appendLine(period.marketBuyEnergy);
-        rightVisual.appendLine();
-        rightVisual.appendLine();
-        rightVisual.appendLine(period.spawnEnergy);
-        rightVisual.appendLine(period.upgradeEnergy);
-        rightVisual.appendLine(period.buildEnergy);
-        rightVisual.appendLine(period.repairEnergy);
-        rightVisual.appendLine(period.empireOutgoingEnergy);
-        rightVisual.appendLine(period.marketSellEnergy);
-        rightVisual.appendLine(period.terminalTransferEnergy);
-        rightVisual.appendLine(period.linkTransferEnergy);
-        rightVisual.appendLine();
-        rightVisual.appendLine(period.netEnergy);
+        visual.draw(x, y, roomName);
+        let height = visual.getHeight();
+        visual = new VisualText();
+               
+        visual.appendLine(period.spawnEnergy);
+        visual.appendLine(period.upgradeEnergy);
+        visual.appendLine(period.buildEnergy);
+        visual.appendLine(period.repairEnergy);
+        visual.appendLine(period.empireOutgoingEnergy);
+        visual.appendLine(period.marketSellEnergy);
+        visual.appendLine(period.terminalTransferEnergy);
+        visual.appendLine(period.linkTransferEnergy);
+        visual.append(period.towerEnergy);
 
-        rightVisual.draw(x + .1, y + 2, roomName);
+        visual.draw(x, y + height + .25, roomName);
+        height += visual.getHeight() + .25;
+        visual = new VisualText();
+
+        visual.appendLine(period.totalRevenue);
+        visual.appendLine(period.totalExpenses);
+        visual.append(period.netEnergy);
+
+        visual.draw(x, y + height + .25, roomName);
     }
 }

@@ -57,7 +57,7 @@ export class HarvestInfrastructureBuilderController extends CreepController {
                     creep.moveTo(site);
                 else if (response == OK)
                     colony.resourceManager.ledger.registerBuild(
-                        Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * BUILD_POWER));
+                        Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * 5));
             }
         }
     }

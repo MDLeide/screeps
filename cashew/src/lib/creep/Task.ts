@@ -345,7 +345,7 @@ export class Build extends TargetedTask<ConstructionSite> {
         if (response == OK) {
             if (colony)
                 colony.resourceManager.ledger.registerBuild(
-                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * BUILD_POWER));         
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * 5));         
             return;
         }
         else if (response == ERR_NOT_IN_RANGE)
@@ -389,7 +389,7 @@ export class Upgrade extends TargetedTask<StructureController> {
         if (response == OK) {
             if (colony)
                 colony.resourceManager.ledger.registerUpgrade(
-                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * UPGRADE_CONTROLLER_POWER));
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * 1));
             return;
         }            
         else if (response == ERR_NOT_IN_RANGE)
@@ -435,7 +435,7 @@ export class Repair extends TargetedTask<Structure> {
         if (response == OK) {
             if (colony)
                 colony.resourceManager.ledger.registerRepair(
-                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * REPAIR_POWER));
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK)));
             return;
         }            
         else if (response == ERR_NOT_IN_RANGE)

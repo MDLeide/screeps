@@ -65,7 +65,7 @@ export class HarvesterController extends CreepController {
         if (creep.carry.energy >= 25) {
             if (creep.repair(this.containerOrLink) == OK)
                 colony.resourceManager.ledger.registerRepair(
-                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK) * REPAIR_POWER));
+                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK)));
         } else {
             if (creep.harvest(this.source) == OK)
                 colony.resourceManager.ledger.registerHarvest(
