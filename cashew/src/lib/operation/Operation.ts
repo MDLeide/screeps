@@ -32,6 +32,26 @@ export abstract class Operation {
     public assignments: Assignment[]; // filled if creep name is not blank
 
 
+    public abstract canInit(colony: Colony): boolean;
+    public abstract canStart(colony: Colony): boolean;
+    public abstract isFinished(colony: Colony): boolean;
+
+    protected abstract onAssignment(assignment: Assignment): void;
+    protected abstract onReplacement(assignment: Assignment): void;
+    protected abstract onRelease(assignment: Assignment): void;
+
+    protected abstract onInit(colony: Colony): boolean;
+    protected abstract onStart(colony: Colony): boolean;
+    protected abstract onFinish(colony: Colony): boolean;
+    protected abstract onCancel(): void;
+
+    protected abstract onLoad(): void;
+    protected abstract onUpdate(colony: Colony): void;
+    protected abstract onExecute(colony: Colony): void;
+    protected abstract onCleanup(colony: Colony): void;
+
+    protected abstract onSave(): OperationMemory;
+
 
     public load(): void {
         this.onLoad();
@@ -49,22 +69,7 @@ export abstract class Operation {
     public cleanup(colony: Colony): void {
         this.onCleanup(colony);
     }
-    
-    public save(): OperationMemory {
-        var memory = this.onSave();
-        if (memory)
-            return memory;
-
-        return {
-            type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
-            assignments: this.getAssignmentMemory()
-        };
-    }
-
-
+   
     public init(colony: Colony): boolean {
         if (this.initialized)
             return true;
@@ -265,24 +270,18 @@ export abstract class Operation {
     }
 
 
-    public abstract canInit(colony: Colony): boolean;
-    public abstract canStart(colony: Colony): boolean;
-    public abstract isFinished(colony: Colony): boolean;
+    public save(): OperationMemory {
+        var memory = this.onSave();
+        if (memory)
+            return memory;
 
-    protected abstract onAssignment(assignment: Assignment): void;
-    protected abstract onReplacement(assignment: Assignment): void;
-    protected abstract onRelease(assignment: Assignment): void;
-        
-    protected abstract onInit(colony: Colony): boolean;    
-    protected abstract onStart(colony: Colony): boolean;    
-    protected abstract onFinish(colony: Colony): boolean;
-    protected abstract onCancel(): void;
-        
-    protected abstract onLoad(): void;    
-    protected abstract onUpdate(colony: Colony): void;    
-    protected abstract onExecute(colony: Colony): void;    
-    protected abstract onCleanup(colony: Colony): void;
-        
-    protected abstract onSave(): OperationMemory;
+        return {
+            type: this.type,
+            initialized: this.initialized,
+            started: this.started,
+            finished: this.finished,
+            assignments: this.getAssignmentMemory()
+        };
+    }    
 }
 

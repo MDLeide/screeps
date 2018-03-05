@@ -122,7 +122,7 @@ export abstract class ConstructionOperation extends JobOperation {
     }
 
 
-    public Save(): ConstructionOperationMemory {
+    public save(): ConstructionOperationMemory {
         let mem = this.onSave();
         if (mem)
             return mem;

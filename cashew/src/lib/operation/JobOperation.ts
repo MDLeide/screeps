@@ -146,7 +146,7 @@ export abstract class JobOperation extends Operation {
     }
     
 
-    public Save(): JobOperationMemory {
+    public save(): JobOperationMemory {
         let mem = this.onSave();
         if (mem)
             return mem;

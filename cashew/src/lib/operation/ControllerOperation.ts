@@ -138,7 +138,7 @@ export abstract class ControllerOperation extends Operation {
     }
 
 
-    protected Save(): ControllerOperationMemory {
+    public save(): ControllerOperationMemory {
         let mem = this.onSave();
         if (mem)
             return mem;
