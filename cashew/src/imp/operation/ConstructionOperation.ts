@@ -32,6 +32,7 @@ export abstract class ConstructionOperation extends JobOperation {
 
     protected abstract getSiteLocations(colony: Colony): { x: number, y: number }[];
     protected abstract getStructureType(): BuildableStructureConstant;
+    protected abstract onSave(): ConstructionOperationMemory;
 
 
     protected onLoad(): void {
@@ -121,7 +122,11 @@ export abstract class ConstructionOperation extends JobOperation {
     }
 
 
-    protected onSave(): ConstructionOperationMemory {
+    public Save(): ConstructionOperationMemory {
+        let mem = this.onSave();
+        if (mem)
+            return mem;
+
         return {
             type: this.type,
             initialized: this.initialized,

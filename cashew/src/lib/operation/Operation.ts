@@ -52,16 +52,16 @@ export abstract class Operation {
     
     public save(): OperationMemory {
         var memory = this.onSave();
-        if (!memory) {
-            memory = {
-                type: this.type,
-                initialized: this.initialized,
-                started: this.started,
-                finished: this.finished,
-                assignments: this.getAssignmentMemory()
-            };
-        }
-        return memory;
+        if (memory)
+            return memory;
+
+        return {
+            type: this.type,
+            initialized: this.initialized,
+            started: this.started,
+            finished: this.finished,
+            assignments: this.getAssignmentMemory()
+        };
     }
 
 

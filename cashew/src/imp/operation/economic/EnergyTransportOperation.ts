@@ -79,4 +79,9 @@ export class EnergyTransportOperation extends ControllerOperation {
     protected getController(assignment: Assignment): HaulerRole {
         return new HaulerRole();
     }
+
+
+    protected onSave(): ControllerOperationMemory {
+        return null;
+    }
 }

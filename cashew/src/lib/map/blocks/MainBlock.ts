@@ -21,6 +21,7 @@ export class MainBlock extends MapBlock {
         towers: { x: number, y: number }[],
         storage: { x: number, y: number },
         terminal: { x: number, y: number },
+        observer: { x: number, y: number },
         link: {x: number, y: number},
         rcl: { level: number, locations: { x: number, y: number }[] }[],
         roads: { x: number, y: number }[]) {
@@ -31,6 +32,7 @@ export class MainBlock extends MapBlock {
         this.structures.setAt(storage.x, storage.y, STRUCTURE_STORAGE);
         this.structures.setAt(terminal.x, terminal.y, STRUCTURE_TERMINAL);
         this.structures.setAt(link.x, link.y, STRUCTURE_LINK);
+        this.structures.setAt(observer.x, observer.y, STRUCTURE_OBSERVER);
 
         for (var i = 0; i < roads.length; i++)
             this.roads.setAt(roads[i].x, roads[i].y, true);
@@ -45,6 +47,8 @@ export class MainBlock extends MapBlock {
             layer.setAt(locations[i].x, locations[i].y, structureType);        
     }
 
+
+
     public getLocalSpawnLocation(rcl: number): { x: number, y: number } {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
@@ -56,6 +60,28 @@ export class MainBlock extends MapBlock {
         return null;
     }
 
+
+
+    public getLinkLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.structures.getAt(x, y) == STRUCTURE_LINK)
+                    return { x: x, y: y };
+            }
+        }
+        return null;
+    }
+
+    public getObserverLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.structures.getAt(x, y) == STRUCTURE_OBSERVER)
+                    return { x: x, y: y };
+            }
+        }
+        return null;
+    }
+    
     public getSpawnLocation(rcl: number): { x: number, y: number } {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {

@@ -86,5 +86,9 @@ export class RoomDefenseOperation extends ControllerOperation {
 
     protected getController(assignment: Assignment): CreepController {
         return new DefenderController();
-    }    
+    }
+
+    protected onSave(): ControllerOperationMemory {
+        return null;
+    }
 }

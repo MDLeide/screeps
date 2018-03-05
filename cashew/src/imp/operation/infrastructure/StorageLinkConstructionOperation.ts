@@ -19,7 +19,7 @@ export class StorageLinkConstructionOperation extends ConstructionOperation {
     
 
     protected getSiteLocations(colony: Colony): { x: number, y: number }[] {
-        throw Error("Storage link not implemented");
+        return [colony.nest.nestMap.mainBlock.getLinkLocation()];
     }
 
     protected getStructureType(): BuildableStructureConstant {

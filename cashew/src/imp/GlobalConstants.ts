@@ -32,6 +32,7 @@ global.OPERATION_OBSERVER_CONSTRUCTION = "ObserverConstruction";
 global.OPERATION_STORAGE_LINK_CONSTRUCTION = "StorageLinkConstruction";
 global.OPERATION_WALL_CONSTRUCTION = "WallConstruction";
 global.OPERATION_ROAD_CONSTRUCTION = "RoadConstruction";
+global.OPERATION_SPAWN_CONSTRUCTION = "SpawnConstruction";
 
 global.PROGRESS_STANDARD = "Standard";
 

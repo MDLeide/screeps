@@ -32,6 +32,7 @@ declare const OPERATION_OBSERVER_CONSTRUCTION: "ObserverConstruction";
 declare const OPERATION_STORAGE_LINK_CONSTRUCTION: "StorageLinkConstruction";
 declare const OPERATION_WALL_CONSTRUCTION: "WallConstruction";
 declare const OPERATION_ROAD_CONSTRUCTION: "RoadConstruction";
+declare const OPERATION_SPAWN_CONSTRUCTION: "SpawnConstruction";
 
 declare const PROGRESS_STANDARD: "Standard";
 
@@ -98,6 +99,7 @@ type OPERATION_OBSERVER_CONSTRUCTION = "ObserverConstruction";
 type OPERATION_STORAGE_LINK_CONSTRUCTION = "StorageLinkConstruction";
 type OPERATION_WALL_CONSTRUCTION = "WallConstruction";
 type OPERATION_ROAD_CONSTRUCTION = "RoadConstruction";
+type OPERATION_SPAWN_CONSTRUCTION = "SpawnConstruction";
 
 type PROGRESS_STANDARD = "Standard";
 
@@ -165,7 +167,8 @@ type OperationType =
     OPERATION_OBSERVER_CONSTRUCTION |
     OPERATION_STORAGE_LINK_CONSTRUCTION |
     OPERATION_WALL_CONSTRUCTION |
-    OPERATION_ROAD_CONSTRUCTION;
+    OPERATION_ROAD_CONSTRUCTION |
+    OPERATION_SPAWN_CONSTRUCTION;
 
 type ProgressType =
     PROGRESS_STANDARD;

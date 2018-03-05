@@ -19,6 +19,9 @@ export abstract class ControllerOperation extends Operation {
     public controllers: { [creepName: string]: CreepController } = {};
     
 
+    protected abstract getController(assignment: Assignment): CreepController;
+    protected abstract onSave(): ControllerOperationMemory;
+
     public load(): void {
         super.load();
         for (let key in this.controllers)
@@ -100,18 +103,6 @@ export abstract class ControllerOperation extends Operation {
     }
 
 
-    protected onSave(): ControllerOperationMemory {
-        return {
-            type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
-            assignments: this.getAssignmentMemory(),
-            controllers: this.getControllerMemory()
-        };
-    }
-
-
     public assignReplacement(assignment: Assignment, creepName: string): boolean {
         if (super.assignReplacement(assignment, creepName)) {
             this.controllers[creepName] = this.getController(assignment);
@@ -147,5 +138,18 @@ export abstract class ControllerOperation extends Operation {
     }
 
 
-    protected abstract getController(assignment: Assignment): CreepController;
+    protected Save(): ControllerOperationMemory {
+        let mem = this.onSave();
+        if (mem)
+            return mem;
+
+        return {
+            type: this.type,
+            initialized: this.initialized,
+            started: this.started,
+            finished: this.finished,
+            assignments: this.getAssignmentMemory(),
+            controllers: this.getControllerMemory()
+        };
+    }    
 }

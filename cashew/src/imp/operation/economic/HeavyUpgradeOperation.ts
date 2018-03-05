@@ -94,8 +94,7 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     protected onCancel(): void {
     }
 
-
-    
+        
     protected onReplacement(assignment: Assignment): void {
     }
 
@@ -111,6 +110,10 @@ export class HeavyUpgradeOperation extends ControllerOperation {
             this.colony.resourceManager.structures.controllerContainerId,
             this.colony.nest.room.controller.id,
             this.colony.resourceManager.structures.controllerLinkId);
-    }    
+    }
+
+    protected onSave(): ControllerOperationMemory {
+        return null;
+    }
 }
 

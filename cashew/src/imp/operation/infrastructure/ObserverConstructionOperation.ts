@@ -19,7 +19,7 @@ export class ObserverConstructionOperation extends ConstructionOperation {
     
 
     protected getSiteLocations(colony: Colony): { x: number, y: number }[] {
-        throw Error("observer not implemented");
+        return [colony.nest.nestMap.mainBlock.getObserverLocation()];
     }
 
     protected getStructureType(): BuildableStructureConstant {

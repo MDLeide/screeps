@@ -27,14 +27,18 @@ export class ExtensionLinkConstruction extends ConstructionOperation {
     }
     
     protected onFinish(colony: Colony): boolean {
-        let linkLocation = colony.nest.nestMap.controllerBlock.getLinkLocation();               
+        let linkLocation = colony.nest.nestMap.extensionBlock.getLinkLocation();               
         let linkLook = colony.nest.room.lookForAt(LOOK_STRUCTURES, linkLocation.x, linkLocation.y);
         if (linkLook.length) {
-            if (linkLook[0].structureType == STRUCTURE_LINK) {
-                colony.resourceManager.structures.controllerLink = linkLook[0] as StructureLink;
-                colony.resourceManager.structures.controllerLinkId = linkLook[0].id;
+            if (linkLook[0].structureType == STRUCTURE_LINK) {                
+                colony.resourceManager.structures.extensionLink =  linkLook[0] as StructureLink;
+                colony.resourceManager.structures.extensionLinkId = linkLook[0].id;
             }
         }
         return super.onFinish(colony);
-    }    
+    }
+
+    protected onSave(): ConstructionOperationMemory {
+        return null;
+    }
 }

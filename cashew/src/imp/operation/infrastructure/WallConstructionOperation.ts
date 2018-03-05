@@ -103,5 +103,10 @@ export class WallConstructionOperation extends ControllerOperation {
 
     protected getController(assignment: Assignment): MasonController {
         return new MasonController();
-    }    
+    }
+
+
+    protected onSave(): ControllerOperationMemory {
+        return null;
+    }
 }

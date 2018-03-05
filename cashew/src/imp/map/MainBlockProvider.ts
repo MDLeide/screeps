@@ -11,7 +11,8 @@ export class MainBlockProvider extends BlockProviderBase<MainBlock> {
             MainBlockProvider.getTowers(),
             { x: 1, y: 0 }, // storage
             { x: 0, y: 1 }, // terminal
-            { x: 4, y: 0 }, // link
+            { x: 3, y: 0 }, // link
+            { x: 0, y: 4 }, // observer
             MainBlockProvider.getRcl(),
             MainBlockProvider.getRoads());
     }
@@ -27,11 +28,11 @@ export class MainBlockProvider extends BlockProviderBase<MainBlock> {
     private static getTowers(): { x: number, y: number }[] {
         return [
             this.coord(2, 1),
-            this.coord(3, 1),
             this.coord(1, 2),
             this.coord(3, 2),
-            this.coord(1, 3),
-            this.coord(2, 3)
+            this.coord(0, 3),
+            this.coord(2, 3),
+            this.coord(1, 4)
         ];
     }
 
@@ -58,8 +59,7 @@ export class MainBlockProvider extends BlockProviderBase<MainBlock> {
             {
                 level: 5,
                 locations: [
-                    this.coord(3, 2),
-                    this.coord(2, 4)
+                    this.coord(3, 2)
                 ]
             },
             {
@@ -71,18 +71,19 @@ export class MainBlockProvider extends BlockProviderBase<MainBlock> {
             {
                 level: 7,
                 locations: [
-                    this.coord(3, 1),
-                    this.coord(4, 3)
+                    this.coord(4, 3),
+                    this.coord(1, 4)
                 ]
             },
             {
                 level: 8,
                 locations: [
-                    this.coord(1, 2),
-                    this.coord(1, 3),
+                    this.coord(4, 0),
                     this.coord(2, 1),
-                    this.coord(3, 4),
-                    this.coord(4, 0)
+                    this.coord(3, 1),
+                    this.coord(1, 2),
+                    this.coord(0, 3),
+                    this.coord(3, 4)
                 ]
             },            
         ];
@@ -92,14 +93,17 @@ export class MainBlockProvider extends BlockProviderBase<MainBlock> {
     private static getRoads(): { x: number, y: number }[] {
         return [
             this.coord(0, 0),
-            this.coord(1, 1),
             this.coord(2, 0),
-            this.coord(2, 2),
-            this.coord(2, 4),
             this.coord(3, 0),
-            this.coord(3, 3),
+            this.coord(1, 1),
             this.coord(4, 1),
-            this.coord(4, 2)
+            this.coord(0, 2),
+            this.coord(2, 2),
+            this.coord(4, 2),
+            this.coord(1, 3),
+            this.coord(3, 3),
+            this.coord(0, 4),
+            this.coord(2, 4)
         ]
     }
 }

@@ -3,17 +3,26 @@ import { Colony } from "../../lib/colony/Colony";
 import { Operation } from "../../lib/operation/Operation";
 
 import { HarvestInfrastructureOperation } from "../operation/infrastructure/HarvestInfrastructureOperation";
-import { ExtensionConstructionOperation } from "../operation/infrastructure/ExtensionsOperation";
 import { ControllerInfrastructureOperation } from "../operation/infrastructure/ControllerInfrastructureOperation";
+import { ExtensionConstructionOperation } from "../operation/infrastructure/ExtensionsOperation";
+
+import { ExtractorConstructionOperation } from "../operation/infrastructure/ExtractorConstructionOperation";
+import { LabConstructionOperation } from "../operation/infrastructure/LabConstructionOperation";
+import { ObserverConstructionOperation } from "../operation/infrastructure/ObserverConstructionOperation";
+import { TerminalConstructionOperation } from "../operation/infrastructure/TerminalConstructionOperation";
 import { StorageConstructionOperation } from "../operation/infrastructure/StorageConstructionOperation";
 import { TowerConstructionOperation } from "../operation/infrastructure/TowerConstructionOperation";
+
 import { HarvestLinkConstructionOperation } from "../operation/infrastructure/HarvestLinkConstructionOperation";
 import { UpgradeLinkConstructionOperation } from "../operation/infrastructure/UpgradeLinkConstruction";
+import { ExtensionLinkConstruction } from "../operation/infrastructure/ExtensionLinkConstruction";
+import { StorageLinkConstructionOperation } from "../operation/infrastructure/StorageLinkConstructionOperation";
+
 import { WallConstructionOperation } from "../operation/infrastructure/WallConstructionOperation";
 
 export class InfrastructurePlan extends OperationPlan {
     public static fromMemory(memory: OperationPlanMemory): InfrastructurePlan {
-        let plan = new this();
+        let plan = new this();        
         return OperationPlan.fromMemory(memory, plan) as InfrastructurePlan;
     }
 
@@ -94,22 +103,23 @@ export class InfrastructurePlan extends OperationPlan {
                 break;
 
             case "thirdLink":
-                //todo: build extractor
+                this.addOperation(new ExtractorConstructionOperation());
                 break;
 
             case "extractor":
-                //todo: build terminal
+                this.addOperation(new TerminalConstructionOperation());
                 break;
 
             case "terminal":
-                //todo: build 3 labs
+                this.addOperation(new LabConstructionOperation(6));
                 break;
 
             case "firstLabs":                
                 break;
 
             case "rcl7":
-                //todo: build 3rd tower
+                this.addOperation(new TowerConstructionOperation(7));
+                this.addOperation(new ExtensionConstructionOperation(7));
                 break;
 
             case "thirdTower":
@@ -117,26 +127,27 @@ export class InfrastructurePlan extends OperationPlan {
                 break;
 
             case "fourthLink":
-                //todo: build 6 labs
+                this.addOperation(new LabConstructionOperation(7));
                 break;
 
             case "sixthLab":
                 break;
 
             case "rcl8":
-                //todo: build 3 more towers
+                this.addOperation(new ExtensionConstructionOperation(8));
+                this.addOperation(new TowerConstructionOperation(8));
                 break;
 
             case "sixthTower":
-                //todo: build observer
+                this.addOperation(new ObserverConstructionOperation());
                 break;
 
             case "observer":
-                //todo: build storage link
+                this.addOperation(new StorageLinkConstructionOperation());
                 break;
 
             case "storageLink":
-                //todo: build 4 more labs
+                this.addOperation(new LabConstructionOperation(8));
                 break;
 
             case "labs":

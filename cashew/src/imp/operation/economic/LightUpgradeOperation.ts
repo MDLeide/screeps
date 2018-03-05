@@ -77,4 +77,8 @@ export class LightUpgradeOperation extends ControllerOperation {
     protected getController(assignment: Assignment): LightUpgraderRole {
         return new LightUpgraderRole();
     }
+
+    protected onSave(): ControllerOperationMemory {
+        return null;
+    }
 }
