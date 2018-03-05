@@ -113,9 +113,16 @@ export class StructureArtist {
     }
 
     public drawExtractor(x: number, y: number): void {
-        let visual = new RoomVisual(this.room);
-        visual.circle(x, y);
-        visual.text("E", x, y);
+        let visual = new RoomVisual(this.room);        
+        visual.circle(x, y, {
+            radius: .8,
+            lineStyle: "dashed",
+            fill: StructurePalette.transparent,
+            opacity: this.opacity,
+            stroke: this.palette.border,
+            strokeWidth: .2
+        })
+        //visual.text("E", x, y);
     }
 
     public drawWall(x: number, y: number): void {
@@ -485,17 +492,106 @@ export class StructureArtist {
 
     public drawTerminal(x: number, y: number, energyLevel?: number, mineralLevel?: number): void {
         var visual = new RoomVisual(this.room);
-        visual.text("T", x, y);
+        //visual.text("T", x, y);
+
+        let points = [];
+        points.push([x, y - .8]); // top
+        points.push([x + .5, y - .5]);
+        points.push([x + .8, y]); // right
+        points.push([x + .5, y + .5]);
+        points.push([x, y + .8]); // bottom
+        points.push([x - .5, y + .5]);
+        points.push([x - .8, y]); // left
+        points.push([x - .5, y - .5]);
+        points.push([x, y - .8]); // top
+        points.push([x + .5, y - .5]);
+
+        visual.poly(points,
+            {
+                opacity: this.opacity,
+                stroke: this.palette.border,
+                fill: this.palette.solidSurface
+            })        
+
+        points = []
+        points.push([x, y - .65]); // top
+        points.push([x + .4, y - .4]);
+        points.push([x + .65, y]); // right
+        points.push([x + .4, y + .4]);
+        points.push([x, y + .65]); // bottom
+        points.push([x - .4, y + .4]);
+        points.push([x - .65, y]); // left
+        points.push([x - .4, y - .4]);
+        points.push([x, y - .65]); // top
+        points.push([x + .4, y - .4]);
+
+        visual.poly(points,
+            {
+                opacity: this.opacity,
+                fill: this.palette.secondarySurface,
+                stroke: StructurePalette.transparent
+            });
+
+        visual.rect(x - .4, y - .4, .8, .8,
+            {
+                opacity: this.opacity,
+                fill: this.palette.energy,
+                stroke: this.palette.solidSurface
+            });
     }
 
     public drawLink(x: number, y: number, energyLevel?: number): void {
         var visual = new RoomVisual(this.room);
-        visual.text("L", x, y);
+        //visual.text("L", x, y);
+
+        let points = [];
+        points.push([x, y - .4]);
+        points.push([x + .35, y]);
+        points.push([x, y + .4]);
+        points.push([x - .35, y]);
+        points.push([x, y - .4]);
+
+        visual.poly(points,
+            {
+                opacity: this.opacity,
+                stroke: this.palette.border,
+                strokeWidth: .075,
+                fill: this.palette.solidSurface
+            });
+
+        points = [];
+        points.push([x, y - .275]);
+        points.push([x + .225, y]);
+        points.push([x, y + .275]);
+        points.push([x - .225, y]);
+        points.push([x - .225, y]);
+
+        visual.poly(points,
+            {
+                opacity: this.opacity,
+                fill: this.palette.energy,
+                stroke: StructurePalette.transparent
+            });
     }
 
     public drawObserver(x: number, y: number): void {
         var visual = new RoomVisual(this.room);
         visual.text("O", x, y);
+        visual.circle(x, y,
+            {
+                opacity: this.opacity,
+                radius: .4,
+                stroke: this.palette.border,
+                fill: this.palette.solidSurface
+            });
+
+        visual.circle(x, y - .15,
+            {
+                opacity: this.opacity,
+                radius: .15,
+                fill: this.palette.border
+            });
+
     }
 
     public drawNuker(x: number, y: number, energyLevel?: number, mineralLevel?: number): void {
