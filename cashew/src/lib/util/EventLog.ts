@@ -1,4 +1,6 @@
 import { StringBuilder } from "./StringBuilder";
+import { NestMapVisual } from "./visual/NestMapVisual";
+import { NestMap } from "../map/NestMap";
 
 export class EventLog {
     constructor(colors?: Colors) {
@@ -117,7 +119,7 @@ class EmpireEvents extends EventGroup {
         this.log(sb.getString(), this.colonyFailedToEstablishLevel);
     }
 
-    public nestMappingFailed(nestName: string, blockName: string): void {
+    public nestMappingFailed(nestMap: NestMap, nestName: string, blockName: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
@@ -129,6 +131,9 @@ class EmpireEvents extends EventGroup {
         sb.append(nestName, this.colors.name);
 
         this.log(sb.getString(), this.nestMappingFailedLevel);
+
+        let visual = new NestMapVisual(nestName, nestMap);
+        visual.drawStructures();        
     }
 
     public gclUpgraded(newLevel: number) {

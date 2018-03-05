@@ -28,12 +28,12 @@ export class NestMap {
 
     constructor(
         public map: Map,
-        public harvestBlocks: HarvestBlock[],
-        public extensionBlock: ExtensionBlock,
-        public mainBlock: MainBlock,
-        public controllerBlock: ControllerBlock,
-        public labBlock: LabBlock,
-        public mineralBlock: MineralBlock) {
+        public harvestBlocks?: HarvestBlock[],
+        public extensionBlock?: ExtensionBlock,
+        public mainBlock?: MainBlock,
+        public controllerBlock?: ControllerBlock,
+        public labBlock?: LabBlock,
+        public mineralBlock?: MineralBlock) {
     }
 
 
