@@ -58,6 +58,7 @@ export class Colony  {
     /** Should be called once, after initial object contruction. Do not need to call when loading from memory. */
     public initialize(): void {
         this.remoteMiningManager = new RemoteMiningManager(this);
+        this.remoteMiningManager.initialize();
         this.watchtower = new Watchtower();
         this.resourceManager = new ResourceManager(this);
         this.resourceManager.initialize();

@@ -12,7 +12,7 @@ export class ColonyVisual {
         v.drawEnergyStats = memory.drawEnergyStats;
         v.drawGeneralInfo = memory.drawGeneralInfo;
         v.drawStructures = memory.drawStructures;
-        return v;
+        return v;        
     }
 
     constructor() {        

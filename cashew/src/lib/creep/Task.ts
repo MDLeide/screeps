@@ -432,8 +432,7 @@ export class Repair extends TargetedTask<Structure> {
         var response = creep.repair(this.target);
         if (response == OK) {
             if (colony)
-                colony.resourceManager.ledger.registerRepair(
-                    Math.min(creep.carry.energy, creep.getActiveBodyparts(WORK)));
+                colony.resourceManager.ledger.registerRepair(creep);
             return;
         }            
         else if (response == ERR_NOT_IN_RANGE)
