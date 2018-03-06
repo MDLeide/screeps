@@ -326,7 +326,7 @@ export class Ledger {
     public registerUpgrade(creepOrEnergy: (Creep | number)): void {
         let energy = 0;
         if (creepOrEnergy instanceof Creep) {
-            energy = Math.min(creepOrEnergy.carry.energy, creepOrEnergy.getActiveBodyparts(WORK));
+            energy = Math.min(creepOrEnergy.carry.energy, creepOrEnergy.getActiveBodyparts(WORK) * UPGRADE_CONTROLLER_POWER);
             if (this.resourceManager.colony.nest.room.controller.level >= 8) {
                 if (this.thisTick.upgradeEnergy >= 15)
                     return;
@@ -355,7 +355,7 @@ export class Ledger {
 
     public registerBuild(creepOrEnergy: (Creep | number)): void {
         if (creepOrEnergy instanceof Creep) {
-            let energy = Math.min(creepOrEnergy.carry.energy, creepOrEnergy.getActiveBodyparts(WORK) * 5);
+            let energy = Math.min(creepOrEnergy.carry.energy, creepOrEnergy.getActiveBodyparts(WORK) * BUILD_POWER);
             if (this.sayOnRegistration)
                 creepOrEnergy.say(String.fromCodePoint(0x1F6A7) + " " + energy); // construction sign
             this.registerBuild(energy);

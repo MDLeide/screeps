@@ -128,7 +128,7 @@ export class InfrastructurePlan extends OperationPlan {
                 break;
 
             case "fourthLink":
-                this.addOperation(new LabConstructionOperation(7));
+                this.addOperation(new LabConstructionOperation(7));                
                 break;
 
             case "sixthLab":
