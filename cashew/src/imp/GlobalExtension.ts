@@ -6,6 +6,9 @@ import { EventLog } from "../lib/util/EventLog";
 import { Visuals } from "../lib/util/visual/Visuals";
 import { CreepUtility } from "../lib/creep/CreepUtility";
 
+import { Test } from "./Test";
+
+
 export class GlobalExtension {
     public static extend() {
         global.cleaner = new Cleaner();
@@ -21,6 +24,10 @@ export class GlobalExtension {
         global.reset = function () {
             Playback.pause();
             global.cleaner.cleanAll();
+        }
+
+        global.test = function () {
+            return Test.test();            
         }
     }
 }
