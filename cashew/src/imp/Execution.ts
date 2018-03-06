@@ -31,8 +31,7 @@ export class Execute {
             Playback.placeFlag(empire.colonies[0].nest.roomName);
         
         global.reports = new Reporter(empire);
-        global.visuals.update(empire);
-
+        
         try {            
             empire.load();
             empire.update();            
@@ -44,5 +43,7 @@ export class Execute {
                 Playback.pause();            
             throw e;
         }
+
+        global.visuals.update(empire);
     }
 }

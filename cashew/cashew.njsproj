@@ -170,6 +170,9 @@
     <TypeScriptCompile Include="src\lib\util\RoomHelper.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\visual\ColonyVisual.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\visual\EnergyStatsVisual.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

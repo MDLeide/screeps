@@ -31,7 +31,7 @@ global.OPERATION_TERMINAL_CONSTRUCTION = "TerminalConstruction";
 global.OPERATION_OBSERVER_CONSTRUCTION = "ObserverConstruction";
 global.OPERATION_STORAGE_LINK_CONSTRUCTION = "StorageLinkConstruction";
 global.OPERATION_WALL_CONSTRUCTION = "WallConstruction";
-global.OPERATION_ROAD_CONSTRUCTIOM = "RoadConstructiom";
+global.OPERATION_ROAD_CONSTRUCTION = "RoadConstructiom";
 global.OPERATION_SPAWN_CONSTRUCTION = "SpawnConstruction";
 global.OPERATION_REPLACE_ORIGINAL_SPAWN = "ReplaceOriginalSpawn";
 

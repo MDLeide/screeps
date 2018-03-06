@@ -18,9 +18,7 @@ export class MemoryManager {
             };
         if (!Memory.visuals)
             Memory.visuals = {
-                drawNestMapSpecials: false,
-                drawNestMapStructures: false,
-                drawColonyEnergyStats: true
+                colony: undefined
             }
     }
 

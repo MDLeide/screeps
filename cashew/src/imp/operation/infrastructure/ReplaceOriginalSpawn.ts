@@ -30,7 +30,7 @@ export class SpawnConstructionOperation extends ConstructionOperation {
     }
 
     public onInit(colony: Colony): boolean {
-
+        return false;
     }
 
 

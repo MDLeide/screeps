@@ -40,7 +40,7 @@ export class LabBlock extends MapBlock {
         for (var x = 0; x < this.width; x++)
             for (var y = 0; y < this.height; y++)
                 if (this.special.getAt(x, y) == rcl)
-                    results.push({ x: x, y: y });
+                    results.push({ x: x + this.offset.x, y: y + this.offset.y });
 
         return results;
     }

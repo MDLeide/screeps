@@ -3,8 +3,8 @@ import { Ledger, LedgerPeriod } from "../../colony/ResourceManager";
 import { VisualText } from "./lib/VisualText";
 
 export class EnergyStatsVisual {
-    public static draw(colony: Colony): void {
-        this.drawLedger(colony.resourceManager.ledger, 6.5, 2, colony.nest.roomName);        
+    public static draw(colony: Colony, x: number = 5, y: number = 2): void {
+        this.drawLedger(colony.resourceManager.ledger, x, y, colony.nest.roomName);        
     }
 
     private static drawLedger(ledger: Ledger, x: number, y: number, roomName?: string): void{        

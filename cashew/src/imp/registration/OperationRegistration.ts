@@ -122,6 +122,12 @@ export class OperationRegistration {
             (memory: any) => {
                 return RoadConstructionOperation.fromMemory(memory);
             });
+
+        OperationRepository.register(
+            OPERATION_EXTENSION_LINK_CONSTRUCTION,
+            (memory: any) => {
+                return ExtensionLinkConstruction.fromMemory(memory);
+            });
     }
 
     static registerEconomy(): void {
@@ -172,9 +178,11 @@ export class OperationRegistration {
             (memory: any) => {
                 return ExtensionFillOperation.fromMemory(memory);
             });
+
+
     }
 
-    static registerMilitary():void{
+    static registerMilitary(): void {
         OperationRepository.register(
             OPERATION_ROOM_DEFENSE,
             (memory: any) => {

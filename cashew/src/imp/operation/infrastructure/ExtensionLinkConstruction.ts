@@ -9,7 +9,7 @@ import { ConstructionOperation, ConstructionOperationMemory } from "../Construct
 export class ExtensionLinkConstruction extends ConstructionOperation {
     public static fromMemory(memory: ConstructionOperationMemory): Operation {
         var op = new this();
-        return JobOperation.fromMemory(memory, op);
+        return ConstructionOperation.fromMemory(memory, op);
     }
 
 

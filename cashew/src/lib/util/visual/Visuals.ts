@@ -1,55 +1,50 @@
-import { NestMapVisual } from "./NestMapVisual";
 import { Empire } from "../../empire/Empire"
-import { EnergyStatsVisual } from "./EnergyStatsVisual";
+import { ColonyVisual } from "./ColonyVisual";
 
 export class Visuals {
+    constructor() {
+        if (Memory.visuals.colony)
+            this.colonyVisual = ColonyVisual.fromMemory(Memory.visuals.colony);
+        else
+            this.colonyVisual = new ColonyVisual();
+    }
+
     public help(): string {
-        return "toggleNestStructures() [nestStructs()] - turns on/off drawing of structures from the nest plan </br>" +
-            "toggleNestSpecials() [nestSpecials()] - turns on/off drawing of special values from the nest plan </br>" +
-            "toggleColonyEnergyStates() [energy()] - turns on/off drawing of colony economic stats";
+        return "general() g() - turns on/off drawing of gneeral info" +
+            "energy() e() - turns on/off drawing of colony economic stats" +
+            "nestStructs() nst() - turns on/off drawing of structures from the nest plan </br>" +
+            "nestSpecials() nsp() - turns on/off drawing of special values from the nest plan </br>";
     }
 
 
+    public colonyVisual: ColonyVisual;
+
+    public g(): void { this.general(); }
+    public general(): void {
+        this.colonyVisual.drawGeneralInfo = !this.colonyVisual.drawGeneralInfo;
+    }
+
+    public e(): void { this.energy(); }
     public energy(): void {
-        this.toggleColonyEnergyStats();
+        this.colonyVisual.drawEnergyStats = !this.colonyVisual.drawEnergyStats;
     }
 
+    public nst(): void { this.nestStructs(); }
     public nestStructs(): void {
-        this.toggleNestStructures();
+        this.colonyVisual.drawStructures = !this.colonyVisual.drawStructures;
     }
 
+    public nsp(): void { this.nestSpecials(); }
     public nestSpecials(): void {
-        this.toggleNestSpecials();
+        this.colonyVisual.drawSpecialTokens = !this.colonyVisual.drawSpecialTokens;
     }
 
-
-    public toggleColonyEnergyStats(): void {
-        Memory.visuals.drawColonyEnergyStats = !Memory.visuals.drawColonyEnergyStats;
-    }
-
-    public toggleNestStructures(): void {
-        Memory.visuals.drawNestMapStructures = !Memory.visuals.drawNestMapStructures;
-    }
-
-    public toggleNestSpecials(): void {
-        Memory.visuals.drawNestMapSpecials = !Memory.visuals.drawNestMapSpecials;
-    }
-
-
-
+    
     public update(empire: Empire): void {
         for (var i = 0; i < empire.colonies.length; i++) {
-            var visual = new NestMapVisual(empire.colonies[i].nest.roomName, empire.colonies[i].nest.nestMap);
-
-            if (Memory.visuals.drawNestMapStructures)
-                visual.drawStructures();
-
-            if (Memory.visuals.drawNestMapSpecials)
-                visual.drawRcl();
-
-            if (Memory.visuals.drawColonyEnergyStats)
-                EnergyStatsVisual.draw(empire.colonies[i]);
+            this.colonyVisual.draw(empire.colonies[i]);
         }
+        Memory.visuals.colony = this.colonyVisual.save();
     }
 
 }
