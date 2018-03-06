@@ -358,7 +358,7 @@ export class Ledger {
             let energy = Math.min(creepOrEnergy.carry.energy, creepOrEnergy.getActiveBodyparts(WORK) * 5);
             if (this.sayOnRegistration)
                 creepOrEnergy.say(String.fromCodePoint(0x1F6A7) + " " + energy); // construction sign
-            this.registerUpgrade(energy);
+            this.registerBuild(energy);
             return;                
         }
             
@@ -373,7 +373,7 @@ export class Ledger {
             let energy = Math.min(creepOrEnergy.carry.energy, creepOrEnergy.getActiveBodyparts(WORK));
             if (this.sayOnRegistration)
                 creepOrEnergy.say(String.fromCodePoint(0x1F6E0) + " " + energy); // hammer and wrench
-            this.registerUpgrade(energy);
+            this.registerRepair(energy);
             return;
         }
             
@@ -496,7 +496,7 @@ class Structures {
         if (this.resourceManager.sourceAId == source)
             return this.sourceALink;
         else if (this.resourceManager.sourceBId == source)
-            return this.sourceALink;
+            return this.sourceBLink;
         return null;
     }
 
