@@ -8,7 +8,7 @@ export class ResourceManager {
         manager.sourceBId = memory.sourceBId;
         
         manager.settings = ResourceManagerSettings.fromMemory(memory.settings);
-        manager.structures = Structures.fromMemory(memory.structures);
+        manager.structures = Structures.fromMemory(memory.structures, manager);
         manager.ledger = Ledger.fromMemory(memory.ledger, manager);
         
         return manager;
@@ -20,7 +20,7 @@ export class ResourceManager {
         this.settings = new ResourceManagerSettings();
         this.transfers = new Transfers(this);
         this.withdraws = new Withdraws(this);
-        this.structures = new Structures();
+        this.structures = new Structures(this);
         this.ledger = new Ledger(this);
         this.advisor = new Advisor(this);
     }
@@ -52,11 +52,18 @@ export class ResourceManager {
 
 
     public load(): void {
-        if (this.structures.sourceAContainerOrLinkId)
-            this.structures.sourceAContainerOrLink = Game.getObjectById<(StructureContainer | StructureLink)>(this.structures.sourceAContainerOrLinkId);
+        if (this.structures.sourceAContainerId)
+            this.structures.sourceAContainer = Game.getObjectById<StructureContainer>(this.structures.sourceAContainerId);
 
-        if (this.structures.sourceBContainerOrLinkId)
-            this.structures.sourceBContainerOrLink = Game.getObjectById<(StructureContainer | StructureLink)>(this.structures.sourceBContainerOrLinkId);
+        if (this.structures.sourceALinkId)
+            this.structures.sourceALink = Game.getObjectById<StructureLink>(this.structures.sourceALinkId);
+
+        if (this.structures.sourceBContainerId)
+            this.structures.sourceBContainer = Game.getObjectById<StructureContainer>(this.structures.sourceBContainerId);
+
+        if (this.structures.sourceBLinkId)
+            this.structures.sourceBLink = Game.getObjectById<StructureLink>(this.structures.sourceBLinkId);
+
 
         if (this.structures.controllerContainerId)
             this.structures.controllerContainer = Game.getObjectById<StructureContainer>(this.structures.controllerContainerId);
@@ -102,21 +109,35 @@ export class ResourceManager {
     }
 
 
-    public updateSourceContainerOrLink(sourceId: string, containerOrLink: (string | StructureContainer | StructureLink)): void {
-        if (containerOrLink instanceof StructureContainer || containerOrLink instanceof StructureLink) {
+    public setSourceContainer(sourceId: string, container: (string | StructureContainer)): void {
+        if (container instanceof StructureContainer) {
             if (this.sourceAId == sourceId) {
-                this.structures.sourceAContainerOrLinkId = containerOrLink.id;
-                this.structures.sourceAContainerOrLink = containerOrLink;
+                this.structures.sourceAContainerId = container.id;
+                this.structures.sourceAContainer= container;
             } else if (this.sourceBId == sourceId) {
-                this.structures.sourceBContainerOrLinkId = containerOrLink.id;
-                this.structures.sourceBContainerOrLink = containerOrLink;
+                this.structures.sourceBContainerId = container.id;
+                this.structures.sourceBContainer= container;
             }
         } else {
-            this.updateSourceContainerOrLink(sourceId, Game.getObjectById<(StructureContainer | StructureLink)>(containerOrLink));
+            this.setSourceContainer(sourceId, Game.getObjectById<StructureContainer>(container));
         }
     }
 
-    
+    public setSourceLink(sourceId: string, link: (string | StructureLink)): void {
+        if (link instanceof StructureLink) {
+            if (this.sourceAId == sourceId) {
+                this.structures.sourceALinkId = link.id;
+                this.structures.sourceALink = link;
+            } else if (this.sourceBId == sourceId) {
+                this.structures.sourceBLinkId = link.id;
+                this.structures.sourceBLink = link;
+            }
+        } else {
+            this.setSourceLink(sourceId, Game.getObjectById<StructureLink>(link));
+        }
+    }
+
+
     public save(): ResourceManagerMemory {
         return {
             settings: this.settings.save(),
@@ -430,11 +451,14 @@ export class LedgerPeriod {
 }
 
 class Structures {
-    public static fromMemory(memory: ResourceManagerStructureMemory): Structures {
-        let structures = new this();
+    public static fromMemory(memory: ResourceManagerStructureMemory, resourceManager: ResourceManager): Structures {
+        let structures = new this(resourceManager);
 
-        structures.sourceAContainerOrLinkId = memory.sourceAContainerOrLinkId;
-        structures.sourceBContainerOrLinkId = memory.sourceBContainerOrLinkId;
+        structures.sourceALinkId = memory.sourceALinkId;
+        structures.sourceAContainerId = memory.sourceAContainerId;
+
+        structures.sourceBLinkId = memory.sourceBLinkId;
+        structures.sourceBContainerId = memory.sourceBContainerId;
 
         structures.controllerContainerId = memory.controllerContainerId;
 
@@ -445,12 +469,49 @@ class Structures {
         return structures;
     }
 
-    public sourceAContainerOrLinkId: string;
-    public sourceAContainerOrLink: (StructureContainer | StructureLink);
 
-    public sourceBContainerOrLinkId: string;
-    public sourceBContainerOrLink: (StructureContainer | StructureLink);
+    public constructor(resourceManager: ResourceManager) {
+        this.resourceManager = resourceManager;
+    }
 
+
+    public resourceManager: ResourceManager;
+
+
+    public getSourceContainer(source: (string | Source)): StructureContainer {
+        if (source instanceof Source) {
+            return this.getSourceContainer(source.id);
+        }
+        if (this.resourceManager.sourceAId == source)
+            return this.sourceAContainer;
+        else if (this.resourceManager.sourceBId == source)
+            return this.sourceBContainer;
+        return null;
+    }
+
+    public getSourceLink(source: (string | Source)): StructureLink {
+        if (source instanceof Source) {
+            return this.getSourceLink(source.id);
+        }
+        if (this.resourceManager.sourceAId == source)
+            return this.sourceALink;
+        else if (this.resourceManager.sourceBId == source)
+            return this.sourceALink;
+        return null;
+    }
+
+    public sourceAContainerId: string;
+    public sourceAContainer: StructureContainer;
+
+    public sourceALinkId: string;
+    public sourceALink: StructureLink;
+
+    public sourceBContainerId: string;
+    public sourceBContainer: StructureContainer;
+
+    public sourceBLinkId: string;
+    public sourceBLink: StructureLink;
+    
     public controllerContainerId: string;
     public controllerContainer: StructureContainer;
 
@@ -463,16 +524,18 @@ class Structures {
     public storageLinkId: string;
     public storageLink: StructureLink;
 
+
     public save(): ResourceManagerStructureMemory {
         return {            
             controllerLinkId: this.controllerLinkId,
             extensionLinkId: this.extensionLinkId,
             storageLinkId: this.storageLinkId,
             controllerContainerId: this.controllerContainerId,
-            sourceAContainerOrLinkId: this.sourceAContainerOrLinkId,
-            sourceBContainerOrLinkId: this.sourceBContainerOrLinkId
-        };
-        
+            sourceAContainerId: this.sourceAContainerId,
+            sourceALinkId: this.sourceALinkId,
+            sourceBContainerId: this.sourceBContainerId,
+            sourceBLinkId: this.sourceBLinkId
+        };        
     }
 }
 
@@ -513,6 +576,8 @@ class Transfers {
             return this.resourceManager.structures.extensionLink;
         else if (this.resourceManager.structures.controllerLink && this.resourceManager.structures.controllerLink.energy < this.resourceManager.settings.controllerLinkTransferThreshold)
             return this.resourceManager.structures.controllerLink;
+        else if (this.resourceManager.structures.storageLink && this.resourceManager.structures.storageLink.energy < this.resourceManager.settings.storageLinkTransferThreshold)
+            return this.resourceManager.structures.storageLink;
         return null;
     }
 
@@ -608,24 +673,21 @@ class Withdraws {
         let overflow: StructureContainer[] = [];
         let containers: StructureContainer[] = [];
 
-        if (this.resourceManager.structures.sourceAContainerOrLink && this.resourceManager.structures.sourceAContainerOrLink instanceof StructureContainer) {
-            if (this.resourceManager.structures.sourceAContainerOrLink.store.energy > this.resourceManager.settings.sourceContainerWithdrawThreshold) {
-                if (this.resourceManager.structures.sourceAContainerOrLink.store.energy > this.resourceManager.settings.sourceContainerOverflowThreshold)
-                    overflow.push(this.resourceManager.structures.sourceAContainerOrLink);
-                else
-                    containers.push(this.resourceManager.structures.sourceAContainerOrLink);
-            }
+        if (this.resourceManager.structures.sourceAContainer && this.resourceManager.structures.sourceAContainer.store.energy > this.resourceManager.settings.sourceContainerWithdrawThreshold) {
+            if (this.resourceManager.structures.sourceAContainer.store.energy > this.resourceManager.settings.sourceContainerOverflowThreshold)
+                overflow.push(this.resourceManager.structures.sourceAContainer);
+            else
+                containers.push(this.resourceManager.structures.sourceAContainer);
         }
 
-        if (this.resourceManager.structures.sourceBContainerOrLink && this.resourceManager.structures.sourceBContainerOrLink instanceof StructureContainer) {
-            if (this.resourceManager.structures.sourceBContainerOrLink.store.energy > this.resourceManager.settings.sourceContainerWithdrawThreshold) {
-                if (this.resourceManager.structures.sourceBContainerOrLink.store.energy > this.resourceManager.settings.sourceContainerOverflowThreshold)
-                    overflow.push(this.resourceManager.structures.sourceBContainerOrLink);
-                else
-                    containers.push(this.resourceManager.structures.sourceBContainerOrLink);
-            }
-        }
 
+        if (this.resourceManager.structures.sourceBContainer && this.resourceManager.structures.sourceBContainer.store.energy > this.resourceManager.settings.sourceContainerWithdrawThreshold) {
+            if (this.resourceManager.structures.sourceBContainer.store.energy > this.resourceManager.settings.sourceContainerOverflowThreshold)
+                overflow.push(this.resourceManager.structures.sourceBContainer);
+            else
+                containers.push(this.resourceManager.structures.sourceBContainer);
+        }
+        
         let container: StructureContainer = null;
         let distance: number = 100;
 
@@ -673,8 +735,9 @@ class ResourceManagerSettings {
 
     public sourceContainerOverflowThreshold: number = 1600;
 
-    public controllerLinkTransferThreshold: number = 400;
+    public controllerLinkTransferThreshold: number = 500;
     public extensionLinkTransferThreshold: number = 500;
+    public storageLinkTransferThreshold: number = 500;
 
     public controllerContainerMaxEnergy: number = 1800;
     public storageMaxEnergy: number = 1000000;

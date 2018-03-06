@@ -114,7 +114,7 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
         var container = this.source.room.lookForAt<LOOK_STRUCTURES>(LOOK_STRUCTURES, containerLocation.x, containerLocation.y);
         for (var i = 0; i < container.length; i++) {
             if (container[i].structureType == STRUCTURE_CONTAINER) {
-                colony.resourceManager.updateSourceContainerOrLink(this.sourceId, container[i].id);
+                colony.resourceManager.setSourceContainer(this.sourceId, container[i].id);
                 return true;
             }
         }

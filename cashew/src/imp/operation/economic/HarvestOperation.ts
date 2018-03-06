@@ -8,46 +8,50 @@ import { HarvesterController } from "../../creep/HarvesterController";
 
 export class HarvestOperation extends ControllerOperation {
     public static fromMemory(memory: HarvestOperationMemory): Operation {
-        var op = new this(memory.minimumEnergy, memory.sourceId, memory.containerOrLinkId);        
+        var op = new this(memory.sourceId, memory.containerId, memory.linkId);        
         return ControllerOperation.fromMemory(memory, op);
     }
 
 
-    constructor(minimumEnergyForSpawn: number, source: (Source | string), containerOrLinkId: string) {
+    constructor(source: (Source | string), containerId: string, linkId: string) {
         super(OPERATION_HARVEST, []);
 
-        this.minimumEnergy = minimumEnergyForSpawn;        
-
-        if (source instanceof Source)
-            this.sourceId = source.id;
-        else
-            this.sourceId = source;        
-                
-        this.containerOrLinkId = containerOrLinkId;        
+        this.sourceId = source instanceof Source ? source.id : source;
+        this.containerId = containerId;
+        this.linkId = linkId;
     }
+        
     
-    
-    public minimumEnergy: number;
-    public containerOrLinkId: string;
     public sourceId: string;
+    public containerId: string;
+    public linkId: string;
     
-
-    public changeContainerOrLink(containerOrLinkId: string): void {
-        this.containerOrLinkId = containerOrLinkId;
-        for (var key in this.controllers) {
-            if (this.controllers[key].type == CREEP_CONTROLLER_HARVESTER) {
-                let harvestController = this.controllers[key] as HarvesterController;
-                harvestController.containerOrLinkId = containerOrLinkId;
-                harvestController.containerOrLink = Game.getObjectById<(StructureContainer | StructureLink)>(containerOrLinkId);
-            }
-        }
-    }
-
-
+    
     protected onLoad(): void {
     }
 
-    protected onUpdate(colony: Colony): void {        
+    protected onUpdate(colony: Colony): void {
+        if (Game.time % 500 == 0) {
+            let container = colony.resourceManager.structures.getSourceContainer(this.sourceId);
+            if (container) this.containerId = container.id;
+            let link = colony.resourceManager.structures.getSourceLink(this.sourceId)
+            if (link) this.linkId = link.id;
+
+            for (let key in this.controllers) {
+                let c = this.controllers[key];
+                if (c.type == CREEP_CONTROLLER_HARVESTER) {
+                    let harvester = c as HarvesterController;
+                    if (link) {
+                        harvester.link = link;
+                        harvester.linkId = link.id;
+                    }
+                    if (container) {
+                        harvester.container = container;
+                        harvester.containerId = container.id;
+                    }
+                }
+            }            
+        }
     }
 
     protected onExecute(colony: Colony): void {  
@@ -79,7 +83,6 @@ export class HarvestOperation extends ControllerOperation {
         let spawnTime = 21;
         let buffer = 25;
         let body = BodyRepository.heavyHarvester();
-        body.minimumEnergy = this.minimumEnergy;
         let assignment = new Assignment("", body, CREEP_CONTROLLER_HARVESTER, travelTime + spawnTime + buffer);
         this.assignments.push(assignment);
 
@@ -109,7 +112,7 @@ export class HarvestOperation extends ControllerOperation {
 
 
     protected getController(assignment: Assignment): CreepController {
-        return new HarvesterController(this.containerOrLinkId, this.sourceId);
+        return new HarvesterController(this.sourceId, this.containerId, this.linkId);
     }
 
 
@@ -121,15 +124,15 @@ export class HarvestOperation extends ControllerOperation {
             finished: this.finished,
             assignments: this.getAssignmentMemory(),
             controllers: this.getControllerMemory(),
-            minimumEnergy: this.minimumEnergy,
             sourceId: this.sourceId,
-            containerOrLinkId: this.containerOrLinkId
+            containerId: this.containerId,
+            linkId: this.linkId
         };
     }
 }
 
 interface HarvestOperationMemory extends ControllerOperationMemory {
-    minimumEnergy: number;
     sourceId: string;
-    containerOrLinkId: string;
+    containerId: string;
+    linkId: string
 }

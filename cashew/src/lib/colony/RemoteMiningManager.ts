@@ -18,7 +18,7 @@ export class RemoteMiningManager {
 
     public colony: Colony;
     public rooms: RemoteRoom[] = [];
-    public maxActiveRooms: number = 0;
+    public maxActiveRooms: number = 2;
     public get activeRoomCount(): number {
         let count = 0;
         for (var i = 0; i < this.rooms.length; i++)

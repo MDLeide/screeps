@@ -50,8 +50,10 @@ declare global {
     }
 
     interface ResourceManagerStructureMemory {
-        sourceAContainerOrLinkId: string;
-        sourceBContainerOrLinkId: string;
+        sourceAContainerId: string;
+        sourceALinkId: string;
+        sourceBContainerId: string;
+        sourceBLinkId: string;
         controllerContainerId: string;
         storageLinkId: string;
         extensionLinkId: string;
@@ -248,8 +250,15 @@ declare global {
     }
 
     interface VisualsMemory {
-        drawNestMapStructures: boolean;
-        drawNestMapSpecials: boolean;
-        drawColonyEnergyStats: boolean;
+        colony: ColonyVisualMemory;
+    }
+
+    interface ColonyVisualMemory {
+        drawGeneralInfo: boolean;
+        drawStructures: boolean;
+        drawSpecialTokens: boolean;
+        drawEnergyStats;
+        drawDetailedPopulation: boolean;
+        drawDetailOperations: boolean;
     }
 }

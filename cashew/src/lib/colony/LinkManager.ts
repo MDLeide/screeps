@@ -2,11 +2,11 @@ import { Colony } from "./Colony";
 
 export class LinkManager {
     public execute(colony: Colony): void {
-        if (colony.resourceManager.structures.sourceAContainerOrLink instanceof StructureLink)
-            this.runLink(colony.resourceManager.structures.sourceAContainerOrLink, colony);
+        if (colony.resourceManager.structures.sourceALink)
+            this.runLink(colony.resourceManager.structures.sourceALink, colony);
 
-        if (colony.resourceManager.structures.sourceBContainerOrLink instanceof StructureLink)
-            this.runLink(colony.resourceManager.structures.sourceBContainerOrLink, colony);
+        if (colony.resourceManager.structures.sourceBLink)
+            this.runLink(colony.resourceManager.structures.sourceBLink, colony);
     }
 
     private runLink(link: StructureLink, colony: Colony): void {

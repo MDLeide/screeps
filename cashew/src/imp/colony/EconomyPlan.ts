@@ -38,9 +38,9 @@ export class EconomyPlan extends OperationPlan {
 
             case "harvestContainers":
                 let sources = colony.nest.room.find(FIND_SOURCES);
-                this.addOperation(new HarvestOperation(300, colony.resourceManager.sourceAId, colony.resourceManager.structures.sourceAContainerOrLinkId));
+                this.addOperation(new HarvestOperation(colony.resourceManager.sourceAId, colony.resourceManager.structures.sourceAContainerId, colony.resourceManager.structures.sourceALinkId));
                 if (colony.resourceManager.sourceBId)
-                    this.addOperation(new HarvestOperation(300, colony.resourceManager.sourceBId, colony.resourceManager.structures.sourceBContainerOrLinkId));
+                    this.addOperation(new HarvestOperation(colony.resourceManager.sourceBId, colony.resourceManager.structures.sourceBContainerId, colony.resourceManager.structures.sourceBLinkId));
                 
                 this.addOperation(new LightUpgradeOperation());
                 break;
@@ -76,29 +76,13 @@ export class EconomyPlan extends OperationPlan {
                 break;
 
             case "firstLinks":
-                // update operations with the link id
-                for (var i = 0; i < this.operationGroup.operations.length; i++) {
-                    if (this.operationGroup.operations[i].type == OPERATION_HARVEST) {
-                        let harvestOp = this.operationGroup.operations[i] as HarvestOperation;
-                        if (harvestOp.sourceId == colony.resourceManager.sourceAId) {
-                            harvestOp.changeContainerOrLink(colony.resourceManager.structures.sourceAContainerOrLinkId);
-                        }
-                    }
-                }                
                 break;
 
             case "rcl6":
                 break;
 
             case "thirdLink":
-                for (var i = 0; i < this.operationGroup.operations.length; i++) {
-                    if (this.operationGroup.operations[i].type == OPERATION_HARVEST) {
-                        let harvestOp = this.operationGroup.operations[i] as HarvestOperation;
-                        if (harvestOp.sourceId == colony.resourceManager.sourceBId) {
-                            harvestOp.changeContainerOrLink(colony.resourceManager.structures.sourceBContainerOrLinkId);
-                        }
-                    }
-                }   
+                //todo: start extension fill operation
                 break;
 
             case "extractor":
@@ -119,7 +103,7 @@ export class EconomyPlan extends OperationPlan {
             case "thirdTower":
                 break;
 
-            case "fourthLink":
+            case "fourthLink":                
                 break;
 
             case "sixthLab":
