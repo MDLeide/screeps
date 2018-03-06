@@ -20,27 +20,27 @@ export class ColonyVisual {
 
     public drawGeneralInfo: boolean = true;
 
-    public drawStructures: boolean;    
-    public drawSpecialTokens: boolean;
+    public drawStructures: boolean = false;    
+    public drawSpecialTokens: boolean = false;
 
     public drawEnergyStats: boolean = true;
-    public drawDetailedPopulation: boolean;
-    public drawDetailOperations: boolean;
+    public drawDetailedPopulation: boolean = false;
+    public drawDetailOperations: boolean = false;
+    public nestMapVisual: NestMapVisual;
 
 
     public draw(colony: Colony): void {
+        let nestMapVisual = new NestMapVisual(colony.nest.roomName, colony.nest.nestMap);
         if (this.drawGeneralInfo) {
             let vt = this.getGeneralText(colony);
             vt.alignCenter();
             vt.draw(25.5, 0, colony.nest.roomName);
         }
         if (this.drawStructures) {
-            let nestMapVisual = new NestMapVisual(colony.nest.roomName, colony.nest.nestMap);
             nestMapVisual.drawStructures();
         }            
         if (this.drawSpecialTokens) {
-            let nestMapVisual = new NestMapVisual(colony.nest.roomName, colony.nest.nestMap);
-            nestMapVisual.drawRcl();
+            nestMapVisual.drawSpecials();
         }
         if (this.drawEnergyStats) {
             EnergyStatsVisual.draw(colony, 5, 1);

@@ -1,17 +1,30 @@
-import { ObserverConstructionOperation } from "./operation/infrastructure/ObserverConstructionOperation";
-import { ExtensionFillOperation } from "./operation/economic/ExtensionFillOperation";
+import { ObserverConstructionOperation } from "../imp/operation/infrastructure/ObserverConstructionOperation";
+import { ExtensionFillOperation } from "../imp/operation/economic/ExtensionFillOperation";
 import { Empire } from "../lib/empire/Empire";
 
 export class Test {
+    public recycleNearestCreeps(spawn?: (StructureSpawn | string)): string {
+        if (spawn) {
+            return this.recycleNearestCreeps(global.empire.colonies[0].nest.spawners[0].spawn);
+        } else if (spawn instanceof StructureSpawn) {
+            let creeps = spawn.pos.findInRange(FIND_CREEPS, 1);
+            for (var i = 0; i < creeps.length; i++)
+                spawn.recycleCreep(creeps[i]);
+            
+            return `Recycled ${creeps.length} creeps`;
+        } else {
+            return this.recycleNearestCreeps(Game.spawns[spawn]);
+        }
+    }
 
-    public static test(): string {
+    public test(): string {
         if (!global.empire)
             global.empire = new Empire();
 
         return this.addFillOperation();
     }
 
-    static addFillOperation(): string {
+    private addFillOperation(): string {
 
         let col = global.empire.colonies[0];
         let mem = [];

@@ -6,6 +6,9 @@ export class MemoryManager {
         Memory.empire = {
             colonies: {}
         };
+        Memory.visuals = {
+            colony: undefined
+        };
     }
 
     /**

@@ -102,6 +102,9 @@ export class StructureArtist {
     }
 
 
+    public drawRoad(x: number, y: number): void {
+
+    }
 
     public drawRampart(x: number, y: number): void {
         let visual = new RoomVisual(this.room);
