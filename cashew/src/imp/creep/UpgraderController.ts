@@ -56,12 +56,12 @@ export class UpgraderController extends CreepController {
     protected onExecute(creep: Creep): void {
         let workCount = creep.getActiveBodyparts(WORK);
         
-        if (creep.carry.energy < workCount * 2) {
+        if (creep.carry.energy < workCount * UPGRADE_CONTROLLER_POWER * 2) {
             let withdrawTarget: WithdrawTarget;
 
-            if (this.link && this.link.energy >= workCount * 10)
+            if (this.link && this.link.energy >= workCount * UPGRADE_CONTROLLER_POWER * 2)
                 withdrawTarget = this.link;
-            else if (this.container && this.container.store.energy >= workCount * 10)
+            else if (this.container)
                 withdrawTarget = this.container;
 
             if (withdrawTarget) {
