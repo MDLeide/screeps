@@ -16,58 +16,49 @@ export class ReplaceOriginalSpawnOperation extends ConstructionOperation {
     constructor() {
         super(OPERATION_REPLACE_ORIGINAL_SPAWN, 1);        
     }
-
-
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public onInit(colony: Colony): boolean {
-        return true;
-    }
-
-
+        
     protected getSiteLocations(colony: Colony): { x: number, y: number }[] {
+        console.log("enter");
         let missing: boolean = false;
 
         let orphan: StructureSpawn;
 
-        let loc1 = colony.nest.nestMap.mainBlock.getSpawnLocation(1);
-        let loc1Missing = true;
-        let loc2 = colony.nest.nestMap.mainBlock.getSpawnLocation(7);
-        let loc2Missing = true;
+        let loc1 = colony.nest.nestMap.mainBlock.getSpawnLocation(1);        
+        let loc2 = colony.nest.nestMap.mainBlock.getSpawnLocation(7);        
         let loc3 = colony.nest.nestMap.mainBlock.getSpawnLocation(8);
-        let loc3Missing = true;
-
+        
         let spawns = colony.nest.room.find<StructureSpawn>(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_SPAWN });
         for (var i = 0; i < spawns.length; i++) {
             let s = spawns[i];
-            if (this.positionsMatch(s, loc1)) {
-                loc1Missing = false;
-                continue;
-            }
-            if (this.positionsMatch(s, loc2)) {
-                loc2Missing = false;
-                continue;
-            }
-            if (this.positionsMatch(s, loc3)) {
-                loc3Missing = false;
-                continue;
-            }
-            orphan = s;
+            if (this.positionsMatch(s, loc1))
+                continue;            
+            if (this.positionsMatch(s, loc2))
+                continue;            
+            if (this.positionsMatch(s, loc3))
+                continue;            
+            s.destroy();
         }
 
-        if (orphan)
-            orphan.destroy();
-
-        if (loc1Missing)
+        if (!this.lookForSpawn(colony.nest.room, loc1.x, loc1.y))
             return [loc1];
-        else if (loc2Missing)
+        if (!this.lookForSpawn(colony.nest.room, loc2.x, loc2.y))
             return [loc2];
-        else if (loc3Missing)
+        if (!this.lookForSpawn(colony.nest.room, loc3.x, loc3.y))
             return [loc3];
 
         return [];
+    }
+
+    protected lookForSpawn(room: Room, x: number, y: number) {
+        let look = room.lookForAt(LOOK_STRUCTURES, x, y);
+        for (var i = 0; i < look.length; i++)
+            if (look[i].structureType == STRUCTURE_SPAWN)
+                return true;        
+        return false;
+    }
+
+    protected getStructureType(): BuildableStructureConstant {
+        return STRUCTURE_SPAWN;
     }
 
     private positionsMatch(spawn: StructureSpawn, location: { x: number, y: number }): boolean {
@@ -84,9 +75,7 @@ export class ReplaceOriginalSpawnOperation extends ConstructionOperation {
         return false;
     }
 
-    protected getStructureType(): BuildableStructureConstant {
-        return STRUCTURE_SPAWN;
-    }
+
 
     protected onSave(): ConstructionOperationMemory {
         return null;

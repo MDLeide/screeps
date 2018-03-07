@@ -98,27 +98,29 @@ export class FillerController extends CreepController {
 
     private moveAhead(creep: Creep): void {
         if (this.onPathA) {
-            creep.move(this.pathA[this.pathIndex] as DirectionConstant);
-            this.pathIndex++;
-            this.atHome = false;
+            if (creep.move(this.pathA[this.pathIndex] as DirectionConstant) == OK) {
+                this.pathIndex++;
+                this.atHome = false;
 
-            if (this.pathIndex >= this.pathA.length) {
-                this.pathIndex = 0;
-                this.onPathA = false;
-                this.atHome = true;
-                this.fill = false;
-            }
+                if (this.pathIndex >= this.pathA.length) {
+                    this.pathIndex = 0;
+                    this.onPathA = false;
+                    this.atHome = true;
+                    this.fill = false;
+                }
+            }            
         } else {
-            creep.move(this.pathB[this.pathIndex] as DirectionConstant);
-            this.pathIndex++;
-            this.atHome = false;
+            if (creep.move(this.pathB[this.pathIndex] as DirectionConstant) == OK) {
+                this.pathIndex++;
+                this.atHome = false;
 
-            if (this.pathIndex >= this.pathB.length) {
-                this.pathIndex = 0;
-                this.onPathA = true;
-                this.atHome = true;
-                this.fill = false;
-            }
+                if (this.pathIndex >= this.pathB.length) {
+                    this.pathIndex = 0;
+                    this.onPathA = true;
+                    this.atHome = true;
+                    this.fill = false;
+                }
+            }            
         }
     }
 
