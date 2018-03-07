@@ -123,7 +123,7 @@
     <TypeScriptCompile Include="src\imp\operation\infrastructure\ExtensionLinkConstruction.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\ExtractorConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\RoadConstructionOperation.ts" />
-    <TypeScriptCompile Include="src\imp\operation\infrastructure\ReplaceOriginalSpawn.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\ReplaceOriginalSpawnOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\SpawnConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\WallConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\ObserverConstructionOperation.ts" />
@@ -141,6 +141,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\registration\OperationPlanRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\Test.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\LinkManager.ts">
@@ -171,6 +174,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\visual\ColonyVisual.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\visual\DebugVisual.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\visual\EnergyStatsVisual.ts">

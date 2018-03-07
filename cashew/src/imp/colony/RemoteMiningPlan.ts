@@ -24,7 +24,7 @@ export class RemoteMiningPlan extends OperationPlan {
             }            
         }
 
-        colony.remoteMiningManager.maxActiveRooms = 1; // test value
+        colony.remoteMiningManager.maxActiveRooms = 2; // test value
 
         let remoteSource = colony.remoteMiningManager.getNextMiningAssignment();
         if (remoteSource) {

@@ -9,7 +9,8 @@
         "experimentalDecorators": true,
         "noImplicitReturns": true,
         "allowSyntheticDefaultImports": true,
-        "allowUnreachableCode": false
+        "allowUnreachableCode": false,
+        "noImplicitUseStrict": true
     },
     "exclude": [
         "node_modules",

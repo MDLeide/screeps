@@ -12,6 +12,8 @@ import { ObserverConstructionOperation } from "../operation/infrastructure/Obser
 import { TerminalConstructionOperation } from "../operation/infrastructure/TerminalConstructionOperation";
 import { StorageConstructionOperation } from "../operation/infrastructure/StorageConstructionOperation";
 import { TowerConstructionOperation } from "../operation/infrastructure/TowerConstructionOperation";
+import { SpawnConstructionOperation } from "../operation/infrastructure/SpawnConstructionOperation";
+import { ReplaceOriginalSpawnOperation } from "../operation/infrastructure/ReplaceOriginalSpawnOperation";
 
 import { HarvestLinkConstructionOperation } from "../operation/infrastructure/HarvestLinkConstructionOperation";
 import { UpgradeLinkConstructionOperation } from "../operation/infrastructure/UpgradeLinkConstruction";
@@ -132,15 +134,18 @@ export class InfrastructurePlan extends OperationPlan {
                 break;
 
             case "sixthLab":
+                this.addOperation(new SpawnConstructionOperation(7));
                 break;
 
             case "rcl8":
                 this.addOperation(new ExtensionConstructionOperation(8));
                 this.addOperation(new TowerConstructionOperation(8));
+                this.addOperation(new SpawnConstructionOperation(8));
                 break;
 
             case "sixthTower":
                 this.addOperation(new ObserverConstructionOperation());
+                this.addOperation(new SpawnConstructionOperation(8));
                 break;
 
             case "observer":
@@ -152,6 +157,7 @@ export class InfrastructurePlan extends OperationPlan {
                 break;
 
             case "labs":
+                this.addOperation(new ReplaceOriginalSpawnOperation());
                 break;
 
             default:

@@ -25,7 +25,7 @@ export abstract class ConstructionOperation extends JobOperation {
     }
 
 
-    public siteIds: string[];
+    public siteIds: string[] = [];
     public sites: ConstructionSite[] = [];
     public sitesBuilt: boolean;
 

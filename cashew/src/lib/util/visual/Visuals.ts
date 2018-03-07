@@ -52,6 +52,7 @@ export class Visuals {
         for (var i = 0; i < empire.colonies.length; i++) {
             this.colonyVisual.draw(empire.colonies[i]);
         }
+        global.d.print();
         Memory.visuals.colony = this.colonyVisual.save();
     }
 

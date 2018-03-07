@@ -42,7 +42,8 @@ export abstract class JobOperation extends Operation {
                 if (job)
                     job.update(creep);
 
-                if (job.complete) {
+
+                if (job && job.complete) {
                     this.jobs[creep.name] = this.getJob(this.assignments[i]);
                     if (this.jobs[creep.name])
                         this.jobs[creep.name].update(creep);

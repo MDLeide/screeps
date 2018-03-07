@@ -26,6 +26,8 @@ import { ObserverConstructionOperation } from "../operation/infrastructure/Obser
 import { StorageLinkConstructionOperation } from "../operation/infrastructure/StorageLinkConstructionOperation";
 import { WallConstructionOperation } from "../operation/infrastructure/WallConstructionOperation";
 import { RoadConstructionOperation } from "../operation/infrastructure/RoadConstructionOperation";
+import { SpawnConstructionOperation } from "../operation/infrastructure/SpawnConstructionOperation";
+import { ReplaceOriginalSpawnOperation } from "../operation/infrastructure/ReplaceOriginalSpawnOperation"
 
 // military
 import { RoomDefenseOperation } from "../operation/military/RoomDefenseOperation"; 
@@ -39,6 +41,18 @@ export class OperationRegistration {
     }
 
     static registerInfrastructure(): void {
+        OperationRepository.register(
+            OPERATION_SPAWN_CONSTRUCTION,
+            (memory: any) => {
+                return SpawnConstructionOperation.fromMemory(memory);
+            });
+
+        OperationRepository.register(
+            OPERATION_REPLACE_ORIGINAL_SPAWN,
+            (memory: any) => {
+                return ReplaceOriginalSpawnOperation.fromMemory(memory);
+            });
+
         OperationRepository.register(
             OPERATION_EXTENSION_CONSTRUCTION,
             (memory: any) => {

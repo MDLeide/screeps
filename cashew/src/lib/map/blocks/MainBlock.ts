@@ -66,7 +66,7 @@ export class MainBlock extends MapBlock {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 if (this.structures.getAt(x, y) == STRUCTURE_LINK)
-                    return { x: x, y: y };
+                    return { x: x + this.offset.x, y: y + this.offset.y };
             }
         }
         return null;
@@ -76,7 +76,7 @@ export class MainBlock extends MapBlock {
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 if (this.structures.getAt(x, y) == STRUCTURE_OBSERVER)
-                    return { x: x, y: y };
+                    return { x: x + this.offset.x, y: y + this.offset.y };
             }
         }
         return null;

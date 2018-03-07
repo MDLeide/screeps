@@ -10,20 +10,29 @@ import { Logger } from "../lib/util/dbg/Logger";
 import { Playback } from "../lib/util/dbg/Playback";
 import { Cleaner } from "../lib/util/dbg/Cleaner";
 
+import { DebugVisual } from "../lib/util/visual/DebugVisual";
 
 
 
 export class GlobalExtension {
-    public static extend(empire: Empire) {
-        global.empire = empire;
+    public static extend(empire?: Empire) {
+        if (empire) {
+            global.empire = empire;
 
-        let reports = new Reporter(empire);
-        global.reports = reports;
-        global.r = reports;
+            let reports = new Reporter(empire);
+            global.reports = reports;
+            global.r = reports;
+        }        
 
         let visuals = new Visuals();
         global.visuals = visuals;
         global.v = visuals;
+
+
+        let debug = new DebugVisual;
+        global.debug = debug;
+        global.d = debug;
+
 
         global.cleaner = new Cleaner();
         global.logger = new Logger();

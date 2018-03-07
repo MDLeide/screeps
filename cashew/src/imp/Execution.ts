@@ -14,6 +14,7 @@ export class Execute {
         console.log("<span style='color:green'>Execution initializing...</span>");        
         MemoryManager.checkInit();
         Register.register();
+        GlobalExtension.extend();
     }
     
     public main(): void {        

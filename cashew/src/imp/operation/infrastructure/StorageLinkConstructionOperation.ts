@@ -16,7 +16,20 @@ export class StorageLinkConstructionOperation extends ConstructionOperation {
     constructor() {
         super(OPERATION_STORAGE_LINK_CONSTRUCTION, 1);
     }
-    
+
+    protected onFinish(colony: Colony): boolean {
+        let linkLoc = colony.nest.nestMap.mainBlock.getLinkLocation();
+        let linkLook = colony.nest.room.lookForAt(LOOK_STRUCTURES, linkLoc.x, linkLoc.y);
+        for (var i = 0; i < linkLook.length; i++) {
+            if (linkLook[i].structureType == STRUCTURE_LINK) {
+                colony.resourceManager.structures.storageLink = linkLook[i] as StructureLink;
+                colony.resourceManager.structures.storageLinkId = linkLook[i].id;
+                return true;
+            }                
+        }
+        return false;
+    }
+
 
     protected getSiteLocations(colony: Colony): { x: number, y: number }[] {
         return [colony.nest.nestMap.mainBlock.getLinkLocation()];

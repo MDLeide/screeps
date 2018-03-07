@@ -1,8 +1,7 @@
 //import { } from "./imp/GlobalConstants";
 import { GlobalConstants } from "./imp/GlobalConstants";
 GlobalConstants.extend();
-import { GlobalExtension } from "./imp/GlobalExtension";
-GlobalExtension.extend();
+
 
 import { ErrorMapper } from "util/ErrorMapper";
 import { Execute } from "imp/Execution";
