@@ -6,6 +6,7 @@ import { HarvestOperation } from "../operation/economic/HarvestOperation";
 import { LightUpgradeOperation } from "../operation/economic/LightUpgradeOperation";
 import { HeavyUpgradeOperation } from "../operation/economic/HeavyUpgradeOperation";
 import { EnergyTransportOperation } from "../operation/economic/EnergyTransportOperation";
+import { ExtensionFillOperation } from "../operation/economic/ExtensionFillOperation";
 
 export class EconomyPlan extends OperationPlan {
     public static fromMemory(memory: OperationPlanMemory): EconomyPlan {
@@ -82,7 +83,7 @@ export class EconomyPlan extends OperationPlan {
                 break;
 
             case "thirdLink":
-                //todo: start extension fill operation
+                this.addOperation(new ExtensionFillOperation());
                 break;
 
             case "extractor":

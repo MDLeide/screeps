@@ -1,17 +1,17 @@
 import { CreepControllerRepository } from "../../lib/creep/CreepControllerRepository";
 
+import { FillerController, FillerControllerMemory } from "../creep/FillerController";
 import { HarvesterController, HarvesterControllerMemory } from "../creep/HarvesterController";
-import { HarvestInfrastructureBuilderController, HarvestInfrastructureBuilderControllerMemory } from "../creep/HarvestInfrastructureBuilderController";
 import { HaulerRole } from "../creep/HaulerRole";
 import { LightUpgraderRole } from "../creep/LightUpgraderRole";
-import { UpgraderController, UpgraderRoleMemory } from "../creep/UpgraderController";
 import { RemoteHarvesterController, RemoteHarvesterControllerMemory } from "../creep/RemoteHarvesterController";
 import { RemoteHaulerRole, RemoteHaulerRoleMemory } from "../creep/RemoteHaulerRole";
+import { UpgraderController, UpgraderRoleMemory } from "../creep/UpgraderController";
 import { ChemistController } from "../creep/ChemistController";
-import { FillerController } from "../creep/FillerController";
-import { MasonController, MasonControllerMemory } from "../creep/MasonController";
 import { ExtractorController } from "../creep/ExtractorController";
 
+import { HarvestInfrastructureBuilderController, HarvestInfrastructureBuilderControllerMemory } from "../creep/HarvestInfrastructureBuilderController";
+import { MasonController, MasonControllerMemory } from "../creep/MasonController";
 import { BuilderJob, BuildJobMemory } from "../creep/BuilderJob";
 
 import { DefenderController } from "../creep/DefenderController";
@@ -61,7 +61,7 @@ export class ControllerRegistration {
 
         CreepControllerRepository.register(
             CREEP_CONTROLLER_FILLER,
-            (mem: CreepControllerMemory) => FillerController.fromMemory(mem));
+            (mem: FillerControllerMemory) => FillerController.fromMemory(mem));
 
         CreepControllerRepository.register(
             CREEP_CONTROLLER_MASON,

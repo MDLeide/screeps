@@ -10,7 +10,9 @@ export class ResourceManager {
         manager.settings = ResourceManagerSettings.fromMemory(memory.settings);
         manager.structures = Structures.fromMemory(memory.structures, manager);
         manager.ledger = Ledger.fromMemory(memory.ledger, manager);
-        
+
+        manager.extensionsManagedDirectly = memory.extensionsManagedDirectly;
+
         return manager;
     }
 
@@ -37,7 +39,8 @@ export class ResourceManager {
     
     public sourceAId: string;
     public sourceBId: string;
-    
+
+    public extensionsManagedDirectly: boolean = false;
 
     /** Call once, after initial creation. */
     public initialize(): void {
@@ -144,7 +147,8 @@ export class ResourceManager {
             structures: this.structures.save(),
             ledger: this.ledger.save(),
             sourceAId: this.sourceAId,
-            sourceBId: this.sourceBId
+            sourceBId: this.sourceBId,
+            extensionsManagedDirectly: this.extensionsManagedDirectly
         };
     }
 }
@@ -561,6 +565,9 @@ class Transfers {
         for (var i = 0; i < this.resourceManager.colony.nest.spawners.length; i++)
             if (this.resourceManager.colony.nest.spawners[i].spawn.energy < this.resourceManager.colony.nest.spawners[i].spawn.energyCapacity)
                 return this.resourceManager.colony.nest.spawners[i].spawn;
+
+        if (this.resourceManager.extensionsManagedDirectly)
+            return null;
 
         let closest = creep.pos.findClosestByRange<StructureExtension>(FIND_MY_STRUCTURES,
             {

@@ -42,7 +42,8 @@ declare global {
         structures: ResourceManagerStructureMemory;
         ledger: ResourceManagerLedgerMemory;
         sourceAId: string;
-        sourceBId: string;             
+        sourceBId: string;
+        extensionsManagedDirectly: boolean;             
     }
 
     interface ResourceManagerSettingsMemory {
@@ -110,6 +111,7 @@ declare global {
     interface NestMemory {
         roomName: string;
         map: NestMapMemory;
+        fillOrderIds: string[];
     }
 
     interface RemoteMiningManagerMemory {

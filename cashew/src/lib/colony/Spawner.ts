@@ -23,7 +23,7 @@ export class Spawner {
         return (!this.spawn.spawning && !this.startedThisTick && this.spawn.room.energyAvailable >= body.minimumEnergy);
     }
     
-    public spawnCreep(body: Body): string | null {
+    public spawnCreep(body: Body, fillOrder: StructureExtension[]): string | null {
         if (!this._updated || this._cleanedup) {
             throw new Error("Only call spawner.spawnCreep() during the execute phase.");
         }
@@ -31,7 +31,7 @@ export class Spawner {
         if (!this.canSpawn(body)) {
             return null;
         }
-
+        
         let finalBody = body.getBody(this.spawn.room.energyAvailable);        
         var name = CreepNamer.getCreepName(body, this);
         var result = this.spawn.spawnCreep(
@@ -44,7 +44,8 @@ export class Spawner {
                     operation: "",
                     birthTick: Game.time + 1,
                     deathTick: 0
-                }
+                },
+                energyStructures: fillOrder
             });
 
         if (result == OK) {
