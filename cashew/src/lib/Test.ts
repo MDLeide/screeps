@@ -1,5 +1,6 @@
 import { ObserverConstructionOperation } from "../imp/operation/infrastructure/ObserverConstructionOperation";
 import { ExtensionFillOperation } from "../imp/operation/economic/ExtensionFillOperation";
+import { ReplaceOriginalSpawnOperation } from "../imp/operation/infrastructure/ReplaceOriginalSpawnOperation";
 import { Empire } from "../lib/empire/Empire";
 
 export class Test {
@@ -21,7 +22,32 @@ export class Test {
         if (!global.empire)
             global.empire = new Empire();
 
-        return this.addFillOperation();
+        //return this.addFillOperation();
+        this.resetReplaceSpawn();
+        return "";
+    }
+
+    private resetReplaceSpawn(): void {
+        let col = global.empire.colonies[0];
+        let mem = [];
+        for (var i = 0; i < col.operationPlans.length; i++) {
+            if (col.operationPlans[i].type == PLAN_INFRASTRUCTURE) {
+                let plan = col.operationPlans[i];
+
+                for (var j = 0; j < plan.operationGroup.operations.length; j++) {
+                    let currentOp = plan.operationGroup.operations[j];
+                    if (currentOp.type == OPERATION_REPLACE_ORIGINAL_SPAWN) {
+                        currentOp.finish(col);
+                        plan.operationGroup.operations.splice(j--, 1);
+                    }
+                }
+
+                let op = new ReplaceOriginalSpawnOperation();
+                plan.operationGroup.addOperation(op);
+            }
+            mem.push(col.operationPlans[i].save());
+        }
+        Memory.empire.colonies['Colony W1N7'].operationPlans = mem;        
     }
 
     private addFillOperation(): string {

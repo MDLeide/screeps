@@ -45,7 +45,7 @@ export class GlobalExtension {
 
 
         global.help = function () {
-            return "cleaner [c]</br>visuals [v]</br>events";
+            return "cleaner [c]</br>visuals [v]</br>events</br>reports [r]";
         };
 
 
