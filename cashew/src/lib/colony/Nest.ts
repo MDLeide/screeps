@@ -29,7 +29,7 @@ export class Nest {
 
     public spawners: Spawner[];
     public fillOrderIds: string[] = [];
-    public fillOrder: StructureExtension[] = [];
+    public fillOrder: (StructureExtension | StructureSpawn)[] = [];
     public nestMap: NestMap;
     public roomName: string;    
     public room: Room;
@@ -63,7 +63,7 @@ export class Nest {
         }
         this.fillOrder = [];
         for (var i = 0; i < this.fillOrderIds.length; i++)
-            this.fillOrder.push(Game.getObjectById<StructureExtension>(this.fillOrderIds[i]));        
+            this.fillOrder.push(Game.getObjectById<(StructureExtension | StructureSpawn)>(this.fillOrderIds[i]));        
     }
 
     public update(): void {
@@ -85,12 +85,15 @@ export class Nest {
         }
     }
 
-    private checkFillOrder(): void {
+    public checkFillOrder(): void {
         if (!this.fillOrder || (this.fillOrder && this.fillOrder.length == 0) || Game.time % 100 == 0) {
+            let spawns = this.room.find<StructureSpawn>(
+                FIND_MY_STRUCTURES,
+                { filter: (s) => s.structureType == STRUCTURE_SPAWN });
             let extensions = this.room.find<StructureExtension>(
                 FIND_MY_STRUCTURES,
                 { filter: (e) => e.structureType == STRUCTURE_EXTENSION });
-            if (extensions.length > this.fillOrderIds.length) {
+            if (extensions.length + spawns.length > this.fillOrderIds.length) {
                 this.updateFillOrder();
             }
         }
@@ -108,6 +111,11 @@ export class Nest {
                 }
             }
         }
+        let spawns = this.room.find<StructureSpawn>(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_SPAWN });
+
+        for (var i = 0; i < spawns.length; i++)
+            order.push(spawns[i].id);
+
         this.fillOrderIds = order;
     }
 

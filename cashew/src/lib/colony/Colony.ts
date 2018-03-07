@@ -62,6 +62,7 @@ export class Colony  {
         this.watchtower = new Watchtower();
         this.resourceManager = new ResourceManager(this);
         this.resourceManager.initialize();
+        this.nest.checkFillOrder();
     }
 
 

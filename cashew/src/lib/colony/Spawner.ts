@@ -23,7 +23,7 @@ export class Spawner {
         return (!this.spawn.spawning && !this.startedThisTick && this.spawn.room.energyAvailable >= body.minimumEnergy);
     }
     
-    public spawnCreep(body: Body, fillOrder: StructureExtension[]): string | null {
+    public spawnCreep(body: Body, fillOrder: (StructureExtension | StructureSpawn)[]): string | null {
         if (!this._updated || this._cleanedup) {
             throw new Error("Only call spawner.spawnCreep() during the execute phase.");
         }

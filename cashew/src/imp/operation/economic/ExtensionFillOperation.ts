@@ -58,8 +58,7 @@ export class ExtensionFillOperation extends ControllerOperation {
                 c.waiting = false;
             else if (c.waiting && !c.onPathA && bCount == 0)
                 c.waiting = false;
-        }
-        global.d.watch(controllerCount, "controller count");
+        }        
         if (controllerCount < 2)
             return;
         
@@ -70,8 +69,7 @@ export class ExtensionFillOperation extends ControllerOperation {
         let unfilledA = posA.findInRange<StructureExtension>(FIND_MY_STRUCTURES, 1, { filter: (s) => s.structureType == STRUCTURE_EXTENSION && s.energy < s.energyCapacity }).length;
         let unfilledB = posB.findInRange<StructureExtension>(FIND_MY_STRUCTURES, 1, { filter: (s) => s.structureType == STRUCTURE_EXTENSION && s.energy < s.energyCapacity }).length;
         let unfilled = unfilledA + unfilledB;
-
-        global.d.watch(unfilled, "unfilled count");
+                
         if (colony.nest.room.energyAvailable < colony.nest.room.energyCapacityAvailable && unfilled == 0) {
             for (let key in this.controllers) {
                 let c = this.controllers[key] as FillerController;

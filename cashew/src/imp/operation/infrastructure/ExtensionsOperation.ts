@@ -29,6 +29,11 @@ export class ExtensionConstructionOperation extends ConstructionOperation {
     protected getStructureType(): BuildableStructureConstant {
         return STRUCTURE_EXTENSION;
     }
+
+    protected onFinish(colony: Colony): boolean {
+        colony.nest.checkFillOrder();
+        return super.onFinish(colony);
+    }
     
     protected onSave(): ExtensionsOperationMemory {
         return {            

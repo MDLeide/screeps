@@ -732,13 +732,13 @@ class ResourceManagerSettings {
         TransferPriorityTarget.SpawnsAndExtensions,
         TransferPriorityTarget.Towers,
         TransferPriorityTarget.Controller,
-        TransferPriorityTarget.Lab,
-        TransferPriorityTarget.Terminal,
-        TransferPriorityTarget.Storage
+        TransferPriorityTarget.Lab,        
+        TransferPriorityTarget.Storage,
+        TransferPriorityTarget.Terminal
     ];
 
     public storageWithdrawThreshold: number = 100;
-    public sourceContainerWithdrawThreshold: number = 50;
+    public sourceContainerWithdrawThreshold: number = 200;
 
     public sourceContainerOverflowThreshold: number = 1600;
 
