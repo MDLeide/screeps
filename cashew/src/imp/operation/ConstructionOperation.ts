@@ -70,7 +70,9 @@ export abstract class ConstructionOperation extends JobOperation {
 
 
     protected onInit(colony: Colony): boolean {
+        console.log("init");
         let locations = this.getSiteLocations(colony);
+        console.log(locations);
         let type = this.getStructureType();
 
         this.siteIds = [];
