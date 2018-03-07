@@ -12,7 +12,7 @@ import { Cleaner } from "../lib/util/dbg/Cleaner";
 
 import { DebugVisual } from "../lib/util/visual/DebugVisual";
 
-
+import { Test } from "../lib/Test";
 
 export class GlobalExtension {
     public static extend(empire?: Empire) {
@@ -33,12 +33,15 @@ export class GlobalExtension {
         global.debug = debug;
         global.d = debug;
 
+        global.test = new Test();
 
         global.cleaner = new Cleaner();
         global.logger = new Logger();
         
         global.events = new EventLog();
         global.ucreep = new CreepUtility();
+
+
 
 
         global.help = function () {

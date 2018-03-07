@@ -59,7 +59,7 @@ export class UpgraderController extends CreepController {
         if (creep.carry.energy < workCount * UPGRADE_CONTROLLER_POWER * 2) {
             let withdrawTarget: WithdrawTarget;
 
-            if (this.link && this.link.energy >= workCount * UPGRADE_CONTROLLER_POWER * 2)
+            if (this.link && this.link.energy >= workCount)
                 withdrawTarget = this.link;
             else if (this.container)
                 withdrawTarget = this.container;

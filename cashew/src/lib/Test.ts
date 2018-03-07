@@ -25,7 +25,6 @@ export class Test {
     }
 
     private addFillOperation(): string {
-
         let col = global.empire.colonies[0];
         let mem = [];
 

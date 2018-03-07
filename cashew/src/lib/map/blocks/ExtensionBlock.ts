@@ -27,6 +27,8 @@ export class ExtensionBlock extends MapBlock {
         indicies: { x: number, y: number }[],
         pathA: { x: number, y: number }[],
         pathB: { x: number, y: number }[],
+        waitA: { x: number, y: number },
+        waitB: { x: number, y: number },
         roads: { x: number, y: number }[]) {
 
         super(height, width, { x: 0, y: 0 });
@@ -45,6 +47,29 @@ export class ExtensionBlock extends MapBlock {
 
         for (var i = 0; i < pathB.length; i++)
             this.special.setAt(pathB[i].x, pathB[i].y, i + 201);
+
+        this.special.setAt(waitA.x, waitA.y, 301);
+        this.special.setAt(waitB.x, waitB.y, 302);
+    }
+
+    public getWaitALocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.getSpecialAt(x, y) == 301)
+                    return { x: x + this.offset.x, y: y + this.offset.y };
+            }
+        }
+        return null;
+    }
+
+    public getWaitBLocation(): { x: number, y: number } {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                if (this.getSpecialAt(x, y) == 302)
+                    return { x: x + this.offset.x, y: y + this.offset.y };
+            }
+        }
+        return null;
     }
 
     public getStandALocation(): { x: number, y: number } {

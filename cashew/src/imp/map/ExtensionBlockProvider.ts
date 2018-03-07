@@ -12,6 +12,8 @@ export class ExtensionBlockProvider extends BlockProviderBase<ExtensionBlock> {
             ExtensionBlockProvider.getSpecial(),
             ExtensionBlockProvider.getPathA(),
             ExtensionBlockProvider.getPathB(),
+            { x: 0, y: 5 },
+            { x: 10, y: 5 },
             ExtensionBlockProvider.getRoads()
         );
         return block;
