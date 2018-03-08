@@ -12,7 +12,6 @@ Currently the code is focused primarily on economy and room management, with som
 
 # Architecture
 
-## Loop Participant
 There are two primary parts of the project, `lib` consists of classes which provide common functionality, and could, in theory, be taken and used to build a completely separate AI. `imp` is there the implementation exists, and provides things like creep logic, room management, etc.
 
 `main.js` is very simple, outside the main loop it extends the global object with some constants (more on that below) and instantiates and initializes an `Execute` object. Inside the look, `execute.main()` is called, which drives the AI.
