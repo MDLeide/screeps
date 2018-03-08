@@ -53,6 +53,7 @@
     <Folder Include="src\lib\map\base\" />
     <Folder Include="src\lib\map\blocks\" />
     <Folder Include="src\lib\map\" />
+    <Folder Include="src\lib\flags\" />
     <Folder Include="src\lib\util\visual\lib\" />
     <Folder Include="src\yagni\colonyPlan\" />
     <Folder Include="src\lib\util\dbg\" />
@@ -141,6 +142,12 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\registration\OperationPlanRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\flags\FlagMonitor.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\operation\FlagOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\Test.ts">

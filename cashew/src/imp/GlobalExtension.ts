@@ -15,15 +15,15 @@ import { DebugVisual } from "../lib/util/visual/DebugVisual";
 import { Test } from "../lib/Test";
 
 export class GlobalExtension {
-    public static extend(empire?: Empire) {
-        if (empire) {
-            global.empire = empire;
+    public static extendEmpire(empire: Empire) {
+        global.empire = empire;
 
-            let reports = new Reporter(empire);
-            global.reports = reports;
-            global.r = reports;
-        }        
+        let reports = new Reporter(empire);
+        global.reports = reports;
+        global.r = reports;
+    }
 
+    public static extend() {
         let visuals = new Visuals();
         global.visuals = visuals;
         global.v = visuals;
@@ -40,9 +40,7 @@ export class GlobalExtension {
         
         global.events = new EventLog();
         global.ucreep = new CreepUtility();
-
-
-
+        
 
         global.help = function () {
             return "cleaner [c]</br>visuals [v]</br>events</br>reports [r]";

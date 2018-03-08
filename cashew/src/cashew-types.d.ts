@@ -1,3 +1,8 @@
+declare const FLAG_OPERATION: "Operation";
+declare const FLAG_COLONY: "Colony";
+declare const FLAG_CAMPAIGN: "Campaign";
+declare const FLAG_MARKER: "Marker";
+
 declare const TASK_IDLE: "Idle";
 declare const TASK_MOVE_TO: "MoveTo";
 declare const TASK_TRANSFER: "Transfer";
@@ -31,7 +36,7 @@ declare const OPERATION_TERMINAL_CONSTRUCTION: "TerminalConstruction";
 declare const OPERATION_OBSERVER_CONSTRUCTION: "ObserverConstruction";
 declare const OPERATION_STORAGE_LINK_CONSTRUCTION: "StorageLinkConstruction";
 declare const OPERATION_WALL_CONSTRUCTION: "WallConstruction";
-declare const OPERATION_ROAD_CONSTRUCTION: "RoadConstructiom";
+declare const OPERATION_ROAD_CONSTRUCTION: "RoadConstruction";
 declare const OPERATION_SPAWN_CONSTRUCTION: "SpawnConstruction";
 declare const OPERATION_REPLACE_ORIGINAL_SPAWN: "ReplaceOriginalSpawn";
 
@@ -66,6 +71,11 @@ declare const BODY_WARRIOR: "Warrior";
 declare const BODY_SCOUT: "Scout";
 declare const BODY_DEFENDER: "Defender";
 
+type FLAG_OPERATION = "Operation";
+type FLAG_COLONY = "Colony";
+type FLAG_CAMPAIGN = "Campaign";
+type FLAG_MARKER = "Marker";
+
 type TASK_IDLE = "Idle";
 type TASK_MOVE_TO = "MoveTo";
 type TASK_TRANSFER = "Transfer";
@@ -99,7 +109,7 @@ type OPERATION_TERMINAL_CONSTRUCTION = "TerminalConstruction";
 type OPERATION_OBSERVER_CONSTRUCTION = "ObserverConstruction";
 type OPERATION_STORAGE_LINK_CONSTRUCTION = "StorageLinkConstruction";
 type OPERATION_WALL_CONSTRUCTION = "WallConstruction";
-type OPERATION_ROAD_CONSTRUCTION = "RoadConstructiom";
+type OPERATION_ROAD_CONSTRUCTION = "RoadConstruction";
 type OPERATION_SPAWN_CONSTRUCTION = "SpawnConstruction";
 type OPERATION_REPLACE_ORIGINAL_SPAWN = "ReplaceOriginalSpawn";
 
@@ -133,6 +143,12 @@ type BODY_HAULER = "Hauler";
 type BODY_WARRIOR = "Warrior";
 type BODY_SCOUT = "Scout";
 type BODY_DEFENDER = "Defender";
+
+type FlagType =
+    FLAG_OPERATION |
+    FLAG_COLONY |
+    FLAG_CAMPAIGN |
+    FLAG_MARKER;
 
 type TaskType =
     TASK_IDLE |

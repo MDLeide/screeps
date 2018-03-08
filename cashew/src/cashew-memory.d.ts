@@ -172,6 +172,11 @@ declare global {
         replacementName: string;
     }
 
+    interface FlagOperationMemory {
+        operation: OperationMemory;
+        operationType: OperationType;
+    }
+
     /** END OPERATIONS **/
 
 

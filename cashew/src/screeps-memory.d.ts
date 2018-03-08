@@ -12,5 +12,6 @@ declare global {
     interface FlagMemory {
         colonyData?: ColonyFlagMemory;
         playbackData?: PlaybackFlagMemory;
+        flagOperation?: FlagOperationMemory;
     }    
 }
