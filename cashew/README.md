@@ -13,78 +13,48 @@ Currently the code is focused primarily on economy and room management, with som
 # Architecture
 
 ## Loop Participant
-Objects will participate in the 'tick loop' according a specifically ordered set of methods, `update()`, `execute()`, and `cleanup()`. Class can implement the `LoopParticipant` interface to participate. 
+There are two primary parts of the project, `lib` consists of classes which provide common functionality, and could, in theory, be taken and used to build a completely separate AI. `imp` is there the implementation exists, and provides things like creep logic, room management, etc.
 
-`Update()` will first be called on all objects. This allows data collection and state updates.
+`main.js` is very simple, outside the main loop it extends the global object with some constants (more on that below) and instantiates and initializes an `Execute` object. Inside the look, `execute.main()` is called, which drives the AI.
 
-Next, `execute()` is called on each. This is where the main logic of the class should execute, performing actions, talking to other components, and interacting with the game world. No state changes should occur, rather they should be cached for the `cleanup` phase. This is to ensure that order of execution does not have affect the program.
+Inside `execute.init()` there are some memory management tasks (to ensure good structure), some additional global extensions for convenience and debugging purposes, and registrations for a variety of objects (again, more on this below).
 
-Finally, `cleanup()` is called to allow another round of state updates and other finalization tasks.
-
-```
-interface LoopParticipant {
-	update(): void;
-	execute(): void;
-	cleanup(): void;
-}
-```
-
-
-## Object Creation
-### REWRITE
-Each object which requires a persistent state takes an `IState` object as an optional argument. This object is used to persist data to the `Memory` tree. When building an object for the first time, such as the first time construction of a new `colony` or `role`, the `IState` object can be omitted, all classes are capable of initializing to a default state. Alternatively, the creator of the object may opt to build and pass in an `IState` object, providing some non-default configuration.
-
-For classes which require reference to game objects such as `structures` or `creeps`, it is preferable that they request an ID, rather than a reference, and maintain responsibility for retrieving the object itself using `Game.GetObjectById`.
-
-After a volatile memory wipe, all objects are recreated by calling their constructors and passing their associated `IState` object. More information on this process is found below in the **Memory** section.
-
+The `main()` loop creates all object from scratch each tick (possibly subject to change with the introduction of a stable IVM) by creating an `Empire` object, which is the top-level for all other logic.
 
 ## Memory
-### REWRITE
-Given the nature of Screeps, it is required that we persist all state data each tick. Since `Memory` is a different object each tick, it is important to manage this process carefully. To meet the requirements, the following structure has been designed.
+Given the nature of Screeps, it is required that we persist all state data each tick. Since `Memory` is a different object each tick, it is important to manage this process carefully. 
 
-Any class which requires persistent data will implement the `IPeristent` interface.
-
-At the end of each tick, any object implementing this interface will have `save()` called, and the resulting state object will be placed somewhere on the `Memory` tree. It may be the case that a class calls down to some number of children with the `save()` method, and places the state object on its own state object.
-
-At the start of each tick, this data will be retrieved and provided to the objects via the `Load(state: T)` method. The implementing class will use this state data to synchronize with the `Memory` tree. **_is this necessary? what is the case where an object provided it state one tick, and now has different data, outside of memory wipes?_**
-
-On first load after a patch has been pushed, or the VM has changed, or some other trigger has caused our volatile memory to be wiped, all objects must be reconstructed. This will be done by calling the classes constructor and providing the `IState` object that has been placed on the `Memory` tree. This will be used to rehydrate the object to the state it was in prior to the reset.
-
-```
-interface IPersistent<T extends IState> {
-	load(state: T): void;
-	save(): T;
-}
-
-interface IState {	
-}
-```
+All classes which require persistent data provide three things, an interface describing their memory `interface HarvestControllerMemory`, a method for getting that data `save(): HarvestControllerMemory { ... }`, and a static method for hydrating an instance `HarvestController.fromMemory(memory: HarvestControllerMemory): HarvestController { ... }`.
 
 ## Execution Cycle
-Execution starts with an initialization phase, which is triggered by a patch, VM switch, or some other event which causes the loss of volatile memory. During the initialization phase, objects are recreated from their state objects on the `Memory` tree, prototypes are extended, the `Memory` object is checked to be well formed, and some debugging and logging activites are performed **todo: more information**. Some classes may also require registrations, which are done here as well. 
+Execution starts with an initialization phase, which is triggered by a patch, VM switch, or some other event which causes the loss of volatile memory. 
 
-After the initialization phase, the main loop begins, which will execute repeatedly until an event triggers another initialization. The main loop executes 5 methods, in order, on all objects. `Load()` -> `Update()` -> `Execute()` -> `Cleanup()` -> `Save()`. These methods have all been described above.
+After the initialization phase, the main loop begins, which will execute repeatedly until an event triggers another initialization. The main loop executes 5 methods, in order, on all objects. `Load()` -> `Update()` -> `Execute()` -> `Cleanup()` -> `Save()`.
 
-![Execution Cycle](https://image.ibb.co/kb0mbS/execution_small.png)
+`Load()` gives a class the chance to get any game objects it needs, by way of `Game.getObjectById`. 
+`Update()` allows a class to collect data and update its state.
+`Execute()` is where the main logic of the class is executed.
+`Cleanup()` provides an opportunity for post execution data gathering and clean up.
+`Save()` persist data back to the memory object.
+
+This pattern is applied throughout the project, but is not enforced by an interface or system of any sort. Some classes take parameters in these methods. This may eventually be refactored so that they can all be treated equally, which may lend itself to porting into an OS style system.
+
+
+![Execution Cycle](http://image.ibb.co/c432DS/execution_small.png)
 
 <br>
 
 # Domain
-
-
-## General
-Most of the classes described below use a consistent mechanism for updating and executing each tick. `Update()` is called for all objects, then `Execute()` is called for all objects, and finally `Cleanup()` is called for all objects. This allows everything to gather data, operate on that data, and then clean up, in a predictable and 
 
 ## Empire
 The `Empire` is the highest level control unit, and constitutes the entirety of a player's Screeps activities. It controls and directs from a birds-eye view, identifying new potential `Colonies` and informing existing `Colonies` of suggested plans and marketing actions.  
 #### TODO: MORE
 
 ## Colony
-`Colonies` are the main control units for `rooms` and economic activities. They consist of a `nest`, the main `room` of the `colony`, explained in further detail below, and `expansions`, which are remote mining rooms. Each `colony` has its own `queen` which directs it. Using a `colony plan` consisting of `milestones` to determine the progress of the `colony`, she invokes `operations` to grow and support her brood. Each `colony` also has a `colony map` which is used to direct pathing and the placement of structures. The `colony` also tracks its `creeps` using the `population` class.
+`Colonies` are the main control units for `rooms` and economic activities. They consist of a `nest`, the main `room` of the `colony`, explained in further detail below, and `expansions`, which are remote mining rooms.  There is also a `population` object which allows easy analysis of creeps. A colony tracks its state using a `progress` object, which has a collection of `milestones`. When a `milestone` is met, it raises a flag, and other interested parties may react to that flag. `colonyPlans` are one of those parties, which are responsible for creating and managing `operations`.
 
 ## Nest
-The `nest` is the core of a `colony`. A `nest`, technically speaking, is any `room` which has a `spawn`, each `nest` belongs to exactly one `colony` and each `colony` has exactly one `nest`. All spawning is handled by the `nest` which distributes the work to one of its `spawners`, an object which wraps the native `spawn`. The nest contains a `nest map` which explicitly describes the layout of its `structures` and at which `RCL` and `milestone` they should be built. 
+The `nest` is the core of a `colony`. A `nest`, technically speaking, is any `room` which has a `spawn`, each `nest` belongs to exactly one `colony` and each `colony` has exactly one `nest`. All spawning is handled by the `nest` which distributes the work to one of its `spawners`, an object which wraps the native `spawn`. The nest uses a `nestMap`, which is generated with the `colony`, to determine when and where to build structures, important locations, cost matrices, etc. 
 
 ## Expansion
 #### TODO
@@ -147,6 +117,43 @@ An `operation group` manages one or more `operations`, and all `operations` are 
 
 ## Descriptions
 
+### Collapse Recovery
+
+### First Spawn Construction
+
+### Harvest Container Construction
+Creeps should be designated to mine from a specific source, and construct a particular container.
++ Mine energy from source
++ Deliver energy to spawn
++ Build container
+
+### Heavy Harvest Container
+A single heavy creep should be assigned to a source which it will harvest and transfer to a container. Periodically repair the container.
++ Move to source
++ Harvest
++ Transfer
++ Repair
+
+### Light Upgrade
+Several light upgraders should ask the Colony to withdraw energy. Use this energy to upgrade the controller.
++ Withdraw
++ Upgrade
+
+### RCL2 Extension Construction
+Create sites, construct 5 extensions, requesting energy from the Colony.
++ Withdraw
++ Build
+
+### Upgrade Container Construction
+Create site, build upgrade container.
++ Withdraw
++ Build
+
+### Energy Transport
+Ask the Colony for Withdraw and Transfer targets.
++ Withdraw
++ Transfer
+
 
 <br>
 
@@ -172,35 +179,32 @@ Start constructing `source` `containers`.
 
 ### Source Containers
 *`Source` `containers` exist for each `source` in the `room`* [harvestContainers]
-Start harvesting the `sources`, upgrading the `controller`, and running basic maintenance  
+Start harvesting the `sources` and upgrading the `controller`.  
 
 + Heavy Harvest Container
 + Heavy Harvest Container
 + Light Upgrade
-+ Basic Maintenance
  
 
 ### RCL2
 *`Room` has reached `RCL` 2* [rcl2]  
-Construct 5 `extensions`, continue to harvest the `sources`, upgrade the `controller`, and run basic maintenance
+Construct 5 `extensions`, continue to harvest the `sources` and upgrade the `controller`.
 
 + RCL2 Extension Construction
 + *Heavy Harvest Container*
 + *Heavy Harvest Container*
 + *Light Upgrade*
-+ *Basic Maintenance*
  
 
 ### 5 Extensions
 *`Room` has 5 `extensions` completed* [fiveExtensions]  
-Construct `controller` `containers` and start transport operations, continue to harvest the `sources` and upgrade the `controller`. Cancel the basic maintenance operations and inform the `Colony` to start standard maintenance checks.
+Construct `controller` `containers` and start transport operations, continue to harvest the `sources` and upgrade the `controller`.
 
 + Controller Container Construction
 + Energy Transport
 + *Heavy Harvest Container*
 + *Heavy Harvest Container*
 + *Light Upgrade*
-+ ~~Basic Maintenance~~
 
 
 ### Upgrade Container
