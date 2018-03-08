@@ -1,5 +1,5 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation } from "../../../lib/operation/Operation";
+import { Operation, InitStatus, StartStatus } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../creep/BodyRepository";
@@ -78,13 +78,13 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     }
 
 
-    protected onInit(colony: Colony): boolean {
+    protected onInit(colony: Colony): InitStatus {
         this.manageAssignments(colony);
-        return true;
+        return InitStatus.Initialized;
     }
 
-    protected onStart(colony: Colony): boolean {
-        return true;
+    protected onStart(colony: Colony): StartStatus {
+        return StartStatus.Started;
     }
 
     protected onFinish(colony: Colony): boolean {

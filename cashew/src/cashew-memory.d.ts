@@ -146,9 +146,9 @@ declare global {
 
     interface OperationMemory {
         type: OperationType;
-        initialized: boolean;
-        started: boolean;
-        finished: boolean;
+        initializedStatus: number;
+        startedStatus: number;
+        operationStatus: number;
         assignments: AssignmentMemory[];        
     }
 

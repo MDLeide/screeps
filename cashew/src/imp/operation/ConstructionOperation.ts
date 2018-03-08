@@ -1,5 +1,5 @@
 import { Colony } from "../../lib/colony/Colony";
-import { Operation } from "../../lib/operation/Operation";
+import { Operation, StartStatus, InitStatus } from "../../lib/operation/Operation";
 import { JobOperation } from "../../lib/operation/JobOperation";
 import { Assignment } from "../../lib/operation/Assignment";
 import { BodyRepository } from "../creep/BodyRepository";
@@ -65,20 +65,18 @@ export abstract class ConstructionOperation extends JobOperation {
     }
 
     public isFinished(colony: Colony): boolean {
-        return this.initialized && this.sitesBuilt && this.sites.length == 0;
+        return this.initializedStatus && this.sitesBuilt && this.sites.length == 0;
     }
 
 
-    protected onInit(colony: Colony): boolean {
-        console.log("init");
+    protected onInit(colony: Colony): InitStatus {
         let locations = this.getSiteLocations(colony);
-        console.log(locations);
         let type = this.getStructureType();
 
         this.siteIds = [];
         this.sites = [];
 
-        if (this.sitesBuilt) {
+        if (this.initializedStatus == InitStatus.Uninitialized || this.initializedStatus == InitStatus.TryAgain) {
             for (var i = 0; i < locations.length; i++) {
                 let siteLook = colony.nest.room.lookForAt(LOOK_CONSTRUCTION_SITES, locations[i].x, locations[i].y);
                 if (siteLook.length) {
@@ -86,17 +84,17 @@ export abstract class ConstructionOperation extends JobOperation {
                     this.sites.push(siteLook[0]);
                 }
             }
-            return true;
+            return InitStatus.Partial;
         } else {
             for (var i = 0; i < locations.length; i++)
                 colony.nest.room.createConstructionSite(locations[i].x, locations[i].y, type);
             this.sitesBuilt = true;
-            return false;
+            return InitStatus.Initialized;
         }        
     }
 
-    protected onStart(colony: Colony): boolean {
-        return true;
+    protected onStart(colony: Colony): StartStatus {
+        return StartStatus.Started;
     }
 
     protected onFinish(colony: Colony): boolean {
@@ -131,9 +129,9 @@ export abstract class ConstructionOperation extends JobOperation {
 
         return {
             type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
+            initializedStatus: this.initializedStatus,
+            startedStatus: this.startedStatus,
+            operationStatus: this.status,
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory(),
             siteIds: this.siteIds,

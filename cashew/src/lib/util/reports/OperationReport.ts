@@ -25,9 +25,9 @@ export class OperationReport {
         sb.append(" is ");
         if (operation.finished)
             sb.append("Finished", "orange");
-        else if (operation.started)
+        else if (operation.startedStatus)
             sb.append("Started", "green");
-        else if (operation.initialized)
+        else if (operation.initializedStatus)
             sb.append("Initialized", "yellow");
         else
             sb.append(" New ", "red");

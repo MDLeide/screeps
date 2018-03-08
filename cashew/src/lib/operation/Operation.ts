@@ -9,9 +9,9 @@ export abstract class Operation {
     class to save some typing.*/
     public static fromMemory(memory: OperationMemory, instance: Operation): Operation {
         instance.type = memory.type;
-        instance.initialized = memory.initialized;
-        instance.started = memory.started;
-        instance.finished = memory.finished;
+        instance.initializedStatus = memory.initializedStatus;
+        instance.startedStatus = memory.startedStatus;
+        instance.status = memory.operationStatus;
         instance.assignments = [];
         for (var i = 0; i < memory.assignments.length; i++) 
             instance.assignments.push(Assignment.fromMemory(memory.assignments[i]));        
@@ -26,10 +26,30 @@ export abstract class Operation {
 
     
     public type: OperationType;
-    public initialized: boolean;
-    public started: boolean;
-    public finished: boolean;
+    public initializedStatus: InitStatus = InitStatus.Uninitialized;
+    public startedStatus: StartStatus = StartStatus.Unstarted;
+    public status: OperationStatus = OperationStatus.New;
     public assignments: Assignment[]; // filled if creep name is not blank
+    public get finished(): boolean {
+        return this.status == OperationStatus.Complete ||
+            this.status == OperationStatus.Canceled ||
+            this.status == OperationStatus.FailedInit ||
+            this.status == OperationStatus.FailedOther ||
+            this.status == OperationStatus.FailedStart;
+    }
+    public get needsInit(): boolean {
+        return this.status == OperationStatus.New ||
+            this.status == OperationStatus.AwaitingReinit;  
+    }
+    public get needsStart(): boolean {
+        return this.status == OperationStatus.Initialized ||
+            this.status == OperationStatus.AwaitingRestart;
+    }
+    public get needsCreepSpawnCheck() {
+        return this.status == OperationStatus.Initialized ||
+            this.status == OperationStatus.AwaitingRestart ||
+            this.status == OperationStatus.Started;
+    }
 
 
     public abstract canInit(colony: Colony): boolean;
@@ -40,8 +60,8 @@ export abstract class Operation {
     protected abstract onReplacement(assignment: Assignment): void;
     protected abstract onRelease(assignment: Assignment): void;
 
-    protected abstract onInit(colony: Colony): boolean;
-    protected abstract onStart(colony: Colony): boolean;
+    protected abstract onInit(colony: Colony): InitStatus;
+    protected abstract onStart(colony: Colony): StartStatus;
     protected abstract onFinish(colony: Colony): boolean;
     protected abstract onCancel(): void;
 
@@ -69,60 +89,89 @@ export abstract class Operation {
     public cleanup(colony: Colony): void {
         this.onCleanup(colony);
     }
-   
-    public init(colony: Colony): boolean {
-        if (this.initialized)
-            return true;
-        if (!this.canInit(colony))
-            return false;
 
-        this.initialized = this.onInit(colony);
-        if (this.initialized)
+
+    public init(colony: Colony): InitStatus {
+        if (this.initializedStatus == InitStatus.Initialized || this.initializedStatus == InitStatus.Failed) {
+            return this.initializedStatus;
+        }            
+        if (!this.canInit(colony)) {
+            this.initializedStatus = InitStatus.TryAgain;
+            global.events.operation.initAgain(this.type);
+            return this.initializedStatus;
+        }            
+
+        this.initializedStatus = this.onInit(colony);
+
+        if (this.initializedStatus == InitStatus.Initialized) {
+            this.status = OperationStatus.Initialized;
             global.events.operation.init(this.type);
-        else
-            global.events.operation.failedToInit(this.type);
+        } else if (this.initializedStatus == InitStatus.TryAgain) {
+            this.status = OperationStatus.AwaitingReinit;
+            global.events.operation.initAgain(this.type);
+        } else if (this.initializedStatus == InitStatus.Partial) {
+            this.status = OperationStatus.AwaitingReinit;
+            global.events.operation.initPartial(this.type);
+        } else if (this.initializedStatus == InitStatus.Failed) {
+            this.status = OperationStatus.FailedInit;
+            global.events.operation.initFailed(this.type);
+        }
 
-        return this.initialized;
+        return this.initializedStatus;
     }
     
-    public start(colony: Colony): boolean {        
-        if (this.started)
-            return true;
-        if (!this.canStart(colony))
-            return false;
+    public start(colony: Colony): StartStatus {                
+        if (this.startedStatus == StartStatus.Started || this.startedStatus == StartStatus.Failed)
+            return this.startedStatus;
+        if (!this.canStart(colony)) {
+            this.startedStatus = StartStatus.TryAgain;
+            this.status = OperationStatus.AwaitingRestart;
+            return this.startedStatus;
+        }            
 
-        this.started = this.onStart(colony);
-        if (this.started)
+        this.startedStatus = this.onStart(colony);
+
+        if (this.startedStatus == StartStatus.Started) {
+            this.status = OperationStatus.Started;
             global.events.operation.start(this.type);
-        else
-            global.events.operation.failedToStart(this.type);
+        } else if (this.startedStatus == StartStatus.TryAgain) {
+            this.status = OperationStatus.AwaitingRestart;
+            global.events.operation.startAgain(this.type);            
+        } else if (this.startedStatus == StartStatus.Partial) {
+            this.status = OperationStatus.AwaitingRestart;
+            global.events.operation.startPartial(this.type);
+        } else if (this.startedStatus == StartStatus.Failed) {
+            this.status = OperationStatus.FailedStart;
+            global.events.operation.startFailed(this.type);
+        }
 
-        return this.started;
+        return this.startedStatus;
     }
     
     public finish(colony: Colony): void {
-        this.finished = this.onFinish(colony);
-        if (this.finished) {
+        
+        if (this.onFinish(colony)) {
             for (var i = 0; i < this.assignments.length; i++) {
                 if (this.assignments[i].creepName)
                     this.releaseAssignment(this.assignments[i]);
             }
-
+            this.status = OperationStatus.Complete;
             global.events.operation.finish(this.type);
         }
         else {
+            this.status = OperationStatus.FailedOther;
             global.events.operation.failedToFinish(this.type);
         }
     }
     
     public cancel(): void {
         this.onCancel();
-        this.finished = true;
         for (var i = 0; i < this.assignments.length; i++) {
             if (this.assignments[i].creepName)
                 this.releaseAssignment(this.assignments[i]);
         }
 
+        this.status = OperationStatus.Canceled;
         global.events.operation.cancel(this.type);
         //todo: events for cancelation
     }
@@ -277,11 +326,39 @@ export abstract class Operation {
 
         return {
             type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
+            initializedStatus: this.initializedStatus,
+            startedStatus: this.startedStatus,
+            operationStatus: this.status,
             assignments: this.getAssignmentMemory()
         };
     }    
 }
 
+export enum InitStatus {
+    Uninitialized,
+    Initialized,
+    Partial,
+    TryAgain,
+    Failed
+}
+
+export enum StartStatus {
+    Unstarted,
+    Started,
+    Partial,
+    TryAgain,
+    Failed
+}
+
+export enum OperationStatus {
+    New,
+    AwaitingReinit,
+    Initialized,
+    AwaitingRestart,
+    Started,
+    Complete,
+    Canceled,
+    FailedInit,
+    FailedStart,
+    FailedOther
+}

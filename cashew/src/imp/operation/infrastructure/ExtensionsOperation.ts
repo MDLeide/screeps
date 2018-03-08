@@ -36,11 +36,11 @@ export class ExtensionConstructionOperation extends ConstructionOperation {
     }
     
     protected onSave(): ExtensionsOperationMemory {
-        return {            
+        return {
+            operationStatus: this.status,
             type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
+            initializedStatus: this.initializedStatus,
+            startedStatus: this.startedStatus,            
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory(),
             siteIds: this.siteIds,

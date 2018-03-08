@@ -1,5 +1,5 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation } from "../../../lib/operation/Operation";
+import { Operation, InitStatus, StartStatus } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { MapBlock } from "../../../lib/map/base/MapBlock";
 import { HarvestBlock } from "../../../lib/map/blocks/HarvestBlock";
@@ -63,11 +63,11 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
     }
     
     public isFinished(colony: Colony): boolean {
-        return this.siteBuilt && this.initialized && (!this.site || this.site.progress >= this.site.progressTotal);
+        return this.siteBuilt && this.initializedStatus && (!this.site || this.site.progress >= this.site.progressTotal);
     }
 
 
-    protected onInit(colony: Colony): boolean {
+    protected onInit(colony: Colony): InitStatus {
         let harvestBlock: HarvestBlock;
         for (var i = 0; i < colony.nest.nestMap.harvestBlocks.length; i++) {
             var block = colony.nest.nestMap.harvestBlocks[i];
@@ -79,23 +79,24 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
         }
         let containerLocation = harvestBlock.getContainerLocation();
 
-        if (!this.siteBuilt) {
-            this.source.room.createConstructionSite(containerLocation.x, containerLocation.y, STRUCTURE_CONTAINER);
-            this.siteBuilt = true;
-            return false;
+        if (this.initializedStatus == InitStatus.Uninitialized || this.initializedStatus == InitStatus.Partial || this.initializedStatus == InitStatus.TryAgain) {
+            if (this.source.room.createConstructionSite(containerLocation.x, containerLocation.y, STRUCTURE_CONTAINER) == OK)
+                return InitStatus.Partial;
+            else
+                return InitStatus.TryAgain;
         } else {
             let site = this.source.room.lookForAt(LOOK_CONSTRUCTION_SITES, containerLocation.x, containerLocation.y);
             if (site.length) {
                 this.site = site[0];
                 this.siteId = this.site.id;
-                return true;
+                return InitStatus.Initialized;
             }
-            return false;
+            return InitStatus.TryAgain;
         }
     }
 
-    protected onStart(colony: Colony): boolean {
-        return true;
+    protected onStart(colony: Colony): StartStatus {
+        return StartStatus.Started;
     }
 
     protected onFinish(colony: Colony): boolean {
@@ -144,9 +145,9 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
     protected onSave(): HarvestInfrastructureOperationMemory {
         return {            
             type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
+            initializedStatus: this.initializedStatus,
+            startedStatus: this.startedStatus,
+            operationStatus: this.status,
             assignments: this.getAssignmentMemory(),
             controllers: this.getControllerMemory(),
             sourceId: this.sourceId,

@@ -1,5 +1,5 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation } from "../../../lib/operation/Operation";
+import { Operation, InitStatus, StartStatus } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { CreepController } from "../../../lib/creep/CreepController";
@@ -74,10 +74,10 @@ export class HarvestOperation extends ControllerOperation {
     }
 
 
-    protected onInit(colony: Colony): boolean {
+    protected onInit(colony: Colony): InitStatus {
         let source = Game.getObjectById<Source>(this.sourceId);
         if (!source)
-            return false;
+            return InitStatus.Failed;
         let path = source.pos.findPathTo(colony.nest.spawners[0].spawn);
         let travelTime = path.length * 5;
         let spawnTime = 21;
@@ -86,11 +86,11 @@ export class HarvestOperation extends ControllerOperation {
         let assignment = new Assignment("", body, CREEP_CONTROLLER_HARVESTER, travelTime + spawnTime + buffer);
         this.assignments.push(assignment);
 
-        return true;
+        return InitStatus.Initialized;
     }
 
-    protected onStart(colony: Colony): boolean {
-        return true;
+    protected onStart(colony: Colony): StartStatus {
+        return StartStatus.Started;
     }
 
     protected onFinish(colony: Colony): boolean {
@@ -119,9 +119,9 @@ export class HarvestOperation extends ControllerOperation {
     protected onSave(): HarvestOperationMemory {
         return {
             type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
+            initializedStatus: this.initializedStatus,
+            startedStatus: this.startedStatus,
+            operationStatus: this.status,
             assignments: this.getAssignmentMemory(),
             controllers: this.getControllerMemory(),
             sourceId: this.sourceId,

@@ -243,29 +243,6 @@ class OperationEvents extends EventGroup {
         return "Operation";
     }
 
-    public init(operationName: string): void {
-        var sb = new StringBuilder();
-        sb.defaultColor = this.colors.default;
-
-        sb.append("Operation ", this.colors.identifier);
-        sb.append(operationName, this.colors.name);
-        sb.append(" has ");
-        sb.append("initialized", this.colors.neutralVerb);        
-
-        this.log(sb.getString(), this.initLevel);
-    }
-
-    public start(operationName: string): void {
-        var sb = new StringBuilder();
-        sb.defaultColor = this.colors.default;
-
-        sb.append("Operation ", this.colors.identifier);
-        sb.append(operationName, this.colors.name);
-        sb.append(" has ");
-        sb.append("started", this.colors.positiveVerb);
-
-        this.log(sb.getString(), this.startLevel);
-    }
 
     public finish(operationName: string): void {
         var sb = new StringBuilder();
@@ -291,7 +268,44 @@ class OperationEvents extends EventGroup {
         this.log(sb.getString(), this.cancelLevel);
     }
 
-    public failedToInit(operationName: string): void {
+
+    public init(operationName: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Operation ", this.colors.identifier);
+        sb.append(operationName, this.colors.name);
+        sb.append(" has ");
+        sb.append("initialized", this.colors.positiveVerb);
+
+        this.log(sb.getString(), this.initLevel);
+    }
+
+    public initAgain(operationName: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Operation ", this.colors.identifier);
+        sb.append(operationName, this.colors.name);
+        sb.append(" has ");
+        sb.append("requested another initializion", this.colors.neutralVerb);
+
+        this.log(sb.getString(), this.initLevel);
+    }
+
+    public initPartial(operationName: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Operation ", this.colors.identifier);
+        sb.append(operationName, this.colors.name);
+        sb.append(" has ");
+        sb.append("partially initialized", this.colors.neutralVerb);
+
+        this.log(sb.getString(), this.initLevel);
+    }
+
+    public initFailed(operationName: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
@@ -303,7 +317,44 @@ class OperationEvents extends EventGroup {
         this.log(sb.getString(), this.failedInitLevel);
     }
 
-    public failedToStart(operationName: string): void {
+
+    public start(operationName: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Operation ", this.colors.identifier);
+        sb.append(operationName, this.colors.name);
+        sb.append(" has ");
+        sb.append("started", this.colors.positiveVerb);
+
+        this.log(sb.getString(), this.startLevel);
+    }
+
+    public startAgain(operationName: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Operation ", this.colors.identifier);
+        sb.append(operationName, this.colors.name);
+        sb.append(" has ");
+        sb.append("requested to start again", this.colors.neutralVerb);
+
+        this.log(sb.getString(), this.startLevel);
+    }
+
+    public startPartial(operationName: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Operation ", this.colors.identifier);
+        sb.append(operationName, this.colors.name);
+        sb.append(" has ");
+        sb.append("partially started", this.colors.neutralVerb);
+
+        this.log(sb.getString(), this.startLevel);
+    }
+
+    public startFailed(operationName: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 

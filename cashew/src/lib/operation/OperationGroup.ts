@@ -1,5 +1,5 @@
 import { Colony } from "../colony/Colony"
-import { Operation } from "./Operation"
+import { Operation, InitStatus, StartStatus, OperationStatus } from "./Operation"
 import { Assignment } from "./Assignment"
 import { OperationRepository } from "./OperationRepository";
 
@@ -30,11 +30,13 @@ export class OperationGroup {
     }
 
     public update(colony: Colony): void {
+        // finish operations
         for (var i = 0; i < this.operations.length; i++)
-            if (this.operations[i].started && !this.operations[i].finished)
+            if (this.operations[i].status == OperationStatus.Started)
                 if (this.operations[i].isFinished(colony))
                     this.operations[i].finish(colony);
 
+        // update operations
         for (var i = 0; i < this.operations.length; i++)
             if (!this.operations[i].finished)
                 this.operations[i].update(colony);
@@ -44,23 +46,20 @@ export class OperationGroup {
         for (var i = 0; i < this.operations.length; i++) {
             if (this.operations[i].finished) {
                 continue;
-            } else if (this.operations[i].started) {
+            } else if (this.operations[i].status == OperationStatus.Started) {
                 continue; // we'll check for finished ops again in cleanup
-            } else if (this.operations[i].initialized) {
-                if (this.operations[i].canStart(colony))
-                    this.operations[i].start(colony);
-            } else {
-                if (this.operations[i].canInit(colony))
-                    this.operations[i].init(colony);
-            }
+            } else if (this.operations[i].needsStart && this.operations[i].canStart(colony)) {
+                this.operations[i].start(colony);
+            } else if (this.operations[i].needsInit && this.operations[i].canInit(colony))
+                this.operations[i].init(colony);
         }
         
         for (var i = 0; i < this.operations.length; i++)
-            if (this.operations[i].initialized && !this.operations[i].finished)
+            if (this.operations[i].needsCreepSpawnCheck)
                 this.getCreepsForOperation(this.operations[i], colony);
         
         for (var i = 0; i < this.operations.length; i++)
-            if (this.operations[i].started && !this.operations[i].finished)
+            if (this.operations[i].status == OperationStatus.Started)
                 this.operations[i].execute(colony);
     }
 
@@ -80,7 +79,7 @@ export class OperationGroup {
         }
 
         for (var i = 0; i < this.operations.length; i++)
-            if (this.operations[i].started && !this.operations[i].finished)
+            if (this.operations[i].status == OperationStatus.Started && !this.operations[i].finished)
                 if (this.operations[i].isFinished(colony))
                     this.operations[i].finish(colony);
     }

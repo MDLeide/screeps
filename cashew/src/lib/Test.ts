@@ -20,7 +20,7 @@ export class Test {
 
     public test(): string {
         if (!global.empire)
-            global.empire = new Empire();
+            global.empire = new Empire(null);
 
         //return this.addFillOperation();
         this.resetReplaceSpawn();

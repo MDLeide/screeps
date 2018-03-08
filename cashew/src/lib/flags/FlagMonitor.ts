@@ -2,7 +2,7 @@ export class FlagMonitor {
 
     // prefixes[prefix] = type
     private prefixes: { [prefix: string]: FlagType } = {
-        "op": 
+        "op": FLAG_OPERATION
     };
 
     public update(): void {

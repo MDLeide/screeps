@@ -29,9 +29,9 @@ export class ExtractorConstructionOperation extends ConstructionOperation {
     protected onSave(): ConstructionOperationMemory {
         return {
             type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
+            initializedStatus: this.initializedStatus,
+            startedStatus: this.startedStatus,
+            operationStatus: this.status,
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory(),
             siteIds: this.siteIds,

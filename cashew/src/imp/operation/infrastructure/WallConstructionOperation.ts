@@ -1,5 +1,5 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation } from "../../../lib/operation/Operation";
+import { Operation, StartStatus, InitStatus } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { MapBlock } from "../../../lib/map/base/MapBlock";
 import { HarvestBlock } from "../../../lib/map/blocks/HarvestBlock";
@@ -75,12 +75,12 @@ export class WallConstructionOperation extends ControllerOperation {
     }
 
 
-    protected onInit(colony: Colony): boolean {
-        return true;
+    protected onInit(colony: Colony): InitStatus {
+        return InitStatus.Initialized;
     }
 
-    protected onStart(colony: Colony): boolean {
-        return true;
+    protected onStart(colony: Colony): StartStatus {
+        return StartStatus.Started;
     }
 
     protected onFinish(colony: Colony): boolean {        

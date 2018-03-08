@@ -1,10 +1,10 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation } from "../../../lib/operation/Operation";
+import { Operation, InitStatus, StartStatus } from "../../../lib/operation/Operation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../creep/BodyRepository";
 
 export class RemoteHarvestScoutOperation extends Operation {
-    public static fromMemory(memory: RemoteHarvestScountOperationMemory): Operation {
+    public static fromMemory(memory: RemoteHarvestScoutOperationMemory): Operation {
         var op = new this();
         op.targetRoom = memory.targetRoom;
         op.nextRoom = memory.nextRoom;
@@ -42,12 +42,12 @@ export class RemoteHarvestScoutOperation extends Operation {
     }
 
     
-    protected onInit(colony: Colony): boolean {
-        return true;
+    protected onInit(colony: Colony): InitStatus {
+        return InitStatus.Initialized;
     }
 
-    protected onStart(colony: Colony): boolean {
-        return true;
+    protected onStart(colony: Colony): StartStatus {
+        return StartStatus.Started;
     }
 
     protected onFinish(colony: Colony): boolean {
@@ -120,21 +120,21 @@ export class RemoteHarvestScoutOperation extends Operation {
             colony.remoteMiningManager.claimScoutJob(this.targetRoom);
     }
 
-    protected onSave(): RemoteHarvestScountOperationMemory {
+    protected onSave(): RemoteHarvestScoutOperationMemory {
         return {
+            operationStatus: this.status,
             type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
+            initializedStatus: this.initializedStatus,
+            startedStatus: this.startedStatus,
             assignments: this.getAssignmentMemory(),
             targetRoom: this.targetRoom,
             nextRoom: this.nextRoom,
-            moveTarget: this.moveTarget
+            moveTarget: this.moveTarget            
         };
     }
 }
 
-export interface RemoteHarvestScountOperationMemory extends OperationMemory {
+export interface RemoteHarvestScoutOperationMemory extends OperationMemory {
     targetRoom: string;
     nextRoom: string;
     moveTarget: { x: number, y: number };

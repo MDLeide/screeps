@@ -145,9 +145,9 @@ export abstract class ControllerOperation extends Operation {
 
         return {
             type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
+            initializedStatus: this.initializedStatus,
+            startedStatus: this.startedStatus,
+            operationStatus: this.status,
             assignments: this.getAssignmentMemory(),
             controllers: this.getControllerMemory()
         };

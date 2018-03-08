@@ -147,6 +147,9 @@
     <TypeScriptCompile Include="src\lib\flags\FlagMonitor.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\operation\Campaign.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\operation\FlagOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

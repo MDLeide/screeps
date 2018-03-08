@@ -1,5 +1,5 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation } from "../../../lib/operation/Operation";
+import { Operation, StartStatus, InitStatus  } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { CreepController } from "../../../lib/creep/CreepController";
@@ -56,14 +56,14 @@ export class RoomDefenseOperation extends ControllerOperation {
     }
 
 
-    protected onInit(colony: Colony): boolean {
+    protected onInit(colony: Colony): InitStatus {
         this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
         this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
-        return true;
+        return InitStatus.Initialized;
     }
 
-    protected onStart(colony: Colony): boolean {
-        return true;
+    protected onStart(colony: Colony): StartStatus {
+        return StartStatus.Started;
     }
 
     protected onFinish(colony: Colony): boolean {
