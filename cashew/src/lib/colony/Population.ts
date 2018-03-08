@@ -1,88 +1,132 @@
-//import { Colony } from "./Colony";
+import { Colony } from "./Colony";
 
-//export class Population {
-//    private lastTick: number = -1;
+export class Population {    
+    private keepDeadCreepsFor: number = 50; // number of ticks to keep dead creeps
 
-//    private _alive: string[];
-//    private _spawning: string[];
-//    private _bornThisTick: string[];
-//    private _deathLength: number = 50; // number of ticks to keep dead creeps
+    constructor(colony: Colony) {
+        this.colony = colony;
+    }
 
-//    constructor(colony: Colony, state: PopulationMemory) {
+    public colony: Colony;
+
+    public update(): void {        
+        this.updatePopulation();
+    }
+
+    public alive: string[];
+    public spawning: string[];
+    public bornThisTick: string[];
+    public diedRecently: string[];
+    public diedLastTick: string[];
+
+    public notAssignedToOperation(): string[] {
+        var unassigned: string[] = [];
+        for (var i = 0; i < this.alive.length; i++)
+            if (!Memory.creeps[this.alive[i]].operation || Memory.creeps[this.alive[i]].operation == "")
+                unassigned.push(this.alive[i]);
+        return unassigned;
+    }
+
+    public isAlive(creep: (Creep | string)): boolean {
+        return this.listContainsCreep(creep, this.alive);
+    }
         
-//    }
-
-//    public colony: Colony;
-//    public state: PopulationMemory;
+    public isSpawning(creep: (Creep | string)): boolean {
+        return this.listContainsCreep(creep, this.spawning);
+    }
+        
+    public isAliveOrSpawning(creep: (Creep | string)): boolean {
+        if (this.listContainsCreep(creep, this.spawning))
+            return true;
+        return this.listContainsCreep(creep, this.alive);
+    }
     
-//    public get alive(): string[] {
-//        if (this.shouldFill())
-//            this.fill();
-//        return this._alive;
-//    }
-//    public get spawning(): string[] {
-//        if (this.shouldFill())
-//            this.fill();
-//        return this._spawning;
-//    }
-//    public get bornThisTick(): string[] {
-//        if (this.shouldFill())
-//            this.fill();
-//        return this._bornThisTick;
-//    }
-//    public get diedRecently(): string[] {
-//        if (this.shouldFill())
-//            this.fill();
-//        return this.state.diedRecently;
-//    }
+    public wasBornThisTick(creep: (Creep | string)): boolean {
+        return this.listContainsCreep(creep, this.bornThisTick);
+    }
+    
+    public didDieRecently(creep: (Creep | string)): boolean {
+        return this.listContainsCreep(creep, this.diedRecently);
+    }
+    
+    public didDieLastTick(creep: (Creep | string)): boolean {
+        return this.listContainsCreep(creep, this.diedLastTick);
+    }
+    
 
-//    private shouldFill(): boolean {
-//        return Game.time != this.lastTick;
-//    }
+    private listContainsCreep(creep: (Creep | string), list: string[]) {        
+        if (typeof creep != "string") 
+            return this.listContainsCreep(creep.name, list);
+        
+        for (var i = 0; i < list.length; i++)
+            if (list[i] == creep) 
+                return true;
 
-//    private fill(): void {
-//        this.lastTick = Game.time;
+        return false;
+    }
 
-//        this._alive = [];
-//        this._spawning = [];
-//        this._bornThisTick = [];        
+    private updatePopulation(): void {
+        this.resetLists();
+        
+        for (var key in Memory.creeps) { //todo: eventually refactor so all populations update at once
+            if (!this.creepFromThisColony(Memory.creeps[key]))
+                continue;
+            
+            var creep = Game.creeps[key];
+            if (!creep) { // creep is dead
+                var name = this.creepIsDead(key);
+                if (name)
+                    Memory.creeps[key] = undefined;
+            } else {
+                if (creep.spawning) {
+                    this.creepIsSpawning(key);
+                } else {
+                    this.creepIsAlive(key);
+                }
+            }
+        }
+    }
 
-//        var toDelete: string[] = [];
+    private resetLists(): void {
+        this.alive = [];
+        this.spawning = [];
+        this.bornThisTick = [];
+        this.diedLastTick = [];
+        this.diedRecently = [];
+    }
+   
 
-//        for (var key in Memory.creeps) {
-//            var found = false;
-//            for (var i = 0; i < this.colony.nest.spawns.length; i++) {
-//                if (Memory.creeps[key].homeSpawnId == this.colony.nest.spawns[i].id) {
-//                    found = true;
-//                    break;
-//                }
-//            }
+    private creepIsAlive(creep: string): void {
+        this.alive.push(creep);
+    }
 
-//            if (!found)
-//                continue;
+    private creepIsSpawning(creep: string): void {
+        this.spawning.push(creep);
+    }
 
-//            var creep = Game.creeps[key];
-//            if (!creep) { // creep is dead
-//                if (!Memory.creeps[key].deathTick) {
-//                    Memory.creeps[key].deathTick = Game.time;
-//                    this.state.diedRecently.push(key);
-//                }
-//                else if (Game.time - Memory.creeps[key].deathTick >= this._deathLength) {
-//                    toDelete.push(key);
-//                }
-//            } else if (creep.spawning) {
-//                this._spawning.push(key);
-//            } else {
-//                this._alive.push(key);
-//            }
-//        }
+    // returns the creep name if it's time to delete it
+    private creepIsDead(creep: string): string {
+        if (Memory.creeps[creep].deathTick <= 0) { // just died
+            Memory.creeps[creep].deathTick = Game.time;
+            this.diedLastTick.push(creep);
+            
+            global.events.creep.died(creep, this.colony.name);            
+        }
 
-//        for (var i = 0; i < toDelete.length; i++) {
-//            delete Memory.creeps[toDelete[i]];
-//        }
-//    }
+        if (Game.time - Memory.creeps[creep].deathTick >= this.keepDeadCreepsFor)
+            return creep;
+        else
+            this.diedRecently.push(creep);
 
-//    private thisColony(creep: CreepMemory) {
+        return null;
+    }
 
-//    }
-//}
+    public creepFromThisColony(creep: CreepMemory) {
+        for (var i = 0; i < this.colony.nest.spawners.length; i++) {
+            if (creep.homeSpawnId == this.colony.nest.spawners[i].spawn.id) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
