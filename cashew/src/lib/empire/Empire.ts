@@ -4,14 +4,21 @@ import { Nest } from "../colony/Nest";
 import { NestMapBuilder } from "../map/NestMapBuilder";
 
 export class Empire {
-    constructor() {
+    constructor(colonyFinder: ColonyFinder) {
         this.colonies = [];
         for (var key in Memory.empire.colonies)
             this.colonies.push(Colony.fromMemory(Memory.empire.colonies[key]));
+        this.colonyFinder = colonyFinder;
     }
 
 
     public colonies: Colony[];
+    public colonyFinder: ColonyFinder;
+    
+
+    public searchForColonies(): void {
+        this.colonyFinder.createNewColonies(this);
+    }
 
     public getColonyBySpawn(spawn: StructureSpawn): Colony {
         for (var i = 0; i < this.colonies.length; i++)
@@ -52,7 +59,9 @@ export class Empire {
         }
     }
     
-    public update(): void {        
+    public update(): void {
+        this.searchForColonies();
+
         for (var i = 0; i < this.colonies.length; i++) {
             this.colonies[i].update();
         }

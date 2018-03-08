@@ -18,16 +18,15 @@ export class Execute {
     }
     
     public main(): void {        
-        Playback.update();
+        Playback.update(); // debug
         if (!Playback.loop())
             return;
 
-        var empire = new Empire();
-        GlobalExtension.extend(empire);
+        let colonyFinder = new ColonyFinder(StandardNestMapBuilder.getBuilder());
+        var empire = new Empire(colonyFinder);
+        GlobalExtension.extendEmpire(empire);
         
-        var nestMapBuilder = StandardNestMapBuilder.getBuilder();
-        ColonyFinder.createNewColonies(empire, nestMapBuilder);
-        if (empire.colonies.length)
+        if (empire.colonies.length) //debug
             Playback.placeFlag(empire.colonies[0].nest.roomName);
 
         try {            
