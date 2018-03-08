@@ -6,7 +6,7 @@ export class LabBlockProvider extends BlockProviderBase<LabBlock> {
         this.index++;
         switch (this.index) {
             case 1:
-                return new LabBlock(
+                let lab = new LabBlock(
                     4, 4, // size [y, x]
                     [ // labs
                         { x: 0, y: 1 },
@@ -57,6 +57,8 @@ export class LabBlockProvider extends BlockProviderBase<LabBlock> {
                         { x: 3, y: 3 }
                     ] // roads
                 );
+                lab.border = 1;
+                return lab;
             default:
                 return null;
         }
