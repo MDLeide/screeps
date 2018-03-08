@@ -3,6 +3,7 @@ import { Settings } from "../Settings";
 import { Colony } from "../colony/Colony";
 import { Nest } from "../colony/Nest";
 import { NestMapBuilder } from "../map/NestMapBuilder";
+import { NestMap } from "../map/NestMap"
 import { ColonyProgress, ColonyProgressRepository } from "../colony/ColonyProgress"
 import { OperationPlan, OperationPlanRepository } from "../colony/OperationPlan";
 
@@ -13,63 +14,84 @@ export class ColonyFinder {
     
     /** Finds new colonies and adds them to the empire. */
     public static createNewColonies(empire: Empire, nestMapBuilder: NestMapBuilder): void {
-        for (var key in Game.spawns) {
-            var colony = this.buildColony(empire, Game.spawns[key].room, nestMapBuilder);
-            if (colony)
-                empire.addColony(colony);
+        let flags = this.findFlags();
+        for (var i = 0; i < flags.length; i++) {
+            if (!flags[i].room)
+                continue
+
+            let name = this.getColonyName(flags[i].room, flags[i]);
+            if (this.colonyExists(empire, name))
+                continue;
+            let colony = this.buildFromFlag(nestMapBuilder, flags[i]);
+            colony.initialize();
+            empire.addColony(colony);
         }
     }
 
-    private static buildColony(empire: Empire, room: Room, nestMapBuilder: NestMapBuilder): Colony {        
-        var flag = this.findFlag(room);
-        var colonyName = this.getColonyName(room, flag);
-
-        if (!this.needsColonyBuilt(empire, colonyName))
-            return null;
-                
-        if (!flag) {//todo: follow up on created flags and add memory        
-            var result = room.createFlag(25, 25, colonyName, ColonyFinder.flagMainColor, ColonyFinder.flagSecondaryColor);            
+    private static findFlags(): Flag[] {
+        let flags = [];
+        for (let key in Game.flags) {
+            if (Game.flags[key].name == "newColony")
+                flags.push(Game.flags[key]);
         }
-
-        var nestMap = nestMapBuilder.getMap(room);
-        if (!nestMap) {
-            global.events.empire.colonyFailedToEstablish(room.name, "Failed to create nest map");
-            return null;
-        }
-
-        var nest = new Nest(room.name, nestMap);
-
-        let progress = ColonyProgressRepository.getNew(Settings.DefaultProgress);
-        var colony = new Colony(nest, colonyName, progress);
-        colony.initialize();
-        for (var i = 0; i < Settings.DefaultOperationPlans.length; i++) {
-            let plan = OperationPlanRepository.getNew(Settings.DefaultOperationPlans[i]);
-            colony.addOperationPlan(plan);
-        }
-
-        global.events.empire.colonyEstablished(colonyName);
-
-        return colony;
+        return flags;
     }
 
-    private static needsColonyBuilt(empire: Empire, colonyName: string): boolean {
-        for (var i = 0; i < empire.colonies.length; i++)
-            if (empire.colonies[i].name == colonyName)
-                return false;
-        return true;
+    private static colonyExists(empire: Empire, colonyName: string): boolean {
+        let colony = empire.getColonyByName(colonyName);
+        if (colony)
+            return true;
+        return false;
     }
-
-    private static findFlag(room: Room): Flag {
-        var flags = room.find(FIND_FLAGS);
-        for (var i = 0; i < flags.length; i++)
-            if (flags[i].color == ColonyFinder.flagMainColor && flags[i].secondaryColor == ColonyFinder.flagSecondaryColor)
-                return flags[i];
-        return null;
+    
+    private static buildFromFlag(nestMapBuilder: NestMapBuilder, flag: Flag): Colony {
+        let name = this.getColonyName(flag.room, flag);
+        let nestMap = this.getNestMap(nestMapBuilder, flag.room);
+        let nest = new Nest(flag.room.name, nestMap);
+        let progress = this.getProgress(flag);
+        let plans = this.getOperationPlans(flag);
+        let colony = new Colony(nest, name, progress);
+        for (var i = 0; i < plans.length; i++)
+            colony.addOperationPlan(plans[i]);
+        global.events.empire.colonyEstablished(name);
+        return colony;  
     }
 
     private static getColonyName(room: Room, flag: Flag): string {
         if (flag && flag.memory && flag.memory.colonyData && flag.memory.colonyData.name)
             return flag.memory.colonyData.name;
         return "Colony " + room.name;
+    }
+
+    private static getNestMap(nestMapBuilder: NestMapBuilder, room: Room): NestMap {
+        let nestMap = nestMapBuilder.getMap(room);
+        if (!nestMap)
+            global.events.empire.colonyFailedToEstablish(room.name, "Failed to create nest map");
+        return nestMap;
+    }
+
+    private static getProgress(flag: Flag): ColonyProgress {
+        let type: ProgressType;
+        if (flag.memory && flag.memory.colonyData && flag.memory.colonyData.progress)
+            type = flag.memory.colonyData.progress;
+        else
+            type = Settings.DefaultProgress;
+        return ColonyProgressRepository.getNew(type);
+    }
+
+    private static getOperationPlans(flag: Flag): OperationPlan[] {
+        let planTypes = [];
+        if (flag.memory && flag.memory.colonyData && flag.memory.colonyData.operationPlans && flag.memory.colonyData.operationPlans.length > 0) {
+            for (var i = 0; i < flag.memory.colonyData.operationPlans.length; i++)
+                planTypes.push(flag.memory.colonyData.operationPlans[i]);            
+        } else {
+            for (var i = 0; i < Settings.DefaultOperationPlans.length; i++)
+                planTypes.push(Settings.DefaultOperationPlans[i]);            
+        }
+
+        let plans = [];
+        for (var i = 0; i < planTypes.length; i++)
+            plans.push(OperationPlanRepository.getNew(planTypes[i]));
+        return plans;
     }
 }

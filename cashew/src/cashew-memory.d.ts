@@ -4,8 +4,9 @@ declare global {
     /** FLAGS */
 
     interface ColonyFlagMemory {
-        name: string;
-        plan: PlanType;
+        name: string;        
+        progress: ProgressType;
+        operationPlans: PlanType[];
     }
 
     interface PlaybackFlagMemory {
