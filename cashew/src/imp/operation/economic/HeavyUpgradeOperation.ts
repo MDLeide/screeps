@@ -45,7 +45,7 @@ export class HeavyUpgradeOperation extends ControllerOperation {
 
         let newAssignments = creepsRequired - this.assignments.length;
         for (var i = 0; i < newAssignments; i++)
-            this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_UPGRADER, leadTime));
+            this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_UPGRADER, leadTime));        
     }
 
     protected onLoad(): void {

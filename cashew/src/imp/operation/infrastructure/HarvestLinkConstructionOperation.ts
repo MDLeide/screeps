@@ -73,7 +73,6 @@ export class HarvestLinkConstructionOperation extends ConstructionOperation {
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory(),
             siteIds: this.siteIds,
-            sitesBuilt: this.sitesBuilt,
             sourceId: this.sourceId
         };
     }

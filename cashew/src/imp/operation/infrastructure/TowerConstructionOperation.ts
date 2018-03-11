@@ -37,7 +37,6 @@ export class TowerConstructionOperation extends ConstructionOperation {
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory(),
             siteIds: this.siteIds,
-            sitesBuilt: this.sitesBuilt,
             rcl: this.rcl
         };
     }

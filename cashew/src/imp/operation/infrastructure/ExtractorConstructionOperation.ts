@@ -34,8 +34,7 @@ export class ExtractorConstructionOperation extends ConstructionOperation {
             operationStatus: this.status,
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory(),
-            siteIds: this.siteIds,
-            sitesBuilt: this.sitesBuilt
+            siteIds: this.siteIds
         };
     }
 }
