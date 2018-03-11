@@ -1,16 +1,16 @@
+import { ComponentVisual } from "./lib/ComponentVisual";
 import { VisualText } from "./lib/VisualText";
 
-export class DebugVisual {
+export class WatchVisual extends ComponentVisual {
+    constructor() {
+        super("watch", "w");
+    }
+
     private names: VisualText = new VisualText;
     private colons: VisualText = new VisualText;
     private values: VisualText = new VisualText;
-
-
-    public x: number = 45;
-    public y: number = 3;
-
-
-    public print(): void {
+    
+    public draw(): void {
         this.names.alignRight();
         this.names.draw(this.x - .25, this.y);
         this.colons.alignCenter();

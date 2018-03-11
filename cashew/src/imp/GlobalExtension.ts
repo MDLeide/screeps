@@ -1,7 +1,7 @@
 import { Empire } from "../lib/empire/Empire";
 
 import { Reporter } from "../lib/util/reports/Reporter";
-import { Visuals } from "../lib/util/visual/Visuals";
+import { Visuals } from "../lib/visual/Visuals";
 
 import { CreepUtility } from "../lib/creep/CreepUtility";
 import { EventLog } from "../lib/util/EventLog";
@@ -10,7 +10,7 @@ import { Logger } from "../lib/util/dbg/Logger";
 import { Playback } from "../lib/util/dbg/Playback";
 import { Cleaner } from "../lib/util/dbg/Cleaner";
 
-import { DebugVisual } from "../lib/util/visual/DebugVisual";
+import { WatchVisual } from "../lib/visual/WatchVisual";
 
 import { Test } from "../lib/Test";
 
@@ -29,7 +29,7 @@ export class GlobalExtension {
         global.v = visuals;
 
 
-        let debug = new DebugVisual;
+        let debug = new WatchVisual();
         global.debug = debug;
         global.d = debug;
 

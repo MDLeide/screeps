@@ -1,5 +1,5 @@
 import { StringBuilder } from "./StringBuilder";
-import { NestMapVisual } from "./visual/NestMapVisual";
+import { NestStructureVisual } from "../visual/NestStructureVisual";
 import { NestMap } from "../map/NestMap";
 
 export class EventLog {
@@ -132,8 +132,9 @@ class EmpireEvents extends EventGroup {
 
         this.log(sb.getString(), this.nestMappingFailedLevel);
 
-        let visual = new NestMapVisual(nestName, nestMap);
-        visual.drawStructures();        
+
+        let visual = new NestStructureVisual(nestName, nestMap);
+        visual.draw();
     }
 
     public gclUpgraded(newLevel: number) {

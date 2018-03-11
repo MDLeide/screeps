@@ -5,9 +5,9 @@ import { Cleaner } from "./lib/util/dbg/Cleaner";
 import { Logger } from "./lib/util/dbg/Logger";
 import { Reporter } from "./lib/util/reports/Reporter";
 import { EventLog } from "./lib/util/EventLog";
-import { Visuals } from "./lib/util/visual/Visuals";
+import { Visuals } from "./lib/visual/Visuals";
 import { Test } from "./lib/Test";
-import { DebugVisual } from "./lib/util/visual/DebugVisual";
+import { WatchVisual } from "./lib/visual/WatchVisual";
 
 declare global {
     const global: global;
@@ -20,8 +20,8 @@ declare global {
         r: Reporter;
         visuals: Visuals;
         v: Visuals;
-        debug: DebugVisual;
-        d: DebugVisual;
+        debug: WatchVisual;
+        d: WatchVisual;
 
 
         events: EventLog;

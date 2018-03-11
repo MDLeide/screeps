@@ -8,6 +8,7 @@ import { Playback } from "../lib/util/dbg/Playback";
 import { Register } from "./registration/Register";
 
 import { GlobalExtension } from "../imp/GlobalExtension";
+import { VisualBuilder } from "../lib/visual/VisualBuilder";
 
 export class Execute {    
     public init(): void {        
@@ -29,6 +30,8 @@ export class Execute {
         if (empire.colonies.length) //debug
             Playback.placeFlag(empire.colonies[0].nest.roomName);
 
+        VisualBuilder.build();
+
         try {            
             empire.load();
             empire.update();            
@@ -40,6 +43,7 @@ export class Execute {
                 Playback.pause();            
             throw e;
         }
-        global.visuals.update(empire);
+
+        global.visuals.draw();
     }
 }

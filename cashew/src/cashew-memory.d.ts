@@ -258,7 +258,7 @@ declare global {
     }
 
     interface VisualsMemory {
-        colony: ColonyVisualMemory;
+        [name: string]: boolean;
     }
 
     interface ColonyVisualMemory {

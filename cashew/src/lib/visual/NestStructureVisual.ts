@@ -1,23 +1,21 @@
-import { Map } from "../../map/base/Map";
-import { MapBlock } from "../../map/base/MapBlock";
-import { Layer } from "../../map/base/Layer";
-import { NestMap } from "../../map/NestMap";
+import { ComponentVisual } from "./lib/ComponentVisual";
 import { StructureArtist } from "./lib/StructureArtist";
+import { NestMap } from "../map/NestMap";
 
-export class NestMapVisual {
+export class NestStructureVisual extends ComponentVisual {
     constructor(room: string, nestMap: NestMap) {
-        this.nestMap = nestMap;
-        this.structureArtist = new StructureArtist(room);
-        this.room = room;
-    }
+        super("nestStructures", "struct");
 
+        this.room = room;
+        this.nestMap = nestMap;
+        this.structureArtist = new StructureArtist();
+    }
 
     public room: string;
     public nestMap: NestMap;
     public structureArtist: StructureArtist;
 
-
-    public drawStructures(): void {
+    public draw(): void {
         for (var x = 0; x < 50; x++) {
             for (var y = 0; y < 50; y++) {
                 let struct = this.nestMap.map.structures.getAt(x, y);
@@ -29,21 +27,6 @@ export class NestMapVisual {
         }
     }
 
-    public drawSpecials(): void {
-        let visual = new RoomVisual();
-        for (var x = 0; x < 50; x++) {
-            for (var y = 0; y < 50; y++) {
-                let spec = this.nestMap.map.special.getAt(x, y);
-                if (spec != 0)
-                    visual.text(spec.toString(), x, y);
-            }
-        }
-    }
-        
-    private drawRoad(x: number, y: number): void {
-
-    }
-        
     private drawStructure(x: number, y: number, structure: StructureConstant): void {
         this.structureArtist.drawStructure(structure, x, y);
     }

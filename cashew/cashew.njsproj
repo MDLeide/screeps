@@ -54,11 +54,11 @@
     <Folder Include="src\lib\map\blocks\" />
     <Folder Include="src\lib\map\" />
     <Folder Include="src\lib\flags\" />
-    <Folder Include="src\lib\util\visual\lib\" />
+    <Folder Include="src\lib\visual\lib\" />
     <Folder Include="src\yagni\colonyPlan\" />
     <Folder Include="src\lib\util\dbg\" />
     <Folder Include="src\lib\util\reports\" />
-    <Folder Include="src\lib\util\visual\" />
+    <Folder Include="src\lib\visual\" />
     <Folder Include="src\lib\operation\" />
     <Folder Include="src\test\" />
     <Folder Include="src\test\Memory\" />
@@ -183,19 +183,34 @@
     <TypeScriptCompile Include="src\lib\util\RoomHelper.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\util\visual\ColonyVisual.ts">
+    <TypeScriptCompile Include="src\lib\visual\ColonyInfoVisual.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\util\visual\DebugVisual.ts">
+    <TypeScriptCompile Include="src\lib\visual\lib\ComponentVisual.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\util\visual\EnergyStatsVisual.ts">
+    <TypeScriptCompile Include="src\lib\visual\VisualBuilder.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\util\visual\lib\VisualText.ts">
+    <TypeScriptCompile Include="src\lib\visual\WatchVisual.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\util\visual\lib\VisualUtility.ts">
+    <TypeScriptCompile Include="src\lib\visual\EnergyVisual.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\lib\VisualText.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\lib\VisualUtility.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\NestSpecialVisual.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\NestStructureVisual.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\OperationsVisual.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\StandardPlan.ts">
@@ -279,12 +294,11 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\util\reports\OperationReport.ts" />
     <TypeScriptCompile Include="src\lib\util\reports\Reporter.ts" />
-    <TypeScriptCompile Include="src\lib\util\visual\lib\BadgeArtist.ts" />
-    <TypeScriptCompile Include="src\lib\util\visual\NestMapVisual.ts" />
-    <TypeScriptCompile Include="src\lib\util\visual\lib\Palette.ts" />
-    <TypeScriptCompile Include="src\lib\util\visual\lib\StructureArtist.ts" />
-    <TypeScriptCompile Include="src\lib\util\visual\lib\StructurePalette.ts" />
-    <TypeScriptCompile Include="src\lib\util\visual\Visuals.ts" />
+    <TypeScriptCompile Include="src\lib\visual\lib\BadgeArtist.ts" />
+    <TypeScriptCompile Include="src\lib\visual\lib\Palette.ts" />
+    <TypeScriptCompile Include="src\lib\visual\lib\StructureArtist.ts" />
+    <TypeScriptCompile Include="src\lib\visual\lib\StructurePalette.ts" />
+    <TypeScriptCompile Include="src\lib\visual\Visuals.ts" />
     <TypeScriptCompile Include="src\yagni\ActivityBuilder.ts" />
     <TypeScriptCompile Include="src\yagni\RoleBuilder.ts" />
     <TypeScriptCompile Include="src\imp\map\ExtensionBlockProvider.ts" />
