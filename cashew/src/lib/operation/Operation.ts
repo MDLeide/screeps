@@ -148,8 +148,7 @@ export abstract class Operation {
         return this.startedStatus;
     }
     
-    public finish(colony: Colony): void {
-        
+    public finish(colony: Colony): void {        
         if (this.onFinish(colony)) {
             for (var i = 0; i < this.assignments.length; i++) {
                 if (this.assignments[i].creepName)

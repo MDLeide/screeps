@@ -14,7 +14,6 @@ export class Execute {
         console.log("<span style='color:green'>Execution initializing...</span>");        
         MemoryManager.checkInit();
         Register.register();
-        GlobalExtension.extend();
     }
     
     public main(): void {        
@@ -25,6 +24,7 @@ export class Execute {
         let colonyFinder = new ColonyFinder(StandardNestMapBuilder.getBuilder());
         var empire = new Empire(colonyFinder);
         GlobalExtension.extendEmpire(empire);
+        GlobalExtension.extend();
         
         if (empire.colonies.length) //debug
             Playback.placeFlag(empire.colonies[0].nest.roomName);

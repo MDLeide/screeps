@@ -7,8 +7,7 @@ import { BuilderJob } from "../creep/BuilderJob";
 
 export abstract class ConstructionOperation extends JobOperation {
     public static fromMemory(memory: ConstructionOperationMemory, instance: ConstructionOperation): Operation {
-        instance.siteIds = memory.siteIds;
-        instance.sitesBuilt = memory.sitesBuilt;
+        instance.siteIds = memory.siteIds;        
         return JobOperation.fromMemory(memory, instance);
     }
 
@@ -27,7 +26,7 @@ export abstract class ConstructionOperation extends JobOperation {
 
     public siteIds: string[] = [];
     public sites: ConstructionSite[] = [];
-    public sitesBuilt: boolean;
+    
 
 
     protected abstract getSiteLocations(colony: Colony): { x: number, y: number }[];
@@ -65,7 +64,7 @@ export abstract class ConstructionOperation extends JobOperation {
     }
 
     public isFinished(colony: Colony): boolean {
-        return this.initializedStatus && this.sitesBuilt && this.sites.length == 0;
+        return this.initializedStatus == InitStatus.Initialized && this.sites.length == 0;
     }
 
 
@@ -76,7 +75,7 @@ export abstract class ConstructionOperation extends JobOperation {
         this.siteIds = [];
         this.sites = [];
 
-        if (this.initializedStatus == InitStatus.Uninitialized || this.initializedStatus == InitStatus.TryAgain) {
+        if (this.initializedStatus == InitStatus.Partial) {
             for (var i = 0; i < locations.length; i++) {
                 let siteLook = colony.nest.room.lookForAt(LOOK_CONSTRUCTION_SITES, locations[i].x, locations[i].y);
                 if (siteLook.length) {
@@ -84,12 +83,11 @@ export abstract class ConstructionOperation extends JobOperation {
                     this.sites.push(siteLook[0]);
                 }
             }
-            return InitStatus.Partial;
+            return InitStatus.Initialized;
         } else {
             for (var i = 0; i < locations.length; i++)
-                colony.nest.room.createConstructionSite(locations[i].x, locations[i].y, type);
-            this.sitesBuilt = true;
-            return InitStatus.Initialized;
+                colony.nest.room.createConstructionSite(locations[i].x, locations[i].y, type);            
+            return InitStatus.Partial;
         }        
     }
 
@@ -134,13 +132,11 @@ export abstract class ConstructionOperation extends JobOperation {
             operationStatus: this.status,
             assignments: this.getAssignmentMemory(),
             jobs: this.getJobMemory(),
-            siteIds: this.siteIds,
-            sitesBuilt: this.sitesBuilt
+            siteIds: this.siteIds            
         };
     }
 }
 
 export interface ConstructionOperationMemory extends JobOperationMemory {
-    siteIds: string[];
-    sitesBuilt: boolean;
+    siteIds: string[];    
 }

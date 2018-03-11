@@ -1,4 +1,4 @@
-import { Operation } from "../../operation/Operation";
+import { Operation, OperationStatus } from "../../operation/Operation";
 import { StringBuilder } from "../StringBuilder";
 
 export class OperationReport {
@@ -23,14 +23,27 @@ export class OperationReport {
         sb.append("Operation ");
         sb.append(operation.type, "lightBlue");
         sb.append(" is ");
-        if (operation.finished)
-            sb.append("Finished", "orange");
-        else if (operation.startedStatus)
+        if (operation.status == OperationStatus.New) {
+            sb.append("New", "green");
+        } else if (operation.status == OperationStatus.AwaitingReinit) {
+            sb.append("Awaiting Reinit", "yellow");
+        } else if (operation.status == OperationStatus.FailedInit) {
+            sb.append("Failed Init", "red");
+        } else if (operation.status == OperationStatus.Initialized) {
+            sb.append("Initialized", "green");
+        } else if (operation.status == OperationStatus.AwaitingRestart) {
+            sb.append("Awaiting Restart", "yellow");
+        } else if (operation.status == OperationStatus.FailedStart) {
+            sb.append("Failed Start", "red");
+        } else if (operation.status == OperationStatus.Started) {
             sb.append("Started", "green");
-        else if (operation.initializedStatus)
-            sb.append("Initialized", "yellow");
-        else
-            sb.append(" New ", "red");
+        } else if (operation.status == OperationStatus.Complete) {
+            sb.append("Complete", "green");
+        } else if (operation.status == OperationStatus.Canceled) {
+            sb.append("Canceled", "yellow");
+        } else if (operation.status == OperationStatus.FailedOther) {
+            sb.append("Failed (other)", "red");
+        }
         
         return sb.getString();
     }

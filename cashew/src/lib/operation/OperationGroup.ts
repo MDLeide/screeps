@@ -77,11 +77,12 @@ export class OperationGroup {
                 this.operations[i].cleanup(colony);
             }
         }
-
-        for (var i = 0; i < this.operations.length; i++)
+        
+        for (var i = 0; i < this.operations.length; i++) {
             if (this.operations[i].status == OperationStatus.Started && !this.operations[i].finished)
                 if (this.operations[i].isFinished(colony))
                     this.operations[i].finish(colony);
+        }
     }
 
 

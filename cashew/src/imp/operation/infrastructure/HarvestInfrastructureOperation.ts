@@ -1,5 +1,5 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation, InitStatus, StartStatus } from "../../../lib/operation/Operation";
+import { Operation, OperationStatus, InitStatus, StartStatus } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { MapBlock } from "../../../lib/map/base/MapBlock";
 import { HarvestBlock } from "../../../lib/map/blocks/HarvestBlock";
@@ -63,7 +63,7 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
     }
     
     public isFinished(colony: Colony): boolean {
-        return this.siteBuilt && this.initializedStatus && (!this.site || this.site.progress >= this.site.progressTotal);
+        return this.siteBuilt && this.initializedStatus == InitStatus.Initialized && (!this.site || this.site.progress >= this.site.progressTotal);
     }
 
 
@@ -79,9 +79,11 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
         }
         let containerLocation = harvestBlock.getContainerLocation();
 
-        if (this.initializedStatus == InitStatus.Uninitialized || this.initializedStatus == InitStatus.Partial || this.initializedStatus == InitStatus.TryAgain) {
-            if (this.source.room.createConstructionSite(containerLocation.x, containerLocation.y, STRUCTURE_CONTAINER) == OK)
-                return InitStatus.Partial;
+        if (this.initializedStatus == InitStatus.Uninitialized || this.initializedStatus == InitStatus.TryAgain) {
+            if (this.source.room.createConstructionSite(containerLocation.x, containerLocation.y, STRUCTURE_CONTAINER) == OK) {
+                this.siteBuilt = true;
+                return InitStatus.Partial;                
+            }
             else
                 return InitStatus.TryAgain;
         } else {
