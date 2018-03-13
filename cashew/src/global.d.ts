@@ -9,12 +9,12 @@ import { Visuals } from "./lib/visual/Visuals";
 import { Test } from "./lib/Test";
 import { WatchVisual } from "./lib/visual/WatchVisual";
 
+
 declare global {
     const global: global;
 
     interface global {
         empire: Empire;
-
 
         reports: Reporter;
         r: Reporter;
@@ -23,18 +23,15 @@ declare global {
         debug: WatchVisual;
         d: WatchVisual;
 
-
         events: EventLog;
         cleaner: Cleaner;
         logger: Logger;
         ucreep: CreepUtility;
 
-
         test: Test;
-
 
         help(): string;
         pause(): void;
         reset(): void;
-    }
+    }    
 }

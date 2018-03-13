@@ -1,157 +1,281 @@
-export class Stats {
-    public static updateStats(): void {        
-        this.initialize();
+/* USAGE:
 
-        this.updateColonies();
-        this.updateEmpire();
-        this.updateCpu();
+1. Add a new declarations file like:
+
+stats.d.ts
+----
+
+import { Statistics } from "./path/stats";
+
+declare global {
+    interface global {
+        stats: Statistics;
+        LastMemory: Memory;
+        Memory: Memory;
     }
 
-    private static initialize(): void {
-        Memory.stats = {
-            cpu: {
-                bucket: undefined,
-                used: undefined,
-                tickLimit: undefined
-            },
-            colonies:[],
-            energy: {
-                harvested: undefined,
-                remotedHarvested: undefined,
-                empireIncoming: undefined,
-                marketBuy: undefined,
-                totalRevenue: undefined,
-                spawnEnergy: undefined,
-                upgradeEnergy: undefined,
-                buildEnergy: undefined,
-                repairEnergy: undefined,
-                empireOutgoingEnergy: undefined,
-                marketSellEnergy: undefined,
-                terminalTransferEnergy: undefined,
-                linkTransferEnergy: undefined,
-                towerEnergy: undefined,
-                totalExpenses: undefined,
-                netEnergy: undefined,
-            },
-            creeps: {
-                spawning: undefined,
-                alive: undefined
-            }
-        };
+    interface RawMemory {
+        _parsed: Memory;
     }
 
-    private static updateCpu(): void {
-        Memory.stats.cpu.bucket = Game.cpu.bucket;
-        Memory.stats.cpu.tickLimit = Game.cpu.tickLimit;
-        Memory.stats.cpu.used = Game.cpu.getUsed();
+    interface CPU {
+        getHeapStatistics(): any;
+    }
+}
+
+----
+
+2. Configure CONFIG below
+
+3. At VERY top of main.js:
+> import setup from "./path/stats";
+> setup();
+
+4. At top of loop():
+> global.stats.reset();
+
+5. At bottom of loop():
+> global.stats.commit();
+
+6. To add a stat, just call
+> global.stats.addSimpleStat(key, value);
+or more advanced
+> global.stats.addStat('scheduler', { queue: 1 }, { count: 5, max: 5, min: 2, amount: 3 });
+
+Tags (second argument) should not contain data that varies a lot, for example, don't
+put stuff like object ids in tags doing so ends up causing massive performance hits
+as the tag indexes get too large too quickly. Good data for tags is more static stuff
+such as roomName, sectorName, etc, low overall spread.
+
+*/
+
+export default function setup(): void {
+    global.stats = new Statistics();
+}
+
+export interface StatsConfig {
+    driver: string;
+    format: string;
+    types: string[];
+    key: string;
+    segment: number;
+    baseStats: boolean;
+    measureMemoryParse: boolean;
+    divider: string;
+    usermap: { [id: string]: string };
+    outputMemoryParseResults: boolean;
+}
+
+interface Stat {
+    name: string;
+    tags: { [id: string]: any };
+    values: { [id: string]: any };
+}
+
+const CONFIG: StatsConfig = {
+    driver: 'InfluxDB', // Graphite, InfluxDB
+    format: 'plain', // Or JSON, only applies to Graphite driver
+    types: ['console'], // memory, segment, console
+    key: '__stats',
+    segment: 30,
+    baseStats: true,
+    measureMemoryParse: true,
+    divider: ';',  // "\n",
+    usermap: { // use module.user in console to get userID for mapping.
+        '4e241a77d2b82f7': 'Cashew'
+        // '577bc02e47c3ef7031adb268': 'ags131', // Useful for Private Servers
+    },
+    outputMemoryParseResults: false
+}
+
+export class Statistics {
+    constructor(opts = {}) {
+        this.opts = Object.assign(CONFIG, opts);
+        this.shard = (Game.shard && Game.shard.name) || 'shard0';
+        this.user = _.find(Game.spawns, v => v).owner.username;
+        this.reset();
+        this.startTick = Game.time;        
     }
 
-    private static updateColonies(): void {
-        for (var i = 0; i < global.empire.colonies.length; i++) {
-            let colony = global.empire.colonies[i];
+    get mem() {
+        Memory[this.opts.key] = Memory[this.opts.key] || { index: 0, last: 0 };
+        return Memory[this.opts.key];
+    }
 
-            let creepMem: CreepStatsMemory = {
-                alive: colony.population.alive.length,
-                spawning: colony.population.spawning.length
-            };
+    private opts: StatsConfig;
+    private stats: Stat[];
 
-            let energyMem: EnergyStatsMemory = {
-                harvested: colony.resourceManager.ledger.thisTick.harvestEnergy,                
-                remotedHarvested: colony.resourceManager.ledger.thisTick.remoteHarvestEnergy,
-                empireIncoming: colony.resourceManager.ledger.thisTick.empireIncomingEnergy,
-                marketBuy: colony.resourceManager.ledger.thisTick.marketBuyEnergy,
-                totalRevenue: colony.resourceManager.ledger.thisTick.totalRevenue,
-                spawnEnergy: colony.resourceManager.ledger.thisTick.spawnEnergy,
-                upgradeEnergy: colony.resourceManager.ledger.thisTick.upgradeEnergy,
-                buildEnergy: colony.resourceManager.ledger.thisTick.buildEnergy,
-                repairEnergy: colony.resourceManager.ledger.thisTick.repairEnergy,
-                empireOutgoingEnergy: colony.resourceManager.ledger.thisTick.empireOutgoingEnergy,
-                marketSellEnergy: colony.resourceManager.ledger.thisTick.marketSellEnergy,
-                terminalTransferEnergy: colony.resourceManager.ledger.thisTick.terminalTransferEnergy,
-                linkTransferEnergy: colony.resourceManager.ledger.thisTick.linkTransferEnergy,
-                towerEnergy: colony.resourceManager.ledger.thisTick.towerEnergy,
-                totalExpenses: colony.resourceManager.ledger.thisTick.totalExpenses,
-                netEnergy: colony.resourceManager.ledger.thisTick.netEnergy
-            }
+    private startTick: number;
+    private lastTime: number;
+    private memoryParseTime: number;
+    
+    private shard: string;
+    private user: string;
+    private prefix: string;
+    
+    private cpuReset: number;
+    private endReset: number;
 
-            let colonyMem: ColonyStatsMemory = {
-                energy: energyMem,
-                creeps: creepMem
-            };
 
-            Memory.stats.colonies.push(colonyMem);
+    public addSimpleStat(name: string, value: any = 0): void {
+        this.addStat(name, {}, { value });
+    }
+
+    public addStat(name: string, tags: { [id: string]: any } = {}, values: { [id: string]: any } = {}): void {
+        this.stats.push({ name, tags, values });
+    }
+
+    public reset():void {
+        if (Game.time === this.startTick) return; // Don't reset on new tick
+
+        this.stats = [];
+        this.cpuReset = Game.cpu.getUsed();
+        
+        if (!this.opts.measureMemoryParse) return;
+
+        let start = Game.cpu.getUsed();
+
+        if (this.lastTime && global.LastMemory && Game.time === (this.lastTime + 1)) {
+            delete global.Memory;
+            global.Memory = global.LastMemory;
+            RawMemory._parsed = global.LastMemory;
+            console.log('[1] Tick has same GID!');
+        } else {
+            Memory; // eslint-disable-line no-unused-expressions
+            global.LastMemory = RawMemory._parsed;
         }
+
+        this.lastTime = Game.time;
+        let end = Game.cpu.getUsed();
+        let el = end - start;
+        this.memoryParseTime = el;
+
+        this.addStat('memory', {}, {
+            parse: el,
+            size: RawMemory.get().length
+        });
+
+        this.endReset = Game.cpu.getUsed();
+
+        if (this.opts.outputMemoryParseResults)
+            console.log(`[1] [Stats] Entry: ${this.cpuReset.toFixed(3)} - Exit: ${(this.endReset - this.cpuReset).toFixed(3)} - Mem: ${this.memoryParseTime.toFixed(3)} (${(RawMemory.get().length / 1024).toFixed(2)}kb)`);
+    }
+    
+    public commit(): void {
+        let start = Game.cpu.getUsed();
+
+        if (this.opts.baseStats) this.addBaseStats();
+
+        let stats: string = `text/${this.opts.driver.toLowerCase()}\n`;
+        stats += `${Game.time}\n`;
+        stats += `${Date.now()}\n`;
+
+        let format = this[`format${this.opts.driver}`].bind(this);
+        _.each(this.stats, (v, k) => {
+            stats += format(v)
+        });
+
+        let end = Game.cpu.getUsed();
+
+        stats += format({ name: 'stats', tags: {}, values: { count: this.stats.length, size: stats.length, cpu: end - start } })
+
+        if (this.opts.types.indexOf('segment') >= 0)
+            RawMemory.segments[this.opts.segment] = stats;        
+        if (this.opts.types.indexOf('memory') >= 0)
+            Memory[this.opts.key] = stats;        
+        if (this.opts.types.indexOf('console') >= 0)
+            console.log('STATS;' + stats.replace(/\n/g, ';'));        
     }
 
-    private static updateEmpire(): void {
-        let spawning = 0;
-        let alive = 0;
+    /** Adds some common stats. */
+    private addBaseStats(): void {
+        this.addStat('time', {}, {
+            tick: Game.time,
+            timestamp: Date.now(),
+            duration: Memory.lastDur
+        });
 
-        let harvested: number = 0;
-        let remotedHarvested: number = 0;
-        let empireIncoming: number = 0;
-        let marketBuy: number = 0;
-        let totalRevenue: number = 0;
+        this.addStat('gcl', {}, {
+            level: Game.gcl.level,
+            progress: Game.gcl.progress,
+            progressTotal: Game.gcl.progressTotal,
+            progressPercent: (Game.gcl.progress / Game.gcl.progressTotal) * 100
+        });
 
-        let spawnEnergy: number = 0;
-        let upgradeEnergy: number = 0;
-        let buildEnergy: number = 0;
-        let repairEnergy: number = 0;
-        let empireOutgoingEnergy: number = 0;
-        let marketSellEnergy: number = 0;
-        let terminalTransferEnergy: number = 0;
-        let linkTransferEnergy: number = 0;
-        let towerEnergy: number = 0;
-        let totalExpenses: number = 0;
+        this.addStat('market', {}, {
+            credits: Game.market.credits
+        });
 
-        let netEnergy: number = 0;
+        _.each(Game.rooms, room => {
+            let { controller, storage, terminal } = room;
+            if (!controller || !controller.my) return;
 
-        for (var i = 0; i < Memory.stats.colonies.length; i++) {
-            let c = Memory.stats.colonies[i];
+            this.addStat(
+                'room',
+                { room: room.name },
+                {
+                    level: controller.level,
+                    progress: controller.progress,
+                    progressTotal: controller.progressTotal,
+                    progressPercent: (controller.progress / controller.progressTotal) * 100,
+                    energyAvailable: room.energyAvailable,
+                    energyCapacityAvailable: room.energyCapacityAvailable
+                });
 
-            spawning += c.creeps.spawning;
-            alive += c.creeps.alive;
+            if (controller)
+                this.addStat(
+                    'controller',
+                    { room: room.name },
+                    {
+                        level: controller.level,
+                        progress: controller.progress,
+                        progressTotal: controller.progressTotal,
+                        progressPercent: (controller.progress / controller.progressTotal) * 100
+                    });
+            
+            if (storage)
+                this.addStat(
+                    'storage',
+                    { room: room.name },
+                    storage.store);
+            
+            if (terminal)
+                this.addStat(
+                    'terminal',
+                    { room: room.name },
+                    terminal.store);            
+        });
 
-            harvested += c.energy.harvested;
-            remotedHarvested += c.energy.remotedHarvested;
-            empireIncoming += c.energy.empireIncoming;
-            marketBuy += c.energy.marketBuy;
-            totalRevenue += c.energy.totalRevenue;
+        if (typeof Game.cpu.getHeapStatistics === 'function')
+            this.addStat('heap', {}, Game.cpu.getHeapStatistics())
+        
+        let used = Game.cpu.getUsed();
 
-            spawnEnergy += c.energy.spawnEnergy;
-            upgradeEnergy += c.energy.upgradeEnergy;
-            buildEnergy += c.energy.buildEnergy;
-            repairEnergy += c.energy.repairEnergy;
-            empireOutgoingEnergy += c.energy.empireOutgoingEnergy;
-            marketSellEnergy += c.energy.marketSellEnergy;
-            terminalTransferEnergy += c.energy.terminalTransferEnergy;
-            linkTransferEnergy += c.energy.linkTransferEnergy;
-            towerEnergy += c.energy.towerEnergy;
-            totalExpenses += c.energy.totalExpenses;
+        this.addStat('cpu', {}, {
+            bucket: Game.cpu.bucket,
+            used: used,
+            limit: Game.cpu.limit,
+            start: this.cpuReset,
+            percent: (used / Game.cpu.limit) * 100
+        });
+    }
 
-            netEnergy += c.energy.netEnergy;
-        }
+    private formatInfluxDB(stat: Stat): string {
+        let { name, tags, values } = stat;
+        Object.assign(tags, { user: this.user, shard: this.shard });
+        return `${name},${this.kv(tags)} ${this.kv(values)}\n`;
+    }
 
-        Memory.stats.creeps.alive = alive;
-        Memory.stats.creeps.spawning = spawning;
+    private formatGraphite(stat: Stat): string {
+        let { name, tags, values } = stat;
+        if (!this.prefix)
+            this.prefix = `${this.user}`; // .${this.shard}`
+        // most readable code every written:
+        let pre = [this.prefix, this.kv(tags, '.').join('.'), name].filter(v => v).join('.');
+        return this.kv(values, ' ').map(v => `${pre}.${v}\n`).join('');
+    }
 
-        Memory.stats.energy.harvested = harvested;
-        Memory.stats.energy.remotedHarvested = remotedHarvested;
-        Memory.stats.energy.empireIncoming = empireIncoming;
-        Memory.stats.energy.marketBuy = marketBuy;
-        Memory.stats.energy.totalRevenue = totalRevenue;
-
-        Memory.stats.energy.spawnEnergy = spawnEnergy;
-        Memory.stats.energy.upgradeEnergy = upgradeEnergy;
-        Memory.stats.energy.buildEnergy = buildEnergy;
-        Memory.stats.energy.repairEnergy = repairEnergy;
-        Memory.stats.energy.empireOutgoingEnergy = empireOutgoingEnergy;
-        Memory.stats.energy.marketSellEnergy = marketSellEnergy;
-        Memory.stats.energy.terminalTransferEnergy = terminalTransferEnergy;
-        Memory.stats.energy.linkTransferEnergy = linkTransferEnergy;
-        Memory.stats.energy.towerEnergy = towerEnergy;
-        Memory.stats.energy.totalExpenses = totalExpenses;
-
-        Memory.stats.energy.netEnergy = netEnergy;
+    private kv(obj, sep = '='): string[] {
+        return _.map(obj, (v, k) => `${k}${sep}${v}`)
     }
 }

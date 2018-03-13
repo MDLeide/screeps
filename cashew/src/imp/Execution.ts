@@ -10,7 +10,7 @@ import { Register } from "./registration/Register";
 import { GlobalExtension } from "../imp/GlobalExtension";
 import { VisualBuilder } from "../lib/visual/VisualBuilder";
 
-import { Stats } from "../lib/Stats";
+import { StatCollection } from "../lib/StatCollection";
 
 export class Execute {    
     public init(): void {        
@@ -47,6 +47,6 @@ export class Execute {
         }
 
         global.visuals.draw();
-        Stats.updateStats();
+        StatCollection.updateStats();
     }
 }

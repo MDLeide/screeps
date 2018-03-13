@@ -1,6 +1,7 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
+        "allowJs": false,
         "module": "commonjs",
         "target": "es6",
         "outDir": "dist",
