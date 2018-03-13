@@ -6,7 +6,7 @@ export class Visuals {
 
 
     public components: { [name: string]: ComponentVisual } = {};
-
+    public get c(): { [name: string]: ComponentVisual } { return this.components;}
 
     public get display(): boolean {
         return Memory.visuals["visualsMain"];
@@ -38,9 +38,22 @@ export class Visuals {
     public draw(): void {
         if (!this.display)
             return;
+        let drawn: string[] = []
+        for (let key in this.components) {
+            if (this.components[key].display) {
+                let skip = false;
+                for (var i = 0; i < drawn.length; i++) {
+                    if (drawn[i] == this.components[key].name) {
+                        skip = true;
+                        break;
+                    }                        
+                }
+                if (skip)
+                    continue;
 
-        for (let key in this.components) 
-            if (this.components[key].display)
-                this.components[key].draw();        
+                this.components[key].draw();
+                drawn.push(this.components[key].name);
+            }                
+        }            
     }
 }

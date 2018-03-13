@@ -153,6 +153,9 @@
     <TypeScriptCompile Include="src\lib\operation\FlagOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\Stats.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\Test.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -186,7 +189,13 @@
     <TypeScriptCompile Include="src\lib\visual\ColonyInfoVisual.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\CpuVisual.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\visual\lib\ComponentVisual.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\lib\LineGraphVisual.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\visual\VisualBuilder.ts">

@@ -14,7 +14,13 @@ export class VisualText {
     public dropShadow: boolean = true;
     public dropShadowColor: string = "#000000";
     public size: number = 0.7;
-    
+
+
+    public static measureString(str: string): number {
+        return str.length * .435;
+    }
+
+
     public alignLeft(): void { this.alignment = "left"; }
 
     public alignCenter(): void { this.alignment = "center"; }
@@ -99,7 +105,11 @@ class Line {
         } else if (_.isUndefined(str)) {
             this.text.push("undefined");
             this.width += 9;
-        } else if (str == false) {
+        } else if (str == 0) {
+            this.text.push("0");
+            this.width++;
+        }
+        else if (str == false) {
             this.text.push("false");
             this.width += 5;
         }

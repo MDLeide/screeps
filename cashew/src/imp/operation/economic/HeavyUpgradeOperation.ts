@@ -28,11 +28,11 @@ export class HeavyUpgradeOperation extends ControllerOperation {
         let body = BodyRepository.heavyUpgrader();
         body.maxCompleteScalingSections = partsPerSpawn - 1;
 
-        let path = PathFinder.search(colony.nest.spawners[0].spawn.pos, { pos: colony.nest.room.controller.pos, range: 3 });
+        let path = PathFinder.search(colony.nest.spawners[0].spawn.pos, { pos: colony.nest.room.controller.pos, range: 1 });
         let partCount = partsPerSpawn + 2;
         let spawnTime = partCount * 3;
         let transitTime = path.cost * partCount;
-        let buffer = 15;
+        let buffer = 50;
         let leadTime = spawnTime + transitTime + buffer;
 
         if (this.assignments.length > creepsRequired)

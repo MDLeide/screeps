@@ -10,6 +10,8 @@ import { Register } from "./registration/Register";
 import { GlobalExtension } from "../imp/GlobalExtension";
 import { VisualBuilder } from "../lib/visual/VisualBuilder";
 
+import { Stats } from "../lib/Stats";
+
 export class Execute {    
     public init(): void {        
         console.log("<span style='color:green'>Execution initializing...</span>");        
@@ -45,5 +47,6 @@ export class Execute {
         }
 
         global.visuals.draw();
+        Stats.updateStats();
     }
 }

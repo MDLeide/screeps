@@ -748,7 +748,7 @@ class ResourceManagerSettings {
 
     public controllerContainerMaxEnergy: number = 1800;
     public storageMaxEnergy: number = 1000000;
-    public labMaxEnergy: number = 200000;
+    public labMaxEnergy: number = 2000;
     public towerMaxEnergy: number = 1000;
     public terminalMaxEnergy: number = 200000;
     public nukerMaxEnergy: number = 200000;

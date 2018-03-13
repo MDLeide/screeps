@@ -28,6 +28,12 @@ export class ColonyInfoVisual extends ComponentVisual {
         let pop = colony.population.alive.length;
         vt.append(" | ");
         vt.append(pop + " creeps");
+        vt.append(" | ");
+        let threat = colony.watchtower.threatScore;
+        if (threat > 0)
+            vt.append(threat, "red");
+        else
+            vt.append(threat, "green");
         return vt;
     }
 }

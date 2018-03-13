@@ -15,6 +15,9 @@ export class HaulerRole extends Role {
                 return Task.Transfer(transferTarget);
         } else {
             let withdrawTarget = colony.resourceManager.getWithdrawTarget(creep);
+            let transferTarget = colony.resourceManager.getTransferTarget(creep);
+            if (withdrawTarget.id == transferTarget.id)
+                return null;
             if (withdrawTarget)
                 return Task.Withdraw(withdrawTarget);
         }

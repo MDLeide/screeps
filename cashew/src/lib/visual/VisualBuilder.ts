@@ -3,6 +3,7 @@ import { EnergyVisual } from "./EnergyVisual";
 import { NestSpecialVisual } from "./NestSpecialVisual";
 import { NestStructureVisual } from "./NestStructureVisual";
 import { OperationsVisual } from "./OperationsVisual";
+import { CpuVisual } from "./CpuVisual";
 
 
 export class VisualBuilder {
@@ -33,6 +34,12 @@ export class VisualBuilder {
             ops.x = 0;
             ops.y = 18;
             global.visuals.addComponent(ops);
+
+            let cpu = new CpuVisual();
+            cpu.x = 45;
+            cpu.y = 2;
+            cpu.on();
+            global.visuals.addComponent(cpu);
         }
     }
 }
