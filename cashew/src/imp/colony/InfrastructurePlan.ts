@@ -17,7 +17,7 @@ import { ReplaceOriginalSpawnOperation } from "../operation/infrastructure/Repla
 
 import { HarvestLinkConstructionOperation } from "../operation/infrastructure/HarvestLinkConstructionOperation";
 import { UpgradeLinkConstructionOperation } from "../operation/infrastructure/UpgradeLinkConstruction";
-import { ExtensionLinkConstruction } from "../operation/infrastructure/ExtensionLinkConstruction";
+import { ExtensionLinkConstructionOperation } from "../operation/infrastructure/ExtensionLinkConstruction";
 import { StorageLinkConstructionOperation } from "../operation/infrastructure/StorageLinkConstructionOperation";
 
 import { WallConstructionOperation } from "../operation/infrastructure/WallConstructionOperation";
@@ -102,7 +102,7 @@ export class InfrastructurePlan extends OperationPlan {
 
             case "rcl6":
                 this.addOperation(new ExtensionConstructionOperation(6));
-                this.addOperation(new ExtensionLinkConstruction());
+                this.addOperation(new ExtensionLinkConstructionOperation());
                 break;
 
             case "thirdLink":

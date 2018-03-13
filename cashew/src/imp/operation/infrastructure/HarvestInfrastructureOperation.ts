@@ -159,7 +159,7 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
     }
 }
 
-interface HarvestInfrastructureOperationMemory extends ControllerOperationMemory {
+export interface HarvestInfrastructureOperationMemory extends ControllerOperationMemory {
     sourceId: string;
     siteId: string;
     siteBuilt: boolean;

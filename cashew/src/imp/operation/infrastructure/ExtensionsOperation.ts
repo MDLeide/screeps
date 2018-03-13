@@ -7,7 +7,7 @@ import { BodyRepository } from "../../creep/BodyRepository";
 import { ConstructionOperation, ConstructionOperationMemory } from "../ConstructionOperation";
 
 export class ExtensionConstructionOperation extends ConstructionOperation {
-    public static fromMemory(memory: ExtensionsOperationMemory): ExtensionConstructionOperation {
+    public static fromMemory(memory: ExtensionConstructionOperationMemory): ExtensionConstructionOperation {
         let op = new this(memory.rcl);
         return ConstructionOperation.fromMemory(memory, op) as ExtensionConstructionOperation;
     }
@@ -35,7 +35,7 @@ export class ExtensionConstructionOperation extends ConstructionOperation {
         return super.onFinish(colony);
     }
     
-    protected onSave(): ExtensionsOperationMemory {
+    protected onSave(): ExtensionConstructionOperationMemory {
         return {
             operationStatus: this.status,
             type: this.type,
@@ -49,6 +49,6 @@ export class ExtensionConstructionOperation extends ConstructionOperation {
     }
 }
 
-interface ExtensionsOperationMemory extends ConstructionOperationMemory {
+export interface ExtensionConstructionOperationMemory extends ConstructionOperationMemory {
     rcl: number;
 }

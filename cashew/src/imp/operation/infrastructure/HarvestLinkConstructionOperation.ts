@@ -78,6 +78,6 @@ export class HarvestLinkConstructionOperation extends ConstructionOperation {
     }
 }
 
-interface HarvestLinkConstructionOperationMemory extends ConstructionOperationMemory {
+export interface HarvestLinkConstructionOperationMemory extends ConstructionOperationMemory {
     sourceId: string;
 }

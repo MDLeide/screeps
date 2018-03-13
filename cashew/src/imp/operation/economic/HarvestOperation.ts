@@ -131,7 +131,7 @@ export class HarvestOperation extends ControllerOperation {
     }
 }
 
-interface HarvestOperationMemory extends ControllerOperationMemory {
+export interface HarvestOperationMemory extends ControllerOperationMemory {
     sourceId: string;
     containerId: string;
     linkId: string

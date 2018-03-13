@@ -44,6 +44,6 @@ export class LabConstructionOperation extends ConstructionOperation {
     }
 }
 
-interface LabConstructionOperationMemory extends ConstructionOperationMemory {
+export interface LabConstructionOperationMemory extends ConstructionOperationMemory {
     rcl: number;
 }

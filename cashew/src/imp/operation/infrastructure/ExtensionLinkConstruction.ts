@@ -6,7 +6,7 @@ import { BodyRepository } from "../../creep/BodyRepository";
 import { BuilderJob } from "../../creep/BuilderJob";
 import { ConstructionOperation, ConstructionOperationMemory } from "../ConstructionOperation";
 
-export class ExtensionLinkConstruction extends ConstructionOperation {
+export class ExtensionLinkConstructionOperation extends ConstructionOperation {
     public static fromMemory(memory: ConstructionOperationMemory): Operation {
         var op = new this();
         return ConstructionOperation.fromMemory(memory, op);
