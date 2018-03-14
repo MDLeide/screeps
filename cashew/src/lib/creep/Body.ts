@@ -41,10 +41,9 @@ export class Body {
     }
 
 
-
     public constantPartCost: number = 0;
     public scalingPartCost: number = 0;
-
+    
 
     public getBody(energy: number): BodyPartConstant[] {
         if (energy < this.minimumEnergy)

@@ -41,6 +41,7 @@
     <Folder Include="src\" />
     <Folder Include="src\imp\creep\" />
     <Folder Include="src\imp\colony\" />
+    <Folder Include="src\imp\creep\military\" />
     <Folder Include="src\imp\map\" />
     <Folder Include="src\imp\operation\" />
     <Folder Include="src\imp\operation\economic\" />
@@ -96,6 +97,7 @@
     <TypeScriptCompile Include="src\imp\colony\StandardProgress.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\HarvestBuilderJob.ts" />
     <TypeScriptCompile Include="src\imp\creep\ChemistController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -111,6 +113,15 @@
     <TypeScriptCompile Include="src\imp\creep\RemoteHaulerRole.ts" />
     <TypeScriptCompile Include="src\imp\creep\RemoteHarvesterController.ts" />
     <TypeScriptCompile Include="src\imp\creep\DefenderController.ts" />
+    <TypeScriptCompile Include="src\imp\creep\ReserveJob.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\ScoutJob.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\WarriorController.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\map\MineralBlockProvider.ts" />
     <TypeScriptCompile Include="src\imp\map\WallProvider.ts">
       <SubType>Code</SubType>
@@ -126,6 +137,7 @@
     <TypeScriptCompile Include="src\imp\operation\infrastructure\RoadConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\ReplaceOriginalSpawnOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\SpawnConstructionOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\infrastructure\NewSpawnConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\WallConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\ObserverConstructionOperation.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\StorageLinkConstructionOperation.ts" />
@@ -135,7 +147,13 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\infrastructure\UpgradeLinkConstruction.ts" />
     <TypeScriptCompile Include="src\imp\operation\infrastructure\HarvestLinkConstructionOperation.ts" />
+    <TypeScriptCompile Include="src\imp\operation\military\ReservationOperation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\military\RoomDefenseOperation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\operation\military\RoomScoutOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\registration\ColonyProgressRegistration.ts">
@@ -144,10 +162,10 @@
     <TypeScriptCompile Include="src\imp\registration\OperationPlanRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\flags\FlagMonitor.ts">
+    <TypeScriptCompile Include="src\lib\empire\Campaign.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\operation\Campaign.ts">
+    <TypeScriptCompile Include="src\lib\flags\FlagMonitor.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\operation\FlagOperation.ts">

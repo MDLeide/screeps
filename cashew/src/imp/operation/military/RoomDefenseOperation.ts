@@ -58,7 +58,6 @@ export class RoomDefenseOperation extends ControllerOperation {
 
     protected onInit(colony: Colony): InitStatus {
         this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
-        this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
         return InitStatus.Initialized;
     }
 

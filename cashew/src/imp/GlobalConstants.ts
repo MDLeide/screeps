@@ -43,6 +43,7 @@ global.OPERATION_SPAWN_CONSTRUCTION = "SpawnConstruction";
 global.OPERATION_REPLACE_ORIGINAL_SPAWN = "ReplaceOriginalSpawn";
 global.OPERATION_ROOM_SCOUT = "RoomScout";
 global.OPERATION_NEW_SPAWN_CONSTRUCTION = "NewSpawnConstruction";
+global.OPERATION_RESERVATION = "Reservation";
 
 global.PROGRESS_STANDARD = "Standard";
 
@@ -68,6 +69,7 @@ global.CREEP_CONTROLLER_REPAIR = "Repair";
 global.CREEP_CONTROLLER_DEFENDER = "Defender";
 global.CREEP_CONTROLLER_CLAIM = "Claim";
 global.CREEP_CONTROLLER_SCOUT = "Scout";
+global.CREEP_CONTROLLER_RESERVE = "Reserve";
 
 global.BODY_LIGHT_WORKER = "LightWorker";
 global.BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -76,6 +78,7 @@ global.BODY_HAULER = "Hauler";
 global.BODY_WARRIOR = "Warrior";
 global.BODY_SCOUT = "Scout";
 global.BODY_DEFENDER = "Defender";
+global.BODY_CLAIMER = "Claimer";
 
 
 export class GlobalConstants {
