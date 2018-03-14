@@ -3,14 +3,15 @@ import { Operation, InitStatus, StartStatus } from "../../../lib/operation/Opera
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { CreepController } from "../../../lib/creep/CreepController";
+import { Body } from "../../../lib/creep/Body";
 import { BodyRepository } from "../../creep/BodyRepository";
 import { RemoteHarvesterController } from "../../creep/RemoteHarvesterController";
 import { RemoteHaulerRole } from "../../creep/RemoteHaulerRole";
+import { Calculator } from "../../../lib/util/Calculator";
 
 export class RemoteHarvestOperation extends ControllerOperation {
     public static fromMemory(memory: RemoteHarvestOperationMemory): RemoteHarvestOperation {
-        let op = new this(memory.sourceId, memory.roomName);
-        op.containerId = memory.containerId;
+        let op = new this(memory.sourceId, memory.roomName);        
         return ControllerOperation.fromMemory(memory, op) as RemoteHarvestOperation;
     }
 
@@ -21,11 +22,11 @@ export class RemoteHarvestOperation extends ControllerOperation {
     }
 
 
-    public sourceId: string;
-    public containerId: string;
+    public sourceId: string;    
     public roomName: string;
+    public colony: Colony;
 
-
+        
     private static getAssignments(): Assignment[] {
         return [
             new Assignment("", BodyRepository.heavyHarvester(), CREEP_CONTROLLER_REMOTE_HARVESTER, 500)            
@@ -72,20 +73,53 @@ export class RemoteHarvestOperation extends ControllerOperation {
     }
 
     protected onUpdate(colony: Colony): void {
-        if (!this.containerId) {
-            for (var key in this.controllers) {
-                if (this.controllers[key] && this.controllers[key].type == CREEP_CONTROLLER_REMOTE_HARVESTER)
-                    this.containerId = (this.controllers[key] as RemoteHarvesterController).containerId;                    
-            }
-        } else if (this.assignments.length < 2) {
-            this.assignments.push(new Assignment("", BodyRepository.hauler(), CREEP_CONTROLLER_REMOTE_HAULER)); //todo: carry parts
+        this.colony = colony;
+
+        let remoteSource = colony.remoteMiningManager.getRemoteSourceById(this.sourceId);        
+        if (!remoteSource.containerId) return;
+
+        let container = Game.getObjectById<StructureContainer>(remoteSource.containerId);        
+        if (container && this.assignments.length < 2) {            
+            this.assignments.push(new Assignment("", BodyRepository.hauler(), CREEP_CONTROLLER_REMOTE_HAULER, 150));
+            this.updateAssignments(colony);
+        } else if (Game.time % 500 == 150) {
+            this.updateAssignments(colony);
         }
+            
     }
 
     protected onExecute(colony: Colony): void {
     }
 
     protected onCleanup(colony: Colony): void {
+    }
+
+
+    private updateAssignments(colony: Colony): void {
+        let source = Game.getObjectById<Source>(this.sourceId);
+        if (!source) return;
+        let spawn = colony.nest.spawners[0].spawn;
+
+        let body = [WORK, WORK, WORK, WORK, WORK, MOVE, CARRY];
+        let path = PathFinder.search(spawn.pos, { pos: source.pos, range: 1 });
+        
+        let transit = Calculator.estimateTransitTimeFromCost(body, path.cost, true);
+        let spawnTime = body.length * CREEP_SPAWN_TIME;
+        let leadTime = transit + spawnTime;
+        let reserved = source.room.controller.reservation && source.room.controller.reservation.ticksToEnd > 0;
+        let income = reserved ? 10 : 5;
+
+        let carryParts = (path.cost * income * 2) / CARRY_CAPACITY;
+
+        for (var i = 0; i < this.assignments.length; i++) {
+            if (this.assignments[i].controllerType == CREEP_CONTROLLER_REMOTE_HARVESTER) {
+                this.assignments[i].replaceAt = leadTime;
+                this.assignments[i].body.maxCompleteScalingSections = reserved ? 4 : 2;
+            }                
+            else if (this.assignments[i].controllerType == CREEP_CONTROLLER_REMOTE_HAULER) {
+                this.assignments[i].body.maxCompleteScalingSections = carryParts - 1;
+            }                
+        }            
     }
 
 
@@ -100,10 +134,11 @@ export class RemoteHarvestOperation extends ControllerOperation {
 
     
     protected getController(assignment: Assignment): CreepController {
+        let remoteSource = this.colony.remoteMiningManager.getRemoteSourceById(this.sourceId);        
         if (assignment.controllerType == CREEP_CONTROLLER_REMOTE_HARVESTER) {
-            return new RemoteHarvesterController(this.sourceId, this.roomName, this.containerId)
+            return new RemoteHarvesterController(this.sourceId, this.roomName, remoteSource.containerId)
         } else {
-            return new RemoteHaulerRole(this.containerId, this.roomName);
+            return new RemoteHaulerRole(remoteSource.containerId, this.roomName);
         }
     }
 
@@ -117,7 +152,6 @@ export class RemoteHarvestOperation extends ControllerOperation {
             assignments: this.getAssignmentMemory(),
             controllers: this.getControllerMemory(),
             sourceId: this.sourceId,
-            containerId: this.containerId,
             roomName: this.roomName
         };
     }
@@ -125,6 +159,5 @@ export class RemoteHarvestOperation extends ControllerOperation {
 
 export interface RemoteHarvestOperationMemory extends ControllerOperationMemory {
     sourceId: string;
-    containerId: string;
     roomName: string;
 }
