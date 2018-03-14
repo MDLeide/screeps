@@ -12,6 +12,8 @@ declare const TASK_UPGRADE: "Upgrade";
 declare const TASK_REPAIR: "Repair";
 declare const TASK_ATTACK: "Attack";
 declare const TASK_RESERVE: "Reserve";
+declare const TASK_CLAIM: "Claim";
+declare const TASK_HARVEST: "Harvest";
 
 declare const OPERATION_LIGHT_UPGRADE: "LightUpgrade";
 declare const OPERATION_HEAVY_UPGRADE: "HeavyUpgrade";
@@ -39,6 +41,8 @@ declare const OPERATION_WALL_CONSTRUCTION: "WallConstruction";
 declare const OPERATION_ROAD_CONSTRUCTION: "RoadConstruction";
 declare const OPERATION_SPAWN_CONSTRUCTION: "SpawnConstruction";
 declare const OPERATION_REPLACE_ORIGINAL_SPAWN: "ReplaceOriginalSpawn";
+declare const OPERATION_ROOM_SCOUT: "RoomScout";
+declare const OPERATION_NEW_SPAWN_CONSTRUCTION: "NewSpawnConstruction";
 
 declare const PROGRESS_STANDARD: "Standard";
 
@@ -62,6 +66,8 @@ declare const CREEP_CONTROLLER_CHEMIST: "Chemist";
 declare const CREEP_CONTROLLER_MASON: "Mason";
 declare const CREEP_CONTROLLER_REPAIR: "Repair";
 declare const CREEP_CONTROLLER_DEFENDER: "Defender";
+declare const CREEP_CONTROLLER_CLAIM: "Claim";
+declare const CREEP_CONTROLLER_SCOUT: "Scout";
 
 declare const BODY_LIGHT_WORKER: "LightWorker";
 declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
@@ -85,6 +91,8 @@ type TASK_UPGRADE = "Upgrade";
 type TASK_REPAIR = "Repair";
 type TASK_ATTACK = "Attack";
 type TASK_RESERVE = "Reserve";
+type TASK_CLAIM = "Claim";
+type TASK_HARVEST = "Harvest";
 
 type OPERATION_LIGHT_UPGRADE = "LightUpgrade";
 type OPERATION_HEAVY_UPGRADE = "HeavyUpgrade";
@@ -112,6 +120,8 @@ type OPERATION_WALL_CONSTRUCTION = "WallConstruction";
 type OPERATION_ROAD_CONSTRUCTION = "RoadConstruction";
 type OPERATION_SPAWN_CONSTRUCTION = "SpawnConstruction";
 type OPERATION_REPLACE_ORIGINAL_SPAWN = "ReplaceOriginalSpawn";
+type OPERATION_ROOM_SCOUT = "RoomScout";
+type OPERATION_NEW_SPAWN_CONSTRUCTION = "NewSpawnConstruction";
 
 type PROGRESS_STANDARD = "Standard";
 
@@ -135,6 +145,8 @@ type CREEP_CONTROLLER_CHEMIST = "Chemist";
 type CREEP_CONTROLLER_MASON = "Mason";
 type CREEP_CONTROLLER_REPAIR = "Repair";
 type CREEP_CONTROLLER_DEFENDER = "Defender";
+type CREEP_CONTROLLER_CLAIM = "Claim";
+type CREEP_CONTROLLER_SCOUT = "Scout";
 
 type BODY_LIGHT_WORKER = "LightWorker";
 type BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -159,7 +171,9 @@ type TaskType =
     TASK_UPGRADE |
     TASK_REPAIR |
     TASK_ATTACK |
-    TASK_RESERVE;
+    TASK_RESERVE |
+    TASK_CLAIM |
+    TASK_HARVEST;
 
 type OperationType =
     OPERATION_LIGHT_UPGRADE |
@@ -187,7 +201,9 @@ type OperationType =
     OPERATION_WALL_CONSTRUCTION |
     OPERATION_ROAD_CONSTRUCTION |
     OPERATION_SPAWN_CONSTRUCTION |
-    OPERATION_REPLACE_ORIGINAL_SPAWN;
+    OPERATION_REPLACE_ORIGINAL_SPAWN |
+    OPERATION_ROOM_SCOUT |
+    OPERATION_NEW_SPAWN_CONSTRUCTION;
 
 type ProgressType =
     PROGRESS_STANDARD;
@@ -213,7 +229,9 @@ type CreepControllerType =
     CREEP_CONTROLLER_CHEMIST |
     CREEP_CONTROLLER_MASON |
     CREEP_CONTROLLER_REPAIR |
-    CREEP_CONTROLLER_DEFENDER;
+    CREEP_CONTROLLER_DEFENDER |
+    CREEP_CONTROLLER_CLAIM |
+    CREEP_CONTROLLER_SCOUT;
 
 type BodyType =
     BODY_LIGHT_WORKER |

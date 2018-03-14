@@ -12,6 +12,8 @@ global.TASK_UPGRADE = "Upgrade";
 global.TASK_REPAIR = "Repair";
 global.TASK_ATTACK = "Attack";
 global.TASK_RESERVE = "Reserve";
+global.TASK_CLAIM = "Claim";
+global.TASK_HARVEST = "Harvest";
 
 global.OPERATION_LIGHT_UPGRADE = "LightUpgrade";
 global.OPERATION_HEAVY_UPGRADE = "HeavyUpgrade";
@@ -39,6 +41,8 @@ global.OPERATION_WALL_CONSTRUCTION = "WallConstruction";
 global.OPERATION_ROAD_CONSTRUCTION = "RoadConstruction";
 global.OPERATION_SPAWN_CONSTRUCTION = "SpawnConstruction";
 global.OPERATION_REPLACE_ORIGINAL_SPAWN = "ReplaceOriginalSpawn";
+global.OPERATION_ROOM_SCOUT = "RoomScout";
+global.OPERATION_NEW_SPAWN_CONSTRUCTION = "NewSpawnConstruction";
 
 global.PROGRESS_STANDARD = "Standard";
 
@@ -62,6 +66,8 @@ global.CREEP_CONTROLLER_CHEMIST = "Chemist";
 global.CREEP_CONTROLLER_MASON = "Mason";
 global.CREEP_CONTROLLER_REPAIR = "Repair";
 global.CREEP_CONTROLLER_DEFENDER = "Defender";
+global.CREEP_CONTROLLER_CLAIM = "Claim";
+global.CREEP_CONTROLLER_SCOUT = "Scout";
 
 global.BODY_LIGHT_WORKER = "LightWorker";
 global.BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -73,6 +79,6 @@ global.BODY_DEFENDER = "Defender";
 
 
 export class GlobalConstants {
-	public static extend() {
-	}
+    public static extend() {
+    }
 }

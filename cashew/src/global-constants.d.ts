@@ -13,6 +13,8 @@ declare interface global {
     TASK_REPAIR: string;
     TASK_ATTACK: string;
     TASK_RESERVE: string;
+    TASK_CLAIM: string;
+    TASK_HARVEST: string;
 
     OPERATION_LIGHT_UPGRADE: string;
     OPERATION_HEAVY_UPGRADE: string;
@@ -40,6 +42,8 @@ declare interface global {
     OPERATION_ROAD_CONSTRUCTION: string;
     OPERATION_SPAWN_CONSTRUCTION: string;
     OPERATION_REPLACE_ORIGINAL_SPAWN: string;
+    OPERATION_ROOM_SCOUT: string;
+    OPERATION_NEW_SPAWN_CONSTRUCTION: string;
 
     PROGRESS_STANDARD: string;
 
@@ -63,6 +67,8 @@ declare interface global {
     CREEP_CONTROLLER_MASON: string;
     CREEP_CONTROLLER_REPAIR: string;
     CREEP_CONTROLLER_DEFENDER: string;
+    CREEP_CONTROLLER_CLAIM: string;
+    CREEP_CONTROLLER_SCOUT: string;
 
     BODY_LIGHT_WORKER: string;
     BODY_HEAVY_HARVESTER: string;

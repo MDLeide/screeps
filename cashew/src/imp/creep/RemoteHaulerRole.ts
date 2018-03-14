@@ -32,13 +32,13 @@ export class RemoteHaulerRole extends Role {
             if (transferTarget)
                 return Task.Transfer(transferTarget);
         } else {
-            if (creep.room.name != this.roomName) {
-                let target = new RoomPosition(25, 25, this.roomName);
-                return Task.MoveTo(target, 24);
-            }
-
             if (this.withdrawTarget)
                 return Task.Withdraw(this.withdrawTarget);
+
+            if (creep.room.name != this.roomName) {
+                let target = new RoomPosition(25, 25, this.roomName);
+                return Task.MoveTo(target, 20);
+            }
         }
         return null;
     }

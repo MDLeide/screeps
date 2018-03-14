@@ -73,7 +73,12 @@ export abstract class Task {
                 return Upgrade.fromMemory(memory as TargetedTaskMemory);
             case TASK_WITHDRAW:
                 return Withdraw.fromMemory(memory as TargetedTaskMemory);
-                
+            case TASK_RESERVE:
+                return Reserve.fromMemory(memory as TargetedTaskMemory);
+            case TASK_CLAIM:
+                return Claim.fromMemory(memory as TargetedTaskMemory);
+            case TASK_HARVEST:
+                return Harvest.fromMemory(memory as TargetedTaskMemory);
             default:
                 throw new Error(`Task name ${memory.type} not recognized`)
         }
@@ -113,6 +118,14 @@ export abstract class Task {
 
     public static Reserve(target: StructureController): Reserve {
         return new Reserve(target);
+    }
+
+    public static Claim(target: StructureController): Claim {
+        return new Claim(target);
+    }
+
+    public static Harvest(target: Source): Harvest {
+        return new Harvest(target);
     }
 }
 
@@ -476,10 +489,10 @@ export class Attack extends TargetedTask<(Structure | Creep )> {
 }
 
 export class Reserve extends TargetedTask<StructureController> {
-    public static fromMemory(memory: TargetedTaskMemory): Attack {
+    public static fromMemory(memory: TargetedTaskMemory): Reserve {
         let target = Game.getObjectById<StructureController>(memory.targetId);
         let reserve = new this(target);
-        return TargetedTask.fromMemory(memory, reserve) as Attack;
+        return TargetedTask.fromMemory(memory, reserve) as Reserve;
     }
 
     constructor(target: StructureController) {
@@ -497,6 +510,60 @@ export class Reserve extends TargetedTask<StructureController> {
             creep.moveTo(this.target);
         else
             this.onError();
+    }
+
+    public cleanup(creep: Creep): void {
+    }
+}
+
+export class Claim extends TargetedTask<StructureController> {
+    public static fromMemory(memory: TargetedTaskMemory): Claim {
+        let target = Game.getObjectById<StructureController>(memory.targetId);
+        let claim = new this(target);
+        return TargetedTask.fromMemory(memory, claim) as Claim;
+    }
+
+    constructor(target: StructureController) {
+        super(TASK_CLAIM, target);
+    }
+
+    public update(creep: Creep): void {
+    }
+
+    public execute(creep: Creep): void {
+        let response = creep.claimController(this.target);
+        if (response == OK)
+            this.onComplete();
+        else if (response == ERR_NOT_IN_RANGE)
+            creep.moveTo(this.target);
+        else
+            this.onError();
+    }
+
+    public cleanup(creep: Creep): void {
+    }
+}
+
+export class Harvest extends TargetedTask<Source> {
+    public static fromMemory(memory: TargetedTaskMemory): Harvest {
+        let target = Game.getObjectById<Source>(memory.targetId);
+        let harvest = new this(target);
+        return TargetedTask.fromMemory(memory, harvest) as Harvest;
+    }
+
+    constructor(target: Source) {
+        super(TASK_CLAIM, target);
+    }
+
+    public update(creep: Creep): void {
+        if (_.sum(creep.carry) == creep.carryCapacity)
+            this.onComplete();
+    }
+
+    public execute(creep: Creep): void {
+        let response = creep.harvest(this.target);
+        if (response == ERR_NOT_IN_RANGE)
+            creep.moveTo(this.target);
     }
 
     public cleanup(creep: Creep): void {
