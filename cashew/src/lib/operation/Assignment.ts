@@ -11,6 +11,7 @@ export class Assignment {
             memory.replaceAt);
 
         assignment.replacementName = memory.replacementName;
+        assignment.onHold = memory.onHold;
         return assignment;
     }
 
@@ -25,12 +26,14 @@ export class Assignment {
         this.replaceAt = replaceAt;
     }
 
+
     public creepName: string;
     public replacementName: string;
     /** Number of ticks before assigned creep dies to assign a replacement. */
     public replaceAt: number;
     public body: Body;
     public controllerType: CreepControllerType;
+    public onHold: boolean;
 
 
     /** True if there is no creep assigned. */
@@ -64,7 +67,8 @@ export class Assignment {
             body: this.body.save(),
             controllerType: this.controllerType,
             replacementName: this.replacementName,
-            replaceAt: this.replaceAt
+            replaceAt: this.replaceAt,
+            onHold: this.onHold
         };
     }
 }

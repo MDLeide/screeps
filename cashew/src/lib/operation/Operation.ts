@@ -264,6 +264,12 @@ export abstract class Operation {
         return true;
     }
 
+    public findAssignment(creepName: string): Assignment {
+        for (var i = 0; i < this.assignments.length; i++) 
+            if (this.assignments[i].creepName == creepName || this.assignments[i].replacementName == creepName)
+                return this.assignments[i];
+        return null;
+    }
 
     /**
      * Gets all assignments which require a replacement to be provided immediately.
@@ -272,6 +278,8 @@ export abstract class Operation {
         let replacements: Assignment[] = [];
         for (var i = 0; i < this.assignments.length; i++) {
             let assignment = this.assignments[i];
+            if (assignment.onHold)
+                continue;
 
             if (assignment.isFilled() && assignment.replacementOpen()) {
                 let creep = Game.creeps[this.assignments[i].creepName];
@@ -286,17 +294,13 @@ export abstract class Operation {
     public getUnfilledAssignments(): Assignment[] {
         var unfilled: Assignment[] = [];
         for (var i = 0; i < this.assignments.length; i++) 
-            if (!this.assignments[i].creepName)
+            if (!this.assignments[i].creepName && !this.assignments[i].onHold)
                 unfilled.push(this.assignments[i]);
         return unfilled;
     }
     
     public getFilledAssignmentCount(): number {
-        var count = 0;
-        for (var i = 0; i < this.assignments.length; i++) 
-            if (this.assignments[i].creepName != "")
-                count++;
-        return count;
+        return _.sum(this.assignments, p => p.isFilled() ? 1 : 0);
     }
 
 
