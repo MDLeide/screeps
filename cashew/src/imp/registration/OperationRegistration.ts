@@ -31,7 +31,8 @@ import { ReplaceOriginalSpawnOperation } from "../operation/infrastructure/Repla
 
 // military
 import { RoomDefenseOperation } from "../operation/military/RoomDefenseOperation"; 
-
+import { ReservationOperation, ReservationOperationMemory } from "../operation/military/ReservationOperation";
+import { RoomScoutOperation, RoomScoutOperationMemory } from "../operation/military/RoomScoutOperation";
 
 export class OperationRegistration {
     public static register() {
@@ -41,6 +42,22 @@ export class OperationRegistration {
     }
 
     static registerInfrastructure(): void {
+        OperationRepository.register(
+            OPERATION_RESERVATION,
+            (memory: any) => ReservationOperation.fromMemory(memory),
+            (flag?: Flag) => {
+                let mem = flag.memory.flagOperation.operation as ReservationOperationMemory;
+                return new ReservationOperation(mem.roomName);
+            });
+
+        OperationRepository.register(
+            OPERATION_ROOM_SCOUT,
+            (memory: any) => RoomScoutOperation.fromMemory(memory),
+            (flag?: Flag) => {
+                let mem = flag.memory.flagOperation.operation as RoomScoutOperationMemory;
+                return new RoomScoutOperation(mem.targetRoomName);
+            });
+
         OperationRepository.register(
             OPERATION_LIGHT_UPGRADE,
             (memory: any) => LightUpgradeOperation.fromMemory(memory),

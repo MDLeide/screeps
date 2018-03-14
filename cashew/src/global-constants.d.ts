@@ -44,6 +44,7 @@ declare interface global {
     OPERATION_REPLACE_ORIGINAL_SPAWN: string;
     OPERATION_ROOM_SCOUT: string;
     OPERATION_NEW_SPAWN_CONSTRUCTION: string;
+    OPERATION_RESERVATION: string;
 
     PROGRESS_STANDARD: string;
 
@@ -69,6 +70,7 @@ declare interface global {
     CREEP_CONTROLLER_DEFENDER: string;
     CREEP_CONTROLLER_CLAIM: string;
     CREEP_CONTROLLER_SCOUT: string;
+    CREEP_CONTROLLER_RESERVE: string;
 
     BODY_LIGHT_WORKER: string;
     BODY_HEAVY_HARVESTER: string;
@@ -77,5 +79,6 @@ declare interface global {
     BODY_WARRIOR: string;
     BODY_SCOUT: string;
     BODY_DEFENDER: string;
+    BODY_CLAIMER: string;
 
 }

@@ -15,10 +15,20 @@ import { MasonController, MasonControllerMemory } from "../creep/MasonController
 import { BuilderJob, BuildJobMemory } from "../creep/BuilderJob";
 
 import { DefenderController } from "../creep/DefenderController";
+import { ScoutJob, ScoutJobMemory } from "../creep/ScoutJob";
+import { ReserveJob, ReserveJobMemory } from "../creep/ReserveJob";
 
 
 export class ControllerRegistration {
     public static register(): void {
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_SCOUT,
+            (mem: ScoutJobMemory) => ScoutJob.fromMemory(mem));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_RESERVE,
+            (mem: ReserveJobMemory) => ReserveJob.fromMemory(mem));
+
         CreepControllerRepository.register(
             CREEP_CONTROLLER_HARVESTER,
             (mem: HarvesterControllerMemory) => HarvesterController.fromMemory(mem));

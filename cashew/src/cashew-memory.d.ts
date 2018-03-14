@@ -124,6 +124,7 @@ declare global {
         scouted: boolean;
         beingScouted: boolean;
         remoteSources: RemoteSourceMemory[];
+        beingReserved: boolean;
     }
 
     interface RemoteSourceMemory {
@@ -170,6 +171,7 @@ declare global {
         controllerType: CreepControllerType;
         replaceAt: number;
         replacementName: string;
+        onHold: boolean;
     }
 
     interface FlagOperationMemory {

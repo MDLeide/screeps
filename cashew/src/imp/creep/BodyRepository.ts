@@ -17,9 +17,22 @@ export class BodyRepository {
                 return this.warrior();
             case BODY_DEFENDER:
                 return this.defender();
+            case BODY_CLAIMER:
+                return this.claimer();
             default:
                 return null;
         }
+    }
+
+    public static claimer(): Body {
+        return new Body(
+            BODY_CLAIMER,
+            650,
+            [CLAIM, MOVE],
+            [CLAIM, MOVE],
+            0,
+            true
+        );
     }
 
     public static defender(): Body {

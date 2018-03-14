@@ -197,6 +197,7 @@ export class RemoteRoom {
         let room = new this(memory.name);
         room.beingScouted = memory.beingScouted;
         room.scouted = memory.scouted;
+        room.beingReserved = memory.beingReserved;
         for (var i = 0; i < memory.remoteSources.length; i++) 
             room.remoteSources.push(RemoteSource.fromMemory(memory.remoteSources[i]));
         return room;
@@ -215,6 +216,7 @@ export class RemoteRoom {
                 return true;
         return false;
     }
+    public beingReserved: boolean;
 
     public remoteSources: RemoteSource[] = [];
 
@@ -236,7 +238,8 @@ export class RemoteRoom {
             name: this.name,
             scouted: this.scouted,
             beingScouted: this.beingScouted,
-            remoteSources: this.getRemoteSourceMemory()
+            remoteSources: this.getRemoteSourceMemory(),
+            beingReserved: this.beingReserved
         };
     }
 }

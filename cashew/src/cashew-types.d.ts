@@ -43,6 +43,7 @@ declare const OPERATION_SPAWN_CONSTRUCTION: "SpawnConstruction";
 declare const OPERATION_REPLACE_ORIGINAL_SPAWN: "ReplaceOriginalSpawn";
 declare const OPERATION_ROOM_SCOUT: "RoomScout";
 declare const OPERATION_NEW_SPAWN_CONSTRUCTION: "NewSpawnConstruction";
+declare const OPERATION_RESERVATION: "Reservation";
 
 declare const PROGRESS_STANDARD: "Standard";
 
@@ -68,6 +69,7 @@ declare const CREEP_CONTROLLER_REPAIR: "Repair";
 declare const CREEP_CONTROLLER_DEFENDER: "Defender";
 declare const CREEP_CONTROLLER_CLAIM: "Claim";
 declare const CREEP_CONTROLLER_SCOUT: "Scout";
+declare const CREEP_CONTROLLER_RESERVE: "Reserve";
 
 declare const BODY_LIGHT_WORKER: "LightWorker";
 declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
@@ -76,6 +78,7 @@ declare const BODY_HAULER: "Hauler";
 declare const BODY_WARRIOR: "Warrior";
 declare const BODY_SCOUT: "Scout";
 declare const BODY_DEFENDER: "Defender";
+declare const BODY_CLAIMER: "Claimer";
 
 type FLAG_OPERATION = "Operation";
 type FLAG_COLONY = "Colony";
@@ -122,6 +125,7 @@ type OPERATION_SPAWN_CONSTRUCTION = "SpawnConstruction";
 type OPERATION_REPLACE_ORIGINAL_SPAWN = "ReplaceOriginalSpawn";
 type OPERATION_ROOM_SCOUT = "RoomScout";
 type OPERATION_NEW_SPAWN_CONSTRUCTION = "NewSpawnConstruction";
+type OPERATION_RESERVATION = "Reservation";
 
 type PROGRESS_STANDARD = "Standard";
 
@@ -147,6 +151,7 @@ type CREEP_CONTROLLER_REPAIR = "Repair";
 type CREEP_CONTROLLER_DEFENDER = "Defender";
 type CREEP_CONTROLLER_CLAIM = "Claim";
 type CREEP_CONTROLLER_SCOUT = "Scout";
+type CREEP_CONTROLLER_RESERVE = "Reserve";
 
 type BODY_LIGHT_WORKER = "LightWorker";
 type BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -155,6 +160,7 @@ type BODY_HAULER = "Hauler";
 type BODY_WARRIOR = "Warrior";
 type BODY_SCOUT = "Scout";
 type BODY_DEFENDER = "Defender";
+type BODY_CLAIMER = "Claimer";
 
 type FlagType =
     FLAG_OPERATION |
@@ -203,7 +209,8 @@ type OperationType =
     OPERATION_SPAWN_CONSTRUCTION |
     OPERATION_REPLACE_ORIGINAL_SPAWN |
     OPERATION_ROOM_SCOUT |
-    OPERATION_NEW_SPAWN_CONSTRUCTION;
+    OPERATION_NEW_SPAWN_CONSTRUCTION |
+    OPERATION_RESERVATION;
 
 type ProgressType =
     PROGRESS_STANDARD;
@@ -231,7 +238,8 @@ type CreepControllerType =
     CREEP_CONTROLLER_REPAIR |
     CREEP_CONTROLLER_DEFENDER |
     CREEP_CONTROLLER_CLAIM |
-    CREEP_CONTROLLER_SCOUT;
+    CREEP_CONTROLLER_SCOUT |
+    CREEP_CONTROLLER_RESERVE;
 
 type BodyType =
     BODY_LIGHT_WORKER |
@@ -240,5 +248,6 @@ type BodyType =
     BODY_HAULER |
     BODY_WARRIOR |
     BODY_SCOUT |
-    BODY_DEFENDER;
+    BODY_DEFENDER |
+    BODY_CLAIMER;
 
