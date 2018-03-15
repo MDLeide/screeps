@@ -70,6 +70,8 @@ global.CREEP_CONTROLLER_DEFENDER = "Defender";
 global.CREEP_CONTROLLER_CLAIM = "Claim";
 global.CREEP_CONTROLLER_SCOUT = "Scout";
 global.CREEP_CONTROLLER_RESERVE = "Reserve";
+global.CREEP_CONTROLLER_WARRIOR = "Warrior";
+global.CREEP_CONTROLLER_RANGER = "Ranger";
 
 global.BODY_LIGHT_WORKER = "LightWorker";
 global.BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -79,6 +81,8 @@ global.BODY_WARRIOR = "Warrior";
 global.BODY_SCOUT = "Scout";
 global.BODY_DEFENDER = "Defender";
 global.BODY_CLAIMER = "Claimer";
+
+global.MONITOR_COLONY_DEFENSE = "ColonyDefense";
 
 
 export class GlobalConstants {

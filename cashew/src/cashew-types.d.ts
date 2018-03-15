@@ -70,6 +70,8 @@ declare const CREEP_CONTROLLER_DEFENDER: "Defender";
 declare const CREEP_CONTROLLER_CLAIM: "Claim";
 declare const CREEP_CONTROLLER_SCOUT: "Scout";
 declare const CREEP_CONTROLLER_RESERVE: "Reserve";
+declare const CREEP_CONTROLLER_WARRIOR: "Warrior";
+declare const CREEP_CONTROLLER_RANGER: "Ranger";
 
 declare const BODY_LIGHT_WORKER: "LightWorker";
 declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
@@ -79,6 +81,8 @@ declare const BODY_WARRIOR: "Warrior";
 declare const BODY_SCOUT: "Scout";
 declare const BODY_DEFENDER: "Defender";
 declare const BODY_CLAIMER: "Claimer";
+
+declare const MONITOR_COLONY_DEFENSE: "ColonyDefense";
 
 type FLAG_OPERATION = "Operation";
 type FLAG_COLONY = "Colony";
@@ -152,6 +156,8 @@ type CREEP_CONTROLLER_DEFENDER = "Defender";
 type CREEP_CONTROLLER_CLAIM = "Claim";
 type CREEP_CONTROLLER_SCOUT = "Scout";
 type CREEP_CONTROLLER_RESERVE = "Reserve";
+type CREEP_CONTROLLER_WARRIOR = "Warrior";
+type CREEP_CONTROLLER_RANGER = "Ranger";
 
 type BODY_LIGHT_WORKER = "LightWorker";
 type BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -161,6 +167,8 @@ type BODY_WARRIOR = "Warrior";
 type BODY_SCOUT = "Scout";
 type BODY_DEFENDER = "Defender";
 type BODY_CLAIMER = "Claimer";
+
+type MONITOR_COLONY_DEFENSE = "ColonyDefense";
 
 type FlagType =
     FLAG_OPERATION |
@@ -239,7 +247,9 @@ type CreepControllerType =
     CREEP_CONTROLLER_DEFENDER |
     CREEP_CONTROLLER_CLAIM |
     CREEP_CONTROLLER_SCOUT |
-    CREEP_CONTROLLER_RESERVE;
+    CREEP_CONTROLLER_RESERVE |
+    CREEP_CONTROLLER_WARRIOR |
+    CREEP_CONTROLLER_RANGER;
 
 type BodyType =
     BODY_LIGHT_WORKER |
@@ -250,4 +260,7 @@ type BodyType =
     BODY_SCOUT |
     BODY_DEFENDER |
     BODY_CLAIMER;
+
+type MonitorType =
+    MONITOR_COLONY_DEFENSE;
 

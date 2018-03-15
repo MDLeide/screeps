@@ -1,5 +1,6 @@
 import { Nest } from "./Nest";
 import { Population } from "./Population";
+import { Spawner } from "./Spawner";
 import { ResourceManager } from "./ResourceManager";
 import { RemoteMiningManager } from "./RemoteMiningManager";
 import { ColonyProgress, ColonyProgressRepository } from "./ColonyProgress";
@@ -7,9 +8,9 @@ import { OperationPlan, OperationPlanRepository } from "./OperationPlan";
 import { Watchtower } from "./Watchtower";
 import { TowerController } from "./TowerController";
 import { LinkManager } from "./LinkManager";
+import { ColonyMonitor, ColonyMonitorRepository } from "./ColonyMonitor";
 
 import { Empire } from "../empire/Empire";
-import { Spawner } from "./Spawner";
 import { Body } from "../creep/Body";
 import { MapBlock } from "../map/base/MapBlock";
 
@@ -24,6 +25,7 @@ export class Colony  {
         colony.remoteMiningManager = RemoteMiningManager.fromMemory(memory.remoteMiningManager, colony);
         colony.watchtower = Watchtower.fromMemory(memory.watchtower);
         colony.resourceManager = ResourceManager.fromMemory(memory.resourceManager, colony);
+        colony.monitors = memory.monitors.map(p => ColonyMonitorRepository.load(p));
 
         for (var i = 0; i < memory.operationPlans.length; i++)
             colony.operationPlans.push(OperationPlanRepository.load(memory.operationPlans[i]));
@@ -53,6 +55,7 @@ export class Colony  {
     public towerController: TowerController;
     public towers: StructureTower[] = [];
     public linkManager: LinkManager;
+    public monitors: ColonyMonitor[] = [];
 
 
     /** Should be called once, after initial object contruction. Do not need to call when loading from memory. */
@@ -77,6 +80,8 @@ export class Colony  {
         for (var i = 0; i < this.operationPlans.length; i++)
             this.operationPlans[i].load();
 
+        this.monitors.forEach(p => p.load());
+
         this.remoteMiningManager.load();        
     }
 
@@ -86,6 +91,8 @@ export class Colony  {
         this.progress.update(this);
         this.population.update();        
         this.watchtower.update(this);
+
+        this.monitors.forEach(p => p.update(this));
 
         for (var i = 0; i < this.towers.length; i++)
             this.towerController.update(this, this.towers[i]);
@@ -99,6 +106,8 @@ export class Colony  {
         this.resourceManager.execute();
         this.progress.execute(this);
         this.watchtower.execute(this);
+
+        this.monitors.forEach(p => p.execute(this));
 
         for (var i = 0; i < this.towers.length; i++)
             this.towerController.execute(this, this.towers[i]);
@@ -114,6 +123,8 @@ export class Colony  {
         this.resourceManager.cleanup();
         this.progress.cleanup(this);
         this.watchtower.cleanup(this);
+
+        this.monitors.forEach(p => p.cleanup(this));
 
         for (var i = 0; i < this.towers.length; i++)
             this.towerController.cleanup(this, this.towers[i]);
@@ -170,7 +181,8 @@ export class Colony  {
             resourceManager: this.resourceManager.save(),
             operationPlans: this.getOperationPlanMemory(),
             remoteMiningManager: this.remoteMiningManager.save(),
-            watchtower: this.watchtower.save()
+            watchtower: this.watchtower.save(),
+            monitors: this.monitors.map(p => p.save())
         };
     }
 }

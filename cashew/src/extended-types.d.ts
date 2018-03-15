@@ -15,3 +15,7 @@ type WithdrawTarget =
     StructureTerminal |
     StructureLab |
     StructureLink;
+
+type WalkableStructure =
+    StructureContainer |
+    StructureRoad;

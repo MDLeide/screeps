@@ -55,6 +55,7 @@
     <Folder Include="src\lib\map\blocks\" />
     <Folder Include="src\lib\map\" />
     <Folder Include="src\lib\flags\" />
+    <Folder Include="src\lib\military\" />
     <Folder Include="src\lib\visual\lib\" />
     <Folder Include="src\yagni\colonyPlan\" />
     <Folder Include="src\lib\util\dbg\" />
@@ -162,10 +163,19 @@
     <TypeScriptCompile Include="src\imp\registration\OperationPlanRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\ColonyMonitor.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\empire\Campaign.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\flags\FlagMonitor.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\military\Formation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\military\Unit.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\operation\FlagOperation.ts">

@@ -36,6 +36,11 @@ declare global {
         operationPlans: OperationPlanMemory[];
         remoteMiningManager: RemoteMiningManagerMemory;
         watchtower: WatchtowerMemory;
+        monitors: ColonyMonitorMemory[];
+    }
+
+    interface ColonyMonitorMemory {
+        type: MonitorType;
     }
 
     interface ResourceManagerMemory {

@@ -20,7 +20,7 @@
     "@types/lodash": "^3.10.1",
     "@types/screeps": "^2.1.0",
     "@types/source-map": "^0.5.2",
-    "rollup": "^0.53.2",
+    "rollup": "^0.53.4",
     "rollup-plugin-clean": "^1.0.0",
     "rollup-plugin-commonjs": "^8.4.1",
     "rollup-plugin-node-resolve": "^3.2.0",
@@ -30,6 +30,7 @@
     "typescript": "^2.7.2"
   },
   "dependencies": {
+    "npm": "^5.7.1",
     "source-map": "^0.6.1"
   }
 }

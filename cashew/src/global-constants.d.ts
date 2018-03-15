@@ -71,6 +71,8 @@ declare interface global {
     CREEP_CONTROLLER_CLAIM: string;
     CREEP_CONTROLLER_SCOUT: string;
     CREEP_CONTROLLER_RESERVE: string;
+    CREEP_CONTROLLER_WARRIOR: string;
+    CREEP_CONTROLLER_RANGER: string;
 
     BODY_LIGHT_WORKER: string;
     BODY_HEAVY_HARVESTER: string;
@@ -80,5 +82,7 @@ declare interface global {
     BODY_SCOUT: string;
     BODY_DEFENDER: string;
     BODY_CLAIMER: string;
+
+    MONITOR_COLONY_DEFENSE: string;
 
 }
