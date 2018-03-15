@@ -32,6 +32,8 @@ export class OperationRunner {
             this.operation.start(colony);
         if (this.operation.needsInit && this.operation.canInit(colony))
             this.operation.init(colony);
+        if (this.operation.needsCreepSpawnCheck)
+            this.spawnCreepsForOperation(colony);
         if (this.operation.status == OperationStatus.Started)
             this.operation.execute(colony);
     }
