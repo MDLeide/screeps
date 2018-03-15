@@ -129,4 +129,159 @@ export class RoomHelper {
 
         return xAxis + (Math.abs(coords.x) - 1) + yAxis + (Math.abs(coords.y) - 1);
     }
+        
+    public static getRoomOffset(originRoomName: string, destRoomName: string): { x: number, y: number } {
+        let origin = this.convertNameToCoordinates(originRoomName);
+        let dest = this.convertNameToCoordinates(destRoomName);
+
+        let originXPos = origin.x > 0;
+        let originYPos = origin.y > 0;
+        let destXPos = dest.x > 0;
+        let destYPos = dest.y > 0;
+
+        let offset = { x: dest.x - origin.x, y: dest.y - origin.y };
+
+        if (originXPos == destXPos && destXPos == destYPos) // same quadrant
+            return offset;        
+
+        if (!destXPos && originXPos) // crossing west
+            offset.x += 1;
+        else if (destXPos && !originXPos) // crossing east
+            offset.x -= 1;
+        
+        if (!destYPos && originYPos) // crossing south
+            offset.y += 1;
+        else if (destYPos && !originYPos) // crossing north
+            offset.y -= 1;
+
+        return offset;
+    }
+
+    public static moveRoom(roomName: string, direction: DirectionConstant, distance: number = 1): string {
+        switch (direction) {
+            case TOP:
+                return this.transformRoom(roomName, { x: 0, y: distance });
+            case TOP_RIGHT:
+                return this.transformRoom(roomName, { x: distance, y: distance });
+            case RIGHT:
+                return this.transformRoom(roomName, { x: distance, y: 0 });
+            case BOTTOM_RIGHT:
+                return this.transformRoom(roomName, { x: distance, y: -distance });
+            case BOTTOM:
+                return this.transformRoom(roomName, { x: 0, y: -distance });
+            case BOTTOM_LEFT:
+                return this.transformRoom(roomName, { x: -distance, y: -distance });
+            case LEFT:
+                return this.transformRoom(roomName, { x: -distance, y: 0 });
+            case TOP_LEFT:
+                return this.transformRoom(roomName, { x: -distance, y: distance });
+        }
+    }
+
+    public static transformRoom(roomName: string, offset: { x: number, y: number }): string {
+        let origin = this.convertNameToCoordinates(roomName);
+        let transform = { x: origin.x + offset.x, y: origin.y + offset.y };
+
+        if (origin.x > 0 && transform.x <= 0)
+            transform.x--;
+        else if (origin.x < 0 && transform.x >= 0)
+            transform.x++;
+        if (origin.y > 0 && transform.y <= 0)
+            transform.y--;
+        else if (origin.y < 0 && transform.y >= 0)
+            transform.y++;
+
+        return this.convertCoordinatesToName(transform);
+    }
+
+    public static getRoomPositionOffset(origin: RoomPosition, dest: RoomPosition): { x: number, y: number } {        
+        if (origin.roomName == dest.roomName)
+            return { x: dest.x - origin.x, y: dest.y - origin.y };
+
+        let roomOffset = this.getRoomOffset(origin.roomName, dest.roomName);
+        let offset = { x: 0, y: 0 };
+
+        if (roomOffset.x > 0)
+            offset.x = dest.x + (50 - origin.x) + (roomOffset.x - 1) * 50;
+        else if (roomOffset.x < 0)
+            offset.x = -((50 - dest.x) + origin.x + (roomOffset.x - 1) * 50);
+        else
+            offset.x = dest.x - origin.x;
+
+        if (roomOffset.y > 0)
+            offset.y = dest.y + (50 - origin.y) + (roomOffset.y - 1) * 50;
+        else if (roomOffset.y < 0)
+            offset.y = -((50 - dest.y) + origin.y + (roomOffset.y - 1) - 50);
+        else
+            offset.y = dest.y - origin.y;
+
+        return offset;
+    }
+
+    public static moveRoomPosition(pos: RoomPosition, direction: DirectionConstant, distance: number = 1): RoomPosition {
+        switch (direction) {
+            case TOP:
+                return this.transformRoomPosition(pos, { x: 0, y: distance });
+            case TOP_RIGHT:
+                return this.transformRoomPosition(pos, { x: distance, y: distance });
+            case RIGHT:
+                return this.transformRoomPosition(pos, { x: distance, y: 0 });
+            case BOTTOM_RIGHT:
+                return this.transformRoomPosition(pos, { x: distance, y: -distance });
+            case BOTTOM:
+                return this.transformRoomPosition(pos, { x: 0, y: -distance });
+            case BOTTOM_LEFT:
+                return this.transformRoomPosition(pos, { x: -distance, y: -distance });
+            case LEFT:
+                return this.transformRoomPosition(pos, { x: -distance, y: 0 });
+            case TOP_LEFT:
+                return this.transformRoomPosition(pos, { x: -distance, y: distance });
+        }
+    }
+
+    public static transformRoomPosition(pos: RoomPosition, offset: { x: number, y: number }): RoomPosition {
+        let newPos = { x: pos.x + offset.x, y: pos.y + offset.y };
+        let roomOffset = { x: 0, y: 0 };
+
+        if (newPos.x > 49) {
+            roomOffset.x = Math.floor(newPos.x / 50);
+            newPos.x = newPos.x % 50;
+        } else if (newPos.x < 0) {
+            roomOffset.x = Math.floor(newPos.x / 50);
+            newPos.x = 50 + (newPos.x % 50);
+        }
+
+        if (newPos.y > 49) {
+            roomOffset.y = Math.floor(newPos.y / 50);
+            newPos.y = newPos.y % 50;
+        } else if (newPos.y < 0) {
+            roomOffset.y = Math.floor(newPos.y / 50);
+            newPos.y = 50 + (newPos.y % 50);
+        }
+
+        let room = pos.roomName;
+        if (roomOffset.x != 0 || roomOffset.y != 0)
+            room = this.transformRoom(room, roomOffset);
+
+        return new RoomPosition(newPos.x, newPos.y, room);
+    }    
+
+    public static isWalkable(pos: RoomPosition, ignoreCreeps: boolean = true): boolean {
+        let lookTerrain = pos.lookFor(LOOK_TERRAIN);
+        for (var i = 0; i < lookTerrain.length; i++)
+            if (OBSTACLE_OBJECT_TYPES[lookTerrain[i]])
+                return false;
+
+        let lookStructures = pos.lookFor(LOOK_STRUCTURES);
+        for (var i = 0; i < lookStructures.length; i++)
+            if (OBSTACLE_OBJECT_TYPES[lookStructures[i].structureType])
+                return false;
+
+        if (!ignoreCreeps) {
+            let lookCreeps = pos.lookFor(LOOK_CREEPS);
+            if (lookCreeps.length)
+                return false;
+        }
+        return true;
+    }
 }
