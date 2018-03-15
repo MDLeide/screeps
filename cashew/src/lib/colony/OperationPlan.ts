@@ -47,10 +47,6 @@ export abstract class OperationPlan {
         this.operationGroup.addOperation(operation);
     }
 
-    protected cancelOperation(operation: Operation): void {
-        this.operationGroup.cancelOperation(operation);
-    }
-
     /** Cancels all operations of the given type. */
     protected cancelOperationsByType(type: OperationType): void {
         this.operationGroup.cancelOperationByType(type);

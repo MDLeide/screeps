@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />
+    <Folder Include="src\imp\colony\militaryMonitors\" />
     <Folder Include="src\imp\creep\" />
     <Folder Include="src\imp\colony\" />
     <Folder Include="src\imp\creep\military\" />
@@ -90,6 +91,9 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\colony\EconomyPlan.ts" />
     <TypeScriptCompile Include="src\imp\colony\InfrastructurePlan.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\colony\militaryMonitors\ColonyDefenseMonitor.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\colony\RemoteMiningPlan.ts">
@@ -179,6 +183,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\operation\FlagOperation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\operation\OperationRunner.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\Stats.ts">

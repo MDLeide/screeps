@@ -25,7 +25,8 @@ export class Colony  {
         colony.remoteMiningManager = RemoteMiningManager.fromMemory(memory.remoteMiningManager, colony);
         colony.watchtower = Watchtower.fromMemory(memory.watchtower);
         colony.resourceManager = ResourceManager.fromMemory(memory.resourceManager, colony);
-        colony.monitors = memory.monitors.map(p => ColonyMonitorRepository.load(p));
+        if (memory.monitors)
+            colony.monitors = memory.monitors.map(p => ColonyMonitorRepository.load(p));
 
         for (var i = 0; i < memory.operationPlans.length; i++)
             colony.operationPlans.push(OperationPlanRepository.load(memory.operationPlans[i]));

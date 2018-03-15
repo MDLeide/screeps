@@ -18,7 +18,7 @@ export class DefensePlan extends OperationPlan {
     }
 
     protected onUpdate(colony: Colony): void {
-        if (colony.watchtower.threatScore > 0 && this.operationGroup.operations.length == 0) {
+        if (colony.watchtower.threatScore > 0 && this.operationGroup.runners.length == 0) {
             this.addOperation(new RoomDefenseOperation());
         }
     }

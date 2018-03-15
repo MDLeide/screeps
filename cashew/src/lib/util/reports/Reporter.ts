@@ -37,7 +37,7 @@ export class Reporter {
             sb.appendLine(colony.operationPlans[i].type, "orange");
             sb.appendLine();
 
-            sb.append(this.printOperations(colony.operationPlans[i].operationGroup.operations));
+            sb.append(this.printOperations(colony.operationPlans[i].operationGroup.runners.map(p => p.operation)));
             if (i != colony.operationPlans.length - 1)
                 sb.appendLine();
         }

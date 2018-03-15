@@ -19,8 +19,8 @@ export class OperationsVisual extends ComponentVisual {
         for (var i = 0; i < this.colony.operationPlans.length; i++) {
             let plan = this.colony.operationPlans[i];
 
-            for (var j = 0; j < plan.operationGroup.operations.length; j++) {
-                let op = plan.operationGroup.operations[j];
+            for (var j = 0; j < plan.operationGroup.runners.length; j++) {
+                let op = plan.operationGroup.runners[j].operation;
                 offset += this.drawOperation(op, this.x, this.y + offset, this.colony.nest.roomName);
                 offset += this.operationSpacing;
             }

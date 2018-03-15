@@ -23,7 +23,7 @@ export class ColonyInfoVisual extends ComponentVisual {
         vt.append(" | ");
         vt.append(colony.progress.mostRecentMilestone.name);
         vt.append(" | ");
-        let ops = _.sum(colony.operationPlans, p => p.operationGroup.operations.length);
+        let ops = _.sum(colony.operationPlans, p => p.operationGroup.runners.length);
         vt.append(ops + " operations");
         let pop = colony.population.alive.length;
         vt.append(" | ");

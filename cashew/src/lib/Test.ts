@@ -25,77 +25,77 @@ export class Test {
             global.empire = new Empire(null);
 
         //return this.addFillOperation();
-        this.addUpgrader();
+        //this.addUpgrader();
         return "";
     }
 
-    private addUpgrader(): void {
-        let col = global.empire.colonies[0];
-        let mem = [];
-        for (var i = 0; i < col.operationPlans.length; i++) {
-            if (col.operationPlans[i].type == PLAN_ECONOMY) {
-                let plan = col.operationPlans[i];
-                console.log(plan.type);
+    //private addUpgrader(): void {
+    //    let col = global.empire.colonies[0];
+    //    let mem = [];
+    //    for (var i = 0; i < col.operationPlans.length; i++) {
+    //        if (col.operationPlans[i].type == PLAN_ECONOMY) {
+    //            let plan = col.operationPlans[i];
+    //            console.log(plan.type);
 
-                for (var j = 0; j < plan.operationGroup.operations.length; j++) {
-                    let currentOp = plan.operationGroup.operations[j];
-                    if (currentOp.type == OPERATION_HEAVY_UPGRADE) {
-                        console.log(currentOp.type);
+    //            for (var j = 0; j < plan.operationGroup.operations.length; j++) {
+    //                let currentOp = plan.operationGroup.operations[j];
+    //                if (currentOp.type == OPERATION_HEAVY_UPGRADE) {
+    //                    console.log(currentOp.type);
 
-                        let body = BodyRepository.heavyUpgrader();
-                        body.maxCompleteScalingSections = 12;
-                        currentOp.assignments.push(new Assignment("", body, CREEP_CONTROLLER_UPGRADER, 50));
-                    }
-                }                
-            }
-            mem.push(col.operationPlans[i].save());
-        }
-        Memory.empire.colonies['Colony W1N7'].operationPlans = mem;   
-    }
+    //                    let body = BodyRepository.heavyUpgrader();
+    //                    body.maxCompleteScalingSections = 12;
+    //                    currentOp.assignments.push(new Assignment("", body, CREEP_CONTROLLER_UPGRADER, 50));
+    //                }
+    //            }                
+    //        }
+    //        mem.push(col.operationPlans[i].save());
+    //    }
+    //    Memory.empire.colonies['Colony W1N7'].operationPlans = mem;   
+    //}
 
-    private resetReplaceSpawn(): void {
-        let col = global.empire.colonies[0];
-        let mem = [];
-        for (var i = 0; i < col.operationPlans.length; i++) {
-            if (col.operationPlans[i].type == PLAN_INFRASTRUCTURE) {
-                let plan = col.operationPlans[i];
+    //private resetReplaceSpawn(): void {
+    //    let col = global.empire.colonies[0];
+    //    let mem = [];
+    //    for (var i = 0; i < col.operationPlans.length; i++) {
+    //        if (col.operationPlans[i].type == PLAN_INFRASTRUCTURE) {
+    //            let plan = col.operationPlans[i];
 
-                for (var j = 0; j < plan.operationGroup.operations.length; j++) {
-                    let currentOp = plan.operationGroup.operations[j];
-                    if (currentOp.type == OPERATION_REPLACE_ORIGINAL_SPAWN) {
-                        currentOp.finish(col);
-                        plan.operationGroup.operations.splice(j--, 1);
-                    }
-                }
+    //            for (var j = 0; j < plan.operationGroup.operations.length; j++) {
+    //                let currentOp = plan.operationGroup.operations[j];
+    //                if (currentOp.type == OPERATION_REPLACE_ORIGINAL_SPAWN) {
+    //                    currentOp.finish(col);
+    //                    plan.operationGroup.operations.splice(j--, 1);
+    //                }
+    //            }
 
-                let op = new ReplaceOriginalSpawnOperation();
-                plan.operationGroup.addOperation(op);
-            }
-            mem.push(col.operationPlans[i].save());
-        }
-        Memory.empire.colonies['Colony W1N7'].operationPlans = mem;        
-    }
+    //            let op = new ReplaceOriginalSpawnOperation();
+    //            plan.operationGroup.addOperation(op);
+    //        }
+    //        mem.push(col.operationPlans[i].save());
+    //    }
+    //    Memory.empire.colonies['Colony W1N7'].operationPlans = mem;        
+    //}
 
-    private addFillOperation(): string {
-        let col = global.empire.colonies[0];
-        let mem = [];
+    //private addFillOperation(): string {
+    //    let col = global.empire.colonies[0];
+    //    let mem = [];
 
-        for (var i = 0; i < col.operationPlans.length; i++) {
-            if (col.operationPlans[i].type == PLAN_ECONOMY) {
-                let plan = col.operationPlans[i];
+    //    for (var i = 0; i < col.operationPlans.length; i++) {
+    //        if (col.operationPlans[i].type == PLAN_ECONOMY) {
+    //            let plan = col.operationPlans[i];
 
-                for (var j = 0; j < plan.operationGroup.operations.length; j++) {
-                    let currentOp = plan.operationGroup.operations[j];
-                    if (currentOp.type == OPERATION_EXTENSION_FILL)
-                        plan.operationGroup.operations.splice(j--, 1);
-                }
+    //            for (var j = 0; j < plan.operationGroup.operations.length; j++) {
+    //                let currentOp = plan.operationGroup.operations[j];
+    //                if (currentOp.type == OPERATION_EXTENSION_FILL)
+    //                    plan.operationGroup.operations.splice(j--, 1);
+    //            }
 
-                let op = new ExtensionFillOperation();
-                plan.operationGroup.addOperation(op);
-            }
-            mem.push(col.operationPlans[i].save());
-        }
-        Memory.empire.colonies['Colony W1N7'].operationPlans = mem;
-        return "";
-    }
+    //            let op = new ExtensionFillOperation();
+    //            plan.operationGroup.addOperation(op);
+    //        }
+    //        mem.push(col.operationPlans[i].save());
+    //    }
+    //    Memory.empire.colonies['Colony W1N7'].operationPlans = mem;
+    //    return "";
+    //}
 }
