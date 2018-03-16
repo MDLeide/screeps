@@ -187,6 +187,47 @@ declare global {
     /** END OPERATIONS **/
 
 
+    /** MILITARY **/
+
+    interface UnitMemory {
+        members: UnitMemberMemory[];
+        formation: FormationMemory;
+        targetingTactics: TargetingTacticsType;
+
+        rallying: RallyMemory;
+        engaging: boolean;
+    }
+
+    interface RallyMemory {
+        rallyPoint: RoomPosition;
+        complete: boolean;
+    }
+
+    interface UnitMemberMemory {
+        type: UnitMemberType;
+        freeToMove: boolean;
+        bodyType: BodyType;
+        formationPosition: string;
+        creepName: string;
+    }
+
+    interface FormationMemory {
+        vanguard: FormationPositionMemory;
+        positions: FormationPositionMemory[];
+        name: string;
+    }
+
+    interface FormationPositionMemory {
+        name: string;
+        x: number;
+        y: number;
+        creep: string;
+        originalVanguard: boolean;
+    }
+
+    /** END MILITARY **/
+
+
     /** MAPS **/
 
     interface MapMemory {        

@@ -71,7 +71,6 @@ declare const CREEP_CONTROLLER_CLAIM: "Claim";
 declare const CREEP_CONTROLLER_SCOUT: "Scout";
 declare const CREEP_CONTROLLER_RESERVE: "Reserve";
 declare const CREEP_CONTROLLER_WARRIOR: "Warrior";
-declare const CREEP_CONTROLLER_RANGER: "Ranger";
 
 declare const BODY_LIGHT_WORKER: "LightWorker";
 declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
@@ -81,8 +80,22 @@ declare const BODY_WARRIOR: "Warrior";
 declare const BODY_SCOUT: "Scout";
 declare const BODY_DEFENDER: "Defender";
 declare const BODY_CLAIMER: "Claimer";
+declare const BODY_RANGER: "Ranger";
+declare const BODY_HEALER: "Healer";
+declare const BODY_HOPLITE: "Hoplite";
+declare const BODY_SHIELD: "Shield";
 
 declare const MONITOR_COLONY_DEFENSE: "ColonyDefense";
+
+declare const UNIT_MEMBER_HOPLITE: "Hoplite";
+declare const UNIT_MEMBER_RANGER: "Ranger";
+declare const UNIT_MEMBER_HEALER: "Healer";
+declare const UNIT_MEMBER_SHIELD: "Shield";
+declare const UNIT_MEMBER_WARRIOR: "Warrior";
+
+declare const FORMATION_STANDARD: "Standard";
+
+declare const TARGETING_TACTICS_STANDARD: "Standard";
 
 type FLAG_OPERATION = "Operation";
 type FLAG_COLONY = "Colony";
@@ -157,7 +170,6 @@ type CREEP_CONTROLLER_CLAIM = "Claim";
 type CREEP_CONTROLLER_SCOUT = "Scout";
 type CREEP_CONTROLLER_RESERVE = "Reserve";
 type CREEP_CONTROLLER_WARRIOR = "Warrior";
-type CREEP_CONTROLLER_RANGER = "Ranger";
 
 type BODY_LIGHT_WORKER = "LightWorker";
 type BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -167,8 +179,22 @@ type BODY_WARRIOR = "Warrior";
 type BODY_SCOUT = "Scout";
 type BODY_DEFENDER = "Defender";
 type BODY_CLAIMER = "Claimer";
+type BODY_RANGER = "Ranger";
+type BODY_HEALER = "Healer";
+type BODY_HOPLITE = "Hoplite";
+type BODY_SHIELD = "Shield";
 
 type MONITOR_COLONY_DEFENSE = "ColonyDefense";
+
+type UNIT_MEMBER_HOPLITE = "Hoplite";
+type UNIT_MEMBER_RANGER = "Ranger";
+type UNIT_MEMBER_HEALER = "Healer";
+type UNIT_MEMBER_SHIELD = "Shield";
+type UNIT_MEMBER_WARRIOR = "Warrior";
+
+type FORMATION_STANDARD = "Standard";
+
+type TARGETING_TACTICS_STANDARD = "Standard";
 
 type FlagType =
     FLAG_OPERATION |
@@ -248,8 +274,7 @@ type CreepControllerType =
     CREEP_CONTROLLER_CLAIM |
     CREEP_CONTROLLER_SCOUT |
     CREEP_CONTROLLER_RESERVE |
-    CREEP_CONTROLLER_WARRIOR |
-    CREEP_CONTROLLER_RANGER;
+    CREEP_CONTROLLER_WARRIOR;
 
 type BodyType =
     BODY_LIGHT_WORKER |
@@ -259,8 +284,25 @@ type BodyType =
     BODY_WARRIOR |
     BODY_SCOUT |
     BODY_DEFENDER |
-    BODY_CLAIMER;
+    BODY_CLAIMER |
+    BODY_RANGER |
+    BODY_HEALER |
+    BODY_HOPLITE |
+    BODY_SHIELD;
 
 type MonitorType =
     MONITOR_COLONY_DEFENSE;
+
+type UnitMemberType =
+    UNIT_MEMBER_HOPLITE |
+    UNIT_MEMBER_RANGER |
+    UNIT_MEMBER_HEALER |
+    UNIT_MEMBER_SHIELD |
+    UNIT_MEMBER_WARRIOR;
+
+type FormationType =
+    FORMATION_STANDARD;
+
+type TargetingTacticsType =
+    TARGETING_TACTICS_STANDARD;
 

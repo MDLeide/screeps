@@ -27,7 +27,7 @@ export class Spawner {
         if (!this._updated || this._cleanedup) {
             throw new Error("Only call spawner.spawnCreep() during the execute phase.");
         }
-
+        
         if (!this.canSpawn(body)) {
             return null;
         }

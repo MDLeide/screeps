@@ -18,7 +18,6 @@
   },
   "devDependencies": {
     "@types/lodash": "^3.10.1",
-    "@types/screeps": "^2.1.0",
     "@types/source-map": "^0.5.2",
     "rollup": "^0.53.4",
     "rollup-plugin-clean": "^1.0.0",
@@ -27,6 +26,7 @@
     "rollup-plugin-screeps": "^0.1.1",
     "rollup-plugin-typescript2": "^0.9.0",
     "tslint": "^5.8.0",
+    "typed-screeps": "github:screepers/typed-screeps",
     "typescript": "^2.7.2"
   },
   "dependencies": {

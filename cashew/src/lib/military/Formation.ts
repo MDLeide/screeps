@@ -13,7 +13,8 @@ export enum FormationState {
     Tight,
     Loose,
     Free,
-    Empty
+    Empty,
+    Incomplete
 }
 
 /**
@@ -42,18 +43,31 @@ export class Formation {
     public positions: FormationPosition[];
 
 
-    public assign(creep: Creep, positionName?: string): FormationPosition {
+    public assign(creep: string, positionName: string): FormationPosition {
+        if (!this.vanguard.originalVanguard) {
+            for (var i = 0; i < this.positions.length; i++) {
+                if (this.positions[i].originalVanguard && !this.positions[i].creepName) {
+                    if (this.positions[i].name == positionName) {
+                        this.positions[i].assign(creep);
+                        this.changeVanguard(this.positions[i]);
+                        return this.positions[i];
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+
         for (var i = 0; i < this.positions.length; i++) {
-            if (!this.positions[i].creep && (!positionName || this.positions[i].name == positionName)) {
-                this.positions[i].assign(creep);
-                if (this.positions[i].originalVanguard)
-                    this.changeVanguard(this.positions[i]);
+            if (!this.positions[i].creepName && this.positions[i].name == positionName) {
+                this.positions[i].assign(creep);                
                 return this.positions[i];
             }
         }
         return null;
     }
 
+    /** Attempts to move all units to their positions relative to the vanguard. Returns false if any of the moves fail. */
     public formUp(): boolean {
         for (var i = 0; i < this.positions.length; i++) {
             if (!this.positions[i].creep || this.positions[i].creep.spawning)
@@ -73,6 +87,7 @@ export class Formation {
         return true;
     }
 
+    /** Returns true if the unit can form up given its current vanguard position. */
     public canFormUp(): boolean {
         for (var i = 0; i < this.positions.length; i++) {
             if (!this.positions[i].creep || this.positions[i].creep.spawning)
@@ -83,6 +98,21 @@ export class Formation {
                 continue;
 
             if (!RoomHelper.isWalkable(pos, true))
+                return false;
+        }
+        return true;
+    }
+
+    public canMoveTo(pos: RoomPosition | { pos: RoomPosition }): boolean {
+        if (!(pos instanceof RoomPosition))
+            return this.canMoveTo(pos.pos);
+
+        if (!RoomHelper.isWalkable(pos))
+            return false;
+
+        for (var i = 0; i < this.positions.length; i++) {
+            let adjPos = RoomHelper.transformRoomPosition(pos, { x: this.positions[i].x, y: this.positions[i].y });
+            if (!RoomHelper.isWalkable(adjPos))
                 return false;
         }
         return true;
@@ -174,6 +204,9 @@ export class Formation {
 
         let farthest = 0;
         for (var i = 0; i < this.positions.length; i++) {
+            if (!this.positions[i].creep)
+                return FormationState.Incomplete;
+
             let dist = this.distanceFromExpectedPosition(this.positions[i]);
             if (dist > farthest)
                 farthest = dist;
@@ -204,7 +237,7 @@ export class Formation {
         if (!this.vanguard.originalVanguard) {
             for (var i = 0; i < this.positions.length; i++) {
                 if (this.positions[i].originalVanguard) {
-                    if (this.positions[i].creep) {
+                    if (this.positions[i].creepName) {
                         this.changeVanguard(this.positions[i]);
                         return;
                     } else {
@@ -218,7 +251,7 @@ export class Formation {
         let newVanguard: FormationPosition;
 
         for (var i = 0; i < this.positions.length; i++) {
-            if (!this.positions[i].creep) continue;
+            if (!this.positions[i].creepName) continue;
             let dist = Math.max(Math.abs(this.vanguard.x - this.positions[i].x), Math.abs(this.vanguard.y - this.positions[i].y));
             if (dist < nearestDistance) {
                 nearestDistance = dist;
@@ -256,40 +289,37 @@ export class Formation {
     }
 }
 
-export interface FormationMemory {
-    vanguard: FormationPositionMemory;
-    positions: FormationPositionMemory[];
-    name: string;
-}
-
 export class FormationPosition {
     public static fromMemory(memory: FormationPositionMemory): FormationPosition {
         let formation = new this(memory.name, memory.x, memory.y);
         if (memory.creep)
             formation.creep = Game.creeps[memory.creep];
+        if (!formation.creep)
+            memory.creep = undefined;
         formation.originalVanguard = memory.originalVanguard;
         return formation;
     }
 
-    constructor(name: string, localX: number, localY: number, creep?: Creep) {
+    constructor(name: string, localX: number, localY: number) {
         this.name = name;
         this.x = localX;
         this.y = localY;
-        this.creep = creep;
     }
 
     public name: string;
     public x: number;
     public y: number;
     public creep: Creep;
+    public creepName: string;
     public originalVanguard: boolean;
 
-    public assign(creep: Creep): void {
-        this.creep = creep;
+    public assign(creepName: string): void {
+        this.creepName = creepName;
     }
 
     public release(): void {
         this.creep = undefined;
+        this.creepName = undefined;
     }
 
     public save(): FormationPositionMemory {
@@ -297,16 +327,8 @@ export class FormationPosition {
             name: this.name,
             x: this.x,
             y: this.y,
-            creep: this.creep ? this.creep.name : undefined,
+            creep: this.creepName,
             originalVanguard: this.originalVanguard
         };
     }
-}
-
-export interface FormationPositionMemory {
-    name: string;
-    x: number;
-    y: number;
-    creep: string;
-    originalVanguard: boolean;
 }

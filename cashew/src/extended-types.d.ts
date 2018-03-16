@@ -19,3 +19,7 @@ type WithdrawTarget =
 type WalkableStructure =
     StructureContainer |
     StructureRoad;
+
+type AttackableTarget =
+    Creep |
+    StructureConstant;

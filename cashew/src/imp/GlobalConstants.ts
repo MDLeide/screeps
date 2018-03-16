@@ -71,7 +71,6 @@ global.CREEP_CONTROLLER_CLAIM = "Claim";
 global.CREEP_CONTROLLER_SCOUT = "Scout";
 global.CREEP_CONTROLLER_RESERVE = "Reserve";
 global.CREEP_CONTROLLER_WARRIOR = "Warrior";
-global.CREEP_CONTROLLER_RANGER = "Ranger";
 
 global.BODY_LIGHT_WORKER = "LightWorker";
 global.BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -81,8 +80,22 @@ global.BODY_WARRIOR = "Warrior";
 global.BODY_SCOUT = "Scout";
 global.BODY_DEFENDER = "Defender";
 global.BODY_CLAIMER = "Claimer";
+global.BODY_RANGER = "Ranger";
+global.BODY_HEALER = "Healer";
+global.BODY_HOPLITE = "Hoplite";
+global.BODY_SHIELD = "Shield";
 
 global.MONITOR_COLONY_DEFENSE = "ColonyDefense";
+
+global.UNIT_MEMBER_HOPLITE = "Hoplite";
+global.UNIT_MEMBER_RANGER = "Ranger";
+global.UNIT_MEMBER_HEALER = "Healer";
+global.UNIT_MEMBER_SHIELD = "Shield";
+global.UNIT_MEMBER_WARRIOR = "Warrior";
+
+global.FORMATION_STANDARD = "Standard";
+
+global.TARGETING_TACTICS_STANDARD = "Standard";
 
 
 export class GlobalConstants {
