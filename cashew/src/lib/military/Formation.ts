@@ -25,20 +25,20 @@ export class Formation {
         return new this(
             FormationPosition.fromMemory(memory.vanguard),
             memory.positions.map(p => FormationPosition.fromMemory(p)),
-            memory.name);
+            memory.type);
     }
 
 
-    constructor(vanguard: FormationPosition, positions: FormationPosition[], name: string) {
+    constructor(vanguard: FormationPosition, positions: FormationPosition[], type: FormationType) {
         if (vanguard.x != 0 || vanguard.y != 0) throw new Error("Vanguard position must be {0, 0}.");
         vanguard.originalVanguard = true;
         this.vanguard = vanguard;
         this.positions = positions;
-        this.name = name;
+        this.type = type;
     }
 
 
-    public name: string;
+    public type: FormationType;
     public vanguard: FormationPosition;
     public positions: FormationPosition[];
 
@@ -284,7 +284,7 @@ export class Formation {
         return {
             vanguard: this.vanguard.save(),
             positions: this.getPositionMemory(),
-            name: this.name
+            type: this.type
         }
     }
 }

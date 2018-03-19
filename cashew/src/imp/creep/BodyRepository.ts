@@ -19,6 +19,14 @@ export class BodyRepository {
                 return this.defender();
             case BODY_CLAIMER:
                 return this.claimer();
+            case BODY_RANGER:
+                return this.ranger();
+            case BODY_HEALER:
+                return this.healer();
+            case BODY_HOPLITE:
+                return this.hoplite();
+            case BODY_SHIELD:
+                return this.shield();
             default:
                 return null;
         }
@@ -111,4 +119,49 @@ export class BodyRepository {
             true
         );
     }
+
+    public static ranger(): Body {
+        return new Body(
+            BODY_RANGER,
+            200,
+            [RANGED_ATTACK, MOVE],
+            [RANGED_ATTACK, MOVE],
+            0,
+            true
+        );
+    }
+
+    public static healer(): Body {
+        return new Body(
+            BODY_HEALER,
+            300,
+            [HEAL, MOVE],
+            [HEAL, MOVE],
+            0,
+            true
+        );
+    }
+
+    public static hoplite(): Body {
+        return new Body(
+            BODY_HOPLITE,
+            510,
+            [TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, RANGED_ATTACK, MOVE, ATTACK, MOVE],
+            [ATTACK, MOVE, ATTACK, MOVE, RANGED_ATTACK, MOVE],
+            0,
+            false
+        );
+    }
+
+    public static shield(): Body {
+        return new Body(
+            BODY_SHIELD,
+            220,
+            [TOUGH, MOVE, ATTACK, ATTACK],
+            [TOUGH, MOVE],
+            0,
+            true
+        );
+    }
+
 }

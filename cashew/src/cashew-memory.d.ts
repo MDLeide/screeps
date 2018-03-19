@@ -214,7 +214,7 @@ declare global {
     interface FormationMemory {
         vanguard: FormationPositionMemory;
         positions: FormationPositionMemory[];
-        name: string;
+        type: FormationType;
     }
 
     interface FormationPositionMemory {

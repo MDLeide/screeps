@@ -22,4 +22,4 @@ type WalkableStructure =
 
 type AttackableTarget =
     Creep |
-    StructureConstant;
+    Structure;

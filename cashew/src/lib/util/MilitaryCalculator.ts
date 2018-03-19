@@ -1,19 +1,23 @@
 export class MilitaryCalculator {
 
-    public static getRangedAttackTarget(creep: Creep): Creep {
-        let nearest = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if (nearest && nearest.pos.getRangeTo(creep) <= 3)
+    public static getRangedAttackTarget(position: RoomPosition | { pos: RoomPosition }): Creep {
+        if (!(position instanceof RoomPosition))
+            return this.getRangedAttackTarget(position.pos);
+
+        let nearest = position.findClosestByRange(FIND_HOSTILE_CREEPS);
+        if (nearest && nearest.pos.getRangeTo(position) <= 3)
             return nearest;
         else
             return null;
     }
+    
+    public static getNearestHostile(position: RoomPosition | { pos: RoomPosition }, range?: number): Creep {
+        if (!(position instanceof RoomPosition))
+            return this.getNearestHostile(position.pos);
 
-
-
-    public static getNearestHostile(creep: Creep, range?: number): Creep {
-        let nearest = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        let nearest = position.findClosestByRange(FIND_HOSTILE_CREEPS);
         if (nearest && range) {
-            if (nearest.pos.getRangeTo(creep) <= range)
+            if (nearest.pos.getRangeTo(position) <= range)
                 return nearest;
             else
                 return null;
@@ -22,10 +26,25 @@ export class MilitaryCalculator {
         }        
     }
 
-    public static getNearestFriendly(creep: Creep, range?: number): Creep {
-        let nearest = creep.pos.findClosestByRange(FIND_MY_CREEPS);
+    public static getHostiles(position: RoomPosition | { pos: RoomPosition }, range?: number): Creep[] {
+        if (!(position instanceof RoomPosition))
+            return this.getHostiles(position.pos);
+
+        if (range)
+            return position.findInRange(FIND_HOSTILE_CREEPS, range);
+        else if (Game.rooms[position.roomName])
+            return Game.rooms[position.roomName].find(FIND_HOSTILE_CREEPS);
+        else
+            return [];
+    }
+
+    public static getNearestFriendly(position: RoomPosition | { pos: RoomPosition }, range?: number): Creep {
+        if (!(position instanceof RoomPosition))
+            return this.getNearestFriendly(position.pos);
+
+        let nearest = position.findClosestByRange(FIND_MY_CREEPS);
         if (nearest && range) {
-            if (nearest.pos.getRangeTo(creep) <= range)
+            if (nearest.pos.getRangeTo(position) <= range)
                 return nearest;
             else
                 return null;
@@ -33,16 +52,17 @@ export class MilitaryCalculator {
             return nearest;
         }
     }
+    
+    public static getRangedMassAttackDamage(position: RoomPosition | { pos: RoomPosition }, nearbyTargets?: Creep[]): number {
+        if (!(position instanceof RoomPosition))
+            return this.getRangedMassAttackDamage(position.pos);
 
-
-
-    public static getRangedMassAttackDamage(creep: Creep, nearbyTargets?: Creep[]): number {
         if (!nearbyTargets)
-            nearbyTargets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+            nearbyTargets = position.findInRange(FIND_HOSTILE_CREEPS, 3);
 
         let dmg = 0;
         for (var i = 0; i < nearbyTargets.length; i++) {
-            let dist = nearbyTargets[i].pos.getRangeTo(creep);
+            let dist = nearbyTargets[i].pos.getRangeTo(position);
             if (dist == 3)
                 dmg += 10;
             else if (dist == 2)
@@ -53,11 +73,52 @@ export class MilitaryCalculator {
         return dmg;
     }
 
+    public static getNearestDamagedFriendly(position: RoomPosition | { pos: RoomPosition }, range: number = 0, healThreshold: number = 1): Creep {
+        if (!(position instanceof RoomPosition))
+            return this.getNearestDamagedFriendly(position.pos);
 
+        let nearest = position.findClosestByRange(
+            FIND_MY_CREEPS,
+            {
+                filter: (c) => c.hitsMax - c.hits >= healThreshold
+            });
+        if (nearest && range) {
+            if (position.getRangeTo(nearest) <= range)
+                return nearest;
+            else
+                return null;
+        }
+        return nearest;
+    }
+
+    public static getDamagedFriendlies(position: RoomPosition | { pos: RoomPosition }, range: number = 0, healThreshold: number = 1): Creep[] {
+        if (!(position instanceof RoomPosition))
+            return this.getDamagedFriendlies(position.pos);
+        
+        if (range)
+            return position.findInRange(
+                FIND_MY_CREEPS,
+                range,
+                {
+                    filter: (c) => c.hitsMax - c.hits >= healThreshold
+                });
+        else if (Game.rooms[position.roomName])
+            return Game.rooms[position.roomName].find(
+                FIND_MY_CREEPS,
+                {
+                    filter: (c) => c.hitsMax - c.hits >= healThreshold
+                });
+        else
+            return [];
+    }
 
     public static ThreatEvaluator = class {
         public static scoreThreatProfile(profile: ThreatProfile): number {
             return profile.attack + profile.heal + profile.rangedDamage + profile.dismantle;
+        }
+
+        public static getThreatScoreOfCreep(creep: Creep): number {
+            return this.scoreThreatProfile(this.getThreatProfileOfCreep(creep));
         }
 
         public static getThreatProfileOfCreep(creep: Creep): ThreatProfile {

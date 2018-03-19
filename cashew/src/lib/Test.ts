@@ -1,3 +1,4 @@
+import { ColonyDefenseMonitor } from "../imp/colony/militaryMonitors/ColonyDefenseMonitor";
 import { ObserverConstructionOperation } from "../imp/operation/infrastructure/ObserverConstructionOperation";
 import { ExtensionFillOperation } from "../imp/operation/economic/ExtensionFillOperation";
 import { ReplaceOriginalSpawnOperation } from "../imp/operation/infrastructure/ReplaceOriginalSpawnOperation";
@@ -24,6 +25,8 @@ export class Test {
         if (!global.empire)
             global.empire = new Empire(null);
 
+        global.empire.colonies[0].monitors.push(new ColonyDefenseMonitor());
+        Memory.empire = global.empire.save();
         //return this.addFillOperation();
         //this.addUpgrader();
         return "";

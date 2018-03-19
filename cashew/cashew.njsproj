@@ -44,6 +44,9 @@
     <Folder Include="src\imp\colony\" />
     <Folder Include="src\imp\creep\military\" />
     <Folder Include="src\imp\map\" />
+    <Folder Include="src\imp\military\" />
+    <Folder Include="src\imp\military\formation\" />
+    <Folder Include="src\imp\military\tactics\" />
     <Folder Include="src\imp\operation\" />
     <Folder Include="src\imp\operation\economic\" />
     <Folder Include="src\imp\operation\infrastructure\" />
@@ -115,6 +118,15 @@
     <TypeScriptCompile Include="src\imp\creep\MasonController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\military\Healer.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\military\Hoplite.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\military\Ranger.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\RemoteHaulerRole.ts" />
     <TypeScriptCompile Include="src\imp\creep\RemoteHarvesterController.ts" />
     <TypeScriptCompile Include="src\imp\creep\DefenderController.ts" />
@@ -129,6 +141,12 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\map\MineralBlockProvider.ts" />
     <TypeScriptCompile Include="src\imp\map\WallProvider.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\military\formation\StandardFormation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\military\tactics\StandardTargetingTactics.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\economic\ExtensionFillOperation.ts" />
@@ -164,6 +182,12 @@
     <TypeScriptCompile Include="src\imp\registration\ColonyProgressRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\registration\MilitaryRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\registration\MonitorRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\registration\OperationPlanRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -183,6 +207,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\military\Unit.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\military\UnitController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\military\UnitMember.ts">

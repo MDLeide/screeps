@@ -1,3 +1,5 @@
+import { Unit } from "./Unit";
+
 export abstract class TargetingTactics {
     constructor(type: TargetingTacticsType) {
         this.type = type;

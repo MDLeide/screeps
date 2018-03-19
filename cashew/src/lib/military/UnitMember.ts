@@ -13,6 +13,12 @@ export abstract class UnitMember {
         return instance;
     }
 
+    constructor(type: UnitMemberType, bodyType: BodyType, formationPosition: string) {
+        this.type = type;
+        this.bodyType = bodyType;
+        this.formationPosition = formationPosition;
+    }
+
     public type: UnitMemberType;
     public freeToMove: boolean;
     public bodyType: BodyType;

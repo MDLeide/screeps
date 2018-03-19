@@ -1,4 +1,4 @@
-import { Formation, FormationPosition, FormationMoveResult, FormationState, FormationMemory } from "./Formation";
+import { Formation, FormationPosition, FormationMoveResult, FormationState } from "./Formation";
 import { TargetingTactics, TargetingTacticsRepository } from "./TargetingTactics";
 import { UnitMember, UnitMemberRepository } from "./UnitMember"
 
@@ -33,6 +33,8 @@ export class Unit {
     
     public attackTargets: AttackableTarget[] = [];
     public healTargets: Creep[] = [];
+
+    public position: RoomPosition;
     
     public get capacity(): number {
         return this.formation.positions.length + 1;
@@ -46,6 +48,9 @@ export class Unit {
 
 
     public update(): void {
+        if (this.formation.vanguard.creep)
+            this.position = this.formation.vanguard.creep.pos;
+
         if (this.engaging) {
             this.attackTargets = this.targetingTactics.getAttackTargets(this);
             this.healTargets = this.targetingTactics.getHealTargets(this);
@@ -69,6 +74,9 @@ export class Unit {
     public assign(member: UnitMember, creepName: string): void {
         member.creepName = creepName;
         this.formation.assign(creepName, member.formationPosition);
+        let memory = Memory.creeps[creepName];
+        if (memory)
+            memory.operation = "military";
     }
 
     public getOpenMembers(): UnitMember[] {
@@ -126,7 +134,8 @@ export class Unit {
 
 export class Rally {
     public static fromMemory(memory: RallyMemory): Rally {
-        let rally = new this(memory.rallyPoint);
+        let pos = new RoomPosition(memory.rallyPoint.x, memory.rallyPoint.y, memory.rallyPoint.roomName);
+        let rally = new this(pos);
         rally.complete = memory.complete;
         return rally;
     }
