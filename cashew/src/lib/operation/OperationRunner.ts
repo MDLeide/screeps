@@ -86,7 +86,7 @@ export class OperationRunner {
         let unassigned = colony.population.notAssignedToOperation();
         for (var i = 0; i < unassigned.length; i++)             
             if (Memory.creeps[unassigned[i]].body == assignment.body.type)
-                return name;
+                return unassigned[i];
         
         return null;
     }
