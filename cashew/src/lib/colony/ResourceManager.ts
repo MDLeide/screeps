@@ -738,7 +738,7 @@ class ResourceManagerSettings {
     ];
 
     public storageWithdrawThreshold: number = 100;
-    public sourceContainerWithdrawThreshold: number = 200;
+    public sourceContainerWithdrawThreshold: number = 500;
 
     public sourceContainerOverflowThreshold: number = 1600;
 
