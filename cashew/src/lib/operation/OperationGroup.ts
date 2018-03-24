@@ -38,14 +38,11 @@ export class OperationGroup {
     public cleanup(colony: Colony) {
         this.runners.forEach(p => p.cleanup(colony));
         for (var i = 0; i < this.runners.length; i++) {
-            if (this.runners[i].canceledThisTick)
-                continue;
             if (this.runners[i].operation.finished)
                 this.runners.splice(i--, 1);
         }
     }
-
-
+    
     public addOperation(operation: Operation): void {
         this.runners.push(new OperationRunner(operation));
     }

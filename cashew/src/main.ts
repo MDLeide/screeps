@@ -14,5 +14,5 @@ export const loop = ErrorMapper.wrapLoop(() => {
     //(`Current game tick is ${Game.time}`);
     global.stats.reset();
     execute.main();
-    global.stats.commit();
+    //global.stats.commit();
 });
