@@ -10,8 +10,4 @@ declare global {
     interface RawMemory {
         _parsed: Memory;
     }
-
-    interface CPU {
-        getHeapStatistics(): any;
-    }
 }

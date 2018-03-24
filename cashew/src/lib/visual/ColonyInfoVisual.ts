@@ -21,9 +21,10 @@ export class ColonyInfoVisual extends ComponentVisual {
         let vt = new VisualText();
         vt.append(colony.nest.roomName);
         vt.append(" | ");
-        vt.append(colony.progress.mostRecentMilestone.name);
+        let progress = Math.trunc(colony.nest.room.controller.progress / colony.nest.room.controller.progressTotal*100);
+        vt.append(`RCL ${colony.nest.room.controller.level} - ${progress}%`);
         vt.append(" | ");
-        let ops = _.sum(colony.operationPlans, p => p.operationGroup.runners.length);
+        let ops = colony.operations.runners.length;
         vt.append(ops + " operations");
         let pop = colony.population.alive.length;
         vt.append(" | ");

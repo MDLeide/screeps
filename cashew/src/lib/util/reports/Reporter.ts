@@ -33,14 +33,7 @@ export class Reporter {
             return "";
 
         let sb = new StringBuilder();
-        for (var i = 0; i < colony.operationPlans.length; i++) {
-            sb.appendLine(colony.operationPlans[i].type, "orange");
-            sb.appendLine();
-
-            sb.append(this.printOperations(colony.operationPlans[i].operationGroup.runners.map(p => p.operation)));
-            if (i != colony.operationPlans.length - 1)
-                sb.appendLine();
-        }
+        sb.append(this.printOperations(colony.operations.runners.map(p => p.operation)));
         return sb.getString();
     }
 

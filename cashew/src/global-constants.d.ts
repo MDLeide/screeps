@@ -87,6 +87,11 @@ declare interface global {
     BODY_SHIELD: string;
 
     MONITOR_COLONY_DEFENSE: string;
+    MONITOR_ECONOMY_OPERATION: string;
+    MONITOR_INFRASTRUCTURE_OPERATION: string;
+    MONITOR_REMOTE_MINING_OPERATION: string;
+
+    MONITOR_PROVIDER_STANDARD: string;
 
     UNIT_MEMBER_HOPLITE: string;
     UNIT_MEMBER_RANGER: string;
@@ -97,5 +102,11 @@ declare interface global {
     FORMATION_STANDARD: string;
 
     TARGETING_TACTICS_STANDARD: string;
+
+    PROCESS_MAIN: string;
+    PROCESS_EMPIRE: string;
+    PROCESS_COLONY_SEARCH: string;
+    PROCESS_COLONY: string;
+    PROCESS_OPERATION: string;
 
 }

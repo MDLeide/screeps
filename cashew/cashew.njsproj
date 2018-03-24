@@ -60,6 +60,7 @@
     <Folder Include="src\lib\map\" />
     <Folder Include="src\lib\flags\" />
     <Folder Include="src\lib\military\" />
+    <Folder Include="src\lib\monitor\" />
     <Folder Include="src\lib\visual\lib\" />
     <Folder Include="src\yagni\colonyPlan\" />
     <Folder Include="src\lib\util\dbg\" />
@@ -89,20 +90,32 @@
     <TypeScriptCompile Include="src\global.d.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\colony\DefensePlan.ts">
+    <TypeScriptCompile Include="src\yagni\DefensePlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\colony\EconomyPlan.ts" />
-    <TypeScriptCompile Include="src\imp\colony\InfrastructurePlan.ts">
+    <TypeScriptCompile Include="src\imp\colony\EconomyOperationMonitor.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\yagni\EconomyPlan.ts" />
+    <TypeScriptCompile Include="src\imp\colony\InfrastructureOperationMonitor.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\yagni\InfrastructurePlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\colony\militaryMonitors\ColonyDefenseMonitor.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\colony\RemoteMiningPlan.ts">
+    <TypeScriptCompile Include="src\imp\colony\RemoteMiningOperationMonitor.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\colony\StandardProgress.ts">
+    <TypeScriptCompile Include="src\yagni\RemoteMiningPlan.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\colony\StandardColonyMonitorProvider.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\yagni\StandardProgress.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\HarvestBuilderJob.ts" />
@@ -179,7 +192,7 @@
     <TypeScriptCompile Include="src\imp\operation\military\RoomScoutOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\registration\ColonyProgressRegistration.ts">
+    <TypeScriptCompile Include="src\yagni\ColonyProgressRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\registration\MilitaryRegistration.ts">
@@ -188,10 +201,13 @@
     <TypeScriptCompile Include="src\imp\registration\MonitorRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\registration\OperationPlanRegistration.ts">
+    <TypeScriptCompile Include="src\yagni\OperationPlanRegistration.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\ColonyMonitor.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\monitor\MonitorManager.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\empire\Campaign.ts">
@@ -213,6 +229,12 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\military\UnitMember.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\monitor\Monitor.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\monitor\MonitorProvider.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\operation\FlagOperation.ts">
@@ -337,11 +359,11 @@
     <TypeScriptCompile Include="src\imp\registration\Register.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\colony\ColonyProgress.ts">
+    <TypeScriptCompile Include="src\yagni\ColonyProgress.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\CreepNamer.ts" />
-    <TypeScriptCompile Include="src\lib\colony\OperationPlan.ts">
+    <TypeScriptCompile Include="src\yagni\OperationPlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\ResourceManager.ts">

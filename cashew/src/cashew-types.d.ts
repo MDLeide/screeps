@@ -86,6 +86,11 @@ declare const BODY_HOPLITE: "Hoplite";
 declare const BODY_SHIELD: "Shield";
 
 declare const MONITOR_COLONY_DEFENSE: "ColonyDefense";
+declare const MONITOR_ECONOMY_OPERATION: "EconomyOperation";
+declare const MONITOR_INFRASTRUCTURE_OPERATION: "InfrastructureOperation";
+declare const MONITOR_REMOTE_MINING_OPERATION: "RemoteMiningOperation";
+
+declare const MONITOR_PROVIDER_STANDARD: "Standard";
 
 declare const UNIT_MEMBER_HOPLITE: "Hoplite";
 declare const UNIT_MEMBER_RANGER: "Ranger";
@@ -96,6 +101,12 @@ declare const UNIT_MEMBER_WARRIOR: "Warrior";
 declare const FORMATION_STANDARD: "Standard";
 
 declare const TARGETING_TACTICS_STANDARD: "Standard";
+
+declare const PROCESS_MAIN: "Main";
+declare const PROCESS_EMPIRE: "Empire";
+declare const PROCESS_COLONY_SEARCH: "ColonySearch";
+declare const PROCESS_COLONY: "Colony";
+declare const PROCESS_OPERATION: "Operation";
 
 type FLAG_OPERATION = "Operation";
 type FLAG_COLONY = "Colony";
@@ -185,6 +196,11 @@ type BODY_HOPLITE = "Hoplite";
 type BODY_SHIELD = "Shield";
 
 type MONITOR_COLONY_DEFENSE = "ColonyDefense";
+type MONITOR_ECONOMY_OPERATION = "EconomyOperation";
+type MONITOR_INFRASTRUCTURE_OPERATION = "InfrastructureOperation";
+type MONITOR_REMOTE_MINING_OPERATION = "RemoteMiningOperation";
+
+type MONITOR_PROVIDER_STANDARD = "Standard";
 
 type UNIT_MEMBER_HOPLITE = "Hoplite";
 type UNIT_MEMBER_RANGER = "Ranger";
@@ -195,6 +211,12 @@ type UNIT_MEMBER_WARRIOR = "Warrior";
 type FORMATION_STANDARD = "Standard";
 
 type TARGETING_TACTICS_STANDARD = "Standard";
+
+type PROCESS_MAIN = "Main";
+type PROCESS_EMPIRE = "Empire";
+type PROCESS_COLONY_SEARCH = "ColonySearch";
+type PROCESS_COLONY = "Colony";
+type PROCESS_OPERATION = "Operation";
 
 type FlagType =
     FLAG_OPERATION |
@@ -291,7 +313,13 @@ type BodyType =
     BODY_SHIELD;
 
 type MonitorType =
-    MONITOR_COLONY_DEFENSE;
+    MONITOR_COLONY_DEFENSE |
+    MONITOR_ECONOMY_OPERATION |
+    MONITOR_INFRASTRUCTURE_OPERATION |
+    MONITOR_REMOTE_MINING_OPERATION;
+
+type MonitorProviderType =
+    MONITOR_PROVIDER_STANDARD;
 
 type UnitMemberType =
     UNIT_MEMBER_HOPLITE |
@@ -305,4 +333,11 @@ type FormationType =
 
 type TargetingTacticsType =
     TARGETING_TACTICS_STANDARD;
+
+type ProcessType =
+    PROCESS_MAIN |
+    PROCESS_EMPIRE |
+    PROCESS_COLONY_SEARCH |
+    PROCESS_COLONY |
+    PROCESS_OPERATION;
 

@@ -86,6 +86,11 @@ global.BODY_HOPLITE = "Hoplite";
 global.BODY_SHIELD = "Shield";
 
 global.MONITOR_COLONY_DEFENSE = "ColonyDefense";
+global.MONITOR_ECONOMY_OPERATION = "EconomyOperation";
+global.MONITOR_INFRASTRUCTURE_OPERATION = "InfrastructureOperation";
+global.MONITOR_REMOTE_MINING_OPERATION = "RemoteMiningOperation";
+
+global.MONITOR_PROVIDER_STANDARD = "Standard";
 
 global.UNIT_MEMBER_HOPLITE = "Hoplite";
 global.UNIT_MEMBER_RANGER = "Ranger";
@@ -96,6 +101,12 @@ global.UNIT_MEMBER_WARRIOR = "Warrior";
 global.FORMATION_STANDARD = "Standard";
 
 global.TARGETING_TACTICS_STANDARD = "Standard";
+
+global.PROCESS_MAIN = "Main";
+global.PROCESS_EMPIRE = "Empire";
+global.PROCESS_COLONY_SEARCH = "ColonySearch";
+global.PROCESS_COLONY = "Colony";
+global.PROCESS_OPERATION = "Operation";
 
 
 export class GlobalConstants {

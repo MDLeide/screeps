@@ -1,43 +1,28 @@
 import { Colony } from "./Colony";
+import { TypedMonitor } from "../monitor/Monitor";
+import { Operation } from "../operation/Operation";
 
-export abstract class ColonyMonitor {
-    public static fromMemory(memory: ColonyMonitorMemory, instance: ColonyMonitor): ColonyMonitor {
-        instance.type = memory.type;
-        return instance;
+export abstract class ColonyMonitor extends TypedMonitor<Colony> {
+    /**
+     * Checks the running operations and ensures that at least count of the given type are running.
+     * @param type Type of operation to ensure.
+     * @param count Number of operations of this particular type that should be running.
+     * @param create A delegate to create the operation.
+     * @param predicate An optional delegate to check each operation with, operations will only be counted if this returns true.
+     */
+    protected ensureOperation(colony: Colony, type: OperationType, count: number, create: () => Operation, predicate?: (op: Operation) => boolean): void {
+        let c = 0;
+        for (var i = 0; i < colony.operations.runners.length; i++) {
+            let op = colony.operations.runners[i].operation;
+            if (op.type != type)
+                continue;
+            if (!predicate || predicate(op))
+                c++;
+        }
+        
+        while (c < count) {
+            colony.operations.addOperation(create());
+            c++;
+        }            
     }
-
-    constructor(type: MonitorType) {
-        this.type = type;
-    }
-
-    public type: MonitorType;
-
-    public abstract load(): void;
-    public abstract update(colony: Colony): void;
-    public abstract execute(colony: Colony): void;
-    public abstract cleanup(colony: Colony): void;
-
-    public save(): ColonyMonitorMemory {
-        return {
-            type: this.type
-        };
-    }
-}
-
-export class ColonyMonitorRepository {
-    public static register(monitorType: MonitorType, loadDelegate: (memory: ColonyMonitorMemory) => ColonyMonitor, newDelegate: () => ColonyMonitor) {
-        this.loadDelegates[monitorType] = loadDelegate;
-        this.newDelegates[monitorType] = newDelegate;
-    }
-
-    public static load(memory: ColonyMonitorMemory): ColonyMonitor {
-        return this.loadDelegates[memory.type](memory);
-    }
-
-    public static getNew(monitorType: MonitorType): ColonyMonitor {
-        return this.newDelegates[monitorType]();
-    }
-
-    private static loadDelegates: { [monitorType: string]: (memory: any) => ColonyMonitor } = {};
-    private static newDelegates: { [monitorType: string]: () => ColonyMonitor } = {};
 }

@@ -1,4 +1,5 @@
 import { Execute } from "./imp/Execution"; // silly hack that i don't understand - this isn't actually used
+import { MonitorStatus } from "lib/monitor/Monitor";
 
 declare global {
     /** FLAGS */
@@ -30,17 +31,27 @@ declare global {
 
     interface ColonyMemory {        
         name: string;
-        nest: NestMemory;
-        progress: ColonyProgressMemory;
+        nest: NestMemory;        
         resourceManager: ResourceManagerMemory;
-        operationPlans: OperationPlanMemory[];
         remoteMiningManager: RemoteMiningManagerMemory;
         watchtower: WatchtowerMemory;
-        monitors: ColonyMonitorMemory[];
+        monitorManager: MonitorManagerMemory;
+        operations: OperationGroupMemory;
     }
 
-    interface ColonyMonitorMemory {
+    interface ColonyMonitorMemory extends MonitorMemory {
+        
+    }
+
+    interface MonitorMemory {
         type: MonitorType;
+        status: MonitorStatus;
+        sleepingFor: number;
+    }
+
+    interface MonitorManagerMemory {
+        monitors: MonitorMemory[];
+        provider: MonitorProviderType;
     }
 
     interface ResourceManagerMemory {

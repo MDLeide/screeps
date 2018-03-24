@@ -24,8 +24,7 @@ export class Test {
     public test(): string {
         if (!global.empire)
             global.empire = new Empire(null);
-
-        global.empire.colonies[0].monitors.push(new ColonyDefenseMonitor());
+                
         Memory.empire = global.empire.save();
         //return this.addFillOperation();
         //this.addUpgrader();

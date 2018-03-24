@@ -67,7 +67,7 @@ export class Empire {
         }
     }
 
-    public execute(): void {
+    public execute(): void {        
         for (var i = 0; i < this.colonies.length; i++) {
             this.colonies[i].execute();
         }

@@ -22,12 +22,10 @@ export class ColonyDefenseMonitor extends ColonyMonitor {
         return ColonyMonitor.fromMemory(memory, monitor) as ColonyDefenseMonitor;
     }
 
-
     constructor() {
         super(MONITOR_COLONY_DEFENSE);
     }
-
-
+    
     public units: { [room: string]: Unit } = {};
 
     public load(): void {
@@ -144,12 +142,10 @@ export class ColonyDefenseMonitor extends ColonyMonitor {
         return mem;
     }
 
-
     public save(): ColonyDefenseMonitorMemory {
-        return {
-            type: this.type,
-            units: this.getUnitMemory()
-        };
+        let mem: ColonyDefenseMonitorMemory = super.save() as ColonyDefenseMonitorMemory;
+        mem.units = this.getUnitMemory();
+        return mem;
     }
 }
 

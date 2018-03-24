@@ -18,7 +18,7 @@ export class ReplaceOriginalSpawnOperation extends ConstructionOperation {
     }
         
     protected getSiteLocations(colony: Colony): { x: number, y: number }[] {
-        console.log("enter");
+        console.log("enter getSiteLocations for replaceSpawn op");
         let missing: boolean = false;
 
         let orphan: StructureSpawn;

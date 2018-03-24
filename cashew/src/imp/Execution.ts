@@ -11,6 +11,7 @@ import { GlobalExtension } from "../imp/GlobalExtension";
 import { VisualBuilder } from "../lib/visual/VisualBuilder";
 
 import { StatCollection } from "../lib/StatCollection";
+import { StandardColonyMonitorProvider } from "./colony/StandardColonyMonitorProvider";
 
 export class Execute {    
     public init(): void {        
@@ -19,15 +20,16 @@ export class Execute {
         Register.register();
     }
     
-    public main(): void {        
+    public main(): void {
+        GlobalExtension.extend();
         Playback.update(); // debug
         if (!Playback.loop())
             return;
 
-        let colonyFinder = new ColonyFinder(StandardNestMapBuilder.getBuilder());
+        let colonyFinder = new ColonyFinder(StandardNestMapBuilder.getBuilder(), new StandardColonyMonitorProvider());
         var empire = new Empire(colonyFinder);
         GlobalExtension.extendEmpire(empire);
-        GlobalExtension.extend();
+        
         
         if (empire.colonies.length) //debug
             Playback.placeFlag(empire.colonies[0].nest.roomName);
