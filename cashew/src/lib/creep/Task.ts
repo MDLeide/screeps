@@ -50,9 +50,7 @@ export abstract class Task {
     public abstract execute(creep: Creep): void;
     public abstract cleanup(creep: Creep): void;
     protected abstract onSave(): TaskMemory;
-
-
-
+    
     public static loadTask(memory: TaskMemory): Task {
         switch (memory.type) {
             case TASK_ATTACK:
@@ -79,6 +77,8 @@ export abstract class Task {
                 return Claim.fromMemory(memory as TargetedTaskMemory);
             case TASK_HARVEST:
                 return Harvest.fromMemory(memory as TargetedTaskMemory);
+            case TASK_PICKUP_ENERGY:
+                return PickupEnergy.fromMemory(memory as TargetedTaskMemory);
             default:
                 throw new Error(`Task name ${memory.type} not recognized`)
         }
@@ -126,6 +126,10 @@ export abstract class Task {
 
     public static Harvest(target: Source): Harvest {
         return new Harvest(target);
+    }
+
+    public static PickupEnergy(target: Resource<RESOURCE_ENERGY>): PickupEnergy {
+        return new PickupEnergy(target);
     }
 }
 
@@ -567,5 +571,41 @@ export class Harvest extends TargetedTask<Source> {
     }
 
     public cleanup(creep: Creep): void {
+    }
+}
+
+export class PickupEnergy extends TargetedTask<Resource<RESOURCE_ENERGY>> {
+    public static fromMemory(memory: TargetedTaskMemory): PickupEnergy {
+        let target = Game.getObjectById<Resource<RESOURCE_ENERGY>>(memory.targetId);
+        let pickup = new this(target);
+        return TargetedTask.fromMemory(memory, pickup) as PickupEnergy;
+    }
+
+    constructor(target: Resource<RESOURCE_ENERGY>) {
+        super(TASK_PICKUP_ENERGY, target);
+    }
+
+    public update(creep: Creep): void {
+    }
+
+    public execute(creep: Creep): void {
+        let response = creep.pickup(this.target);
+        if (response == OK)
+            this.onComplete();
+        else if (response == ERR_NOT_IN_RANGE)
+            creep.moveTo(this.target);
+        else if (response == ERR_NOT_OWNER)
+            this.onError();
+        else if (response == ERR_BUSY)
+            this.onError();
+        else if (response == ERR_INVALID_TARGET)
+            this.onError();
+        else if (response == ERR_FULL)
+            this.onIncomplete();
+        else
+            this.onError();
+    }
+
+    public cleanup(creep: Creep): void {        
     }
 }

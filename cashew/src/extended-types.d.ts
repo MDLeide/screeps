@@ -14,7 +14,8 @@ type WithdrawTarget =
     StructureStorage |
     StructureTerminal |
     StructureLab |
-    StructureLink;
+    StructureLink | 
+    Tombstone;
 
 type WalkableStructure =
     StructureContainer |

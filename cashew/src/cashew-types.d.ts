@@ -14,6 +14,7 @@ declare const TASK_ATTACK: "Attack";
 declare const TASK_RESERVE: "Reserve";
 declare const TASK_CLAIM: "Claim";
 declare const TASK_HARVEST: "Harvest";
+declare const TASK_PICKUP_ENERGY: "PickupEnergy";
 
 declare const OPERATION_LIGHT_UPGRADE: "LightUpgrade";
 declare const OPERATION_HEAVY_UPGRADE: "HeavyUpgrade";
@@ -124,6 +125,7 @@ type TASK_ATTACK = "Attack";
 type TASK_RESERVE = "Reserve";
 type TASK_CLAIM = "Claim";
 type TASK_HARVEST = "Harvest";
+type TASK_PICKUP_ENERGY = "PickupEnergy";
 
 type OPERATION_LIGHT_UPGRADE = "LightUpgrade";
 type OPERATION_HEAVY_UPGRADE = "HeavyUpgrade";
@@ -235,7 +237,8 @@ type TaskType =
     TASK_ATTACK |
     TASK_RESERVE |
     TASK_CLAIM |
-    TASK_HARVEST;
+    TASK_HARVEST |
+    TASK_PICKUP_ENERGY;
 
 type OperationType =
     OPERATION_LIGHT_UPGRADE |

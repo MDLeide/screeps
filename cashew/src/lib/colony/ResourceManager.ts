@@ -95,6 +95,23 @@ export class ResourceManager {
     }
 
 
+    public getEnergyPickupTarget(creep: Creep): Resource<RESOURCE_ENERGY> {
+        let look = this.colony.nest.room.find(FIND_DROPPED_RESOURCES, { filter: (r) => r.resourceType == RESOURCE_ENERGY });
+
+        let distance = 100;
+        let resource: Resource<RESOURCE_ENERGY>;
+        
+        for (var i = 0; i < look.length; i++) {
+            let d = look[i].pos.getRangeTo(creep);
+            if (d < distance) {
+                resource = look[i] as Resource<RESOURCE_ENERGY>;
+                distance = d;
+            }
+        }
+
+        return resource;
+    }
+
     public getTransferTarget(creep: Creep): TransferTarget {
         return this.transfers.getTransferTarget(creep);
     }
@@ -110,8 +127,7 @@ export class ResourceManager {
     public getWithdrawTarget(creep: Creep): WithdrawTarget {
         return this.withdraws.getWithdrawTarget(creep);
     }
-
-
+    
     public setSourceContainer(sourceId: string, container: (string | StructureContainer)): void {
         if (container instanceof StructureContainer) {
             if (this.sourceAId == sourceId) {
@@ -139,8 +155,7 @@ export class ResourceManager {
             this.setSourceLink(sourceId, Game.getObjectById<StructureLink>(link));
         }
     }
-
-
+    
     public save(): ResourceManagerMemory {
         return {
             settings: this.settings.save(),
@@ -666,6 +681,10 @@ class Withdraws {
 
 
     public getWithdrawTarget(creep: Creep): WithdrawTarget {
+        let tombstone = this.getTombstoneWithdrawTarget(creep);
+        if (tombstone)
+            return tombstone;
+
         var container = this.getContainerWithdrawTarget(creep);
         if (container)
             return container;
@@ -674,6 +693,23 @@ class Withdraws {
             return this.resourceManager.colony.nest.room.storage;
 
         return null;
+    }
+
+    private getTombstoneWithdrawTarget(creep: Creep): Tombstone {
+        let tombstones = this.resourceManager.colony.nest.room.find(FIND_TOMBSTONES, { filter: (p) => p.store.energy > 0 });
+
+        let distance = 100;
+        let tombstone: Tombstone;
+
+        for (var i = 0; i < tombstones.length; i++) {
+            let d = creep.pos.getRangeTo(tombstones[i]);
+            if (d < distance) {
+                tombstone = tombstones[i];
+                distance = d;
+            }
+        }
+
+        return tombstone;
     }
 
     private getContainerWithdrawTarget(creep: Creep): StructureContainer {

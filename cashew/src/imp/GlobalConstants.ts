@@ -14,6 +14,7 @@ global.TASK_ATTACK = "Attack";
 global.TASK_RESERVE = "Reserve";
 global.TASK_CLAIM = "Claim";
 global.TASK_HARVEST = "Harvest";
+global.TASK_PICKUP_ENERGY = "PickupEnergy";
 
 global.OPERATION_LIGHT_UPGRADE = "LightUpgrade";
 global.OPERATION_HEAVY_UPGRADE = "HeavyUpgrade";

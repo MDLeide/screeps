@@ -14,10 +14,18 @@ export class HaulerRole extends Role {
             if (transferTarget)
                 return Task.Transfer(transferTarget);
         } else {
-            let withdrawTarget = colony.resourceManager.getWithdrawTarget(creep);
             let transferTarget = colony.resourceManager.getTransferTarget(creep);
-            if (!withdrawTarget || !transferTarget)
+            if (!transferTarget)
                 return null;
+
+            let pickupTarget = colony.resourceManager.getEnergyPickupTarget(creep);
+            if (pickupTarget)
+                return Task.PickupEnergy(pickupTarget);
+
+            let withdrawTarget = colony.resourceManager.getWithdrawTarget(creep);            
+            if (!withdrawTarget)
+                return null;
+
             if (withdrawTarget.id == transferTarget.id)
                 return null;
             

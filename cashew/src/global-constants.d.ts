@@ -15,6 +15,7 @@ declare interface global {
     TASK_RESERVE: string;
     TASK_CLAIM: string;
     TASK_HARVEST: string;
+    TASK_PICKUP_ENERGY: string;
 
     OPERATION_LIGHT_UPGRADE: string;
     OPERATION_HEAVY_UPGRADE: string;

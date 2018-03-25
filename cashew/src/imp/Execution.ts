@@ -30,7 +30,6 @@ export class Execute {
         var empire = new Empire(colonyFinder);
         GlobalExtension.extendEmpire(empire);
         
-        
         if (empire.colonies.length) //debug
             Playback.placeFlag(empire.colonies[0].nest.roomName);
 
