@@ -33,351 +33,143 @@ import { ReplaceOriginalSpawnOperation } from "../operation/infrastructure/Repla
 import { RoomDefenseOperation } from "../operation/military/RoomDefenseOperation"; 
 import { ReservationOperation, ReservationOperationMemory } from "../operation/military/ReservationOperation";
 import { RoomScoutOperation, RoomScoutOperationMemory } from "../operation/military/RoomScoutOperation";
+import { FlagOperationRepository } from "lib/operation/FlagOperation";
+import { DismantleFlagOperation } from "../operation/flag/DismantleFlagOperation";
+import { DismantleOperation } from "../operation/military/DismantleOperation";
 
 export class OperationRegistration {
     public static register() {
         this.registerEconomy();
         this.registerInfrastructure();
         this.registerMilitary();
+        this.registerFlagOps();
     }
 
     static registerInfrastructure(): void {
         OperationRepository.register(
             OPERATION_RESERVATION,
-            (memory: any) => ReservationOperation.fromMemory(memory),
-            (flag?: Flag) => {
-                let mem = flag.memory.flagOperation.operation as ReservationOperationMemory;
-                return new ReservationOperation(mem.roomName);
-            });
+            (memory: any) => ReservationOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_ROOM_SCOUT,
-            (memory: any) => RoomScoutOperation.fromMemory(memory),
-            (flag?: Flag) => {
-                let mem = flag.memory.flagOperation.operation as RoomScoutOperationMemory;
-                return new RoomScoutOperation(mem.targetRoomName);
-            });
+            (memory: any) => RoomScoutOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_LIGHT_UPGRADE,
-            (memory: any) => LightUpgradeOperation.fromMemory(memory),
-            (flag?: Flag) => new LightUpgradeOperation());
+            (memory: any) => LightUpgradeOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_HEAVY_UPGRADE,
-            (memory: any) => HeavyUpgradeOperation.fromMemory(memory),
-            (flag?: Flag) => new HeavyUpgradeOperation());
+            (memory: any) => HeavyUpgradeOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_HARVEST,
-            (memory: any) => HarvestOperation.fromMemory(memory),
-            (flag?: Flag) => {
-                let mem = flag.memory.flagOperation.operation as HarvestOperationMemory;
-                return new HarvestOperation(mem.sourceId, mem.containerId, mem.linkId);
-            });
+            (memory: any) => HarvestOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_REMOTE_HARVEST_SCOUT,
-            (memory: any) => RemoteHarvestScoutOperation.fromMemory(memory),
-            (flag?: Flag) => new RemoteHarvestScoutOperation());
+            (memory: any) => RemoteHarvestScoutOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_REMOTE_HARVEST,
-            (memory: any) => RemoteHarvestOperation.fromMemory(memory),
-            (flag?: Flag) => {
-                let mem = flag.memory.flagOperation.operation as RemoteHarvestOperationMemory;
-                return new RemoteHarvestOperation(mem.sourceId, mem.roomName);
-            });
+            (memory: any) => RemoteHarvestOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_ENERGY_TRANSPORT,
-            (memory: any) => EnergyTransportOperation.fromMemory(memory),
-            (flag?: Flag) => new EnergyTransportOperation());
+            (memory: any) => EnergyTransportOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_EXTRACTION,
-            (memory: any) => ExtractionOperation.fromMemory(memory),
-            (flag?: Flag) => new ExtractionOperation());
+            (memory: any) => ExtractionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_EXTENSION_FILL,
-            (memory: any) => ExtensionFillOperation.fromMemory(memory),
-            (flag?: Flag) => new ExtensionFillOperation());
+            (memory: any) => ExtensionFillOperation.fromMemory(memory));
     }
 
     static registerEconomy(): void {
         OperationRepository.register(
             OPERATION_STORAGE_CONSTRUCTION,
-            (memory: any) => StorageConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => new StorageConstructionOperation());
+            (memory: any) => StorageConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_TOWER_CONSTRUCTION,
-            (memory: any) => TowerConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => {
-                let mem = flag.memory.flagOperation.operation as TowerConstructionOperationMemory;
-                return new TowerConstructionOperation(mem.rcl);
-            });
+            (memory: any) => TowerConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_HARVEST_INFRASTRUCTURE,
-            (memory: any) => HarvestInfrastructureOperation.fromMemory(memory),
-            (flag?: Flag) => {
-                let mem = flag.memory.flagOperation.operation as HarvestInfrastructureOperationMemory;
-                return new HarvestInfrastructureOperation(mem.sourceId);
-            });
+            (memory: any) => HarvestInfrastructureOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_EXTENSION_CONSTRUCTION,
-            (memory: any) => ExtensionConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => {
-                let mem = flag.memory.flagOperation.operation as ExtensionConstructionOperationMemory;
-                return new ExtensionConstructionOperation(mem.rcl);
-            });
+            (memory: any) => ExtensionConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_CONTROLLER_INFRASTRUCTURE,
-            (memory: any) => ControllerInfrastructureOperation.fromMemory(memory),
-            (flag?: Flag) => new ControllerInfrastructureOperation());
+            (memory: any) => ControllerInfrastructureOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_HARVEST_LINK_CONSTRUCTION,
-            (memory: any) => HarvestLinkConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => {
-                let mem = flag.memory.flagOperation.operation as HarvestLinkConstructionOperationMemory;
-                return new HarvestLinkConstructionOperation(mem.sourceId);
-            });
+            (memory: any) => HarvestLinkConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_UPGRADE_LINK_CONSTRUCTION,
-            (memory: any) => UpgradeLinkConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => new UpgradeLinkConstructionOperation());
+            (memory: any) => UpgradeLinkConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_EXTENSION_LINK_CONSTRUCTION,
-            (memory: any) => ExtensionLinkConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => new ExtensionLinkConstructionOperation());
+            (memory: any) => ExtensionLinkConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_LAB_CONSTRUCTION,
-            (memory: any) => LabConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => {
-                let mem = flag.memory.flagOperation.operation as LabConstructionOperationMemory;
-                return new LabConstructionOperation(mem.rcl);
-            });
+            (memory: any) => LabConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_EXTRACTOR_CONSTRUCTION,
-            (memory: any) => ExtractorConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => new ExtractorConstructionOperation());
+            (memory: any) => ExtractorConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_TERMINAL_CONSTRUCTION,
-            (memory: any) => TerminalConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => new TerminalConstructionOperation());
+            (memory: any) => TerminalConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_OBSERVER_CONSTRUCTION,
-            (memory: any) => ObserverConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => new ObserverConstructionOperation());
+            (memory: any) => ObserverConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_STORAGE_LINK_CONSTRUCTION,
-            (memory: any) => StorageLinkConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => new StorageLinkConstructionOperation());
+            (memory: any) => StorageLinkConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_WALL_CONSTRUCTION,
-            (memory: any) => WallConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => new WallConstructionOperation());
+            (memory: any) => WallConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_ROAD_CONSTRUCTION,
-            (memory: any) => RoadConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => new RoadConstructionOperation());
+            (memory: any) => RoadConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_SPAWN_CONSTRUCTION,
-            (memory: any) => SpawnConstructionOperation.fromMemory(memory),
-            (flag?: Flag) => {
-                let mem = flag.memory.flagOperation.operation as SpawnConstructionOperationMemory;
-                return new SpawnConstructionOperation(mem.rcl);
-            });
+            (memory: any) => SpawnConstructionOperation.fromMemory(memory));
 
         OperationRepository.register(
             OPERATION_REPLACE_ORIGINAL_SPAWN,
-            (memory: any) => ReplaceOriginalSpawnOperation.fromMemory(memory),
-            (flag?: Flag) => new ReplaceOriginalSpawnOperation());	
-
+            (memory: any) => ReplaceOriginalSpawnOperation.fromMemory(memory));	
     }
 
     static registerMilitary(): void {
         OperationRepository.register(
             OPERATION_ROOM_DEFENSE,
-            (memory: any) => RoomDefenseOperation.fromMemory(memory),
-            (flag?: Flag) => new RoomDefenseOperation());
+            (memory: any) => RoomDefenseOperation.fromMemory(memory));
+
+        OperationRepository.register(
+            OPERATION_DISMANTLE,
+            (mem: any) => DismantleOperation.fromMemory(mem));
     }
 
-    //static registerInfrastructure(): void {
-    //    OperationRepository.register(
-    //        OPERATION_SPAWN_CONSTRUCTION,
-    //        (memory: any) => SpawnConstructionOperation.fromMemory(memory),
-    //        (flag?: Flag) => new SpawnConstructionOperation((flag.memory.flagOperation.operation as SpawnConstructionOperationMemory).rcl));
-
-    //    OperationRepository.register(
-    //        OPERATION_REPLACE_ORIGINAL_SPAWN,
-    //        (memory: any) => {
-    //            return ReplaceOriginalSpawnOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_EXTENSION_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return ExtensionConstructionOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_HARVEST_INFRASTRUCTURE,
-    //        (memory: any) => {
-    //            return HarvestInfrastructureOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_CONTROLLER_INFRASTRUCTURE,
-    //        (memory: any) => {
-    //            return ControllerInfrastructureOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_TOWER_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return TowerConstructionOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_STORAGE_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return StorageConstructionOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_HARVEST_LINK_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return HarvestLinkConstructionOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_UPGRADE_LINK_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return UpgradeLinkConstructionOperation.fromMemory(memory);
-    //        });
-        
-    //    OperationRepository.register(
-    //        OPERATION_LAB_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return LabConstructionOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_EXTRACTOR_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return ExtractorConstructionOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_TERMINAL_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return TerminalConstructionOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_OBSERVER_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return ObserverConstructionOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_STORAGE_LINK_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return StorageLinkConstructionOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_WALL_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return WallConstructionOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_ROAD_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return RoadConstructionOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_EXTENSION_LINK_CONSTRUCTION,
-    //        (memory: any) => {
-    //            return ExtensionLinkConstruction.fromMemory(memory);
-    //        });
-    //}
-
-    //static registerEconomy(): void {
-    //    OperationRepository.register(
-    //        OPERATION_HARVEST,
-    //        (memory: any) => {
-    //            return HarvestOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_LIGHT_UPGRADE,
-    //        (memory: any) => {
-    //            return LightUpgradeOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_HEAVY_UPGRADE,
-    //        (memory: any) => {
-    //            return HeavyUpgradeOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_ENERGY_TRANSPORT,
-    //        (memory: any) => {
-    //            return EnergyTransportOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_REMOTE_HARVEST_SCOUT,
-    //        (memory: any) => {
-    //            return RemoteHarvestScoutOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_REMOTE_HARVEST,
-    //        (memory: any) => {
-    //            return RemoteHarvestOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_EXTRACTION,
-    //        (memory: any) => {
-    //            return ExtractionOperation.fromMemory(memory);
-    //        });
-
-    //    OperationRepository.register(
-    //        OPERATION_EXTENSION_FILL,
-    //        (memory: any) => {
-    //            return ExtensionFillOperation.fromMemory(memory);
-    //        });
-
-
-    //}
-
-    //static registerMilitary(): void {
-    //    OperationRepository.register(
-    //        OPERATION_ROOM_DEFENSE,
-    //        (memory: any) => {
-    //            return RoomDefenseOperation.fromMemory(memory);
-    //        });
-    //}
+    static registerFlagOps(): void {
+        FlagOperationRepository.register(
+            FLAG_OPERATION_DISMANTLE,
+            (flag: Flag) => new DismantleFlagOperation(flag));
+    }
 }

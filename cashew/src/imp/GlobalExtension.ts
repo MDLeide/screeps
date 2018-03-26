@@ -54,6 +54,17 @@ export class GlobalExtension {
         global.reset = function () {
             Playback.pause();
             global.cleaner.cleanAll();
-        }        
+        }
+
+        global.startFlagOp = function (flagName: string, type: FlagOperationType, hostColony: string): string {
+            let flag = Game.flags[flagName];
+            if (!flag)
+                return `Flag ${flagName} not found.`;
+            flag.memory.flagOperation = {
+                hostColony: hostColony,
+                type: type
+            };
+            return `Flag ${flagName} set to ${type} hosted by colony ${hostColony}`;
+        }
     }
 }

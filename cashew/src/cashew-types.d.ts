@@ -15,6 +15,7 @@ declare const TASK_RESERVE: "Reserve";
 declare const TASK_CLAIM: "Claim";
 declare const TASK_HARVEST: "Harvest";
 declare const TASK_PICKUP_ENERGY: "PickupEnergy";
+declare const TASK_DISMANTLE: "Dismantle";
 
 declare const OPERATION_LIGHT_UPGRADE: "LightUpgrade";
 declare const OPERATION_HEAVY_UPGRADE: "HeavyUpgrade";
@@ -45,6 +46,7 @@ declare const OPERATION_REPLACE_ORIGINAL_SPAWN: "ReplaceOriginalSpawn";
 declare const OPERATION_ROOM_SCOUT: "RoomScout";
 declare const OPERATION_NEW_SPAWN_CONSTRUCTION: "NewSpawnConstruction";
 declare const OPERATION_RESERVATION: "Reservation";
+declare const OPERATION_DISMANTLE: "Dismantle";
 
 declare const PROGRESS_STANDARD: "Standard";
 
@@ -72,6 +74,7 @@ declare const CREEP_CONTROLLER_CLAIM: "Claim";
 declare const CREEP_CONTROLLER_SCOUT: "Scout";
 declare const CREEP_CONTROLLER_RESERVE: "Reserve";
 declare const CREEP_CONTROLLER_WARRIOR: "Warrior";
+declare const CREEP_CONTROLLER_DISMANTLER: "Dismantler";
 
 declare const BODY_LIGHT_WORKER: "LightWorker";
 declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
@@ -85,6 +88,7 @@ declare const BODY_RANGER: "Ranger";
 declare const BODY_HEALER: "Healer";
 declare const BODY_HOPLITE: "Hoplite";
 declare const BODY_SHIELD: "Shield";
+declare const BODY_DISMANTLER: "Dismantler";
 
 declare const MONITOR_COLONY_DEFENSE: "ColonyDefense";
 declare const MONITOR_ECONOMY_OPERATION: "EconomyOperation";
@@ -109,6 +113,8 @@ declare const PROCESS_COLONY_SEARCH: "ColonySearch";
 declare const PROCESS_COLONY: "Colony";
 declare const PROCESS_OPERATION: "Operation";
 
+declare const FLAG_OPERATION_DISMANTLE: "Dismantle";
+
 type FLAG_OPERATION = "Operation";
 type FLAG_COLONY = "Colony";
 type FLAG_CAMPAIGN = "Campaign";
@@ -126,6 +132,7 @@ type TASK_RESERVE = "Reserve";
 type TASK_CLAIM = "Claim";
 type TASK_HARVEST = "Harvest";
 type TASK_PICKUP_ENERGY = "PickupEnergy";
+type TASK_DISMANTLE = "Dismantle";
 
 type OPERATION_LIGHT_UPGRADE = "LightUpgrade";
 type OPERATION_HEAVY_UPGRADE = "HeavyUpgrade";
@@ -156,6 +163,7 @@ type OPERATION_REPLACE_ORIGINAL_SPAWN = "ReplaceOriginalSpawn";
 type OPERATION_ROOM_SCOUT = "RoomScout";
 type OPERATION_NEW_SPAWN_CONSTRUCTION = "NewSpawnConstruction";
 type OPERATION_RESERVATION = "Reservation";
+type OPERATION_DISMANTLE = "Dismantle";
 
 type PROGRESS_STANDARD = "Standard";
 
@@ -183,6 +191,7 @@ type CREEP_CONTROLLER_CLAIM = "Claim";
 type CREEP_CONTROLLER_SCOUT = "Scout";
 type CREEP_CONTROLLER_RESERVE = "Reserve";
 type CREEP_CONTROLLER_WARRIOR = "Warrior";
+type CREEP_CONTROLLER_DISMANTLER = "Dismantler";
 
 type BODY_LIGHT_WORKER = "LightWorker";
 type BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -196,6 +205,7 @@ type BODY_RANGER = "Ranger";
 type BODY_HEALER = "Healer";
 type BODY_HOPLITE = "Hoplite";
 type BODY_SHIELD = "Shield";
+type BODY_DISMANTLER = "Dismantler";
 
 type MONITOR_COLONY_DEFENSE = "ColonyDefense";
 type MONITOR_ECONOMY_OPERATION = "EconomyOperation";
@@ -220,6 +230,8 @@ type PROCESS_COLONY_SEARCH = "ColonySearch";
 type PROCESS_COLONY = "Colony";
 type PROCESS_OPERATION = "Operation";
 
+type FLAG_OPERATION_DISMANTLE = "Dismantle";
+
 type FlagType =
     FLAG_OPERATION |
     FLAG_COLONY |
@@ -238,7 +250,8 @@ type TaskType =
     TASK_RESERVE |
     TASK_CLAIM |
     TASK_HARVEST |
-    TASK_PICKUP_ENERGY;
+    TASK_PICKUP_ENERGY |
+    TASK_DISMANTLE;
 
 type OperationType =
     OPERATION_LIGHT_UPGRADE |
@@ -269,7 +282,8 @@ type OperationType =
     OPERATION_REPLACE_ORIGINAL_SPAWN |
     OPERATION_ROOM_SCOUT |
     OPERATION_NEW_SPAWN_CONSTRUCTION |
-    OPERATION_RESERVATION;
+    OPERATION_RESERVATION |
+    OPERATION_DISMANTLE;
 
 type ProgressType =
     PROGRESS_STANDARD;
@@ -299,7 +313,8 @@ type CreepControllerType =
     CREEP_CONTROLLER_CLAIM |
     CREEP_CONTROLLER_SCOUT |
     CREEP_CONTROLLER_RESERVE |
-    CREEP_CONTROLLER_WARRIOR;
+    CREEP_CONTROLLER_WARRIOR |
+    CREEP_CONTROLLER_DISMANTLER;
 
 type BodyType =
     BODY_LIGHT_WORKER |
@@ -313,7 +328,8 @@ type BodyType =
     BODY_RANGER |
     BODY_HEALER |
     BODY_HOPLITE |
-    BODY_SHIELD;
+    BODY_SHIELD |
+    BODY_DISMANTLER;
 
 type MonitorType =
     MONITOR_COLONY_DEFENSE |
@@ -343,4 +359,7 @@ type ProcessType =
     PROCESS_COLONY_SEARCH |
     PROCESS_COLONY |
     PROCESS_OPERATION;
+
+type FlagOperationType =
+    FLAG_OPERATION_DISMANTLE;
 

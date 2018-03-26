@@ -15,6 +15,7 @@ global.TASK_RESERVE = "Reserve";
 global.TASK_CLAIM = "Claim";
 global.TASK_HARVEST = "Harvest";
 global.TASK_PICKUP_ENERGY = "PickupEnergy";
+global.TASK_DISMANTLE = "Dismantle";
 
 global.OPERATION_LIGHT_UPGRADE = "LightUpgrade";
 global.OPERATION_HEAVY_UPGRADE = "HeavyUpgrade";
@@ -45,6 +46,7 @@ global.OPERATION_REPLACE_ORIGINAL_SPAWN = "ReplaceOriginalSpawn";
 global.OPERATION_ROOM_SCOUT = "RoomScout";
 global.OPERATION_NEW_SPAWN_CONSTRUCTION = "NewSpawnConstruction";
 global.OPERATION_RESERVATION = "Reservation";
+global.OPERATION_DISMANTLE = "Dismantle";
 
 global.PROGRESS_STANDARD = "Standard";
 
@@ -72,6 +74,7 @@ global.CREEP_CONTROLLER_CLAIM = "Claim";
 global.CREEP_CONTROLLER_SCOUT = "Scout";
 global.CREEP_CONTROLLER_RESERVE = "Reserve";
 global.CREEP_CONTROLLER_WARRIOR = "Warrior";
+global.CREEP_CONTROLLER_DISMANTLER = "Dismantler";
 
 global.BODY_LIGHT_WORKER = "LightWorker";
 global.BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -85,6 +88,7 @@ global.BODY_RANGER = "Ranger";
 global.BODY_HEALER = "Healer";
 global.BODY_HOPLITE = "Hoplite";
 global.BODY_SHIELD = "Shield";
+global.BODY_DISMANTLER = "Dismantler";
 
 global.MONITOR_COLONY_DEFENSE = "ColonyDefense";
 global.MONITOR_ECONOMY_OPERATION = "EconomyOperation";
@@ -108,6 +112,8 @@ global.PROCESS_EMPIRE = "Empire";
 global.PROCESS_COLONY_SEARCH = "ColonySearch";
 global.PROCESS_COLONY = "Colony";
 global.PROCESS_OPERATION = "Operation";
+
+global.FLAG_OPERATION_DISMANTLE = "Dismantle";
 
 
 export class GlobalConstants {

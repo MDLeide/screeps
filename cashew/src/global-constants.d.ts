@@ -16,6 +16,7 @@ declare interface global {
     TASK_CLAIM: string;
     TASK_HARVEST: string;
     TASK_PICKUP_ENERGY: string;
+    TASK_DISMANTLE: string;
 
     OPERATION_LIGHT_UPGRADE: string;
     OPERATION_HEAVY_UPGRADE: string;
@@ -46,6 +47,7 @@ declare interface global {
     OPERATION_ROOM_SCOUT: string;
     OPERATION_NEW_SPAWN_CONSTRUCTION: string;
     OPERATION_RESERVATION: string;
+    OPERATION_DISMANTLE: string;
 
     PROGRESS_STANDARD: string;
 
@@ -73,6 +75,7 @@ declare interface global {
     CREEP_CONTROLLER_SCOUT: string;
     CREEP_CONTROLLER_RESERVE: string;
     CREEP_CONTROLLER_WARRIOR: string;
+    CREEP_CONTROLLER_DISMANTLER: string;
 
     BODY_LIGHT_WORKER: string;
     BODY_HEAVY_HARVESTER: string;
@@ -86,6 +89,7 @@ declare interface global {
     BODY_HEALER: string;
     BODY_HOPLITE: string;
     BODY_SHIELD: string;
+    BODY_DISMANTLER: string;
 
     MONITOR_COLONY_DEFENSE: string;
     MONITOR_ECONOMY_OPERATION: string;
@@ -109,5 +113,7 @@ declare interface global {
     PROCESS_COLONY_SEARCH: string;
     PROCESS_COLONY: string;
     PROCESS_OPERATION: string;
+
+    FLAG_OPERATION_DISMANTLE: string;
 
 }

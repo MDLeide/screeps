@@ -1,5 +1,6 @@
 import { Execute } from "./imp/Execution"; // silly hack that i don't understand - this isn't actually used
 import { MonitorStatus } from "lib/monitor/Monitor";
+import { FlagOperation } from "lib/operation/FlagOperation";
 
 declare global {
     /** FLAGS */
@@ -191,8 +192,8 @@ declare global {
     }
 
     interface FlagOperationMemory {
-        operation: OperationMemory;
-        operationType: OperationType;
+        type: FlagOperationType;
+        hostColony: string;
     }
 
     /** END OPERATIONS **/
@@ -313,7 +314,8 @@ declare global {
         constantParts: BodyPartConstant[],
         scalingParts: BodyPartConstant[],
         maxCompleteScaling: number,
-        completeScalingPartsOnly: boolean
+        completeScalingPartsOnly: boolean,
+        waitForFullEnergy: boolean
     }
 
     interface VisualsMemory {

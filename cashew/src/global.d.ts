@@ -33,5 +33,6 @@ declare global {
         help(): string;
         pause(): void;
         reset(): void;
+        startFlagOp(flagName: string, type: FlagOperationType, hostColony: string): string;
     }    
 }
