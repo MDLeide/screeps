@@ -129,7 +129,7 @@ export class RemoteMiningManager {
         let room: RemoteRoom;
 
         for (var i = 0; i < this.rooms.length; i++) {
-            if (this.rooms[i].active)
+            if (this.rooms[i].active || !this.rooms[i].scouted)
                 continue;
 
             let route = Game.map.findRoute(this.colony.nest.roomName, this.rooms[i].name);

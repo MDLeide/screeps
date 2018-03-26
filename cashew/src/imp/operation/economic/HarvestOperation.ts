@@ -83,6 +83,7 @@ export class HarvestOperation extends ControllerOperation {
         let spawnTime = 21;
         let buffer =35;
         let body = BodyRepository.heavyHarvester();
+        body.waitForFullEnergy = true;
         let assignment = new Assignment("", body, CREEP_CONTROLLER_HARVESTER, travelTime + spawnTime + buffer);
         this.assignments.push(assignment);
 

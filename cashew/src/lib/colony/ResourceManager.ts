@@ -96,7 +96,7 @@ export class ResourceManager {
 
 
     public getEnergyPickupTarget(creep: Creep): Resource<RESOURCE_ENERGY> {
-        let look = this.colony.nest.room.find(FIND_DROPPED_RESOURCES, { filter: (r) => r.resourceType == RESOURCE_ENERGY });
+        let look = this.colony.nest.room.find(FIND_DROPPED_RESOURCES, { filter: (r) => r.resourceType == RESOURCE_ENERGY && r.amount > 75 });
 
         let distance = 100;
         let resource: Resource<RESOURCE_ENERGY>;

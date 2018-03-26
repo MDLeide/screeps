@@ -17,9 +17,12 @@ export class EnergyTransportOperation extends ControllerOperation {
 
 
     private static getAssignments(): Assignment[] {
+        let body = BodyRepository.hauler();
+        body.waitForFullEnergy = true;
         return [
-            new Assignment("", BodyRepository.hauler(), CREEP_CONTROLLER_HAULER, 75),
-            new Assignment("", BodyRepository.hauler(), CREEP_CONTROLLER_HAULER, 75)
+            
+            new Assignment("", body, CREEP_CONTROLLER_HAULER, 75),
+            new Assignment("", body, CREEP_CONTROLLER_HAULER, 75)
         ];
     }
 

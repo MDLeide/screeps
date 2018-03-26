@@ -27,6 +27,8 @@ export class BodyRepository {
                 return this.hoplite();
             case BODY_SHIELD:
                 return this.shield();
+            case BODY_DISMANTLER:
+                return this.dismantler();
             default:
                 return null;
         }
@@ -159,6 +161,17 @@ export class BodyRepository {
             220,
             [TOUGH, MOVE, ATTACK, ATTACK],
             [TOUGH, MOVE],
+            0,
+            true
+        );
+    }
+
+    public static dismantler(): Body {
+        return new Body(
+            BODY_DISMANTLER,
+            150,
+            [MOVE, WORK],
+            [MOVE, WORK],
             0,
             true
         );

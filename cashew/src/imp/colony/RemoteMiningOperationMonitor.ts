@@ -23,19 +23,15 @@ export class RemoteMiningOperationMonitor extends ColonyMonitor {
 
     public execute(context: Colony): void {
         if (context.nest.room.controller.level >= 2) {
-            let unscouted = 0;
             for (var i = 0; i < context.remoteMiningManager.rooms.length; i++) {
                 let room = context.remoteMiningManager.rooms[i];
-                if (!room.beingScouted && !room.scouted)
-                    unscouted++;
-            }
-
-            for (var i = 0; i < unscouted; i++) {
-                this.ensureOperation(
-                    context,
-                    OPERATION_REMOTE_HARVEST_SCOUT,
-                    1,
-                    () => new RemoteHarvestScoutOperation());
+                if (!room.beingScouted)
+                    this.ensureOperation(
+                        context,
+                        OPERATION_REMOTE_HARVEST_SCOUT,
+                        1,
+                        () => new RemoteHarvestScoutOperation,
+                        (op: RemoteHarvestScoutOperation) => op.targetRoom == room.name);
             }
         }       
 
@@ -49,6 +45,20 @@ export class RemoteMiningOperationMonitor extends ColonyMonitor {
                         1,
                         () => new ReservationOperation(room.name),
                         (op: ReservationOperation) => op.roomName == room.name);
+            }
+        }
+
+        for (var i = 0; i < context.remoteMiningManager.rooms.length; i++) {
+            let room = context.remoteMiningManager.rooms[i];
+            for (var j = 0; j < room.remoteSources.length; j++) {
+                let source = room.remoteSources[j];
+                if (source.beingMined)
+                    this.ensureOperation(
+                        context,
+                        OPERATION_REMOTE_HARVEST,
+                        1,
+                        () => new RemoteHarvestOperation(source.sourceId, room.name),
+                        (op: RemoteHarvestOperation) => op.sourceId == source.sourceId);
             }
         }
 

@@ -2,6 +2,7 @@ import { ColonyFinder } from "./ColonyFinder";
 import { Colony } from "../colony/Colony";
 import { Nest } from "../colony/Nest";
 import { NestMapBuilder } from "../map/NestMapBuilder";
+import { FlagOperationDiscovery } from "../operation/FlagOperation";
 
 export class Empire {
     constructor(colonyFinder: ColonyFinder) {
@@ -61,6 +62,7 @@ export class Empire {
     
     public update(): void {
         this.searchForColonies();
+        FlagOperationDiscovery.findFlagOperations();
 
         for (var i = 0; i < this.colonies.length; i++) {
             this.colonies[i].update();

@@ -20,17 +20,20 @@ export class Spawner {
     }
 
     public canSpawn(body: Body): boolean {        
-        return (!this.spawn.spawning && !this.startedThisTick && this.spawn.room.energyAvailable >= body.minimumEnergy);
+        return !this.spawn.spawning
+            && !this.startedThisTick
+            && this.spawn.room.energyAvailable >= body.minimumEnergy
+            && (!body.waitForFullEnergy
+                || this.spawn.room.energyAvailable == this.spawn.room.energyCapacityAvailable
+                || this.spawn.room.energyAvailable >= body.maximumEnergy);
     }
     
     public spawnCreep(body: Body, fillOrder: (StructureExtension | StructureSpawn)[]): string | null {
-        if (!this._updated || this._cleanedup) {
-            throw new Error("Only call spawner.spawnCreep() during the execute phase.");
-        }
+        if (!this._updated || this._cleanedup)
+            throw new Error("Only call spawner.spawnCreep() during the execute phase.");        
         
-        if (!this.canSpawn(body)) {
-            return null;
-        }
+        if (!this.canSpawn(body))
+            return null;        
         
         let finalBody = body.getBody(this.spawn.room.energyAvailable);        
         var name = CreepNamer.getCreepName(body, this);

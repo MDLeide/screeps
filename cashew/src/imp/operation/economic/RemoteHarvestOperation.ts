@@ -84,8 +84,7 @@ export class RemoteHarvestOperation extends ControllerOperation {
             this.updateAssignments(colony);
         } else if (Game.time % 500 == 150) {
             this.updateAssignments(colony);
-        }
-            
+        }            
     }
 
     protected onExecute(colony: Colony): void {

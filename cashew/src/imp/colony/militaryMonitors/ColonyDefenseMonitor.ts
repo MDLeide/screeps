@@ -32,7 +32,7 @@ export class ColonyDefenseMonitor extends ColonyMonitor {
     }
 
     public update(colony: Colony): void {
-        this.checkForNewThreats(colony);
+        // this.checkForNewThreats(colony);
         for (let key in this.units)
             this.units[key].update();
     }
