@@ -51,6 +51,7 @@
     <Folder Include="src\imp\operation\economic\" />
     <Folder Include="src\imp\operation\infrastructure\" />
     <Folder Include="src\imp\operation\military\" />
+    <Folder Include="src\imp\operation\flag\" />
     <Folder Include="src\imp\registration\" />
     <Folder Include="src\lib\" />
     <Folder Include="src\imp\" />
@@ -88,6 +89,15 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\global-constants.d.ts" />
     <TypeScriptCompile Include="src\global.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\DismantleJob.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\operation\flag\DismantleFlagOperation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\operation\military\DismantleOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\DefensePlan.ts">
