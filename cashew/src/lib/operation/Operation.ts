@@ -45,6 +45,7 @@ export abstract class Operation {
         return this.status == OperationStatus.Initialized ||
             this.status == OperationStatus.AwaitingRestart;
     }
+    /** True if the operation should be checked for open assignments. */
     public get needsCreepSpawnCheck() {
         return this.status == OperationStatus.Initialized ||
             this.status == OperationStatus.AwaitingRestart ||
