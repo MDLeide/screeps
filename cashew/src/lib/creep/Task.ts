@@ -79,6 +79,8 @@ export abstract class Task {
                 return Harvest.fromMemory(memory as TargetedTaskMemory);
             case TASK_PICKUP_ENERGY:
                 return PickupEnergy.fromMemory(memory as TargetedTaskMemory);
+            case TASK_DISMANTLE:
+                return Dismantle.fromMemory(memory as TargetedTaskMemory);
             default:
                 throw new Error(`Task name ${memory.type} not recognized`)
         }
@@ -130,6 +132,10 @@ export abstract class Task {
 
     public static PickupEnergy(target: Resource<RESOURCE_ENERGY>): PickupEnergy {
         return new PickupEnergy(target);
+    }
+
+    public static Dismantle(target: Structure): Dismantle {
+        return new Dismantle(target);
     }
 }
 
@@ -607,5 +613,42 @@ export class PickupEnergy extends TargetedTask<Resource<RESOURCE_ENERGY>> {
     }
 
     public cleanup(creep: Creep): void {        
+    }
+}
+
+export class Dismantle extends TargetedTask<Structure> {
+    public static fromMemory(memory: TargetedTaskMemory): Dismantle {
+        let target = Game.getObjectById<Structure>(memory.targetId);
+        let dismantle = new this(target);
+        return TargetedTask.fromMemory(memory, dismantle) as Dismantle;
+    }
+
+    constructor(target: Structure) {
+        super(TASK_DISMANTLE, target);
+    }
+
+    public update(creep: Creep): void {
+    }
+
+    public execute(creep: Creep): void {
+        if (!this.target)
+            this.onComplete();
+
+        let response = creep.dismantle(this.target);
+        if (response == OK)
+            return;
+        else if (response == ERR_NOT_IN_RANGE)
+            creep.moveTo(this.target);
+        else if (response == ERR_NOT_OWNER)
+            this.onError();
+        else if (response == ERR_BUSY)
+            this.onError();
+        else if (response == ERR_INVALID_TARGET)
+            this.onError();
+        else
+            this.onError();
+    }
+
+    public cleanup(creep: Creep): void {
     }
 }
