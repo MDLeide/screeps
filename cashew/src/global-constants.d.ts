@@ -48,6 +48,7 @@ declare interface global {
     OPERATION_NEW_SPAWN_CONSTRUCTION: string;
     OPERATION_RESERVATION: string;
     OPERATION_DISMANTLE: string;
+    OPERATION_LOOT: string;
 
     PROGRESS_STANDARD: string;
 
@@ -76,6 +77,8 @@ declare interface global {
     CREEP_CONTROLLER_RESERVE: string;
     CREEP_CONTROLLER_WARRIOR: string;
     CREEP_CONTROLLER_DISMANTLER: string;
+    CREEP_CONTROLLER_WITHDRAW: string;
+    CREEP_CONTROLLER_TRANSFER: string;
 
     BODY_LIGHT_WORKER: string;
     BODY_HEAVY_HARVESTER: string;
@@ -115,5 +118,6 @@ declare interface global {
     PROCESS_OPERATION: string;
 
     FLAG_OPERATION_DISMANTLE: string;
+    FLAG_OPERATION_LOOT: string;
 
 }

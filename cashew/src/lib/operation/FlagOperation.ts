@@ -31,7 +31,17 @@ export class FlagOperationDiscovery {
 
         let flagOp = FlagOperationRepository.getNew(flag.memory.flagOperation.type, flag);
         let op = flagOp.getOperation();
+        if (!op) {
+            flag.remove();
+            return;
+        }
+
         let colony = flagOp.getHostColony();
+        if (!colony) {
+            flag.remove();
+            return;
+        }
+
         colony.operations.addOperation(op);
         flag.remove();
     }

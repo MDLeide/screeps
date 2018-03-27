@@ -577,17 +577,11 @@ class Transfers {
     }
 
     public getSpawnExtensionTransferTargets(creep: Creep): (StructureSpawn | StructureExtension) {
-        for (var i = 0; i < this.resourceManager.colony.nest.spawners.length; i++)
-            if (this.resourceManager.colony.nest.spawners[i].spawn.energy < this.resourceManager.colony.nest.spawners[i].spawn.energyCapacity)
-                return this.resourceManager.colony.nest.spawners[i].spawn;
-
-        if (this.resourceManager.extensionsManagedDirectly)
-            return null;
-
-        let closest = creep.pos.findClosestByRange<StructureExtension>(FIND_MY_STRUCTURES,
+        let managed = this.resourceManager.extensionsManagedDirectly;
+        let closest = creep.pos.findClosestByRange<StructureExtension | StructureSpawn>(FIND_MY_STRUCTURES,
             {
-                filter: (ext) => {
-                    return ext.structureType == STRUCTURE_EXTENSION && ext.energy < ext.energyCapacity;
+                filter: (struct) => {
+                    return ((!managed && struct.structureType == STRUCTURE_EXTENSION) || struct.structureType == STRUCTURE_SPAWN) && struct.energy < struct.energyCapacity;
                 }
             });
         return closest;

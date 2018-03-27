@@ -31,6 +31,9 @@ export class HarvestOperation extends ControllerOperation {
     }
 
     protected onUpdate(colony: Colony): void {
+        for (var i = 0; i < this.assignments.length; i++)
+            this.assignments[i].body.minimumEnergy = Math.min(colony.nest.room.energyCapacityAvailable, 5 * BODYPART_COST[WORK] + BODYPART_COST[MOVE] + BODYPART_COST[CARRY]);
+
         if (Game.time % 500 == 0) {
             let container = colony.resourceManager.structures.getSourceContainer(this.sourceId);
             if (container) this.containerId = container.id;

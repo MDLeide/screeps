@@ -18,6 +18,8 @@ import { DefenderController } from "../creep/DefenderController";
 import { ScoutJob, ScoutJobMemory } from "../creep/ScoutJob";
 import { ReserveJob, ReserveJobMemory } from "../creep/ReserveJob";
 import { DismantleJob } from "../creep/DismantleJob";
+import { WithdrawJob } from "../creep/WithdrawJob";
+import { TransferJob } from "../creep/TransferJob";
 
 
 export class ControllerRegistration {
@@ -85,5 +87,13 @@ export class ControllerRegistration {
         CreepControllerRepository.register(
             CREEP_CONTROLLER_DISMANTLER,
             (mem: CreepControllerMemory) => DismantleJob.fromMemory(mem as JobMemory));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_WITHDRAW,
+            (mem: CreepControllerMemory) => WithdrawJob.fromMemory(mem as JobMemory));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_TRANSFER,
+            (mem: CreepControllerMemory) => TransferJob.fromMemory(mem as JobMemory));
     }
 }

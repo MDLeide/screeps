@@ -31,6 +31,9 @@ export class EnergyTransportOperation extends ControllerOperation {
     }
 
     protected onUpdate(colony: Colony): void {
+        let energy = colony.nest.room.energyCapacityAvailable / 3;
+        for (var i = 0; i < this.assignments.length; i++)
+            this.assignments[i].body.minimumEnergy = energy;
     }
 
     protected onExecute(colony: Colony): void {

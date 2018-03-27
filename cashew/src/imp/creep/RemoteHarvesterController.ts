@@ -37,6 +37,8 @@ export class RemoteHarvesterController extends CreepController {
     protected onLoad(): void {
         if (this.containerId)
             this.container = Game.getObjectById<StructureContainer>(this.containerId);
+        if (!this.container)
+            this.containerId = undefined;
 
         if (this.siteId)
             this.site = Game.getObjectById<ConstructionSite>(this.siteId);
@@ -83,6 +85,11 @@ export class RemoteHarvesterController extends CreepController {
     protected onCleanup(creep: Creep): void { }
 
     private build(creep: Creep): void {
+        if (creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3).length) {
+            creep.moveTo(this.site);
+            return;
+        }
+
         let colony = global.empire.getColonyByCreep(creep);
 
         if (creep.carry.energy >= 25) {
@@ -128,10 +135,11 @@ export class RemoteHarvesterController extends CreepController {
         } else if (harvestResponse == OK) {
             colony.resourceManager.ledger.registerRemoteHarvest(creep);
         }
-
-        let transferResponse = creep.transfer(this.container, RESOURCE_ENERGY);
-        if (transferResponse == ERR_NOT_IN_RANGE) {
-            creep.moveTo(this.container);
+        if (_.sum(creep.carry) >= creep.carryCapacity - HARVEST_POWER * creep.getActiveBodyparts(WORK)) {
+            let transferResponse = creep.transfer(this.container, RESOURCE_ENERGY);
+            if (transferResponse == ERR_NOT_IN_RANGE) {
+                creep.moveTo(this.container);
+            }
         }
     }
 

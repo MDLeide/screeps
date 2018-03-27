@@ -28,8 +28,10 @@ export class RemoteHarvestOperation extends ControllerOperation {
 
         
     private static getAssignments(): Assignment[] {
+        let body = BodyRepository.heavyHarvester();
+        body.waitForFullEnergy = true;
         return [
-            new Assignment("", BodyRepository.heavyHarvester(), CREEP_CONTROLLER_REMOTE_HARVESTER, 500)            
+            new Assignment("", body, CREEP_CONTROLLER_REMOTE_HARVESTER, 500)            
         ];
     }
 
@@ -113,7 +115,9 @@ export class RemoteHarvestOperation extends ControllerOperation {
         for (var i = 0; i < this.assignments.length; i++) {
             if (this.assignments[i].controllerType == CREEP_CONTROLLER_REMOTE_HARVESTER) {
                 this.assignments[i].replaceAt = leadTime;
-                this.assignments[i].body.maxCompleteScalingSections = reserved ? 4 : 2;
+                let workParts = reserved ? 4 : 2;
+                this.assignments[i].body.maxCompleteScalingSections = workParts;
+                this.assignments[i].body.minimumEnergy = Math.min(colony.nest.room.energyCapacityAvailable, workParts * BODYPART_COST[WORK] + BODYPART_COST[MOVE] + BODYPART_COST[CARRY]);
             }                
             else if (this.assignments[i].controllerType == CREEP_CONTROLLER_REMOTE_HAULER) {
                 this.assignments[i].body.maxCompleteScalingSections = carryParts - 1;

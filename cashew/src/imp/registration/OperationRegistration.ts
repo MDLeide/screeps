@@ -1,4 +1,5 @@
 import { OperationRepository } from "../../lib/operation/OperationRepository";
+import { FlagOperationRepository } from "lib/operation/FlagOperation";
 
 // economy
 import { ExtractionOperation } from "../operation/economic/ExtractionOperation";
@@ -33,9 +34,13 @@ import { ReplaceOriginalSpawnOperation } from "../operation/infrastructure/Repla
 import { RoomDefenseOperation } from "../operation/military/RoomDefenseOperation"; 
 import { ReservationOperation, ReservationOperationMemory } from "../operation/military/ReservationOperation";
 import { RoomScoutOperation, RoomScoutOperationMemory } from "../operation/military/RoomScoutOperation";
-import { FlagOperationRepository } from "lib/operation/FlagOperation";
-import { DismantleFlagOperation } from "../operation/flag/DismantleFlagOperation";
 import { DismantleOperation } from "../operation/military/DismantleOperation";
+import { LootOperation } from "../operation/military/LootOperation";
+
+// flags
+import { DismantleFlagOperation } from "../operation/flag/DismantleFlagOperation";
+import { LootFlagOperation } from "../operation/flag/LootFlagOperation";
+
 
 export class OperationRegistration {
     public static register() {
@@ -165,11 +170,18 @@ export class OperationRegistration {
         OperationRepository.register(
             OPERATION_DISMANTLE,
             (mem: any) => DismantleOperation.fromMemory(mem));
+
+        OperationRepository.register(
+            OPERATION_LOOT,
+            (mem: any) => LootOperation.fromMemory(mem));
     }
 
     static registerFlagOps(): void {
         FlagOperationRepository.register(
             FLAG_OPERATION_DISMANTLE,
             (flag: Flag) => new DismantleFlagOperation(flag));
+        FlagOperationRepository.register(
+            FLAG_OPERATION_LOOT,
+            (flag: Flag) => new LootFlagOperation(flag));
     }
 }
