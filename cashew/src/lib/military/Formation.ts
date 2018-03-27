@@ -52,18 +52,17 @@ export class Formation {
 
 
     public assign(creep: string, positionName: string): FormationPosition {
+        // check if the original vanguard position is open, and if it matches
         if (!this.vanguard.originalVanguard) {
-            for (var i = 0; i < this.positions.length; i++) {
-                if (this.positions[i].originalVanguard && !this.positions[i].creepName) {
-                    if (this.positions[i].name == positionName) {
-                        this.positions[i].assign(creep);
-                        this.changeVanguard(this.positions[i]);
-                        return this.positions[i];
-                    } else {
-                        break;
-                    }
-                }
+            let originalVanguard = this.getOriginalVanguard();
+            if (originalVanguard.name == positionName && !originalVanguard.creepName) {
+                originalVanguard.assign(creep);
+                this.changeVanguard(originalVanguard);
+                return originalVanguard;
             }
+        } else if (!this.vanguard.creepName) {
+            this.vanguard.assign(creep);
+            return this.vanguard;
         }
 
         for (var i = 0; i < this.positions.length; i++) {
@@ -229,6 +228,15 @@ export class Formation {
             return FormationState.Free;
     }
 
+
+    private getOriginalVanguard(): FormationPosition {
+        if (this.vanguard.originalVanguard)
+            return this.vanguard;
+        for (var i = 0; i < this.positions.length; i++)
+            if (this.positions[i].originalVanguard)
+                return this.positions[i];
+        return null;        
+    }
 
     private getRoomPosition(position: FormationPosition): RoomPosition {
         return RoomHelper.transformRoomPosition(this.vanguard.creep.pos, { x: position.x, y: position.y });

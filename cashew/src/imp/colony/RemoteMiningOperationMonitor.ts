@@ -22,18 +22,13 @@ export class RemoteMiningOperationMonitor extends ColonyMonitor {
     }
 
     public execute(context: Colony): void {
-        if (context.nest.room.controller.level >= 2) {
-            for (var i = 0; i < context.remoteMiningManager.rooms.length; i++) {
-                let room = context.remoteMiningManager.rooms[i];
-                if (!room.beingScouted)
-                    this.ensureOperation(
-                        context,
-                        OPERATION_REMOTE_HARVEST_SCOUT,
-                        1,
-                        () => new RemoteHarvestScoutOperation,
-                        (op: RemoteHarvestScoutOperation) => op.targetRoom == room.name);
-            }
-        }       
+        if (context.nest.room.controller.level >= 2)
+            if (_.any(context.remoteMiningManager.rooms, p => !p.beingScouted))
+                this.ensureOperation(
+                    context,
+                    OPERATION_REMOTE_HARVEST_SCOUT,
+                    2,
+                    () => new RemoteHarvestScoutOperation);
 
         if (context.nest.room.controller.level >= 3) {
             for (var i = 0; i < context.remoteMiningManager.rooms.length; i++) {
