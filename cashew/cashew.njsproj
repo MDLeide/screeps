@@ -62,6 +62,7 @@
     <Folder Include="src\lib\flags\" />
     <Folder Include="src\lib\military\" />
     <Folder Include="src\lib\monitor\" />
+    <Folder Include="src\lib\military-test\" />
     <Folder Include="src\lib\visual\lib\" />
     <Folder Include="src\yagni\colonyPlan\" />
     <Folder Include="src\lib\util\dbg\" />
@@ -230,9 +231,6 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\monitor\MonitorManager.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\empire\Campaign.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\flags\FlagMonitor.ts">
