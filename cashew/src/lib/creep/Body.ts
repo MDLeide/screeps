@@ -75,7 +75,7 @@ export class Body {
 
         var parts = this.getConstantParts();
         if (this.scalingPartCost == 0)
-            return parts;
+            return this.orderParts(parts);
 
         var remainingEnergy = energy - this.constantPartCost;
 
@@ -88,7 +88,7 @@ export class Body {
         this.pushFullParts(parts, fullScalingSections);
                        
         if (this.completeScalingPartsOnly)
-            return parts;
+            return this.orderParts(parts);
 
         remainingEnergy = remainingEnergy - fullScalingSections * this.scalingPartCost;
 
@@ -127,25 +127,30 @@ export class Body {
     }
 
     private orderParts(parts: BodyPartConstant[]): BodyPartConstant[] {
-        let move = [];
+        let tough = 0;
+        let move = 0;
         let other = [];
 
         for (var i = 0; i < parts.length; i++) {
             if (parts[i] == MOVE)
-                move.push(parts[i]);
+                move++;
+            else if (parts[i] == TOUGH)
+                tough++;
             else
                 other.push(parts[i]);
         }
 
         let ordered = [];
-        let half = Math.ceil(move.length / 2);
-        let moveSplice = move.splice(0, half);
-        for (var i = 0; i < moveSplice.length; i++)
-            ordered.push(moveSplice[i]);
+        let half = Math.floor(move / 2);
+        let remainder = move - half;
+        for (var i = 0; i < tough; i++)
+            ordered.push(TOUGH);
+        for (var i = 0; i < half; i++)
+            ordered.push(MOVE);
         for (var i = 0; i < other.length; i++)
             ordered.push(other[i]);
-        for (var i = 0; i < move.length; i++)
-            ordered.push(move[i]);
+        for (var i = 0; i < remainder; i++)
+            ordered.push(MOVE);
 
         return ordered;
     }
