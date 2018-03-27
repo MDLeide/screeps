@@ -113,7 +113,7 @@ declare global {
     interface NestMemory {
         roomName: string;
         map: NestMapMemory;
-        fillOrderIds: string[];
+        spawnEnergyStructureOrderIds: string[];
     }
 
     interface RemoteMiningManagerMemory {

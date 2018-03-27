@@ -8,7 +8,7 @@ import { Body } from "../creep/Body";
 export class Nest {
     public static fromMemory(memory: NestMemory): Nest {
         let nest = new this(memory.roomName, NestMap.fromMemory(memory.map));
-        nest.fillOrderIds = memory.fillOrderIds;
+        nest.spawnEnergyStructureOrderIds = memory.spawnEnergyStructureOrderIds;
         return nest;
     }
 
@@ -28,8 +28,8 @@ export class Nest {
 
 
     public spawners: Spawner[];
-    public fillOrderIds: string[] = [];
-    public fillOrder: (StructureExtension | StructureSpawn)[] = [];
+    public spawnEnergyStructureOrderIds: string[] = [];
+    public spawnEnergyStructureOrder: (StructureExtension | StructureSpawn)[] = [];
     public nestMap: NestMap;
     public roomName: string;    
     public room: Room;
@@ -47,7 +47,7 @@ export class Nest {
     public spawnCreep(body: Body): { name: string, spawner: Spawner } | null {        
         for (var i = 0; i < this.spawners.length; i++) {
             if (this.spawners[i].canSpawn(body)) {
-                var name = this.spawners[i].spawnCreep(body, this.fillOrder); 
+                var name = this.spawners[i].spawnCreep(body, this.spawnEnergyStructureOrder); 
                 if (name) 
                     return { name: name, spawner: this.spawners[i] };
             }
@@ -61,9 +61,9 @@ export class Nest {
         for (var i = 0; i < this.spawners.length; i++) {
             this.spawners[i].load();
         }
-        this.fillOrder = [];
-        for (var i = 0; i < this.fillOrderIds.length; i++)
-            this.fillOrder.push(Game.getObjectById<(StructureExtension | StructureSpawn)>(this.fillOrderIds[i]));        
+        this.spawnEnergyStructureOrder = [];
+        for (var i = 0; i < this.spawnEnergyStructureOrderIds.length; i++)
+            this.spawnEnergyStructureOrder.push(Game.getObjectById<(StructureExtension | StructureSpawn)>(this.spawnEnergyStructureOrderIds[i]));        
     }
 
     public update(): void {
@@ -86,20 +86,20 @@ export class Nest {
     }
 
     public checkFillOrder(): void {
-        if (!this.fillOrder || (this.fillOrder && this.fillOrder.length == 0) || Game.time % 100 == 0) {
+        if (!this.spawnEnergyStructureOrder || (this.spawnEnergyStructureOrder && this.spawnEnergyStructureOrder.length == 0) || Game.time % 100 == 0) {
             let spawns = this.room.find<StructureSpawn>(
                 FIND_MY_STRUCTURES,
                 { filter: (s) => s.structureType == STRUCTURE_SPAWN });
             let extensions = this.room.find<StructureExtension>(
                 FIND_MY_STRUCTURES,
                 { filter: (e) => e.structureType == STRUCTURE_EXTENSION });
-            if (extensions.length + spawns.length > this.fillOrderIds.length) {
-                this.updateFillOrder();
+            if (extensions.length + spawns.length > this.spawnEnergyStructureOrderIds.length) {
+                this.updateEnergyStructureOrder();
             }
         }
     }
     
-    private updateFillOrder(): void {
+    private updateEnergyStructureOrder(): void {
         let locations = this.nestMap.extensionBlock.getFillOrder();
         let order: string[] = [];
         for (var i = 0; i < locations.length; i++) {
@@ -116,14 +116,14 @@ export class Nest {
         for (var i = 0; i < spawns.length; i++)
             order.push(spawns[i].id);
 
-        this.fillOrderIds = order;
+        this.spawnEnergyStructureOrderIds = order;
     }
 
     public save(): NestMemory {
         return {
             roomName: this.roomName,
             map: this.nestMap.save(),
-            fillOrderIds: this.fillOrderIds
+            spawnEnergyStructureOrderIds: this.spawnEnergyStructureOrderIds
         };
     }
 }
