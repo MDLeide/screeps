@@ -1,8 +1,3 @@
-declare const FLAG_OPERATION: "Operation";
-declare const FLAG_COLONY: "Colony";
-declare const FLAG_CAMPAIGN: "Campaign";
-declare const FLAG_MARKER: "Marker";
-
 declare const TASK_IDLE: "Idle";
 declare const TASK_MOVE_TO: "MoveTo";
 declare const TASK_TRANSFER: "Transfer";
@@ -48,14 +43,7 @@ declare const OPERATION_NEW_SPAWN_CONSTRUCTION: "NewSpawnConstruction";
 declare const OPERATION_RESERVATION: "Reservation";
 declare const OPERATION_DISMANTLE: "Dismantle";
 declare const OPERATION_LOOT: "Loot";
-
-declare const PROGRESS_STANDARD: "Standard";
-
-declare const PLAN_INFRASTRUCTURE: "Infrastructure";
-declare const PLAN_ECONOMY: "Economy";
-declare const PLAN_REMOTE_MINING: "RemoteMining";
-declare const PLAN_ROAD: "Road";
-declare const PLAN_DEFENSE: "Defense";
+declare const OPERATION_CLAIM_ROOM: "ClaimRoom";
 
 declare const CREEP_CONTROLLER_HARVESTER: "Harvester";
 declare const CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: "HarvestInfrastructureBuilder";
@@ -78,6 +66,7 @@ declare const CREEP_CONTROLLER_WARRIOR: "Warrior";
 declare const CREEP_CONTROLLER_DISMANTLER: "Dismantler";
 declare const CREEP_CONTROLLER_WITHDRAW: "Withdraw";
 declare const CREEP_CONTROLLER_TRANSFER: "Transfer";
+declare const CREEP_CONTROLLER_HARVEST_BUILDER: "HarvestBuilder";
 
 declare const BODY_LIGHT_WORKER: "LightWorker";
 declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
@@ -110,19 +99,12 @@ declare const FORMATION_STANDARD: "Standard";
 
 declare const TARGETING_TACTICS_STANDARD: "Standard";
 
-declare const PROCESS_MAIN: "Main";
-declare const PROCESS_EMPIRE: "Empire";
-declare const PROCESS_COLONY_SEARCH: "ColonySearch";
-declare const PROCESS_COLONY: "Colony";
-declare const PROCESS_OPERATION: "Operation";
-
 declare const FLAG_OPERATION_DISMANTLE: "Dismantle";
 declare const FLAG_OPERATION_LOOT: "Loot";
 
-type FLAG_OPERATION = "Operation";
-type FLAG_COLONY = "Colony";
-type FLAG_CAMPAIGN = "Campaign";
-type FLAG_MARKER = "Marker";
+declare const CAMPAIGN_CLAIM_COLONY: "ClaimColony";
+
+declare const FLAG_CAMPAIGN_CLAIM_COLONY: "ClaimColony";
 
 type TASK_IDLE = "Idle";
 type TASK_MOVE_TO = "MoveTo";
@@ -169,14 +151,7 @@ type OPERATION_NEW_SPAWN_CONSTRUCTION = "NewSpawnConstruction";
 type OPERATION_RESERVATION = "Reservation";
 type OPERATION_DISMANTLE = "Dismantle";
 type OPERATION_LOOT = "Loot";
-
-type PROGRESS_STANDARD = "Standard";
-
-type PLAN_INFRASTRUCTURE = "Infrastructure";
-type PLAN_ECONOMY = "Economy";
-type PLAN_REMOTE_MINING = "RemoteMining";
-type PLAN_ROAD = "Road";
-type PLAN_DEFENSE = "Defense";
+type OPERATION_CLAIM_ROOM = "ClaimRoom";
 
 type CREEP_CONTROLLER_HARVESTER = "Harvester";
 type CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "HarvestInfrastructureBuilder";
@@ -199,6 +174,7 @@ type CREEP_CONTROLLER_WARRIOR = "Warrior";
 type CREEP_CONTROLLER_DISMANTLER = "Dismantler";
 type CREEP_CONTROLLER_WITHDRAW = "Withdraw";
 type CREEP_CONTROLLER_TRANSFER = "Transfer";
+type CREEP_CONTROLLER_HARVEST_BUILDER = "HarvestBuilder";
 
 type BODY_LIGHT_WORKER = "LightWorker";
 type BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -231,20 +207,12 @@ type FORMATION_STANDARD = "Standard";
 
 type TARGETING_TACTICS_STANDARD = "Standard";
 
-type PROCESS_MAIN = "Main";
-type PROCESS_EMPIRE = "Empire";
-type PROCESS_COLONY_SEARCH = "ColonySearch";
-type PROCESS_COLONY = "Colony";
-type PROCESS_OPERATION = "Operation";
-
 type FLAG_OPERATION_DISMANTLE = "Dismantle";
 type FLAG_OPERATION_LOOT = "Loot";
 
-type FlagType =
-    FLAG_OPERATION |
-    FLAG_COLONY |
-    FLAG_CAMPAIGN |
-    FLAG_MARKER;
+type CAMPAIGN_CLAIM_COLONY = "ClaimColony";
+
+type FLAG_CAMPAIGN_CLAIM_COLONY = "ClaimColony";
 
 type TaskType =
     TASK_IDLE |
@@ -292,17 +260,8 @@ type OperationType =
     OPERATION_NEW_SPAWN_CONSTRUCTION |
     OPERATION_RESERVATION |
     OPERATION_DISMANTLE |
-    OPERATION_LOOT;
-
-type ProgressType =
-    PROGRESS_STANDARD;
-
-type PlanType =
-    PLAN_INFRASTRUCTURE |
-    PLAN_ECONOMY |
-    PLAN_REMOTE_MINING |
-    PLAN_ROAD |
-    PLAN_DEFENSE;
+    OPERATION_LOOT |
+    OPERATION_CLAIM_ROOM;
 
 type CreepControllerType =
     CREEP_CONTROLLER_HARVESTER |
@@ -325,7 +284,8 @@ type CreepControllerType =
     CREEP_CONTROLLER_WARRIOR |
     CREEP_CONTROLLER_DISMANTLER |
     CREEP_CONTROLLER_WITHDRAW |
-    CREEP_CONTROLLER_TRANSFER;
+    CREEP_CONTROLLER_TRANSFER |
+    CREEP_CONTROLLER_HARVEST_BUILDER;
 
 type BodyType =
     BODY_LIGHT_WORKER |
@@ -364,14 +324,13 @@ type FormationType =
 type TargetingTacticsType =
     TARGETING_TACTICS_STANDARD;
 
-type ProcessType =
-    PROCESS_MAIN |
-    PROCESS_EMPIRE |
-    PROCESS_COLONY_SEARCH |
-    PROCESS_COLONY |
-    PROCESS_OPERATION;
-
 type FlagOperationType =
     FLAG_OPERATION_DISMANTLE |
     FLAG_OPERATION_LOOT;
+
+type CampaignType =
+    CAMPAIGN_CLAIM_COLONY;
+
+type FlagCampaignType =
+    FLAG_CAMPAIGN_CLAIM_COLONY;
 

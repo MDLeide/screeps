@@ -11,7 +11,7 @@ export class HarvestBuilderJob extends Job {
 
 
     constructor(siteId: string) {
-        super(CREEP_CONTROLLER_BUILDER);
+        super(CREEP_CONTROLLER_HARVEST_BUILDER);
         this.siteId = siteId;
         this.targetSite = Game.getObjectById<ConstructionSite>(siteId);
     }

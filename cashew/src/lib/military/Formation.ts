@@ -2,9 +2,9 @@ import { RoomHelper } from "../util/RoomHelper";
 
 export enum FormationMoveResult {
     OK,
-    Fatigued,
+    Fatigued, // 1
     AtDestination,
-    Stuck,
+    Stuck, // 3
     NoVanguard
 }
 
@@ -31,7 +31,15 @@ export class Formation {
 
     constructor(vanguard: FormationPosition, positions: FormationPosition[], type: FormationType) {
         if (vanguard.x != 0 || vanguard.y != 0) throw new Error("Vanguard position must be {0, 0}.");
-        vanguard.originalVanguard = true;
+        let vanguardFound = false;
+        for (var i = 0; i < positions.length; i++) {
+            if (positions[i].originalVanguard) {
+                vanguardFound = true;
+                break;
+            }
+        }
+        if (!vanguardFound)
+            vanguard.originalVanguard = true;
         this.vanguard = vanguard;
         this.positions = positions;
         this.type = type;
@@ -292,10 +300,10 @@ export class Formation {
 export class FormationPosition {
     public static fromMemory(memory: FormationPositionMemory): FormationPosition {
         let formation = new this(memory.name, memory.x, memory.y);
-        if (memory.creep)
+        if (memory.creep) {
             formation.creep = Game.creeps[memory.creep];
-        if (!formation.creep)
-            memory.creep = undefined;
+            formation.creepName = memory.creep;
+        }
         formation.originalVanguard = memory.originalVanguard;
         return formation;
     }
@@ -315,6 +323,7 @@ export class FormationPosition {
 
     public assign(creepName: string): void {
         this.creepName = creepName;
+        this.creep = Game.creeps[creepName];
     }
 
     public release(): void {

@@ -1,4 +1,4 @@
-import { Unit } from "./Unit";
+import { Squad } from "./Squad";
 
 export abstract class TargetingTactics {
     constructor(type: TargetingTacticsType) {
@@ -6,8 +6,8 @@ export abstract class TargetingTactics {
     }
 
     public type: TargetingTacticsType;
-    public abstract getAttackTargets(unit: Unit): AttackableTarget[];
-    public abstract getHealTargets(unit: Unit): Creep[];
+    public abstract getAttackTargets(unit: Squad): AttackableTarget[];
+    public abstract getHealTargets(unit: Squad): Creep[];
 }
 
 export class TargetingTacticsRepository {

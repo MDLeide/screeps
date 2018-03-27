@@ -41,6 +41,9 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
     }
 
     private checkInfrastructure(colony: Colony): void {
+        if (!colony.nest.spawners || !colony.nest.spawners.length)
+            return;
+
         if (this.levelOne(colony))
             return;
         if (colony.nest.room.controller.level >= 2)

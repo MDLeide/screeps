@@ -40,6 +40,8 @@ import { LootOperation } from "../operation/military/LootOperation";
 // flags
 import { DismantleFlagOperation } from "../operation/flag/DismantleFlagOperation";
 import { LootFlagOperation } from "../operation/flag/LootFlagOperation";
+import { ClaimRoomOperation } from "../operation/military/ClaimRoomOperation";
+import { NewSpawnConstructionOperation } from "../operation/infrastructure/NewSpawnConstructionOperation";
 
 
 export class OperationRegistration {
@@ -159,7 +161,11 @@ export class OperationRegistration {
 
         OperationRepository.register(
             OPERATION_REPLACE_ORIGINAL_SPAWN,
-            (memory: any) => ReplaceOriginalSpawnOperation.fromMemory(memory));	
+            (memory: any) => ReplaceOriginalSpawnOperation.fromMemory(memory));
+
+        OperationRepository.register(
+            OPERATION_NEW_SPAWN_CONSTRUCTION,
+            (memory: any) => NewSpawnConstructionOperation.fromMemory(memory));
     }
 
     static registerMilitary(): void {
@@ -174,6 +180,10 @@ export class OperationRegistration {
         OperationRepository.register(
             OPERATION_LOOT,
             (mem: any) => LootOperation.fromMemory(mem));
+
+        OperationRepository.register(
+            OPERATION_CLAIM_ROOM,
+            (mem: any) => ClaimRoomOperation.fromMemory(mem));
     }
 
     static registerFlagOps(): void {

@@ -54,6 +54,9 @@ export class MilitaryCalculator {
     }
     
     public static getRangedMassAttackDamage(position: RoomPosition | { pos: RoomPosition }, nearbyTargets?: Creep[]): number {
+        if (!position)
+            return 0;
+
         if (!(position instanceof RoomPosition))
             return this.getRangedMassAttackDamage(position.pos);
 

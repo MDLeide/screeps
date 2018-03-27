@@ -66,8 +66,8 @@ export class StatCollection {
 
         for (var i = 0; i < empire.colonies.length; i++) {
             let c = empire.colonies[i];
-
-            creeps.spawning += c.population.spawning.length;
+            if (c.population.spawning)
+                creeps.spawning += c.population.spawning.length;
             creeps.alive += c.population.alive.length;
         }
 

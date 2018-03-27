@@ -3,7 +3,7 @@ import { RoomHelper } from "../../../lib/util/RoomHelper";
 import { BodyRepository } from "../../creep/BodyRepository";
 import { Colony } from "../../../lib/colony/Colony";
 import { ColonyMonitor } from "../../../lib/colony/ColonyMonitor";
-import { Unit } from "../../../lib/military/Unit";
+import { Squad } from "../../../lib/military/Squad";
 
 import { MilitaryCalculator } from "../../../lib/util/MilitaryCalculator";
 
@@ -18,7 +18,7 @@ export class ColonyDefenseMonitor extends ColonyMonitor {
     public static fromMemory(memory: ColonyDefenseMonitorMemory): ColonyDefenseMonitor {
         let monitor = new this();
         for (let key in memory.units)
-            monitor.units[key] = Unit.fromMemory(memory.units[key]);
+            monitor.units[key] = Squad.fromMemory(memory.units[key]);
         return ColonyMonitor.fromMemory(memory, monitor) as ColonyDefenseMonitor;
     }
 
@@ -26,7 +26,7 @@ export class ColonyDefenseMonitor extends ColonyMonitor {
         super(MONITOR_COLONY_DEFENSE);
     }
     
-    public units: { [room: string]: Unit } = {};
+    public units: { [room: string]: Squad } = {};
 
     public load(): void {
     }
@@ -50,11 +50,11 @@ export class ColonyDefenseMonitor extends ColonyMonitor {
     }
 
     //todo: this is a mess
-    private controlUnit(room: string, unit: Unit, colony: Colony): void {
+    private controlUnit(room: string, unit: Squad, colony: Colony): void {
         if (!unit.rallying) {
             let rallySuccess = false;
-            let outterCount = 0;
-            let count = 0;
+            let outterCount = 1;
+            let count = 1;
             while (!rallySuccess) {
                 let transform = { x: (count < 2 ? 3 : -3), y: (count % 2 == 0 ? 3 : -3) };
                 transform.x = transform.x * outterCount;
@@ -64,7 +64,7 @@ export class ColonyDefenseMonitor extends ColonyMonitor {
                     transform);
                 count++;
                 if (count > 3) {
-                    count = 0;
+                    count = 1;
                     outterCount++;
                 }
 
@@ -105,12 +105,15 @@ export class ColonyDefenseMonitor extends ColonyMonitor {
         for (var i = 0; i < colony.remoteMiningManager.rooms.length; i++) {
             let remoteRoom = colony.remoteMiningManager.rooms[i];
             if (!remoteRoom.active)
-                continue;            
-                
+                continue;
+
+            if (this.units[remoteRoom.name] && this.units[remoteRoom.name].openPositions == this.units[remoteRoom.name].members.length)
+                delete this.units[remoteRoom.name];
+
             let room = Game.rooms[remoteRoom.name];
             if (!room)
                 continue;
-
+            
             let hostiles = room.find(FIND_HOSTILE_CREEPS);
             if (hostiles.length) {
                 if (!this.units[remoteRoom.name]) {
@@ -120,23 +123,20 @@ export class ColonyDefenseMonitor extends ColonyMonitor {
                         new Ranger("right")
                     ];
 
-                    let unit = new Unit(
+                    let unit = new Squad(
                         members,
                         StandardFormation.getFormation(),
                         new StandardTargetingTactics());
 
                     this.units[remoteRoom.name] = unit;
                 }
-            } else {
-                if (this.units[remoteRoom.name])
-                    delete this.units[remoteRoom.name];
             }
         }
     }
 
 
-    protected getUnitMemory(): { [room: string]: UnitMemory } {
-        let mem: { [room: string]: UnitMemory } = {};
+    protected getUnitMemory(): { [room: string]: SquadMemory } {
+        let mem: { [room: string]: SquadMemory } = {};
         for (let key in this.units)
             mem[key] = this.units[key].save();
         return mem;
@@ -150,5 +150,5 @@ export class ColonyDefenseMonitor extends ColonyMonitor {
 }
 
 export interface ColonyDefenseMonitorMemory extends ColonyMonitorMemory {
-    units: { [room: string]: UnitMemory };
+    units: { [room: string]: SquadMemory };
 }

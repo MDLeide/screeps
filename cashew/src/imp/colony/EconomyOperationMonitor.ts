@@ -30,6 +30,9 @@ export class EconomyOperationMonitor extends ColonyMonitor {
     }
 
     private checkEconomy(colony: Colony): void {
+        if (!colony.nest.spawners || !colony.nest.spawners.length)
+            return;
+
         if (colony.resourceManager.structures.sourceAContainer)
             this.ensureOperation(
                 colony,

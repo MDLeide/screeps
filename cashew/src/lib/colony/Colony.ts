@@ -13,6 +13,7 @@ import { Body } from "../creep/Body";
 import { MapBlock } from "../map/base/MapBlock";
 import { TypedMonitorManager } from "../monitor/MonitorManager";
 import { OperationGroup } from "../operation/OperationGroup";
+import { Campaign, CampaignRepository } from "../operation/Campaign";
 
 export class Colony  {
     public static fromMemory(memory: ColonyMemory): Colony {
@@ -26,7 +27,9 @@ export class Colony  {
         colony.watchtower = Watchtower.fromMemory(memory.watchtower);
         colony.resourceManager = ResourceManager.fromMemory(memory.resourceManager, colony);
         colony.operations = OperationGroup.fromMemory(memory.operations);
-                
+        for (var i = 0; i < memory.campaigns.length; i++)
+            colony.campaigns.push(CampaignRepository.load(memory.campaigns[i]));
+        
         return colony;
     }
 
@@ -49,6 +52,7 @@ export class Colony  {
 
     public monitorManager: TypedMonitorManager<Colony>;
     public operations: OperationGroup;
+    public campaigns: Campaign[] = [];
 
     public towerController: TowerController;
     public towers: StructureTower[] = [];
@@ -74,6 +78,8 @@ export class Colony  {
         
         this.monitorManager.load();
         this.operations.load();
+        for (var i = 0; i < this.campaigns.length; i++)
+            this.campaigns[i].load();
 
         this.remoteMiningManager.load();        
     }
@@ -86,9 +92,13 @@ export class Colony  {
 
         this.monitorManager.update(this);
         this.operations.update(this);
+        for (var i = 0; i < this.campaigns.length; i++)
+            this.campaigns[i].update(this);        
 
         for (var i = 0; i < this.towers.length; i++)
             this.towerController.update(this, this.towers[i]);
+
+
     }
 
     public execute(): void {
@@ -97,6 +107,8 @@ export class Colony  {
         this.watchtower.execute(this);
         this.monitorManager.execute(this);
         this.operations.execute(this);
+        for (var i = 0; i < this.campaigns.length; i++)
+            this.campaigns[i].execute(this);
 
         for (var i = 0; i < this.towers.length; i++)
             this.towerController.execute(this, this.towers[i]);
@@ -111,6 +123,11 @@ export class Colony  {
 
         this.monitorManager.cleanup(this);
         this.operations.cleanup(this);
+        for (var i = 0; i < this.campaigns.length; i++) {
+            this.campaigns[i].cleanup(this);
+            if (this.campaigns[i].finished)
+                this.campaigns.splice(i--, 1);
+        }
 
         for (var i = 0; i < this.towers.length; i++)
             this.towerController.cleanup(this, this.towers[i]);
@@ -144,7 +161,8 @@ export class Colony  {
             remoteMiningManager: this.remoteMiningManager.save(),
             watchtower: this.watchtower.save(),
             monitorManager: this.monitorManager.save(),
-            operations: this.operations.save()
+            operations: this.operations.save(),
+            campaigns: this.campaigns.map(p => p.save())
         };
     }
 }

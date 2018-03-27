@@ -66,5 +66,16 @@ export class GlobalExtension {
             };
             return `Flag ${flagName} set to ${type} hosted by colony ${hostColony}`;
         }
+
+        global.startFlagCampaign = function (flagName: string, type: FlagCampaignType, hostColony: string): string {
+            let flag = Game.flags[flagName];
+            if (!flag)
+                return `Flag ${flagName} not found.`;
+            flag.memory.flagCampaign = {
+                hostColony: hostColony,
+                type: type
+            };
+            return `Flag ${flagName} set to ${type} hosted by colony ${hostColony}`;
+        }
     }
 }

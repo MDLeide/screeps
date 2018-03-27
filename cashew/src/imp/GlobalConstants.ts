@@ -1,8 +1,3 @@
-global.FLAG_OPERATION = "Operation";
-global.FLAG_COLONY = "Colony";
-global.FLAG_CAMPAIGN = "Campaign";
-global.FLAG_MARKER = "Marker";
-
 global.TASK_IDLE = "Idle";
 global.TASK_MOVE_TO = "MoveTo";
 global.TASK_TRANSFER = "Transfer";
@@ -48,14 +43,7 @@ global.OPERATION_NEW_SPAWN_CONSTRUCTION = "NewSpawnConstruction";
 global.OPERATION_RESERVATION = "Reservation";
 global.OPERATION_DISMANTLE = "Dismantle";
 global.OPERATION_LOOT = "Loot";
-
-global.PROGRESS_STANDARD = "Standard";
-
-global.PLAN_INFRASTRUCTURE = "Infrastructure";
-global.PLAN_ECONOMY = "Economy";
-global.PLAN_REMOTE_MINING = "RemoteMining";
-global.PLAN_ROAD = "Road";
-global.PLAN_DEFENSE = "Defense";
+global.OPERATION_CLAIM_ROOM = "ClaimRoom";
 
 global.CREEP_CONTROLLER_HARVESTER = "Harvester";
 global.CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "HarvestInfrastructureBuilder";
@@ -78,6 +66,7 @@ global.CREEP_CONTROLLER_WARRIOR = "Warrior";
 global.CREEP_CONTROLLER_DISMANTLER = "Dismantler";
 global.CREEP_CONTROLLER_WITHDRAW = "Withdraw";
 global.CREEP_CONTROLLER_TRANSFER = "Transfer";
+global.CREEP_CONTROLLER_HARVEST_BUILDER = "HarvestBuilder";
 
 global.BODY_LIGHT_WORKER = "LightWorker";
 global.BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -110,14 +99,12 @@ global.FORMATION_STANDARD = "Standard";
 
 global.TARGETING_TACTICS_STANDARD = "Standard";
 
-global.PROCESS_MAIN = "Main";
-global.PROCESS_EMPIRE = "Empire";
-global.PROCESS_COLONY_SEARCH = "ColonySearch";
-global.PROCESS_COLONY = "Colony";
-global.PROCESS_OPERATION = "Operation";
-
 global.FLAG_OPERATION_DISMANTLE = "Dismantle";
 global.FLAG_OPERATION_LOOT = "Loot";
+
+global.CAMPAIGN_CLAIM_COLONY = "ClaimColony";
+
+global.FLAG_CAMPAIGN_CLAIM_COLONY = "ClaimColony";
 
 
 export class GlobalConstants {

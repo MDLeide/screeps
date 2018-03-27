@@ -2,8 +2,7 @@ import { TargetingTacticsRepository } from "../../lib/military/TargetingTactics"
 
 import { StandardTargetingTactics } from "../military/tactics/StandardTargetingTactics";
 
-
-import { UnitMemberRepository } from "../../lib/military/UnitMember";
+import { SquadMemberRepository } from "../../lib/military/SquadMember";
 
 import { Healer } from "../creep/military/Healer";
 import { Hoplite } from "../creep/military/Hoplite";
@@ -20,8 +19,8 @@ export class MilitaryRegistration {
     }
 
     private static registerUnitMembers(): void {
-        UnitMemberRepository.register(UNIT_MEMBER_HEALER, (mem) => Healer.fromMemory(mem));
-        UnitMemberRepository.register(UNIT_MEMBER_HOPLITE, (mem) => Hoplite.fromMemory(mem));
-        UnitMemberRepository.register(UNIT_MEMBER_RANGER, (mem) => Ranger.fromMemory(mem));
+        SquadMemberRepository.register(UNIT_MEMBER_HEALER, (mem) => Healer.fromMemory(mem));
+        SquadMemberRepository.register(UNIT_MEMBER_HOPLITE, (mem) => Hoplite.fromMemory(mem));
+        SquadMemberRepository.register(UNIT_MEMBER_RANGER, (mem) => Ranger.fromMemory(mem));
     }
 }

@@ -1,7 +1,7 @@
-import { Unit } from "./Unit"
+import { Squad } from "./Squad"
 
-export abstract class UnitMember {
-    public static fromMemory(memory: UnitMemberMemory, instance: UnitMember): UnitMember {
+export abstract class SquadMember {
+    public static fromMemory(memory: UnitMemberMemory, instance: SquadMember): SquadMember {
         instance.freeToMove = memory.freeToMove;
         instance.bodyType = memory.bodyType;
         instance.formationPosition = memory.formationPosition;
@@ -26,9 +26,9 @@ export abstract class UnitMember {
     public creepName: string;
     public creep: Creep;
 
-    public abstract update(unit: Unit): void;
-    public abstract execute(unit: Unit): void;
-    public abstract cleanup(unit: Unit): void;
+    public abstract update(unit: Squad): void;
+    public abstract execute(unit: Squad): void;
+    public abstract cleanup(unit: Squad): void;
 
     public save(): UnitMemberMemory {
         return {
@@ -41,14 +41,14 @@ export abstract class UnitMember {
     }
 }
 
-export class UnitMemberRepository {
-    public static register(unitMemberType: UnitMemberType, loadDelegate: (memory: UnitMemberMemory) => UnitMember) {
-        this.delegates[unitMemberType] = loadDelegate;
+export class SquadMemberRepository {
+    public static register(unitMemberType: UnitMemberType, loadDelegate: (memory: UnitMemberMemory) => SquadMember) {
+        SquadMemberRepository.delegates[unitMemberType] = loadDelegate;
     }
 
-    public static load(memory: UnitMemberMemory): UnitMember {
-        return this.delegates[memory.type](memory);
+    public static load(memory: UnitMemberMemory): SquadMember {
+        return SquadMemberRepository.delegates[memory.type](memory);
     }
 
-    private static delegates: { [unitMemberType: string]: (memory: any) => UnitMember } = {};
+    private static delegates: { [unitMemberType: string]: (memory: any) => SquadMember } = {};
 }

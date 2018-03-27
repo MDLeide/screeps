@@ -38,6 +38,7 @@ declare global {
         watchtower: WatchtowerMemory;
         monitorManager: MonitorManagerMemory;
         operations: OperationGroupMemory;
+        campaigns: CampaignMemory[];
     }
 
     interface ColonyMonitorMemory extends MonitorMemory {
@@ -109,23 +110,6 @@ declare global {
         netEnergy: number;
     }
 
-    interface ColonyPlanMemory {
-        type: PlanType;
-        description: string;
-        milestoneIndex: number;
-        operationGroup: OperationGroupMemory;
-    }
-
-    interface ColonyProgressMemory {
-        type: ProgressType;
-        milestoneIndex: number;
-    }
-
-    interface OperationPlanMemory {
-        type: PlanType;
-        operationGroup: OperationGroupMemory;
-    }
-
     interface NestMemory {
         roomName: string;
         map: NestMapMemory;
@@ -182,6 +166,11 @@ declare global {
         operations: OperationMemory[];
     }
 
+    interface CampaignMemory {
+        operations: OperationMemory[];
+        type: CampaignType;
+    }
+
     interface AssignmentMemory {
         creepName: string;
         body: BodyMemory;
@@ -196,12 +185,17 @@ declare global {
         hostColony: string;
     }
 
+    interface FlagCampaignMemory {
+        type: FlagCampaignType;
+        hostColony: string;
+    }
+
     /** END OPERATIONS **/
 
 
     /** MILITARY **/
 
-    interface UnitMemory {
+    interface SquadMemory {
         members: UnitMemberMemory[];
         formation: FormationMemory;
         targetingTactics: TargetingTacticsType;

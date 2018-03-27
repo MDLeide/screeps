@@ -76,7 +76,7 @@ export class Population {
             if (!creep) { // creep is dead
                 var name = this.creepIsDead(key);
                 if (name)
-                    Memory.creeps[key] = undefined;
+                    delete Memory.creeps[key];
             } else {
                 if (creep.spawning) {
                     this.creepIsSpawning(key);
@@ -121,7 +121,7 @@ export class Population {
         return null;
     }
 
-    public creepFromThisColony(creep: CreepMemory) {
+    public creepFromThisColony(creep: CreepMemory) : boolean {
         for (var i = 0; i < this.colony.nest.spawners.length; i++) {
             if (creep.homeSpawnId == this.colony.nest.spawners[i].spawn.id) {
                 return true;

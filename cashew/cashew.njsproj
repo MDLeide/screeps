@@ -52,6 +52,7 @@
     <Folder Include="src\imp\operation\infrastructure\" />
     <Folder Include="src\imp\operation\military\" />
     <Folder Include="src\imp\operation\flag\" />
+    <Folder Include="src\imp\operation\campaigns\" />
     <Folder Include="src\imp\registration\" />
     <Folder Include="src\lib\" />
     <Folder Include="src\imp\" />
@@ -62,7 +63,6 @@
     <Folder Include="src\lib\flags\" />
     <Folder Include="src\lib\military\" />
     <Folder Include="src\lib\monitor\" />
-    <Folder Include="src\lib\military-test\" />
     <Folder Include="src\lib\visual\lib\" />
     <Folder Include="src\yagni\colonyPlan\" />
     <Folder Include="src\lib\util\dbg\" />
@@ -92,6 +92,7 @@
     <TypeScriptCompile Include="src\global.d.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\ClaimJob.ts" />
     <TypeScriptCompile Include="src\imp\creep\DismantleJob.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -101,16 +102,34 @@
     <TypeScriptCompile Include="src\imp\creep\WithdrawJob.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\operation\campaigns\ClaimColonyCampaign.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\operation\flag\ClaimColonyFlagCampaign.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\flag\DismantleFlagOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\flag\LootFlagOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\operation\military\ClaimRoomOperation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\military\DismantleOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\military\LootOperation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\registration\CampaignRegistration.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\operation\Campaign.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\operation\FlagCampaign.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\DefensePlan.ts">
@@ -242,13 +261,13 @@
     <TypeScriptCompile Include="src\lib\military\TargetingTactics.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\military\Unit.ts">
+    <TypeScriptCompile Include="src\lib\military\Squad.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\military\UnitController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\military\UnitMember.ts">
+    <TypeScriptCompile Include="src\lib\military\SquadMember.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\monitor\Monitor.ts">

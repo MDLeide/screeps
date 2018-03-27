@@ -13,5 +13,6 @@ declare global {
         colonyData?: ColonyFlagMemory;
         playbackData?: PlaybackFlagMemory;
         flagOperation?: FlagOperationMemory;
+        flagCampaign?: FlagCampaignMemory;
     }    
 }

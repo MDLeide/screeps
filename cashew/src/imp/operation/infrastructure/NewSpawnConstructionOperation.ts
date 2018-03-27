@@ -16,7 +16,15 @@ export class NewSpawnConstructionOperation extends JobOperation {
     }
 
     constructor(roomName: string, location: { x: number, y: number }) {
-        super(OPERATION_NEW_SPAWN_CONSTRUCTION, []);
+        super(
+            OPERATION_NEW_SPAWN_CONSTRUCTION,
+            [
+                new Assignment(undefined, BodyRepository.lightWorker()),
+                new Assignment(undefined, BodyRepository.lightWorker()),
+                new Assignment(undefined, BodyRepository.lightWorker())
+            ]
+        );
+
         this.roomName = roomName;
         this.location = location;
     }
@@ -41,7 +49,7 @@ export class NewSpawnConstructionOperation extends JobOperation {
     protected onUpdate(colony: Colony): void {
         if (!this.siteBuilt && this.room) {
             this.room.createConstructionSite(this.location.x, this.location.y, STRUCTURE_SPAWN);
-            this.siteBuilt;
+            this.siteBuilt = true;
         } else if (this.room && this.siteBuilt && !this.siteId) {
             let look = this.room.lookForAt(LOOK_CONSTRUCTION_SITES, this.location.x, this.location.y);
             if (look.length) {

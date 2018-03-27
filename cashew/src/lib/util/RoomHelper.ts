@@ -269,12 +269,12 @@ export class RoomHelper {
     public static isWalkable(pos: RoomPosition, ignoreCreeps: boolean = true): boolean {
         let lookTerrain = pos.lookFor(LOOK_TERRAIN);
         for (var i = 0; i < lookTerrain.length; i++)
-            if (OBSTACLE_OBJECT_TYPES[lookTerrain[i]])
+            if (_.any(OBSTACLE_OBJECT_TYPES, (p) => p == lookTerrain[i]))
                 return false;
 
         let lookStructures = pos.lookFor(LOOK_STRUCTURES);
         for (var i = 0; i < lookStructures.length; i++)
-            if (OBSTACLE_OBJECT_TYPES[lookStructures[i].structureType])
+            if (_.any(OBSTACLE_OBJECT_TYPES, (p) => p == lookStructures[i].structureType))
                 return false;
 
         if (!ignoreCreeps) {

@@ -1,11 +1,11 @@
-import { UnitMember } from "../../../lib/military/UnitMember";
-import { Unit } from "../../../lib/military/Unit";
+import { SquadMember } from "../../../lib/military/SquadMember";
+import { Squad } from "../../../lib/military/Squad";
 import { MilitaryCalculator } from "../../../lib/util/MilitaryCalculator";
 
-export class Hoplite extends UnitMember {
+export class Hoplite extends SquadMember {
     public static fromMemory(memory: UnitMemberMemory): Hoplite {
         let hoplite = new this(memory.formationPosition);
-        return UnitMember.fromMemory(memory, hoplite) as Hoplite;
+        return SquadMember.fromMemory(memory, hoplite) as Hoplite;
     }
 
 
@@ -13,10 +13,10 @@ export class Hoplite extends UnitMember {
         super(UNIT_MEMBER_HOPLITE, BODY_HOPLITE, formationPosition);
     }
 
-    public update(unit: Unit): void {
+    public update(unit: Squad): void {
     }
 
-    public execute(unit: Unit): void {
+    public execute(unit: Squad): void {
         let didAttack = false;
         let didRangedAttack = false;
         let didMove = false;
@@ -71,7 +71,7 @@ export class Hoplite extends UnitMember {
         }
     }
 
-    public cleanup(unit: Unit): void {
+    public cleanup(unit: Squad): void {
 
     }
 }

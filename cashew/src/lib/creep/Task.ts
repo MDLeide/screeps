@@ -562,7 +562,7 @@ export class Harvest extends TargetedTask<Source> {
     }
 
     constructor(target: Source) {
-        super(TASK_CLAIM, target);
+        super(TASK_HARVEST, target);
     }
 
     public update(creep: Creep): void {

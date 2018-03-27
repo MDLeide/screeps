@@ -39,6 +39,21 @@ export class ColonyFinder {
         }
     }
 
+    public createColony(roomName: string): Colony {
+        let name = "Colony " + roomName;
+        if (this.colonyExists(global.empire, name)) {
+            global.events.empire.colonyFailedToEstablish(roomName, "Colony already exists");
+            return null;
+        }
+        let colony = this.buildFromName(roomName, name, this.nestMapBuilder);
+        if (!colony)
+            return null;
+
+        colony.initialize();
+        global.empire.addColony(colony);
+        return colony;
+    }
+
     private findFlags(): Flag[] {
         let flags = [];
         for (let key in Game.flags) {
@@ -62,6 +77,21 @@ export class ColonyFinder {
         let monitorManager = this.getMonitorManager();
         let colony = new Colony(nest, name, monitorManager);
         global.events.empire.colonyEstablished(name);
+        return colony;  
+    }
+
+    private buildFromName(roomName: string, colonyName: string, nestMapBuilder: NestMapBuilder): Colony {
+        let room = Game.rooms[roomName];
+        if (!room) {
+            global.events.empire.colonyFailedToEstablish(roomName, "No vision to room");
+            return null;
+        }
+
+        let nestMap = this.getNestMap(nestMapBuilder, room);
+        let nest = new Nest(roomName, nestMap);
+        let monitorManager = this.getMonitorManager();
+        let colony = new Colony(nest, colonyName, monitorManager);
+        global.events.empire.colonyEstablished(colonyName);
         return colony;  
     }
 

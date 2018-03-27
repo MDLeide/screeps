@@ -1,21 +1,21 @@
-import { UnitMember } from "../../../lib/military/UnitMember";
-import { Unit } from "../../../lib/military/Unit";
+import { SquadMember } from "../../../lib/military/SquadMember";
+import { Squad } from "../../../lib/military/Squad";
 import { MilitaryCalculator } from "../../../lib/util/MilitaryCalculator";
 
-export class Healer extends UnitMember {
+export class Healer extends SquadMember {
     public static fromMemory(memory: UnitMemberMemory): Healer {
         let healer = new this(memory.formationPosition);
-        return UnitMember.fromMemory(memory, healer) as Healer;
+        return SquadMember.fromMemory(memory, healer) as Healer;
     }
 
     constructor(formationPosition: string) {
         super(UNIT_MEMBER_HEALER, BODY_HEALER, formationPosition);
     }
 
-    public update(unit: Unit): void {
+    public update(unit: Squad): void {
     }
 
-    public execute(unit: Unit): void {
+    public execute(unit: Squad): void {
         let target: Creep;
         let range: number;
 
@@ -53,6 +53,6 @@ export class Healer extends UnitMember {
         }
     }
 
-    public cleanup(unit: Unit): void {
+    public cleanup(unit: Squad): void {
     }
 }

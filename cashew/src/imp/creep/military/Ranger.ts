@@ -1,11 +1,11 @@
-import { UnitMember } from "../../../lib/military/UnitMember";
-import { Unit } from "../../../lib/military/Unit";
+import { SquadMember } from "../../../lib/military/SquadMember";
+import { Squad } from "../../../lib/military/Squad";
 import { MilitaryCalculator } from "../../../lib/util/MilitaryCalculator";
 
-export class Ranger extends UnitMember {
+export class Ranger extends SquadMember {
     public static fromMemory(memory: UnitMemberMemory): Ranger {
         let ranger = new this(memory.formationPosition);
-        return UnitMember.fromMemory(memory, ranger) as Ranger;
+        return SquadMember.fromMemory(memory, ranger) as Ranger;
     }
 
 
@@ -13,10 +13,10 @@ export class Ranger extends UnitMember {
         super(UNIT_MEMBER_RANGER, BODY_RANGER, formationPosition);
     }
 
-    public update(unit: Unit): void {
+    public update(unit: Squad): void {
     }
 
-    public execute(unit: Unit): void {
+    public execute(unit: Squad): void {
         let didRangedAttack = false;
 
         let massAttackDamage = MilitaryCalculator.getRangedMassAttackDamage(this.creep);
@@ -58,6 +58,6 @@ export class Ranger extends UnitMember {
         }
     }
 
-    public cleanup(unit: Unit): void {
+    public cleanup(unit: Squad): void {
     }
 }

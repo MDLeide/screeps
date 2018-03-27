@@ -19,7 +19,7 @@ export class ClaimJob extends Job {
 
     protected onLoad(): void {
         if (this.targetRoomName)
-            this.targetRoom = Game.getObjectById<Room>(this.targetRoomName);
+            this.targetRoom = Game.rooms[this.targetRoomName];
     }
 
     protected onUpdate(creep: Creep): void { }

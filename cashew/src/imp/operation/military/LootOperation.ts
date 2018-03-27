@@ -13,13 +13,15 @@ export class LootOperation extends JobOperation {
     public static fromMemory(memory: LootOperationMemory): LootOperation {
         let target = Game.getObjectById<WithdrawTarget>(memory.targetId);
         let op = new this(target);
+        op.targetId = memory.targetId;
         return JobOperation.fromMemory(memory, op) as LootOperation;
     }
 
     constructor(target: WithdrawTarget) {
         super(OPERATION_LOOT, [new Assignment(undefined, BodyRepository.hauler())]);
         this.target = target;
-        this.targetId = target.id;
+        if (this.target)
+            this.targetId = target.id;
     }
 
 
@@ -50,6 +52,8 @@ export class LootOperation extends JobOperation {
     }
 
     public isFinished(colony: Colony): boolean {
+        if (!this.target)
+            return false;
         if (this.target instanceof StructureLab) {
             return this.target.energy == 0;
         } else if (this.target instanceof StructureLink) {

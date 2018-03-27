@@ -1,7 +1,7 @@
-import { Unit } from "./Unit";
+import { Squad } from "./Squad";
 
 export abstract class UnitController {
-    public abstract update(unit: Unit): void;
-    public abstract execute(unit: Unit): void;
-    public abstract cleanup(unit: Unit): void;
+    public abstract update(squad: Squad): void;
+    public abstract execute(squad: Squad): void;
+    public abstract cleanup(squad: Squad): void;
 }

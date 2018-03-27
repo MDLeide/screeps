@@ -1,20 +1,21 @@
 import { Formation, FormationPosition, FormationMoveResult, FormationState } from "./Formation";
 import { TargetingTactics, TargetingTacticsRepository } from "./TargetingTactics";
-import { UnitMember, UnitMemberRepository } from "./UnitMember"
+import { SquadMember, SquadMemberRepository } from "./SquadMember"
 
-export class Unit {
-    public static fromMemory(memory: UnitMemory): Unit {
-        let unit = new this(
-            memory.members.map(p => UnitMemberRepository.load(p)),
+export class Squad {
+    public static fromMemory(memory: SquadMemory): Squad {
+        let unit = new Squad(
+            memory.members.map(p => SquadMemberRepository.load(p)),
             Formation.fromMemory(memory.formation),
             TargetingTacticsRepository.load(memory.targetingTactics)
         );
-        unit.rallying = Rally.fromMemory(memory.rallying);
+        if (memory.rallying)
+            unit.rallying = Rally.fromMemory(memory.rallying);
         unit.engaging = memory.engaging;
         return unit;
     }
 
-    constructor(members: UnitMember[], formation: Formation, targetingTactics: TargetingTactics) {
+    constructor(members: SquadMember[], formation: Formation, targetingTactics: TargetingTactics) {
         if (members.length != formation.positions.length + 1)
             throw new Error("Must provide same number of unit members as formation has positions");
 
@@ -24,18 +25,14 @@ export class Unit {
     }
 
 
-    public members: UnitMember[];
+    public members: SquadMember[];
     public formation: Formation;
-    public targetingTactics: TargetingTactics;
-    
+    public targetingTactics: TargetingTactics;    
     public rallying: Rally;
-    public engaging: boolean;
-    
+    public engaging: boolean;    
     public attackTargets: AttackableTarget[] = [];
     public healTargets: Creep[] = [];
-
-    public position: RoomPosition;
-    
+    public position: RoomPosition;    
     public get capacity(): number {
         return this.formation.positions.length + 1;
     }
@@ -71,7 +68,8 @@ export class Unit {
             this.members.forEach(p => p.cleanup(this));
     }
 
-    public assign(member: UnitMember, creepName: string): void {
+
+    public assign(member: SquadMember, creepName: string): void {
         member.creepName = creepName;
         this.formation.assign(creepName, member.formationPosition);
         let memory = Memory.creeps[creepName];
@@ -79,13 +77,14 @@ export class Unit {
             memory.operation = "military";
     }
 
-    public getOpenMembers(): UnitMember[] {
+    public getOpenMembers(): SquadMember[] {
         let open = [];
         for (var i = 0; i < this.members.length; i++)
             if (!this.members[i].creepName)
                 open.push(this.members[i]);
         return open;
     }
+
 
     public engage(): void {
         this.engaging = true;
@@ -95,12 +94,14 @@ export class Unit {
         this.engaging = false;
     }
 
+
     public canRallyTo(rallyPoint: RoomPosition): boolean {
         return this.formation.canMoveTo(rallyPoint);
     }
 
     public rallyTo(rallyPoint: RoomPosition): void {
-        this.rallying = new Rally(rallyPoint);        
+        if (this.canRallyTo(rallyPoint))
+            this.rallying = new Rally(rallyPoint);        
     }
 
     public move(direction: DirectionConstant): FormationMoveResult {
@@ -110,7 +111,8 @@ export class Unit {
     public moveTo(pos: RoomPosition | { pos: RoomPosition }): FormationMoveResult {
         return this.formation.moveTo(pos);
     }
-        
+
+
     private rally(): void {
         let moveResult = this.formation.moveTo(this.rallying.rallyPoint);
         if (moveResult == FormationMoveResult.AtDestination) {
@@ -121,7 +123,8 @@ export class Unit {
         }
     }
 
-    public save(): UnitMemory {
+
+    public save(): SquadMemory {
         return {
             members: this.members.map(p => p.save()),
             formation: this.formation.save(),

@@ -1,9 +1,4 @@
 declare interface global {
-    FLAG_OPERATION: string;
-    FLAG_COLONY: string;
-    FLAG_CAMPAIGN: string;
-    FLAG_MARKER: string;
-
     TASK_IDLE: string;
     TASK_MOVE_TO: string;
     TASK_TRANSFER: string;
@@ -49,14 +44,7 @@ declare interface global {
     OPERATION_RESERVATION: string;
     OPERATION_DISMANTLE: string;
     OPERATION_LOOT: string;
-
-    PROGRESS_STANDARD: string;
-
-    PLAN_INFRASTRUCTURE: string;
-    PLAN_ECONOMY: string;
-    PLAN_REMOTE_MINING: string;
-    PLAN_ROAD: string;
-    PLAN_DEFENSE: string;
+    OPERATION_CLAIM_ROOM: string;
 
     CREEP_CONTROLLER_HARVESTER: string;
     CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: string;
@@ -79,6 +67,7 @@ declare interface global {
     CREEP_CONTROLLER_DISMANTLER: string;
     CREEP_CONTROLLER_WITHDRAW: string;
     CREEP_CONTROLLER_TRANSFER: string;
+    CREEP_CONTROLLER_HARVEST_BUILDER: string;
 
     BODY_LIGHT_WORKER: string;
     BODY_HEAVY_HARVESTER: string;
@@ -111,13 +100,11 @@ declare interface global {
 
     TARGETING_TACTICS_STANDARD: string;
 
-    PROCESS_MAIN: string;
-    PROCESS_EMPIRE: string;
-    PROCESS_COLONY_SEARCH: string;
-    PROCESS_COLONY: string;
-    PROCESS_OPERATION: string;
-
     FLAG_OPERATION_DISMANTLE: string;
     FLAG_OPERATION_LOOT: string;
+
+    CAMPAIGN_CLAIM_COLONY: string;
+
+    FLAG_CAMPAIGN_CLAIM_COLONY: string;
 
 }

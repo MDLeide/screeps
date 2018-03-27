@@ -1,5 +1,5 @@
 import { TargetingTactics } from "../../../lib/military/TargetingTactics";
-import { Unit } from "../../../lib/military/Unit";
+import { Squad } from "../../../lib/military/Squad";
 import { MilitaryCalculator } from "../../../lib/util/MilitaryCalculator";
 
 export class StandardTargetingTactics extends TargetingTactics {
@@ -7,7 +7,7 @@ export class StandardTargetingTactics extends TargetingTactics {
         super(TARGETING_TACTICS_STANDARD);
     }
 
-    public getAttackTargets(unit: Unit): AttackableTarget[] {
+    public getAttackTargets(unit: Squad): AttackableTarget[] {
         if (!unit.position) return [];
 
         let threats = MilitaryCalculator.getHostiles(unit.position, 10);
@@ -24,7 +24,7 @@ export class StandardTargetingTactics extends TargetingTactics {
         return scores.map(p => p.creep);        
     }
 
-    public getHealTargets(unit: Unit): Creep[] {
+    public getHealTargets(unit: Squad): Creep[] {
         if (!unit.position) return [];
 
         let damaged: { creep: Creep, dmg: number }[] = [];
