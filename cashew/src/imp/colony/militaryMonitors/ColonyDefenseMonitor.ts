@@ -32,21 +32,21 @@ export class ColonyDefenseMonitor extends ColonyMonitor {
     }
 
     public update(colony: Colony): void {
-        this.checkForNewThreats(colony);
-        for (let key in this.units)
-            this.units[key].update();
+        //this.checkForNewThreats(colony);
+        //for (let key in this.units)
+        //    this.units[key].update();
     }
 
     public execute(colony: Colony): void {
-        for (let key in this.units) {
-            this.controlUnit(key, this.units[key], colony);
-            this.units[key].execute();
-        }
+        //for (let key in this.units) {
+        //    this.controlUnit(key, this.units[key], colony);
+        //    this.units[key].execute();
+        //}
     }
 
     public cleanup(colony: Colony): void {
-        for (let key in this.units)
-            this.units[key].cleanup();
+        //for (let key in this.units)
+        //    this.units[key].cleanup();
     }
 
     //todo: this is a mess
@@ -79,11 +79,12 @@ export class ColonyDefenseMonitor extends ColonyMonitor {
         if (unit.rallying && !unit.rallying.complete) {
             let openPositions = unit.getOpenMembers();
             for (var i = 0; i < openPositions.length; i++) {
+                console.log(openPositions[i].creepName);
                 let body = BodyRepository.getBody(openPositions[i].bodyType);
                 if (colony.canSpawn(body)) {
                     let result = colony.spawnCreep(body);
                     if (result)
-                        unit.assign(openPositions[i], result.name);                    
+                        unit.assign(openPositions[i], result);                    
                 }
             }
         }
