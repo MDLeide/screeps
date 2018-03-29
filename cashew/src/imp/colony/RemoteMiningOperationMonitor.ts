@@ -17,11 +17,8 @@ export class RemoteMiningOperationMonitor extends ColonyMonitor {
     
     public load(): void {
     }
-
+    
     public update(context: Colony): void {
-    }
-
-    public execute(context: Colony): void {
         if (context.nest.room.controller.level >= 2)
             if (_.any(context.remoteMiningManager.rooms, p => !p.beingScouted))
                 this.ensureOperation(
@@ -68,6 +65,9 @@ export class RemoteMiningOperationMonitor extends ColonyMonitor {
             remoteSource.source.beingMined = true;
             remoteSource = context.remoteMiningManager.getNextMiningAssignment();
         }
+    }
+
+    public execute(context: Colony): void {
     }
 
     public cleanup(context: Colony): void {

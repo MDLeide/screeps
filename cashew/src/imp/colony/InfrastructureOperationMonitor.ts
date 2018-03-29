@@ -31,10 +31,10 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
     }
 
     public update(context: Colony): void {
+        this.checkInfrastructure(context);
     }
 
-    public execute(context: Colony): void {        
-        this.checkInfrastructure(context);
+    public execute(context: Colony): void {                
     }
 
     public cleanup(context: Colony): void {

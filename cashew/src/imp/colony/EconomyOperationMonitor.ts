@@ -20,10 +20,10 @@ export class EconomyOperationMonitor extends ColonyMonitor {
     }
 
     public update(context: Colony): void {
+        this.checkEconomy(context);
     }
 
-    public execute(context: Colony): void {        
-        this.checkEconomy(context);
+    public execute(context: Colony): void {                
     }
 
     public cleanup(context: Colony): void {        
