@@ -26,7 +26,30 @@ export class HarvestOperation extends ControllerOperation {
     public containerId: string;
     public linkId: string;
     
-    
+
+    private updateContainers(colony: Colony): void {
+        let container = colony.resourceManager.structures.getSourceContainer(this.sourceId);
+        if (container) this.containerId = container.id;
+        let link = colony.resourceManager.structures.getSourceLink(this.sourceId)
+        if (link) this.linkId = link.id;
+
+        for (let key in this.controllers) {
+            let c = this.controllers[key];
+            if (c.type == CREEP_CONTROLLER_HARVESTER) {
+                let harvester = c as HarvesterController;
+                if (link) {
+                    harvester.link = link;
+                    harvester.linkId = link.id;
+                }
+                if (container) {
+                    harvester.container = container;
+                    harvester.containerId = container.id;
+                }
+            }
+        }  
+    }
+
+
     protected onLoad(): void {
     }
 
@@ -34,27 +57,8 @@ export class HarvestOperation extends ControllerOperation {
         for (var i = 0; i < this.assignments.length; i++)
             this.assignments[i].body.minimumEnergy = Math.min(colony.nest.room.energyCapacityAvailable, 5 * BODYPART_COST[WORK] + BODYPART_COST[MOVE] + BODYPART_COST[CARRY]);
 
-        if (Game.time % 500 == 0) {
-            let container = colony.resourceManager.structures.getSourceContainer(this.sourceId);
-            if (container) this.containerId = container.id;
-            let link = colony.resourceManager.structures.getSourceLink(this.sourceId)
-            if (link) this.linkId = link.id;
-
-            for (let key in this.controllers) {
-                let c = this.controllers[key];
-                if (c.type == CREEP_CONTROLLER_HARVESTER) {
-                    let harvester = c as HarvesterController;
-                    if (link) {
-                        harvester.link = link;
-                        harvester.linkId = link.id;
-                    }
-                    if (container) {
-                        harvester.container = container;
-                        harvester.containerId = container.id;
-                    }
-                }
-            }            
-        }
+        if (Game.time % 500 == 0)
+            this.updateContainers(colony);
     }
 
     protected onExecute(colony: Colony): void {  

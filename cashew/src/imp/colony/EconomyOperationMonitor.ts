@@ -42,9 +42,7 @@ export class EconomyOperationMonitor extends ColonyMonitor {
                     colony.resourceManager.sourceAId,
                     colony.resourceManager.structures.sourceAContainerId,
                     colony.resourceManager.structures.sourceALinkId),
-                (op: HarvestOperation) => {
-                    return op.sourceId == colony.resourceManager.sourceAId;
-                });
+                (op: HarvestOperation) => op.sourceId == colony.resourceManager.sourceAId);
         
         if (colony.resourceManager.structures.sourceBContainer)
             this.ensureOperation(
