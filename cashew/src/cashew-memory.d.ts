@@ -7,8 +7,6 @@ declare global {
 
     interface ColonyFlagMemory {
         name: string;        
-        progress: ProgressType;
-        operationPlans: PlanType[];
     }
 
     interface PlaybackFlagMemory {
@@ -114,6 +112,13 @@ declare global {
         roomName: string;
         map: NestMapMemory;
         spawnEnergyStructureOrderIds: string[];
+        spawnQueue: SpawnRequestMemory[];
+    }
+
+    interface SpawnRequestMemory {
+        name: string;
+        priority: number;
+        body: BodyMemory;
     }
 
     interface RemoteMiningManagerMemory {

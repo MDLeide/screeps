@@ -1,5 +1,4 @@
 import { Body } from "../creep/Body";
-import { CreepNamer } from "./CreepNamer";
 
 export class Spawner {
     private _updated: boolean;
@@ -28,15 +27,27 @@ export class Spawner {
                 || this.spawn.room.energyAvailable >= body.maximumEnergy);
     }
     
-    public spawnCreep(body: Body, fillOrder: (StructureExtension | StructureSpawn)[]): string | null {
+    public spawnCreep(body: Body, fillOrder: (StructureExtension | StructureSpawn)[], name: string): string | null {
         if (!this._updated || this._cleanedup)
             throw new Error("Only call spawner.spawnCreep() during the execute phase.");        
         
         if (!this.canSpawn(body))
             return null;        
         
-        let finalBody = body.getBody(this.spawn.room.energyAvailable);        
-        var name = CreepNamer.getCreepName(body, this);
+        let finalBody = body.getBody(this.spawn.room.energyAvailable);
+        let memory = Memory.creeps[name];
+        if (memory) {
+            memory.homeSpawnId = this.spawn.id;
+            memory.birthTick = Game.time + 1;
+        } else {
+            memory = {
+                homeSpawnId: this.spawn.id,
+                body: body.type,
+                operation: "",
+                birthTick: Game.time + 1,
+                deathTick: 0
+            };
+        }
         var result = this.spawn.spawnCreep(
             finalBody,
             name,

@@ -73,10 +73,15 @@ export class Population {
                 continue;
             
             var creep = Game.creeps[key];
-            if (!creep) { // creep is dead
-                var name = this.creepIsDead(key);
-                if (name)
-                    delete Memory.creeps[key];
+            if (!creep) { 
+                if (!Memory.creeps[key].birthTick) { // creep scheduled for spawn
+                    this.creepIsSpawning(key);
+                } else { // creep is dead
+                    var name = this.creepIsDead(key);
+                    if (name)
+                        delete Memory.creeps[key];
+                }
+                
             } else {
                 if (creep.spawning) {
                     this.creepIsSpawning(key);

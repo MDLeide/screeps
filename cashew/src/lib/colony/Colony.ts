@@ -14,6 +14,7 @@ import { MapBlock } from "../map/base/MapBlock";
 import { TypedMonitorManager } from "../monitor/MonitorManager";
 import { OperationGroup } from "../operation/OperationGroup";
 import { Campaign, CampaignRepository } from "../operation/Campaign";
+import { EffectiveRcl, EffectiveRclCaclulator } from "./EffectiveRcl";
 
 export class Colony  {
     public static fromMemory(memory: ColonyMemory): Colony {
@@ -32,6 +33,8 @@ export class Colony  {
         
         return colony;
     }
+
+    private effectiveRcl: EffectiveRcl;
 
     constructor(nest: Nest, name: string, monitorManager: TypedMonitorManager<Colony>) {
         this.nest = nest;
@@ -58,6 +61,7 @@ export class Colony  {
     public towers: StructureTower[] = [];
     public linkManager: LinkManager;
 
+    
     /** Should be called once, after initial object contruction. Do not need to call when loading from memory. */
     public initialize(): void {
         this.remoteMiningManager = new RemoteMiningManager(this);
@@ -65,7 +69,7 @@ export class Colony  {
         this.watchtower = new Watchtower();
         this.resourceManager = new ResourceManager(this);
         this.resourceManager.initialize();
-        this.nest.checkFillOrder();
+        this.nest.checkEnergyStructureOrder();
         this.operations = new OperationGroup([]);
     }
     
@@ -97,8 +101,6 @@ export class Colony  {
 
         for (var i = 0; i < this.towers.length; i++)
             this.towerController.update(this, this.towers[i]);
-
-
     }
 
     public execute(): void {
@@ -134,6 +136,12 @@ export class Colony  {
     }
 
 
+    public getEffectiveRcl(forceRecalculation: boolean = false): EffectiveRcl {
+        if (forceRecalculation || !this.effectiveRcl)
+            this.effectiveRcl = EffectiveRclCaclulator.evaluate(this);
+        return this.effectiveRcl;
+    }
+
     public creepBelongsToColony(creep: (Creep | string)): boolean {
         if (creep instanceof Creep)
             return this.creepBelongsToColony(creep.name);
@@ -146,10 +154,8 @@ export class Colony  {
     }
     
     /** Returns the Spawner used if successful, otherwise null */
-    public spawnCreep(body: Body): {name: string, spawner: Spawner} | null {
+    public spawnCreep(body: Body): string | null {
         var result = this.nest.spawnCreep(body);
-        if (result)
-            global.events.colony.creepSpawning(this.name, result.name, body.type);
         return result;
     }
     

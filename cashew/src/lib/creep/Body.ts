@@ -43,7 +43,7 @@ export class Body {
             this.constantPartCost += BODYPART_COST[this.constantParts[i]];
 
         if (this.constantPartCost > minimumEnergy)
-            throw Error("Minimum energy cannot be less than constant part cost.");
+            throw Error(`Body ${type} error: Minimum energy [${minimumEnergy}] cannot be less than constant part cost [${this.constantPartCost}].`);
 
         for (var i = 0; i < this.scalingParts.length; i++)
             this.scalingPartCost += BODYPART_COST[this.scalingParts[i]];        

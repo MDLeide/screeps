@@ -166,7 +166,8 @@ class EmpireEvents extends EventGroup {
 
 class ColonyEvents extends EventGroup {
     public creepSpawnLevel: number = 3;
-    public spawnErrorLevel: number = 5;
+    public creepScheduledLevel: number = 3;
+    public spawnErrorLevel: number = 5;    
     public rclUpgradeLevel: number = 9;
     public underAttackLevel: number = 10;
     public milestoneMetLevel: number = 9;
@@ -193,6 +194,25 @@ class ColonyEvents extends EventGroup {
         sb.append(bodyType, this.colors.name);
 
         this.log(sb.toString(), this.creepSpawnLevel);
+    }
+
+    public creepScheduled(colonyName: string, creepName: string, bodyType: string): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append("Colony ", this.colors.identifier);
+        sb.append(colonyName, this.colors.name);
+        sb.append(" has ");
+        sb.append("scheduled spawning for a ", this.colors.positiveVerb);
+        sb.append("creep", this.colors.identifier);
+        sb.append(" named ");
+        sb.append(creepName, this.colors.name);
+        sb.append(" with a ");
+        sb.append("body", this.colors.identifier);
+        sb.append(" type of ");
+        sb.append(bodyType, this.colors.name);
+
+        this.log(sb.toString(), this.creepScheduledLevel);
     }
 
     public spawnError(spawnName: string, bodyType: string, error: string): void {
