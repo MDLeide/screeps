@@ -43,7 +43,7 @@ export class EventLog {
         sb.append(category, 'orange')
             .append(" ")
             .append(level.toString(), 'lightBlue');
-        console.log(`[${sb.getString()}] : ${msg}`);
+        console.log(`[${sb.toString()}] : ${msg}`);
     }
 }
 
@@ -88,8 +88,10 @@ abstract class EventGroup {
 class EmpireEvents extends EventGroup {
     public colonyEstablishedLevel: number = 10;
     public colonyFailedToEstablishLevel: number = 10;
+    public colonyRemovedLevel: number = 10;
     public nestMappingFailedLevel: number = 10;
     public gclUpgradedLevel: number = 10;
+    
 
     protected getCategory(): string {
         return "Empire";
@@ -103,7 +105,7 @@ class EmpireEvents extends EventGroup {
         sb.append(colonyName, this.colors.name);
         sb.append(" has been established", this.colors.importantPositiveVerb);
 
-        this.log(sb.getString(), this.colonyEstablishedLevel);
+        this.log(sb.toString(), this.colonyEstablishedLevel);
     }
 
     public colonyFailedToEstablish(roomName: string, msg: string): void {
@@ -116,7 +118,7 @@ class EmpireEvents extends EventGroup {
         sb.append(" : ");
         sb.append(msg, this.colors.information);
 
-        this.log(sb.getString(), this.colonyFailedToEstablishLevel);
+        this.log(sb.toString(), this.colonyFailedToEstablishLevel);
     }
 
     public nestMappingFailed(nestMap: NestMap, nestName: string, blockName: string): void {
@@ -130,7 +132,7 @@ class EmpireEvents extends EventGroup {
         sb.append("Nest ", this.colors.identifier);
         sb.append(nestName, this.colors.name);
 
-        this.log(sb.getString(), this.nestMappingFailedLevel);
+        this.log(sb.toString(), this.nestMappingFailedLevel);
 
 
         let visual = new NestStructureVisual(nestName, nestMap);
@@ -145,7 +147,20 @@ class EmpireEvents extends EventGroup {
         sb.append("GCL ", this.colors.identifier);
         sb.append(newLevel.toString(), this.colors.name);
 
-        this.log(sb.getString(), this.gclUpgradedLevel);
+        this.log(sb.toString(), this.gclUpgradedLevel);
+    }
+
+    public colonyRemoved(colonyName: string, msg?: string): void {
+        var sb = new StringBuilder();
+        sb.append("Colony ", this.colors.identifier);
+        sb.append(colonyName, this.colors.name);
+        sb.append(" was removed from the Empire", this.colors.importantNegativeVerb);
+        if (msg) {
+            sb.append(": ");
+            sb.append(msg, this.colors.information);
+        }
+
+        this.log(sb.toString(), this.colonyRemovedLevel);
     }
 }
 
@@ -177,7 +192,7 @@ class ColonyEvents extends EventGroup {
         sb.append(" type of ");
         sb.append(bodyType, this.colors.name);
 
-        this.log(sb.getString(), this.creepSpawnLevel);
+        this.log(sb.toString(), this.creepSpawnLevel);
     }
 
     public spawnError(spawnName: string, bodyType: string, error: string): void {
@@ -196,7 +211,7 @@ class ColonyEvents extends EventGroup {
         sb.append(" error: ", this.colors.identifier);
         sb.append(error, this.colors.name);
 
-        this.log(sb.getString(), this.spawnErrorLevel);
+        this.log(sb.toString(), this.spawnErrorLevel);
     }
 
     public rclUpgrade(colonyName: string, newLevel: number): void {
@@ -217,7 +232,7 @@ class ColonyEvents extends EventGroup {
         sb.append("milestone ", this.colors.identifier);        
         sb.append(milestoneName, this.colors.name);        
 
-        this.log(sb.getString(), this.milestoneMetLevel);
+        this.log(sb.toString(), this.milestoneMetLevel);
     }
 }
 
@@ -254,7 +269,7 @@ class OperationEvents extends EventGroup {
         sb.append(" has ");
         sb.append("finished", this.colors.positiveVerb);
 
-        this.log(sb.getString(), this.finishLevel);
+        this.log(sb.toString(), this.finishLevel);
     }
 
     public cancel(operationName: string): void {
@@ -266,7 +281,7 @@ class OperationEvents extends EventGroup {
         sb.append(" has ");
         sb.append("been canceled", this.colors.neutralVerb);
 
-        this.log(sb.getString(), this.cancelLevel);
+        this.log(sb.toString(), this.cancelLevel);
     }
 
 
@@ -279,7 +294,7 @@ class OperationEvents extends EventGroup {
         sb.append(" has ");
         sb.append("initialized", this.colors.positiveVerb);
 
-        this.log(sb.getString(), this.initLevel);
+        this.log(sb.toString(), this.initLevel);
     }
 
     public initAgain(operationName: string): void {
@@ -291,7 +306,7 @@ class OperationEvents extends EventGroup {
         sb.append(" has ");
         sb.append("requested another initializion", this.colors.neutralVerb);
 
-        this.log(sb.getString(), this.initLevel);
+        this.log(sb.toString(), this.initLevel);
     }
 
     public initPartial(operationName: string): void {
@@ -303,7 +318,7 @@ class OperationEvents extends EventGroup {
         sb.append(" has ");
         sb.append("partially initialized", this.colors.neutralVerb);
 
-        this.log(sb.getString(), this.initLevel);
+        this.log(sb.toString(), this.initLevel);
     }
 
     public initFailed(operationName: string): void {
@@ -315,7 +330,7 @@ class OperationEvents extends EventGroup {
         sb.append(" has ");
         sb.append("failed to initialize", this.colors.negativeVerb);
 
-        this.log(sb.getString(), this.failedInitLevel);
+        this.log(sb.toString(), this.failedInitLevel);
     }
 
 
@@ -328,7 +343,7 @@ class OperationEvents extends EventGroup {
         sb.append(" has ");
         sb.append("started", this.colors.positiveVerb);
 
-        this.log(sb.getString(), this.startLevel);
+        this.log(sb.toString(), this.startLevel);
     }
 
     public startAgain(operationName: string): void {
@@ -340,7 +355,7 @@ class OperationEvents extends EventGroup {
         sb.append(" has ");
         sb.append("requested to start again", this.colors.neutralVerb);
 
-        this.log(sb.getString(), this.startLevel);
+        this.log(sb.toString(), this.startLevel);
     }
 
     public startPartial(operationName: string): void {
@@ -352,7 +367,7 @@ class OperationEvents extends EventGroup {
         sb.append(" has ");
         sb.append("partially started", this.colors.neutralVerb);
 
-        this.log(sb.getString(), this.startLevel);
+        this.log(sb.toString(), this.startLevel);
     }
 
     public startFailed(operationName: string): void {
@@ -364,7 +379,7 @@ class OperationEvents extends EventGroup {
         sb.append(" has ");
         sb.append("failed to start", this.colors.negativeVerb);
 
-        this.log(sb.getString(), this.failedStartLevel);
+        this.log(sb.toString(), this.failedStartLevel);
     }
 
     public failedToFinish(operationName: string): void {
@@ -376,7 +391,7 @@ class OperationEvents extends EventGroup {
         sb.append(" has ");
         sb.append("failed to finish", this.colors.negativeVerb);
 
-        this.log(sb.getString(), this.failedFinishLevel);
+        this.log(sb.toString(), this.failedFinishLevel);
     }
 
 
@@ -394,7 +409,7 @@ class OperationEvents extends EventGroup {
         sb.append("operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
 
-        this.log(sb.getString(), this.creepAssignedLevel);
+        this.log(sb.toString(), this.creepAssignedLevel);
     }
 
     public creepReplacementAssigned(operationName: string, creepName: string, bodyType: string): void {
@@ -410,7 +425,7 @@ class OperationEvents extends EventGroup {
         sb.append("operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
 
-        this.log(sb.getString(), this.creepReplacementAssignedLevel);
+        this.log(sb.toString(), this.creepReplacementAssignedLevel);
     }
 
     public creepAssignmentFailed(operationName: string, creepName: string, bodyType: string, msg: string) {
@@ -428,7 +443,7 @@ class OperationEvents extends EventGroup {
         sb.append(" : ");
         sb.append(msg, this.colors.information);
 
-        this.log(sb.getString(), this.creepAssignmentFailedLevel);
+        this.log(sb.toString(), this.creepAssignmentFailedLevel);
     }
 
     public creepReplacementAssignmentFailed(operationName: string, creepName: string, bodyType: string, msg: string) {
@@ -446,7 +461,7 @@ class OperationEvents extends EventGroup {
         sb.append(" : ");
         sb.append(msg, this.colors.information);
 
-        this.log(sb.getString(), this.creepReplacementAssignmentFailedLevel);
+        this.log(sb.toString(), this.creepReplacementAssignmentFailedLevel);
     }
 
     public assignmentReleased(operationName: string, creepName: string, bodyType: string): void {
@@ -462,7 +477,7 @@ class OperationEvents extends EventGroup {
         sb.append("operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
 
-        this.log(sb.getString(), this.assignmentReleasedLevel);
+        this.log(sb.toString(), this.assignmentReleasedLevel);
     }
 
     public assignmentReleaseFailed(operationName: string, creepName: string, bodyType: string, msg: string) {
@@ -480,7 +495,7 @@ class OperationEvents extends EventGroup {
         sb.append(" : ");
         sb.append(msg, this.colors.information);
 
-        this.log(sb.getString(), this.assignmentReleaseFailedLevel);
+        this.log(sb.toString(), this.assignmentReleaseFailedLevel);
     }
 }
 
@@ -507,7 +522,7 @@ class CreepEvents extends EventGroup {
             .append("colony ", this.colors.identifier)
             .append(colonyName, this.colors.name);
 
-        this.log(sb.getString(), this.diedLevel);
+        this.log(sb.toString(), this.diedLevel);
     }    
 }
 
@@ -530,7 +545,7 @@ class RemoteMiningEvents extends EventGroup {
         sb.append(" for ");
         sb.append("remote mining", this.colors.name);
 
-        this.log(sb.getString(), this.scoutFailedLevel);
+        this.log(sb.toString(), this.scoutFailedLevel);
     }
 
     public roomScoutedAndAdded(colonyName: string, roomName: string): void {
@@ -546,7 +561,7 @@ class RemoteMiningEvents extends EventGroup {
         sb.append(" for ");
         sb.append("remote mining", this.colors.name);
 
-        this.log(sb.getString(), this.scoutFailedLevel);
+        this.log(sb.toString(), this.scoutFailedLevel);
     }
 
     public roomScoutedAndDiscarded(colonyName: string, roomName: string): void {
@@ -561,7 +576,7 @@ class RemoteMiningEvents extends EventGroup {
         sb.append(" for ");
         sb.append("remote mining", this.colors.name);
 
-        this.log(sb.getString(), this.scoutFailedLevel);
+        this.log(sb.toString(), this.scoutFailedLevel);
     }
 
     public scoutJobClaimed(colonyName: string, roomName: string): void {

@@ -2,6 +2,7 @@ export class StringBuilder {
     private str: string = "";
 
     public defaultColor: string = "grey";
+    public useHtmlBreak: boolean = true;
 
     public append(str: string, color: string = this.defaultColor): StringBuilder {
         this.str += `<font color='${color}'>${str}</font>`;
@@ -10,14 +11,17 @@ export class StringBuilder {
     
     public appendLine(str?: string, color: string = this.defaultColor): StringBuilder {
         if (str)
-            this.str += `<font color='${color}'>${str}</font></br>`;
-        else
+            this.str += `<font color='${color}'>${str}</font>`;
+
+        if (this.useHtmlBreak)
             this.str += "</br>";
+        else
+            this.str += "\n";
 
         return this;
     }
 
-    public getString(): string {
+    public toString(): string {
         return this.str;
     }
 }
