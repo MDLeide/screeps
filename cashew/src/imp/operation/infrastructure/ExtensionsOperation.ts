@@ -31,7 +31,7 @@ export class ExtensionConstructionOperation extends ConstructionOperation {
     }
 
     protected onFinish(colony: Colony): boolean {
-        colony.nest.checkFillOrder();
+        colony.nest.checkEnergyStructureOrder();
         return super.onFinish(colony);
     }
     
