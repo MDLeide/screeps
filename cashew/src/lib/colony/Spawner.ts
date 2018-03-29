@@ -40,10 +40,11 @@ export class Spawner {
             memory.homeSpawnId = this.spawn.id;
             memory.birthTick = Game.time + 1;
         } else {
+            global.events.colony.spawnError(this.spawn.name, body.type, "Memory does not exist - spawning anyway and recreating.");
             memory = {
                 homeSpawnId: this.spawn.id,
                 body: body.type,
-                operation: "",
+                operation: undefined,
                 birthTick: Game.time + 1,
                 deathTick: 0
             };
@@ -52,13 +53,7 @@ export class Spawner {
             finalBody,
             name,
             {
-                memory: {
-                    homeSpawnId: this.spawn.id,
-                    body: body.type,
-                    operation: "",
-                    birthTick: Game.time + 1,
-                    deathTick: 0
-                },
+                memory: memory,
                 energyStructures: fillOrder
             });
 

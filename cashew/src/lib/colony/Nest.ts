@@ -40,6 +40,7 @@ export class Nest {
     public room: Room;
     public spawnQueue: SpawnRequest[] = [];
 
+
     public canSpawn(body: Body): boolean {
         return this.spawners.length > 0 && this.room.energyCapacityAvailable >= body.minimumEnergy;
     }
@@ -63,7 +64,8 @@ export class Nest {
         global.events.colony.creepScheduled("Colony " + this.roomName, name, body.type);
         return name;
     }
-    
+
+
     public load(): void {        
         this.room = Game.rooms[this.roomName];
         for (var i = 0; i < this.spawners.length; i++)
@@ -81,20 +83,20 @@ export class Nest {
     }
 
     public execute(): void {
-        for (var i = 0; i < this.spawners.length; i++) {
-            this.spawners[i].execute();
-            if (this.spawnQueue.length) {
-                if (this.spawners[i].canSpawn(this.spawnQueue[0].body)) {
-                    this.spawners[i].spawnCreep(this.spawnQueue[0].body, this.spawnEnergyStructureOrder, this.spawnQueue[0].name);
-                    global.events.colony.creepSpawning("Colony " + this.roomName, this.spawnQueue[0].name, this.spawnQueue[0].body.type);
-                    this.spawnQueue.splice(0, 1);                    
-                }
-            }
-        }
+        for (var i = 0; i < this.spawners.length; i++)
+            this.spawners[i].execute();        
     }
 
     public cleanup(): void {
-        for (var i = 0; i < this.spawners.length; i++) {
+        for (var i = 0; i < this.spawners.length; i++) {            
+            // we'll do the spawning in cleanup, so we can be fairly certain everything has had a chance to request
+            if (this.spawnQueue.length) {
+                if (this.spawners[i].canSpawn(this.spawnQueue[0].body)) {
+                    let result = this.spawners[i].spawnCreep(this.spawnQueue[0].body, this.spawnEnergyStructureOrder, this.spawnQueue[0].name);
+                    global.events.colony.creepSpawning("Colony " + this.roomName, this.spawnQueue[0].name, this.spawnQueue[0].body.type);
+                    this.spawnQueue.splice(0, 1);
+                }
+            }
             this.spawners[i].cleanup();
         }
     }
