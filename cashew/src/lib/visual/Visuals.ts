@@ -1,12 +1,11 @@
 import { ComponentVisual } from "./lib/ComponentVisual";
+import { StringBuilder } from "../util/StringBuilder";
 
 export class Visuals {
-    constructor() {
-    }
-
-
+    public componentList: ComponentVisual[] = [];
+    
     public components: { [name: string]: ComponentVisual } = {};
-    public get c(): { [name: string]: ComponentVisual } { return this.components;}
+    //public get c(): { [name: string]: ComponentVisual } { return this.components;}
 
     public get display(): boolean {
         return Memory.visuals["visualsMain"];
@@ -24,15 +23,35 @@ export class Visuals {
     }
 
     public help(): string {
-        let str = "";
-        for (let key in this.components)
-            str += `${this.components[key].name} [${this.components[key].alternateName}]</br>`;
-        return str;
+        let sb = new StringBuilder();
+        if (this.display)
+            sb.appendLine("Visuals On", "green");
+        else
+            sb.appendLine("Visuals Off", "red");
+        sb.appendLine();
+
+        for (var i = 0; i < this.componentList.length; i++) {
+            let c = this.componentList[i];
+            
+            if (c.display)
+                sb.append("ON  ", "green");
+            else
+                sb.append("OFF ", "red");
+            sb.append("| ");
+            sb.append(c.name);
+            sb.appendLine(` [${c.alternateName}]`);
+        }           
+
+        return sb.toString();
     }
 
     public addComponent(component: ComponentVisual): void {
+        this[component.name] = component;
+        this[component.alternateName] = component;
+
         this.components[component.name] = component;
         this.components[component.alternateName] = component;
+        this.componentList.push(component);
     }
 
     public draw(): void {

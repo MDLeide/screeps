@@ -51,6 +51,15 @@ export class GlobalExtension {
             Playback.pause();
         }
 
+        global.start = function () {
+            Playback.start();
+        }
+
+        global.step = function () {
+            Playback.step();
+        }
+
+
         global.reset = function () {
             Playback.pause();
             global.cleaner.cleanAll();

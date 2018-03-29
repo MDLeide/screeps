@@ -3,18 +3,18 @@ import { Colony } from "../colony/Colony";
 import { VisualText } from "./lib/VisualText";
 
 export class ColonyInfoVisual extends ComponentVisual {
-    constructor(colony: Colony) {
+    constructor() {
         super("colonyInfo", "info");
-        this.colony = colony;
     }
-
-    public colony: Colony;
-
+    
     public draw(): void {
-        let vt = this.getGeneralText(this.colony);
-        
-        vt.alignCenter();
-        vt.draw(this.x, this.y, this.colony.nest.roomName);
+        for (var i = 0; i < global.empire.colonies.length; i++) {
+            let colony = global.empire.colonies[i];
+            let vt = this.getGeneralText(colony);
+
+            vt.alignCenter();
+            vt.draw(this.x, this.y, colony.nest.roomName);
+        }
     }
 
     private getGeneralText(colony: Colony): VisualText {

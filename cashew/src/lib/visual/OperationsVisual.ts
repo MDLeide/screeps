@@ -4,23 +4,26 @@ import { Operation, OperationStatus } from "../operation/Operation";
 import { VisualText } from "./lib/VisualText";
 
 export class OperationsVisual extends ComponentVisual {
-    constructor(colony: Colony) {
+    constructor() {
         super("operations", "ops");
-        this.colony = colony;
     }
 
-    public colony: Colony;
     public displayCreepRoster: boolean = true;
     public operationSpacing: number = .2;
     public planSpacing: number = .35;
 
     public draw(): void {
-        let offset = 0;
-        for (var i = 0; i < this.colony.operations.runners.length; i++) {
-            let op = this.colony.operations.runners[i].operation;
-            offset += this.drawOperation(op, this.x, this.y + offset, this.colony.nest.roomName);
-            offset += this.operationSpacing;
+        for (var i = 0; i < global.empire.colonies.length; i++) {
+            let colony = global.empire.colonies[i];
+            let offset = 0;
+            for (var i = 0; i < colony.operations.runners.length; i++) {
+                let op = colony.operations.runners[i].operation;
+                offset += this.drawOperation(op, this.x, this.y + offset, colony.nest.roomName);
+                offset += this.operationSpacing;
+            }
         }
+
+
     }
 
     /** Returns the height of the draw. */

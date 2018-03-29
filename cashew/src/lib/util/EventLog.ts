@@ -133,10 +133,6 @@ class EmpireEvents extends EventGroup {
         sb.append(nestName, this.colors.name);
 
         this.log(sb.toString(), this.nestMappingFailedLevel);
-
-
-        let visual = new NestStructureVisual(nestName, nestMap);
-        visual.draw();
     }
 
     public gclUpgraded(newLevel: number) {

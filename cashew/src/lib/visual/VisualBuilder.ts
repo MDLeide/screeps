@@ -4,42 +4,41 @@ import { NestSpecialVisual } from "./NestSpecialVisual";
 import { NestStructureVisual } from "./NestStructureVisual";
 import { OperationsVisual } from "./OperationsVisual";
 import { CpuVisual } from "./CpuVisual";
+import { CreepOperationVisual } from "./CreepVisuals";
 
 
 export class VisualBuilder {
     public static build(): void {
-        let empire = global.empire;
-        for (var i = 0; i < empire.colonies.length; i++) {
-            let colony = empire.colonies[i];
+        let col = new ColonyInfoVisual();
+        col.x = 25;
+        col.y = 1;
+        col.on();
+        global.visuals.addComponent(col);
 
-            let col = new ColonyInfoVisual(colony);            
-            col.x = 25;
-            col.y = 1;
-            col.on();
-            global.visuals.addComponent(col);
+        let energy = new EnergyVisual();
+        energy.x = 5;
+        energy.y = 2;
+        energy.on();
+        global.visuals.addComponent(energy);
 
-            let energy = new EnergyVisual(colony);
-            energy.x = 5;
-            energy.y = 2;
-            energy.on();
-            global.visuals.addComponent(energy);
+        let nestSpecial = new NestSpecialVisual();
+        global.visuals.addComponent(nestSpecial);
 
-            let nestSpecial = new NestSpecialVisual(colony.nest.roomName, colony.nest.nestMap);
-            global.visuals.addComponent(nestSpecial);
+        let nestStructure = new NestStructureVisual();
+        global.visuals.addComponent(nestStructure);
 
-            let nestStructure = new NestStructureVisual(colony.nest.roomName, colony.nest.nestMap);
-            global.visuals.addComponent(nestStructure);
+        let ops = new OperationsVisual();
+        ops.x = 0;
+        ops.y = 18;
+        global.visuals.addComponent(ops);
+        
+        let cpu = new CpuVisual();
+        cpu.x = 45;
+        cpu.y = 2;
+        cpu.on();
+        global.visuals.addComponent(cpu);
 
-            let ops = new OperationsVisual(colony);
-            ops.x = 0;
-            ops.y = 18;
-            global.visuals.addComponent(ops);
-
-            let cpu = new CpuVisual();
-            cpu.x = 45;
-            cpu.y = 2;
-            cpu.on();
-            global.visuals.addComponent(cpu);
-        }
+        let creepOps = new CreepOperationVisual();
+        global.visuals.addComponent(creepOps);
     }
 }

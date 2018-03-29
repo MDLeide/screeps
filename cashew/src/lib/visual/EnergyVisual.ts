@@ -4,15 +4,15 @@ import { Ledger, LedgerPeriod } from "../colony/ResourceManager";
 import { VisualText } from "./lib/VisualText";
 
 export class EnergyVisual extends ComponentVisual {
-    constructor(colony: Colony) {
+    constructor() {
         super("energy", "e");
-        this.colony = colony;
     }
 
-    public colony: Colony;
-
     public draw(): void {
-        this.drawLedger(this.colony.resourceManager.ledger, this.x, this.y, this.colony.nest.roomName);
+        for (var i = 0; i < global.empire.colonies.length; i++) {
+            let colony = global.empire.colonies[i];
+            this.drawLedger(colony.resourceManager.ledger, this.x, this.y, colony.nest.roomName);
+        }
     }
 
     private drawLedger(ledger: Ledger, x: number, y: number, roomName?: string): void {

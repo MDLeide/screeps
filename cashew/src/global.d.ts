@@ -31,8 +31,17 @@ declare global {
         test: Test;
 
         help(): string;
+
+        /** Uses Playback to pause script execution. */
         pause(): void;
+        /** Uses Playback to start script execution. */
+        start(): void;
+        /** Uses Playback to execute script for one tick. */
+        step(): void;
+
+        /** Destroys all structures, suicides all creeps, reinitializes memory, clears all flags, resets the Empire object. */
         reset(): void;
+
         startFlagOp(flagName: string, type: FlagOperationType, hostColony: string): string;
         startFlagCampaign(flagName: string, type: FlagCampaignType, hostColony: string): string;
     }    

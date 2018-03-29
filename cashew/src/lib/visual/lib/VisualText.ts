@@ -4,11 +4,12 @@ export class VisualText {
     private alignment: "left" | "center" | "right" = "left";
 
 
-    constructor() {
+    constructor(room?: string) {
         this.current = new Line();
     }
 
-    
+
+    public room: string;
     public lineSpacing: number = .85;
     public defaultColor: string = "#FFFFFF";
     public dropShadow: boolean = true;
@@ -46,7 +47,7 @@ export class VisualText {
 
 
     public draw(x: number, y: number, roomName?: string): void {
-        let visual = new RoomVisual(roomName);
+        let visual = new RoomVisual(roomName ? roomName : this.room);
 
         if (this.dropShadow) {
             let dropStyle = this.getDropShadowStyle();
