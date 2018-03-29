@@ -8,8 +8,6 @@ export abstract class SquadMember {
         instance.creepName = memory.creepName;
         if (instance.creepName)
             instance.creep = Game.creeps[instance.creepName];
-        if (!instance.creep)
-            instance.creepName = undefined;
         return instance;
     }
 
