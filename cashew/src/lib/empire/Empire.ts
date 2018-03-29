@@ -18,10 +18,32 @@ export class Empire {
     public colonyFinder: ColonyFinder;
     
 
-    public searchForColonies(): void {
-        this.colonyFinder.createNewColonies(this);
+    /** Adds a colony to the empire and memory. */
+    public addColony(colony: Colony): void {
+        this.colonies.push(colony);
     }
 
+    /**
+     * Removes a Colony from the Empire.
+     * @param colony Colony to remove.
+     * @param msg An optional string that will be used in logging and console output.
+     */
+    public removeColony(colony: Colony, msg?: string): void {        
+        var removeAt = -1;
+        for (var i = 0; i < this.colonies.length; i++) {
+            if (this.colonies[i].name == colony.name) {
+                removeAt = i;
+                break;
+            }
+        }
+
+        if (removeAt >= 0) {
+            this.colonies.splice(removeAt, 1);
+            global.events.empire.colonyRemoved(colony.name, msg);
+        }
+    }
+
+    /** Gets the Colony that a particular Spawn belongs to. */
     public getColonyBySpawn(spawn: StructureSpawn): Colony {
         for (var i = 0; i < this.colonies.length; i++)
             for (var j = 0; j < this.colonies[i].nest.spawners.length; j++)
@@ -30,6 +52,7 @@ export class Empire {
         return null;
     }
 
+    /** Gets a Colony by its name. */
     public getColonyByName(colony: string): Colony {
         for (var i = 0; i < this.colonies.length; i++)
             if (this.colonies[i].name == colony)
@@ -37,6 +60,7 @@ export class Empire {
         return null;
     }
 
+    /** Gets the Colony that a particular Nest belongs to. */
     public getColonyByNest(nest: Nest): Colony {
         for (var i = 0; i < this.colonies.length; i++) {
             if (this.colonies[i].nest.roomName == nest.roomName)
@@ -45,6 +69,7 @@ export class Empire {
         return null;
     }
 
+    /** Gets the Colony that a particular Creep belongs to. */
     public getColonyByCreep(creep: (Creep | string)): Colony {
         for (var i = 0; i < this.colonies.length; i++) {
             if (this.colonies[i].creepBelongsToColony(creep))
@@ -52,6 +77,7 @@ export class Empire {
         }
         return null;
     }
+
 
     //## update loop
 
@@ -62,13 +88,18 @@ export class Empire {
     }
     
     public update(): void {
-        this.searchForColonies();
+        this.colonyFinder.createNewColonies(this);
         FlagOperationDiscovery.findFlagOperations();
         FlagCampaignDiscovery.findFlagCampaigns();
 
         for (var i = 0; i < this.colonies.length; i++) {
+            let msg = this.colonyShouldBeRemoved(this.colonies[i]);
+            if (msg)
+                this.removeColony(this.colonies[i--], msg);
+        }            
+
+        for (var i = 0; i < this.colonies.length; i++) 
             this.colonies[i].update();
-        }
     }
 
     public execute(): void {        
@@ -94,23 +125,13 @@ export class Empire {
 
     //## end update loop
 
-    
-    /** Adds a colony to the empire and memory. */
-    public addColony(colony: Colony): void {
-        this.colonies.push(colony);
-    }
-
-    /** Removes a colony from the empire. */
-    public removeColony(colony: Colony): void {
-        var removeAt = -1;
-        for (var i = 0; i < this.colonies.length; i++) {
-            if (this.colonies[i].name == colony.name) {
-                removeAt = i;
-                break;
-            }
-        }
-
-        if (removeAt >= 0)             
-            this.colonies.splice(removeAt, 1);        
+    private colonyShouldBeRemoved(colony: Colony): string {
+        if (!colony.nest.room)
+            return "Nest room no longer owned.";
+        if (!colony.nest.room.controller)
+            return "Nest room does not have a controller";
+        if (!colony.nest.room.controller.my)
+            return "Nest room no longer owned.";
+        return undefined;
     }
 }
