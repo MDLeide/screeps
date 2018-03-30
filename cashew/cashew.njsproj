@@ -45,8 +45,9 @@
     <Folder Include="src\imp\creep\military\" />
     <Folder Include="src\imp\map\" />
     <Folder Include="src\imp\military\" />
-    <Folder Include="src\imp\military\formation\" />
-    <Folder Include="src\imp\military\tactics\" />
+    <Folder Include="src\yagni\military\imp\formation\" />
+    <Folder Include="src\yagni\military\imp\tactics\" />
+    <Folder Include="src\yagni\military\imp\" />
     <Folder Include="src\imp\operation\" />
     <Folder Include="src\imp\operation\economic\" />
     <Folder Include="src\imp\operation\infrastructure\" />
@@ -63,6 +64,7 @@
     <Folder Include="src\lib\flags\" />
     <Folder Include="src\lib\military\" />
     <Folder Include="src\lib\monitor\" />
+    <Folder Include="src\yagni\military\lib\" />
     <Folder Include="src\lib\visual\lib\" />
     <Folder Include="src\yagni\colonyPlan\" />
     <Folder Include="src\lib\util\dbg\" />
@@ -79,6 +81,7 @@
     <Folder Include="src\yagni\" />
     <Folder Include="src\util\" />
     <Folder Include="src\yagni\body\" />
+    <Folder Include="src\yagni\military\" />
     <Folder Include="src\yagni\util\" />
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +105,10 @@
     <TypeScriptCompile Include="src\imp\creep\WithdrawJob.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\military\IMilitaryUnit.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\yagni\military\imp\ColonyDefenseMonitor.ts" />
     <TypeScriptCompile Include="src\imp\operation\campaigns\ClaimColonyCampaign.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -185,13 +192,13 @@
     <TypeScriptCompile Include="src\imp\creep\MasonController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\creep\military\Healer.ts">
+    <TypeScriptCompile Include="src\yagni\military\imp\Healer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\creep\military\Hoplite.ts">
+    <TypeScriptCompile Include="src\yagni\military\imp\Hoplite.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\creep\military\Ranger.ts">
+    <TypeScriptCompile Include="src\yagni\military\imp\Ranger.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\RemoteHaulerRole.ts" />
@@ -210,10 +217,10 @@
     <TypeScriptCompile Include="src\imp\map\WallProvider.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\military\formation\StandardFormation.ts">
+    <TypeScriptCompile Include="src\yagni\military\imp\formation\StandardFormation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\imp\military\tactics\StandardTargetingTactics.ts">
+    <TypeScriptCompile Include="src\yagni\military\imp\tactics\StandardTargetingTactics.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\operation\economic\ExtensionFillOperation.ts" />
@@ -267,19 +274,19 @@
     <TypeScriptCompile Include="src\lib\flags\FlagMonitor.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\military\Formation.ts">
+    <TypeScriptCompile Include="src\yagni\military\lib\Formation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\military\TargetingTactics.ts">
+    <TypeScriptCompile Include="src\yagni\military\lib\TargetingTactics.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\military\Squad.ts">
+    <TypeScriptCompile Include="src\yagni\military\lib\Squad.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\military\UnitController.ts">
+    <TypeScriptCompile Include="src\yagni\military\lib\UnitController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\military\SquadMember.ts">
+    <TypeScriptCompile Include="src\yagni\military\lib\SquadMember.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\monitor\Monitor.ts">
