@@ -16,6 +16,7 @@ import { SpawnConstructionOperation } from "../operation/infrastructure/SpawnCon
 import { ObserverConstructionOperation } from "../operation/infrastructure/ObserverConstructionOperation";
 import { StorageLinkConstructionOperation } from "../operation/infrastructure/StorageLinkConstructionOperation";
 import { ReplaceOriginalSpawnOperation } from "../operation/infrastructure/ReplaceOriginalSpawnOperation";
+import { EffectiveRcl } from "lib/colony/EffectiveRcl";
 
 export class InfrastructureOperationMonitor extends ColonyMonitor {
     public static fromMemory(memory: MonitorMemory): InfrastructureOperationMonitor {
@@ -41,37 +42,39 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
     }
 
     private checkInfrastructure(colony: Colony): void {
-        if (!colony.nest.spawners || !colony.nest.spawners.length)
+        let rcl = colony.getEffectiveRcl();
+        if (rcl.isEqualTo(1, 0))
             return;
 
         if (this.levelOne(colony))
             return;
-        if (colony.nest.room.controller.level >= 2)
+        if (rcl.isGreaterThanOrEqualTo(2, 0))
             if (this.levelTwo(colony))
                 return;
-        if (colony.nest.room.controller.level >= 3)
+        if (rcl.isGreaterThanOrEqualTo(3, 0))
             if (this.levelThree(colony))
                 return;
-        if (colony.nest.room.controller.level >= 4)
+        if (rcl.isGreaterThanOrEqualTo(4, 0))
             if (this.levelFour(colony))
                 return;
-        if (colony.nest.room.controller.level >= 5)
+        if (rcl.isGreaterThanOrEqualTo(5, 0))
             if (this.levelFive(colony))
                 return;
-        if (colony.nest.room.controller.level >= 6)
+        if (rcl.isGreaterThanOrEqualTo(6, 0))
             if (this.levelSix(colony))
                 return;
-        if (colony.nest.room.controller.level >= 7)
+        if (rcl.isGreaterThanOrEqualTo(7, 0))
             if (this.levelSeven(colony))
                 return;
-        if (colony.nest.room.controller.level >= 8)
+        if (rcl.isGreaterThanOrEqualTo(8, 0))
             if (this.levelEight(colony))
                 return;
     }
 
     private levelOne(colony: Colony): boolean {
+        let rcl = colony.getEffectiveRcl();
         let opStarted = false;
-        if (!colony.resourceManager.structures.sourceAContainer) { // need source container            
+        if (rcl.isEqualTo(1, 1)) { // need source container            
             this.ensureOperation(
                 colony,
                 OPERATION_HARVEST_INFRASTRUCTURE,
@@ -81,7 +84,7 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             opStarted = true;
         }
 
-        if (colony.resourceManager.sourceBId) { // second source
+        if (rcl.isEqualTo(1, 2)) { // second source
             if (!colony.resourceManager.structures.sourceBContainer) {
                 this.ensureOperation(
                     colony,
@@ -96,14 +99,9 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
     }
 
     private levelTwo(colony: Colony): boolean {
-        this.ensureOperation(
-            colony,
-            OPERATION_WALL_CONSTRUCTION,
-            1,
-            () => new WallConstructionOperation());
-
-        let extensionCount = this.countMyStructures(colony, STRUCTURE_EXTENSION);
-        if (extensionCount < 5) {
+        let rcl = colony.getEffectiveRcl();
+                
+        if (rcl.isEqualTo(2, 0)) {
             this.ensureOperation(
                 colony,
                 OPERATION_EXTENSION_CONSTRUCTION,
@@ -112,7 +110,7 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             return true;
         }
 
-        if (!colony.resourceManager.structures.controllerContainer) {
+        if (rcl.isEqualTo(2, 1)) {
             this.ensureOperation(
                 colony,
                 OPERATION_CONTROLLER_INFRASTRUCTURE,
@@ -120,12 +118,20 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
                 () => new ControllerInfrastructureOperation());
             return true;
         }
+
+        if (rcl.isGreaterThanOrEqualTo(2, 2))
+            this.ensureOperation(
+                colony,
+                OPERATION_WALL_CONSTRUCTION,
+                1,
+                () => new WallConstructionOperation());
+
         return false;
     }
 
     private levelThree(colony: Colony): boolean {
-        let towerCount = this.countMyStructures(colony, STRUCTURE_TOWER);
-        if (towerCount < 1) {
+        let rcl = colony.getEffectiveRcl();
+        if (rcl.isEqualTo(3, 0)) {
             this.ensureOperation(
                 colony,
                 OPERATION_TOWER_CONSTRUCTION,
@@ -133,9 +139,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
                 () => new TowerConstructionOperation(3));
             return true;
         }
-
-        let extensionCount = this.countMyStructures(colony, STRUCTURE_EXTENSION);
-        if (extensionCount < 10) {
+                
+        if (rcl.isEqualTo(3, 1)) {
             this.ensureOperation(
                 colony,
                 OPERATION_EXTENSION_CONSTRUCTION,
@@ -147,7 +152,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
     }
 
     private levelFour(colony: Colony): boolean {
-        if (!colony.nest.room.storage) {
+        let rcl = colony.getEffectiveRcl();
+        if (rcl.isEqualTo(4, 0)) {
             this.ensureOperation(
                 colony,
                 OPERATION_STORAGE_CONSTRUCTION,
@@ -156,8 +162,7 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             return true;
         }
 
-        let extensionCount = this.countMyStructures(colony, STRUCTURE_EXTENSION);
-        if (extensionCount < 20) {
+        if (rcl.isEqualTo(4, 1)) {
             this.ensureOperation(
                 colony,
                 OPERATION_EXTENSION_CONSTRUCTION,
@@ -169,8 +174,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
     }
 
     private levelFive(colony: Colony): boolean {
-        let towerCount = this.countMyStructures(colony, STRUCTURE_TOWER);
-        if (towerCount < 2) {
+        let rcl = colony.getEffectiveRcl();
+        if (rcl.isEqualTo(5, 0)) {
             this.ensureOperation(
                 colony,
                 OPERATION_TOWER_CONSTRUCTION,
@@ -179,7 +184,7 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             return true;
         }
 
-        if (!colony.resourceManager.structures.sourceALink) {
+        if (rcl.isEqualTo(5, 1)) {
             this.ensureOperation(
                 colony,
                 OPERATION_HARVEST_LINK_CONSTRUCTION,
@@ -188,7 +193,7 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             return true;
         }
 
-        if (!colony.resourceManager.structures.controllerLink) {
+        if (rcl.isEqualTo(5, 2)) {
             this.ensureOperation(
                 colony,
                 OPERATION_UPGRADE_LINK_CONSTRUCTION,
@@ -197,8 +202,7 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             return true;
         }
             
-        let extensionCount = this.countMyStructures(colony, STRUCTURE_EXTENSION);
-        if (extensionCount < 30) {
+        if (rcl.isEqualTo(5, 3)) {
             this.ensureOperation(
                 colony,
                 OPERATION_EXTENSION_CONSTRUCTION,
@@ -210,8 +214,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
     }
 
     private levelSix(colony: Colony): boolean {
-        let extensionCount = this.countMyStructures(colony, STRUCTURE_EXTENSION);
-        if (extensionCount < 40) {
+        let rcl = colony.getEffectiveRcl();
+        if (rcl.isEqualTo(6, 0)) {
             this.ensureOperation(
                 colony,
                 OPERATION_EXTENSION_CONSTRUCTION,
@@ -220,7 +224,7 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             return true;
         }
 
-        if (!colony.resourceManager.structures.extensionLink) {
+        if (rcl.isEqualTo(6, 1)) {
             this.ensureOperation(
                 colony,
                 OPERATION_EXTENSION_LINK_CONSTRUCTION,
@@ -228,9 +232,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
                 () => new ExtensionLinkConstructionOperation());
             return true;
         }
-
-        let extractorCount = this.countMyStructures(colony, STRUCTURE_EXTRACTOR);
-        if (extractorCount < 1) {
+                
+        if (rcl.isEqualTo(6, 2)) {
             this.ensureOperation(
                 colony,
                 OPERATION_EXTRACTOR_CONSTRUCTION,
@@ -239,7 +242,7 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             return true;
         }
 
-        if (!colony.nest.room.terminal) {
+        if (rcl.isEqualTo(6, 3)) {
             this.ensureOperation(
                 colony,
                 OPERATION_TERMINAL_CONSTRUCTION,
@@ -248,8 +251,7 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             return true;
         }
 
-        let labCount = this.countMyStructures(colony, STRUCTURE_LAB);
-        if (labCount < 3) {
+        if (rcl.isEqualTo(6, 4)) {
             this.ensureOperation(
                 colony,
                 OPERATION_LAB_CONSTRUCTION,
@@ -261,9 +263,9 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
         return false;
     }
 
-    private levelSeven(colony: Colony): boolean {
-        let spawnCount = this.countMyStructures(colony, STRUCTURE_SPAWN);
-        if (spawnCount < 2) {
+    private levelSeven(colony: Colony): boolean {        
+        let rcl = colony.getEffectiveRcl();
+        if (rcl.isEqualTo(7, 0)) {
             this.ensureOperation(
                 colony,
                 OPERATION_SPAWN_CONSTRUCTION,
@@ -271,9 +273,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
                 () => new SpawnConstructionOperation(7));
             return true;
         }
-
-        let towerCount = this.countMyStructures(colony, STRUCTURE_TOWER);
-        if (towerCount < 3) {
+                
+        if (rcl.isEqualTo(7, 1)) {
             this.ensureOperation(
                 colony,
                 OPERATION_TOWER_CONSTRUCTION,
@@ -281,9 +282,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
                 () => new TowerConstructionOperation(7));
             return true;
         }
-
-        let extensionCount = this.countMyStructures(colony, STRUCTURE_EXTENSION);
-        if (extensionCount < 50) {
+                
+        if (rcl.isEqualTo(7, 2)) {
             this.ensureOperation(
                 colony,
                 OPERATION_EXTENSION_CONSTRUCTION,
@@ -292,7 +292,7 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             return true;
         }
 
-        if (colony.resourceManager.sourceBId && !colony.resourceManager.structures.sourceBLink) {
+        if (rcl.isEqualTo(7, 3)) {
             this.ensureOperation(
                 colony,
                 OPERATION_HARVEST_LINK_CONSTRUCTION,
@@ -300,9 +300,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
                 () => new HarvestLinkConstructionOperation(colony.resourceManager.sourceBId));
             return true;
         }
-
-        let labCount = this.countMyStructures(colony, STRUCTURE_LAB);
-        if (labCount < 6) {
+                
+        if (rcl.isEqualTo(7, 4)) {
             this.ensureOperation(
                 colony,
                 OPERATION_LAB_CONSTRUCTION,
@@ -314,8 +313,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
     }
 
     private levelEight(colony: Colony): boolean {
-        let spawnCount = this.countMyStructures(colony, STRUCTURE_SPAWN);
-        if (spawnCount < 3) {
+        let rcl = colony.getEffectiveRcl();
+        if (rcl.isEqualTo(8, 0)) {
             this.ensureOperation(
                 colony,
                 OPERATION_SPAWN_CONSTRUCTION,
@@ -323,9 +322,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
                 () => new SpawnConstructionOperation(8));
             return true;
         }
-
-        let towerCount = this.countMyStructures(colony, STRUCTURE_TOWER);
-        if (towerCount < 6) {
+                
+        if (rcl.isEqualTo(8, 1)) {
             this.ensureOperation(
                 colony,
                 OPERATION_TOWER_CONSTRUCTION,
@@ -333,9 +331,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
                 () => new TowerConstructionOperation(8));
             return true;
         }
-
-        let extensionCount = this.countMyStructures(colony, STRUCTURE_EXTENSION);
-        if (extensionCount < 60) {
+                
+        if (rcl.isEqualTo(8, 2)) {
             this.ensureOperation(
                 colony,
                 OPERATION_EXTENSION_CONSTRUCTION,
@@ -344,7 +341,7 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             return true;
         }
 
-        if (!colony.resourceManager.structures.storageLink) {
+        if (rcl.isEqualTo(8, 3)) {
             this.ensureOperation(
                 colony,
                 OPERATION_STORAGE_LINK_CONSTRUCTION,
@@ -352,9 +349,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
                 () => new StorageLinkConstructionOperation());
             return true;
         }
-
-        let observerCount = this.countMyStructures(colony, STRUCTURE_OBSERVER);
-        if (observerCount < 1) {
+                
+        if (rcl.isEqualTo(8, 4)) {
             this.ensureOperation(
                 colony,
                 OPERATION_OBSERVER_CONSTRUCTION,
@@ -362,9 +358,8 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
                 () => new ObserverConstructionOperation());
             return true;
         }
-
-        let labCount = this.countMyStructures(colony, STRUCTURE_LAB);
-        if (labCount < 10) {
+                
+        if (rcl.isEqualTo(8, 5)) {
             this.ensureOperation(
                 colony,
                 OPERATION_LAB_CONSTRUCTION,
@@ -373,7 +368,7 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             return true;
         }
 
-        if (this.originalSpawnNeedsMoving(colony)) {
+        if (rcl.isEqualTo(8, 6) && this.originalSpawnNeedsMoving(colony)) {
             this.ensureOperation(
                 colony,
                 OPERATION_REPLACE_ORIGINAL_SPAWN,
@@ -400,9 +395,5 @@ export class InfrastructureOperationMonitor extends ColonyMonitor {
             if (look[i].structureType == STRUCTURE_SPAWN)
                 return true;
         return false;
-    }
-
-    private countMyStructures(colony: Colony, type: StructureConstant): number {
-        return colony.nest.room.find(FIND_MY_STRUCTURES, { filter: (s) => s.structureType == type }).length;
     }
 }

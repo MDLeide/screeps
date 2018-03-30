@@ -16,6 +16,26 @@ export class EffectiveRcl {
     public minor: number = 0;
     public description: string = "";
     public verboseDescription: string = "";
+
+    public isGreaterThan(major: number, minor: number): boolean {
+        return this.major > major || (this.major == major && this.minor > minor);
+    }
+
+    public isGreaterThanOrEqualTo(major: number, minor: number): boolean {
+        return this.major > major || (this.major == major && this.minor >= minor);
+    }
+
+    public isLessThan(major: number, minor: number): boolean {
+        return this.major < major || (this.major == major && this.minor < minor);
+    }
+
+    public isLessThanOrEqualTo(major: number, minor: number): boolean {
+        return this.major < major || (this.major == major && this.minor <= minor);
+    }
+
+    public isEqualTo(major: number, minor: number): boolean {
+        return this.major == major && this.minor == minor;
+    }
 }
 
 /** Provides methods of measuring a room's progress. */

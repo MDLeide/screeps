@@ -141,6 +141,9 @@
     <TypeScriptCompile Include="src\lib\util\reports\ColonyOperationReport.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\visual\CreepVisuals.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\DefensePlan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

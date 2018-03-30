@@ -10,7 +10,7 @@ import { CreepNamer } from "./CreepNamer";
 export class Nest {
     public static fromMemory(memory: NestMemory): Nest {
         let nest = new this(memory.roomName, NestMap.fromMemory(memory.map));
-        nest.spawnEnergyStructureOrderIds = memory.spawnEnergyStructureOrderIds;
+        nest.spawnEnergyStructureOrderIds = memory.spawnEnergyStructureOrderIds;        
         nest.spawnQueue = [];
         if (memory.spawnQueue)
             for (var i = 0; i < memory.spawnQueue.length; i++)

@@ -19,7 +19,8 @@ export class RemoteMiningOperationMonitor extends ColonyMonitor {
     }
     
     public update(context: Colony): void {
-        if (context.nest.room.controller.level >= 2)
+        let rcl = context.getEffectiveRcl();
+        if (rcl.isGreaterThanOrEqualTo(2, 0))
             if (_.any(context.remoteMiningManager.rooms, p => !p.beingScouted))
                 this.ensureOperation(
                     context,
@@ -27,7 +28,7 @@ export class RemoteMiningOperationMonitor extends ColonyMonitor {
                     2,
                     () => new RemoteHarvestScoutOperation);
 
-        if (context.nest.room.controller.level >= 3) {
+        if (rcl.isGreaterThanOrEqualTo(3, 2)) { // ten extensions
             for (var i = 0; i < context.remoteMiningManager.rooms.length; i++) {
                 let room = context.remoteMiningManager.rooms[i];
                 if (room.active)
