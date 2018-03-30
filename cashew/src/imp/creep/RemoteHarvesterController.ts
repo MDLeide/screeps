@@ -178,8 +178,8 @@ export class RemoteHarvesterController extends CreepController {
     }
 
     private createSite(creep: Creep): void {
-        let path = PathFinder.search(creep.pos, { pos: this.source.pos, range: 1 });
-        creep.room.createConstructionSite(path.path[path.path.length - 2], STRUCTURE_CONTAINER);
+        let path = PathFinder.search(creep.pos, { pos: this.source.pos, range: 1 });        
+        this.room.createConstructionSite(path.path[path.path.length - 2], STRUCTURE_CONTAINER);
         this.siteCreated = true;
     }
 
