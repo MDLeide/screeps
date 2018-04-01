@@ -36,6 +36,10 @@ export class EffectiveRcl {
     public isEqualTo(major: number, minor: number): boolean {
         return this.major == major && this.minor == minor;
     }
+
+    public toString(description: boolean = false): string {
+        return `eRCL ${this.major}.${this.minor} ${description ? this.description : ""}`;
+    }
 }
 
 /** Provides methods of measuring a room's progress. */
