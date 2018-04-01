@@ -87,6 +87,8 @@ export class EconomyOperationMonitor extends ColonyMonitor {
                 OPERATION_EXTENSION_FILL,
                 1,
                 () => new ExtensionFillOperation());
+        } else {
+            colony.operations.cancelOperationByType(OPERATION_EXTENSION_FILL);
         }
     }
 }
