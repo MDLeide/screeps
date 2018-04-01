@@ -24,6 +24,9 @@ export class ColonyInfoVisual extends ComponentVisual {
         let progress = Math.trunc(colony.nest.room.controller.progress / colony.nest.room.controller.progressTotal*100);
         vt.append(`RCL ${colony.nest.room.controller.level} - ${progress}%`);
         vt.append(" | ");
+        let rcl = colony.getEffectiveRcl();
+        vt.append(`${rcl.toString(true)}`);
+        vt.append(" | ");
         let ops = colony.operations.runners.length;
         vt.append(ops + " operations");
         let pop = colony.population.alive.length;

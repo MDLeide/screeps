@@ -5,6 +5,7 @@ import { NestStructureVisual } from "./NestStructureVisual";
 import { OperationsVisual } from "./OperationsVisual";
 import { CpuVisual } from "./CpuVisual";
 import { CreepOperationVisual } from "./CreepVisuals";
+import { SpawnQueueVisual } from "./SpawnQueueVisual";
 
 
 export class VisualBuilder {
@@ -20,6 +21,11 @@ export class VisualBuilder {
         energy.y = 2;
         energy.on();
         global.visuals.addComponent(energy);
+
+        let spawnQueue = new SpawnQueueVisual();
+        spawnQueue.x = .5;
+        spawnQueue.y = 17;
+        global.visuals.addComponent(spawnQueue);
 
         let nestSpecial = new NestSpecialVisual();
         global.visuals.addComponent(nestSpecial);
