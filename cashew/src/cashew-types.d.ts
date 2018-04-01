@@ -1,16 +1,13 @@
-declare const TASK_IDLE: "Idle";
-declare const TASK_MOVE_TO: "MoveTo";
-declare const TASK_TRANSFER: "Transfer";
-declare const TASK_WITHDRAW: "Withdraw";
-declare const TASK_BUILD: "Build";
-declare const TASK_UPGRADE: "Upgrade";
-declare const TASK_REPAIR: "Repair";
-declare const TASK_ATTACK: "Attack";
-declare const TASK_RESERVE: "Reserve";
-declare const TASK_CLAIM: "Claim";
-declare const TASK_HARVEST: "Harvest";
-declare const TASK_PICKUP_ENERGY: "PickupEnergy";
-declare const TASK_DISMANTLE: "Dismantle";
+declare const MONITOR_COLONY_DEFENSE: "ColonyDefense";
+declare const MONITOR_ECONOMY_OPERATION: "EconomyOperation";
+declare const MONITOR_INFRASTRUCTURE_OPERATION: "InfrastructureOperation";
+declare const MONITOR_REMOTE_MINING_OPERATION: "RemoteMiningOperation";
+
+declare const MONITOR_PROVIDER_STANDARD: "Standard";
+
+declare const CAMPAIGN_CLAIM_COLONY: "ClaimColony";
+
+declare const FLAG_CAMPAIGN_CLAIM_COLONY: "ClaimColony";
 
 declare const OPERATION_LIGHT_UPGRADE: "LightUpgrade";
 declare const OPERATION_HEAVY_UPGRADE: "HeavyUpgrade";
@@ -45,6 +42,13 @@ declare const OPERATION_DISMANTLE: "Dismantle";
 declare const OPERATION_LOOT: "Loot";
 declare const OPERATION_CLAIM_ROOM: "ClaimRoom";
 
+declare const FLAG_OPERATION_DISMANTLE: "Dismantle";
+declare const FLAG_OPERATION_LOOT: "Loot";
+
+declare const UNIT_CONTROLLER_RALLY: "Rally";
+declare const UNIT_CONTROLLER_MOVE_TO: "MoveTo";
+declare const UNIT_CONTROLLER_ROOM_DEFENSE: "RoomDefense";
+
 declare const CREEP_CONTROLLER_HARVESTER: "Harvester";
 declare const CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: "HarvestInfrastructureBuilder";
 declare const CREEP_CONTROLLER_LIGHT_UPGRADER: "LightUpgrader";
@@ -68,6 +72,20 @@ declare const CREEP_CONTROLLER_WITHDRAW: "Withdraw";
 declare const CREEP_CONTROLLER_TRANSFER: "Transfer";
 declare const CREEP_CONTROLLER_HARVEST_BUILDER: "HarvestBuilder";
 
+declare const TASK_IDLE: "Idle";
+declare const TASK_MOVE_TO: "MoveTo";
+declare const TASK_TRANSFER: "Transfer";
+declare const TASK_WITHDRAW: "Withdraw";
+declare const TASK_BUILD: "Build";
+declare const TASK_UPGRADE: "Upgrade";
+declare const TASK_REPAIR: "Repair";
+declare const TASK_ATTACK: "Attack";
+declare const TASK_RESERVE: "Reserve";
+declare const TASK_CLAIM: "Claim";
+declare const TASK_HARVEST: "Harvest";
+declare const TASK_PICKUP_ENERGY: "PickupEnergy";
+declare const TASK_DISMANTLE: "Dismantle";
+
 declare const BODY_LIGHT_WORKER: "LightWorker";
 declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
 declare const BODY_HEAVY_UPGRADER: "HeavyUpgrader";
@@ -82,43 +100,16 @@ declare const BODY_HOPLITE: "Hoplite";
 declare const BODY_SHIELD: "Shield";
 declare const BODY_DISMANTLER: "Dismantler";
 
-declare const MONITOR_COLONY_DEFENSE: "ColonyDefense";
-declare const MONITOR_ECONOMY_OPERATION: "EconomyOperation";
-declare const MONITOR_INFRASTRUCTURE_OPERATION: "InfrastructureOperation";
-declare const MONITOR_REMOTE_MINING_OPERATION: "RemoteMiningOperation";
+type MONITOR_COLONY_DEFENSE = "ColonyDefense";
+type MONITOR_ECONOMY_OPERATION = "EconomyOperation";
+type MONITOR_INFRASTRUCTURE_OPERATION = "InfrastructureOperation";
+type MONITOR_REMOTE_MINING_OPERATION = "RemoteMiningOperation";
 
-declare const MONITOR_PROVIDER_STANDARD: "Standard";
+type MONITOR_PROVIDER_STANDARD = "Standard";
 
-declare const UNIT_MEMBER_HOPLITE: "Hoplite";
-declare const UNIT_MEMBER_RANGER: "Ranger";
-declare const UNIT_MEMBER_HEALER: "Healer";
-declare const UNIT_MEMBER_SHIELD: "Shield";
-declare const UNIT_MEMBER_WARRIOR: "Warrior";
+type CAMPAIGN_CLAIM_COLONY = "ClaimColony";
 
-declare const FORMATION_STANDARD: "Standard";
-
-declare const TARGETING_TACTICS_STANDARD: "Standard";
-
-declare const FLAG_OPERATION_DISMANTLE: "Dismantle";
-declare const FLAG_OPERATION_LOOT: "Loot";
-
-declare const CAMPAIGN_CLAIM_COLONY: "ClaimColony";
-
-declare const FLAG_CAMPAIGN_CLAIM_COLONY: "ClaimColony";
-
-type TASK_IDLE = "Idle";
-type TASK_MOVE_TO = "MoveTo";
-type TASK_TRANSFER = "Transfer";
-type TASK_WITHDRAW = "Withdraw";
-type TASK_BUILD = "Build";
-type TASK_UPGRADE = "Upgrade";
-type TASK_REPAIR = "Repair";
-type TASK_ATTACK = "Attack";
-type TASK_RESERVE = "Reserve";
-type TASK_CLAIM = "Claim";
-type TASK_HARVEST = "Harvest";
-type TASK_PICKUP_ENERGY = "PickupEnergy";
-type TASK_DISMANTLE = "Dismantle";
+type FLAG_CAMPAIGN_CLAIM_COLONY = "ClaimColony";
 
 type OPERATION_LIGHT_UPGRADE = "LightUpgrade";
 type OPERATION_HEAVY_UPGRADE = "HeavyUpgrade";
@@ -153,6 +144,13 @@ type OPERATION_DISMANTLE = "Dismantle";
 type OPERATION_LOOT = "Loot";
 type OPERATION_CLAIM_ROOM = "ClaimRoom";
 
+type FLAG_OPERATION_DISMANTLE = "Dismantle";
+type FLAG_OPERATION_LOOT = "Loot";
+
+type UNIT_CONTROLLER_RALLY = "Rally";
+type UNIT_CONTROLLER_MOVE_TO = "MoveTo";
+type UNIT_CONTROLLER_ROOM_DEFENSE = "RoomDefense";
+
 type CREEP_CONTROLLER_HARVESTER = "Harvester";
 type CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "HarvestInfrastructureBuilder";
 type CREEP_CONTROLLER_LIGHT_UPGRADER = "LightUpgrader";
@@ -176,6 +174,20 @@ type CREEP_CONTROLLER_WITHDRAW = "Withdraw";
 type CREEP_CONTROLLER_TRANSFER = "Transfer";
 type CREEP_CONTROLLER_HARVEST_BUILDER = "HarvestBuilder";
 
+type TASK_IDLE = "Idle";
+type TASK_MOVE_TO = "MoveTo";
+type TASK_TRANSFER = "Transfer";
+type TASK_WITHDRAW = "Withdraw";
+type TASK_BUILD = "Build";
+type TASK_UPGRADE = "Upgrade";
+type TASK_REPAIR = "Repair";
+type TASK_ATTACK = "Attack";
+type TASK_RESERVE = "Reserve";
+type TASK_CLAIM = "Claim";
+type TASK_HARVEST = "Harvest";
+type TASK_PICKUP_ENERGY = "PickupEnergy";
+type TASK_DISMANTLE = "Dismantle";
+
 type BODY_LIGHT_WORKER = "LightWorker";
 type BODY_HEAVY_HARVESTER = "HeavyHarvester";
 type BODY_HEAVY_UPGRADER = "HeavyUpgrader";
@@ -190,44 +202,20 @@ type BODY_HOPLITE = "Hoplite";
 type BODY_SHIELD = "Shield";
 type BODY_DISMANTLER = "Dismantler";
 
-type MONITOR_COLONY_DEFENSE = "ColonyDefense";
-type MONITOR_ECONOMY_OPERATION = "EconomyOperation";
-type MONITOR_INFRASTRUCTURE_OPERATION = "InfrastructureOperation";
-type MONITOR_REMOTE_MINING_OPERATION = "RemoteMiningOperation";
+type MonitorType =
+    MONITOR_COLONY_DEFENSE |
+    MONITOR_ECONOMY_OPERATION |
+    MONITOR_INFRASTRUCTURE_OPERATION |
+    MONITOR_REMOTE_MINING_OPERATION;
 
-type MONITOR_PROVIDER_STANDARD = "Standard";
+type MonitorProviderType =
+    MONITOR_PROVIDER_STANDARD;
 
-type UNIT_MEMBER_HOPLITE = "Hoplite";
-type UNIT_MEMBER_RANGER = "Ranger";
-type UNIT_MEMBER_HEALER = "Healer";
-type UNIT_MEMBER_SHIELD = "Shield";
-type UNIT_MEMBER_WARRIOR = "Warrior";
+type CampaignType =
+    CAMPAIGN_CLAIM_COLONY;
 
-type FORMATION_STANDARD = "Standard";
-
-type TARGETING_TACTICS_STANDARD = "Standard";
-
-type FLAG_OPERATION_DISMANTLE = "Dismantle";
-type FLAG_OPERATION_LOOT = "Loot";
-
-type CAMPAIGN_CLAIM_COLONY = "ClaimColony";
-
-type FLAG_CAMPAIGN_CLAIM_COLONY = "ClaimColony";
-
-type TaskType =
-    TASK_IDLE |
-    TASK_MOVE_TO |
-    TASK_TRANSFER |
-    TASK_WITHDRAW |
-    TASK_BUILD |
-    TASK_UPGRADE |
-    TASK_REPAIR |
-    TASK_ATTACK |
-    TASK_RESERVE |
-    TASK_CLAIM |
-    TASK_HARVEST |
-    TASK_PICKUP_ENERGY |
-    TASK_DISMANTLE;
+type FlagCampaignType =
+    FLAG_CAMPAIGN_CLAIM_COLONY;
 
 type OperationType =
     OPERATION_LIGHT_UPGRADE |
@@ -263,6 +251,15 @@ type OperationType =
     OPERATION_LOOT |
     OPERATION_CLAIM_ROOM;
 
+type FlagOperationType =
+    FLAG_OPERATION_DISMANTLE |
+    FLAG_OPERATION_LOOT;
+
+type UnitControllerType =
+    UNIT_CONTROLLER_RALLY |
+    UNIT_CONTROLLER_MOVE_TO |
+    UNIT_CONTROLLER_ROOM_DEFENSE;
+
 type CreepControllerType =
     CREEP_CONTROLLER_HARVESTER |
     CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER |
@@ -287,6 +284,21 @@ type CreepControllerType =
     CREEP_CONTROLLER_TRANSFER |
     CREEP_CONTROLLER_HARVEST_BUILDER;
 
+type TaskType =
+    TASK_IDLE |
+    TASK_MOVE_TO |
+    TASK_TRANSFER |
+    TASK_WITHDRAW |
+    TASK_BUILD |
+    TASK_UPGRADE |
+    TASK_REPAIR |
+    TASK_ATTACK |
+    TASK_RESERVE |
+    TASK_CLAIM |
+    TASK_HARVEST |
+    TASK_PICKUP_ENERGY |
+    TASK_DISMANTLE;
+
 type BodyType =
     BODY_LIGHT_WORKER |
     BODY_HEAVY_HARVESTER |
@@ -301,36 +313,4 @@ type BodyType =
     BODY_HOPLITE |
     BODY_SHIELD |
     BODY_DISMANTLER;
-
-type MonitorType =
-    MONITOR_COLONY_DEFENSE |
-    MONITOR_ECONOMY_OPERATION |
-    MONITOR_INFRASTRUCTURE_OPERATION |
-    MONITOR_REMOTE_MINING_OPERATION;
-
-type MonitorProviderType =
-    MONITOR_PROVIDER_STANDARD;
-
-type UnitMemberType =
-    UNIT_MEMBER_HOPLITE |
-    UNIT_MEMBER_RANGER |
-    UNIT_MEMBER_HEALER |
-    UNIT_MEMBER_SHIELD |
-    UNIT_MEMBER_WARRIOR;
-
-type FormationType =
-    FORMATION_STANDARD;
-
-type TargetingTacticsType =
-    TARGETING_TACTICS_STANDARD;
-
-type FlagOperationType =
-    FLAG_OPERATION_DISMANTLE |
-    FLAG_OPERATION_LOOT;
-
-type CampaignType =
-    CAMPAIGN_CLAIM_COLONY;
-
-type FlagCampaignType =
-    FLAG_CAMPAIGN_CLAIM_COLONY;
 

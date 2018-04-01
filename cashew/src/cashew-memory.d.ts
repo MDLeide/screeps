@@ -200,6 +200,17 @@ declare global {
 
     /** MILITARY **/
 
+    interface UnitMemory {
+        memberNames: string[];
+    }
+
+    interface UnitControllerMemory {
+        type: UnitControllerType;
+    }
+
+    interface UnitJobMemory extends UnitControllerMemory {
+        complete: boolean;
+    }
 
     /** END MILITARY **/
 

@@ -12,11 +12,3 @@ export interface IMilitaryUnit {
     rangedHeal(target: Creep): CreepActionReturnCode;
     rangedMassAttack(): OK | ERR_NOT_OWNER | ERR_BUSY | ERR_NO_BODYPART;
 }
-
-export class Unit {
-
-}
-
-export abstract class UnitController {
-
-}

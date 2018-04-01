@@ -20,7 +20,7 @@ export class RoomHelper {
     }
 
     public static isHighway(roomName: string): boolean {
-        let coords = this.convertNameToCoordinates(roomName);
+        let coords = this.getRoomCoordinatesFromName(roomName);
         return (coords.x - 1) % 10 == 0 || (coords.y - 1) % 10 == 0;
     }
 
@@ -29,7 +29,7 @@ export class RoomHelper {
      * @param direction 0 - North, 1 - NorthEast, 2 - East,... 7 - NorthWest
      */
     public static getAdjacentRoom(roomName: string, direction: number): string {
-        let roomCoords = this.convertNameToCoordinates(roomName);
+        let roomCoords = this.getRoomCoordinatesFromName(roomName);
 
         switch (direction) {
             case 0:
@@ -96,10 +96,11 @@ export class RoomHelper {
                 throw Error("argument out of range");
         }
 
-        return this.convertCoordinatesToName(roomCoords);
+        return this.getRoomNameFromCoordinates(roomCoords);
     }
 
-    public static convertNameToCoordinates(roomName: string): { x: number, y: number } {
+    /** Gets the the room coordinates for the room name. Room coordinates start at 1 or -1, there is no 0 for the x or y axis. */
+    public static getRoomCoordinatesFromName(roomName: string): { x: number, y: number } {
         let xSign: string = roomName[0];
         let x: number;
         let ySign: string;
@@ -123,7 +124,8 @@ export class RoomHelper {
         return { x: x, y: y };
     }
 
-    public static convertCoordinatesToName(coords: { x: number, y: number }): string {
+    /** Gets the name of a room located at the room coordinates provided. Room coordinates start at 1 or -1, there is no 0 for the x or y axis. */
+    public static getRoomNameFromCoordinates(coords: { x: number, y: number }): string {
         let xAxis: string = coords.x > 0 ? "E" : "W";
         let yAxis: string = coords.y > 0 ? "N" : "S";
 
@@ -131,8 +133,8 @@ export class RoomHelper {
     }
         
     public static getRoomOffset(originRoomName: string, destRoomName: string): { x: number, y: number } {
-        let origin = this.convertNameToCoordinates(originRoomName);
-        let dest = this.convertNameToCoordinates(destRoomName);
+        let origin = this.getRoomCoordinatesFromName(originRoomName);
+        let dest = this.getRoomCoordinatesFromName(destRoomName);
 
         let originXPos = origin.x > 0;
         let originYPos = origin.y > 0;
@@ -178,8 +180,9 @@ export class RoomHelper {
         }
     }
 
+    /** Gets the name of the room located at the offset from roomName. */
     public static transformRoom(roomName: string, offset: { x: number, y: number }): string {
-        let origin = this.convertNameToCoordinates(roomName);
+        let origin = this.getRoomCoordinatesFromName(roomName);
         let transform = { x: origin.x + offset.x, y: origin.y + offset.y };
 
         if (origin.x > 0 && transform.x <= 0)
@@ -191,8 +194,9 @@ export class RoomHelper {
         else if (origin.y < 0 && transform.y >= 0)
             transform.y++;
 
-        return this.convertCoordinatesToName(transform);
+        return this.getRoomNameFromCoordinates(transform);
     }
+
 
     public static getRoomPositionOffset(origin: RoomPosition, dest: RoomPosition): { x: number, y: number } {        
         if (origin.roomName == dest.roomName)
@@ -283,5 +287,72 @@ export class RoomHelper {
                 return false;
         }
         return true;
+    }
+
+    /** Converts a room position to a global position. */
+    public static getGlobalPosition(pos: RoomPosition): { x: number, y: number } {
+        let roomCoords = this.getRoomCoordinatesFromName(pos.roomName);
+        let p: { x: number, y: number } = { x: 0, y: 0 };
+        if (roomCoords.x < 0)
+            p.x = 50 * (roomCoords.x + 1) - pos.x - 1;
+        else
+            p.x = 50 * (roomCoords.x - 1) + pos.x + 1;
+
+        if (roomCoords.y < 0)
+            p.y = 50 * (roomCoords.y + 1) - pos.y - 1;
+        else
+            p.y = 50 * (roomCoords.y - 1) + pos.y + 1;
+
+        return p;
+    }
+
+    public static getRoomPositionFromGlobalPosition(pos: { x: number, y: number }): RoomPosition {        
+        let roomX = Math.floor(Math.abs(pos.x) / 50)
+        let roomY = Math.floor(Math.abs(pos.y) / 50);
+        let x = pos.x % 50;
+        let y = pos.y % 50;
+
+        if (pos.x < 0) {
+            roomX = -roomX;
+            roomX -= 1;
+            x += 1;
+        }
+        else {
+            roomX += 1;
+            x -= 1;
+        }
+
+        if (pos.y < 0) {
+            roomY = -roomY;
+            roomY -= 1;
+            y += 1;
+        } else {
+            roomY += 1;
+            y -= 1;
+        }
+        
+        let name = this.getRoomNameFromCoordinates({ x: roomX, y: roomY });
+        return new RoomPosition(x, y, name);
+    }
+
+    /** Calculates the average position from an array of room positions. */
+    public static getAveragePosition(positions: RoomPosition[]): RoomPosition {
+        let globals: { x: number, y: number }[] = [];
+        for (var i = 0; i < positions.length; i++)
+            globals.push(this.getGlobalPosition(positions[i]));
+
+        let x = 0;
+        let y = 0;
+        let count = 0;
+
+        for (var i = 0; i < globals.length; i++) {
+            x += globals[i].x;
+            y += globals[i].y;
+            count++;
+        }
+
+        x = Math.floor(x / count);
+        y = Math.floor(y / count);
+        return this.getRoomPositionFromGlobalPosition({ x: x, y: y });
     }
 }

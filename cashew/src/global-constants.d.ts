@@ -1,17 +1,14 @@
 declare interface global {
-    TASK_IDLE: string;
-    TASK_MOVE_TO: string;
-    TASK_TRANSFER: string;
-    TASK_WITHDRAW: string;
-    TASK_BUILD: string;
-    TASK_UPGRADE: string;
-    TASK_REPAIR: string;
-    TASK_ATTACK: string;
-    TASK_RESERVE: string;
-    TASK_CLAIM: string;
-    TASK_HARVEST: string;
-    TASK_PICKUP_ENERGY: string;
-    TASK_DISMANTLE: string;
+    MONITOR_COLONY_DEFENSE: string;
+    MONITOR_ECONOMY_OPERATION: string;
+    MONITOR_INFRASTRUCTURE_OPERATION: string;
+    MONITOR_REMOTE_MINING_OPERATION: string;
+
+    MONITOR_PROVIDER_STANDARD: string;
+
+    CAMPAIGN_CLAIM_COLONY: string;
+
+    FLAG_CAMPAIGN_CLAIM_COLONY: string;
 
     OPERATION_LIGHT_UPGRADE: string;
     OPERATION_HEAVY_UPGRADE: string;
@@ -46,6 +43,13 @@ declare interface global {
     OPERATION_LOOT: string;
     OPERATION_CLAIM_ROOM: string;
 
+    FLAG_OPERATION_DISMANTLE: string;
+    FLAG_OPERATION_LOOT: string;
+
+    UNIT_CONTROLLER_RALLY: string;
+    UNIT_CONTROLLER_MOVETO: string;
+    UNIT_CONTROLLER_ROOMDEFENSE: string;
+
     CREEP_CONTROLLER_HARVESTER: string;
     CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER: string;
     CREEP_CONTROLLER_LIGHT_UPGRADER: string;
@@ -69,6 +73,20 @@ declare interface global {
     CREEP_CONTROLLER_TRANSFER: string;
     CREEP_CONTROLLER_HARVEST_BUILDER: string;
 
+    TASK_IDLE: string;
+    TASK_MOVE_TO: string;
+    TASK_TRANSFER: string;
+    TASK_WITHDRAW: string;
+    TASK_BUILD: string;
+    TASK_UPGRADE: string;
+    TASK_REPAIR: string;
+    TASK_ATTACK: string;
+    TASK_RESERVE: string;
+    TASK_CLAIM: string;
+    TASK_HARVEST: string;
+    TASK_PICKUP_ENERGY: string;
+    TASK_DISMANTLE: string;
+
     BODY_LIGHT_WORKER: string;
     BODY_HEAVY_HARVESTER: string;
     BODY_HEAVY_UPGRADER: string;
@@ -82,29 +100,5 @@ declare interface global {
     BODY_HOPLITE: string;
     BODY_SHIELD: string;
     BODY_DISMANTLER: string;
-
-    MONITOR_COLONY_DEFENSE: string;
-    MONITOR_ECONOMY_OPERATION: string;
-    MONITOR_INFRASTRUCTURE_OPERATION: string;
-    MONITOR_REMOTE_MINING_OPERATION: string;
-
-    MONITOR_PROVIDER_STANDARD: string;
-
-    UNIT_MEMBER_HOPLITE: string;
-    UNIT_MEMBER_RANGER: string;
-    UNIT_MEMBER_HEALER: string;
-    UNIT_MEMBER_SHIELD: string;
-    UNIT_MEMBER_WARRIOR: string;
-
-    FORMATION_STANDARD: string;
-
-    TARGETING_TACTICS_STANDARD: string;
-
-    FLAG_OPERATION_DISMANTLE: string;
-    FLAG_OPERATION_LOOT: string;
-
-    CAMPAIGN_CLAIM_COLONY: string;
-
-    FLAG_CAMPAIGN_CLAIM_COLONY: string;
 
 }

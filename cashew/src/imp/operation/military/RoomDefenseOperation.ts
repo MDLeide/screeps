@@ -18,18 +18,6 @@ export class RoomDefenseOperation extends ControllerOperation {
     }
 
 
-    private checkAssignments(colony: Colony): void {
-        if (colony.watchtower.threatScore > 1000 && this.assignments.length < 3)
-            this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
-
-        if (colony.watchtower.threatScore > 3000 && this.assignments.length < 4)
-            this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
-
-        if (colony.watchtower.threatScore > 5000 && this.assignments.length < 5)
-            this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
-    }
-
-
     protected onLoad(): void {
     }
 
@@ -57,7 +45,6 @@ export class RoomDefenseOperation extends ControllerOperation {
 
 
     protected onInit(colony: Colony): InitStatus {
-        this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
         return InitStatus.Initialized;
     }
 
