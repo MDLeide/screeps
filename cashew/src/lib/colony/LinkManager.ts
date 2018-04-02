@@ -53,7 +53,10 @@ export class LinkManager {
         }
         
         if (target) {
-            amount = Math.min(amount, surplus);
+            if (isInput)
+                amount = Math.min(surplus, target.energyCapacity - target.energy);
+            else
+                amount = Math.min(amount, surplus);
             link.transferEnergy(target, amount);
             ledger[target.id].level += amount;
             ledger[link.id].level -= amount;

@@ -32,6 +32,14 @@ export abstract class JobOperation extends Operation {
     public update(colony: Colony): void {
         super.update(colony);
 
+        for (var i = 0; i < this.assignments.length; i++) {
+            if (!this.jobs[this.assignments[i].creepName]) {
+                let job = this.getJob(this.assignments[i]);
+                if (job)
+                    this.jobs[this.assignments[i].creepName] = job;
+            }
+        }
+
         for (let name in this.jobs) {
             let creep = Game.creeps[name];
             if (!creep || creep.spawning) continue;
