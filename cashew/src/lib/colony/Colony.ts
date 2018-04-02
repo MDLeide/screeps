@@ -154,8 +154,8 @@ export class Colony  {
     }
     
     /** Returns the Spawner used if successful, otherwise null */
-    public spawnCreep(body: Body): string | null {
-        var result = this.nest.spawnCreep(body);
+    public spawnCreep(body: Body, priority?: number): string | null {
+        var result = this.nest.spawnCreep(body, priority);
         return result;
     }
     

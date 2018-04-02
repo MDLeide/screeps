@@ -12,7 +12,8 @@ export class EnergyTransportOperation extends ControllerOperation {
     }
 
     constructor() {
-        super(OPERATION_ENERGY_TRANSPORT, EnergyTransportOperation.getAssignments());        
+        super(OPERATION_ENERGY_TRANSPORT, EnergyTransportOperation.getAssignments());
+        this.priority = 8;
     }
 
 
@@ -31,7 +32,7 @@ export class EnergyTransportOperation extends ControllerOperation {
     }
 
     protected onUpdate(colony: Colony): void {
-        let energy = colony.nest.room.energyCapacityAvailable / 3;
+        let energy = 300;
         for (var i = 0; i < this.assignments.length; i++)
             this.assignments[i].body.minimumEnergy = energy;
     }

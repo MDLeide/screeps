@@ -52,7 +52,7 @@ export class Nest {
         
         let name = CreepNamer.getCreepName(body, this) + "-" + this.spawnQueue.length;
         let request = new SpawnRequest(name, body, priority);
-        let index = _.sortedIndex(this.spawnQueue, request, (p) => p.priority);
+        let index = _.sortedIndex(this.spawnQueue, request, (p) => p.priority * -10000 - p.age);
         this.spawnQueue.splice(index, 0, request);
         Memory.creeps[name] = {
             birthTick: undefined,
@@ -65,6 +65,23 @@ export class Nest {
         return name;
     }
 
+    public cancelSpawn(name: string): void {
+        for (var i = 0; i < this.spawnQueue.length; i++) {
+            let req = this.spawnQueue[i];
+            if (req.name == name) {
+                Memory.creeps[req.name] = undefined;
+                this.spawnQueue.splice(i--, 1);
+                return;
+            }
+        }
+    }
+
+    public clearSpawnQueue(): void {
+        for (var i = 0; i < this.spawnQueue.length; i++) {
+            Memory.creeps[this.spawnQueue[i].name] = undefined;
+            this.spawnQueue.splice(i--, 1);
+        }
+    }
 
     public load(): void {        
         this.room = Game.rooms[this.roomName];

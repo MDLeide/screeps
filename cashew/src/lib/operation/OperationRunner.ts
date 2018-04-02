@@ -76,7 +76,7 @@ export class OperationRunner {
         if (!colony.canSpawn(assignment.body))
             return null;
 
-        return colony.spawnCreep(assignment.body);
+        return colony.spawnCreep(assignment.body, this.operation.priority);
     }
 
     private getUnassignedCreep(assignment: Assignment, colony: Colony): string {

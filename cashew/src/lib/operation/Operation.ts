@@ -30,6 +30,7 @@ export abstract class Operation {
     public startedStatus: StartStatus = StartStatus.Unstarted;
     public status: OperationStatus = OperationStatus.New;
     public assignments: Assignment[]; // filled if creep name is not blank
+    public priority: number = 0; // used to determine spawn order
     public get finished(): boolean {
         return this.status == OperationStatus.Complete ||
             this.status == OperationStatus.Canceled ||

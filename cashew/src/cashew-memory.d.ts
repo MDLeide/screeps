@@ -119,6 +119,7 @@ declare global {
         name: string;
         priority: number;
         body: BodyMemory;
+        tickCreated: number;
     }
 
     interface RemoteMiningManagerMemory {

@@ -124,6 +124,7 @@ export class ExtensionFillOperation extends ControllerOperation {
     }
 
     protected onFinish(colony: Colony): boolean {
+        colony.resourceManager.extensionsManagedDirectly = false;
         return true;
     }
 

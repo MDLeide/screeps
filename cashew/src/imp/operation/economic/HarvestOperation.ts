@@ -19,6 +19,7 @@ export class HarvestOperation extends ControllerOperation {
         this.sourceId = source instanceof Source ? source.id : source;
         this.containerId = containerId;
         this.linkId = linkId;
+        this.priority = 7;
     }
         
     
