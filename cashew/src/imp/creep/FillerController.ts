@@ -82,6 +82,9 @@ export class FillerController extends CreepController {
     }
 
     protected onExecute(creep: Creep): void {
+        if (creep.ticksToLive < 30)
+            return this.handleDying(creep);
+
         if (this.enRoute)
             return this.handleEnroute(creep);
 
@@ -90,6 +93,14 @@ export class FillerController extends CreepController {
 
         if (this.fill)
             this.handleFill(creep);
+    }
+
+    private handleDying(creep: Creep): void {
+        if (this.atHome && creep.carry.energy > 0) {
+            creep.transfer(this.link, RESOURCE_ENERGY);
+        } else if (this.fill) {
+            this.handleFill(creep);
+        }
     }
 
     private handleEnroute(creep: Creep): void {
