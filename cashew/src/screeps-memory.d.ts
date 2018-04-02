@@ -23,8 +23,7 @@ declare global {
         room: string;
     }
 
-    interface FlagMemory {
-        colonyData?: ColonyFlagMemory;
+    interface FlagMemory {        
         playbackData?: PlaybackFlagMemory;
         flagOperation?: FlagOperationMemory;
         flagCampaign?: FlagCampaignMemory;

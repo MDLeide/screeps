@@ -47,7 +47,7 @@ export class EconomyOperationMonitor extends ColonyMonitor {
                 (op: HarvestOperation) => op.sourceId == colony.resourceManager.sourceAId);
             
 
-        if (rcl.isLessThanOrEqualTo(1, 3) && colony.resourceManager.sourceBId)
+        if (rcl.isGreaterThanOrEqualTo(1, 3) && colony.resourceManager.sourceBId)
             this.ensureOperation(
                 colony,
                 OPERATION_HARVEST,

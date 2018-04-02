@@ -15,19 +15,14 @@ import { WatchVisual } from "../lib/visual/WatchVisual";
 import { Test } from "../lib/Test";
 
 export class GlobalExtension {
-    public static extendEmpire(empire: Empire) {
-        global.empire = empire;
-
-        let reports = new Reporter(empire);
-        global.reports = reports;
-        global.r = reports;
-    }
-
     public static extend() {
         let visuals = new Visuals();
         global.visuals = visuals;
         global.v = visuals;
 
+        let reports = new Reporter();
+        global.reports = reports;
+        global.r = reports;
 
         let debug = new WatchVisual();
         global.debug = debug;

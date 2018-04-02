@@ -7,7 +7,7 @@ import { StringBuilder } from "../StringBuilder";
 import { ColonyOperationReport } from "./ColonyOperationReport";
 
 export class Reporter {
-    constructor(public empire: Empire) { }
+    constructor() { }
 
     public help(): string {
         let help = "allOperations() [ops] </br>";
@@ -16,12 +16,14 @@ export class Reporter {
     }
 
     public ops(): string { return this.allOperations(); }
+
     public allOperations(): string {
+        let empire = global.empire;
         let sb = new StringBuilder();
-        for (var i = 0; i < this.empire.colonies.length; i++) {
-            let report = new ColonyOperationReport(this.empire.colonies[i]);
+        for (var i = 0; i < empire.colonies.length; i++) {
+            let report = new ColonyOperationReport(empire.colonies[i]);
             sb.append(report.getHtml());
-            if (i < this.empire.colonies.length - 1)
+            if (i < empire.colonies.length - 1)
                 sb.appendLine();
         }
         return sb.toString();

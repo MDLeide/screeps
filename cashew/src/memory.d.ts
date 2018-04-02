@@ -4,5 +4,6 @@ declare global {
     interface Memory {
         visuals: VisualsMemory;
         empire: EmpireMemory;
+        system: SystemMemory;
     }    
 }

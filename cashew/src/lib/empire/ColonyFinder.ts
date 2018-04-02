@@ -30,7 +30,7 @@ export class ColonyFinder {
             if (!flags[i].room)
                 continue
 
-            let name = this.getColonyName(flags[i].room, flags[i]);
+            let name = "Colony " + flags[i].room.name;
             if (this.colonyExists(empire, name))
                 continue;
             let colony = this.buildFromFlag(this.nestMapBuilder, flags[i]);
@@ -71,7 +71,9 @@ export class ColonyFinder {
     }
     
     private buildFromFlag(nestMapBuilder: NestMapBuilder, flag: Flag): Colony {
-        let name = this.getColonyName(flag.room, flag);
+        if (!flag.room)
+            return null;
+        let name = "Colony " + flag.room.name;
         let nestMap = this.getNestMap(nestMapBuilder, flag.room);
         let nest = new Nest(flag.room.name, nestMap);
         let monitorManager = this.getMonitorManager();
@@ -98,13 +100,7 @@ export class ColonyFinder {
     private getMonitorManager(): TypedMonitorManager<Colony> {
         return new TypedMonitorManager<Colony>(this.monitorProvider);
     }
-
-    private getColonyName(room: Room, flag: Flag): string {
-        if (flag && flag.memory && flag.memory.colonyData && flag.memory.colonyData.name)
-            return flag.memory.colonyData.name;
-        return "Colony " + room.name;
-    }
-
+    
     private getNestMap(nestMapBuilder: NestMapBuilder, room: Room): NestMap {
         let nestMap = nestMapBuilder.getMap(room);
         if (!nestMap)

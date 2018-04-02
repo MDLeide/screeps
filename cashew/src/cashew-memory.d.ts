@@ -3,12 +3,20 @@ import { MonitorStatus } from "lib/monitor/Monitor";
 import { FlagOperation } from "lib/operation/FlagOperation";
 
 declare global {
-    /** FLAGS */
-
-    interface ColonyFlagMemory {
-        name: string;        
+    interface SystemMemory {
+        name: string;
+        major: number;
+        minor: number;
+        patch: number;
+        /** Milliseconds since epoch. */
+        lastUpdate: number;
+        debug: boolean;
+        resetHistory: number[];
+        codeChangeHistory: number[];
     }
 
+    /** FLAGS */
+    
     interface PlaybackFlagMemory {
         pauseOnException: boolean;
 
@@ -39,8 +47,7 @@ declare global {
         campaigns: CampaignMemory[];
     }
 
-    interface ColonyMonitorMemory extends MonitorMemory {
-        
+    interface ColonyMonitorMemory extends MonitorMemory {        
     }
 
     interface MonitorMemory {

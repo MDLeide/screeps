@@ -8,12 +8,15 @@ import { EventLog } from "./lib/util/EventLog";
 import { Visuals } from "./lib/visual/Visuals";
 import { Test } from "./lib/Test";
 import { WatchVisual } from "./lib/visual/WatchVisual";
+import { System } from "lib/System";
 
 
 declare global {
     const global: global;
+    const module: module;
 
     interface global {
+        system: System;
         empire: Empire;
 
         reports: Reporter;
@@ -44,5 +47,9 @@ declare global {
 
         startFlagOp(flagName: string, type: FlagOperationType, hostColony: string): string;
         startFlagCampaign(flagName: string, type: FlagCampaignType, hostColony: string): string;
-    }    
+    }
+
+    interface module {
+        timestamp: number;
+    }
 }
