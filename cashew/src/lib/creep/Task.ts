@@ -566,7 +566,7 @@ export class Harvest extends TargetedTask<Source> {
     }
 
     public update(creep: Creep): void {
-        if (_.sum(creep.carry) == creep.carryCapacity)
+        if (_.sum(creep.carry) == creep.carryCapacity || this.target.energy == 0)
             this.onComplete();
     }
 

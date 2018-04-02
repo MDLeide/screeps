@@ -43,7 +43,7 @@ export class HarvestBuilderJob extends Job {
         if (creep.carry.energy > 0) {
             return Task.Build(this.targetSite);
         } else {
-            let source = creep.pos.findClosestByRange(FIND_SOURCES);
+            let source = creep.pos.findClosestByRange(FIND_SOURCES, { filter: p => p.energy > 0 });
             return Task.Harvest(source);
         }
     }
