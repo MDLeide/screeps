@@ -29,7 +29,7 @@ export class ColonyInfoVisual extends ComponentVisual {
         vt.append(" | ");
         let ops = colony.operations.runners.length;
         vt.append(ops + " operations");
-        let pop = colony.population.alive.length;
+        let pop = colony.population.alive ? colony.population.alive.length : 0;
         vt.append(" | ");
         vt.append(pop + " creeps");
         vt.append(" | ");
