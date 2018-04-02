@@ -22,8 +22,7 @@ export class ExtensionFillOperation extends ControllerOperation {
     constructor() {
         super(OPERATION_EXTENSION_FILL, []);
     }
-
-
+    
     public linkId: string
     public pathAStandLocation: { x: number, y: number };
     public pathBStandLocation: { x: number, y: number };
@@ -31,58 +30,76 @@ export class ExtensionFillOperation extends ControllerOperation {
     public BWaitLocation: { x: number, y: number };
 
     public lastAssignedWasA: boolean;
-
-
+    
     protected onLoad(): void {
     }
 
     protected onUpdate(colony: Colony): void {
-        let controllerCount = 0;
-        let aCount = 0;
-        let bCount = 0;
-        for (let key in this.controllers) {
-            let c = this.controllers[key] as FillerController;
-            if (!c.enRoute && c.atHome && c.readyToFill)
-                controllerCount++;
-            if (!c.enRoute) {
-                if (c.onPathA)
-                    aCount++;
-                else
-                    bCount++;
-            }
-        }
-
-        for (let key in this.controllers) {
-            let c = this.controllers[key] as FillerController;
-            if (c.waiting && c.onPathA && aCount == 0)
-                c.waiting = false;
-            else if (c.waiting && !c.onPathA && bCount == 0)
-                c.waiting = false;
-        }        
-        if (controllerCount < 2)
-            return;
+        this.updateWaiting();
         
-
-        let posA = new RoomPosition(this.pathAStandLocation.x, this.pathAStandLocation.y, colony.nest.roomName);
-        let posB = new RoomPosition(this.pathBStandLocation.x, this.pathBStandLocation.y, colony.nest.roomName);
-
-        let unfilledA = posA.findInRange<StructureExtension>(FIND_MY_STRUCTURES, 1, { filter: (s) => s.structureType == STRUCTURE_EXTENSION && s.energy < s.energyCapacity }).length;
-        let unfilledB = posB.findInRange<StructureExtension>(FIND_MY_STRUCTURES, 1, { filter: (s) => s.structureType == STRUCTURE_EXTENSION && s.energy < s.energyCapacity }).length;
-        let unfilled = unfilledA + unfilledB;
-                
-        if (colony.nest.room.energyAvailable < colony.nest.room.energyCapacityAvailable && unfilled == 0) {
-            for (let key in this.controllers) {
-                let c = this.controllers[key] as FillerController;
-                if (!c.enRoute && c.atHome && c.readyToFill)
-                    c.fill = true;
-            }
-        }
+        if (this.shouldStartFilling(colony))
+            this.startFilling();
     }
 
     protected onExecute(colony: Colony): void {
     }
 
     protected onCleanup(colony: Colony): void {
+    }
+    
+    private updateWaiting(): void {
+        this.updatePathCreeps(true);
+        this.updatePathCreeps(false);
+    }
+
+    /** Checks the creeps on the given path to determine if they need to stop waiting. */
+    private updatePathCreeps(pathA: boolean): void {
+        let count = _.sum(this.controllers, (p: FillerController) => p.onPathA == pathA && !p.waiting ? 1 : 0);
+        if (count > 0)
+            return;
+        for (let key in this.controllers) {
+            let c = this.controllers[key] as FillerController;
+            if (c.waiting && c.onPathA == pathA)
+                c.waiting = false;
+        }
+    }
+    
+    private shouldStartFilling(colony: Colony): boolean {
+        let readyToFill = _.sum(this.controllers, (p: FillerController) => p.readyToFill ? 1 : 0);
+        if (readyToFill < 2)
+            return false;
+
+        if (colony.nest.room.energyAvailable >= colony.nest.room.energyCapacityAvailable)
+            return false;
+
+        return this.countUnfilledHomeExtensions(colony) == 0;
+    }
+
+    private countUnfilledHomeExtensions(colony: Colony): number {
+        return this.countAdjacementUnfilledExtensions(new RoomPosition(this.pathAStandLocation.x, this.pathAStandLocation.y, colony.nest.roomName)) +
+            this.countAdjacementUnfilledExtensions(new RoomPosition(this.pathBStandLocation.x, this.pathBStandLocation.y, colony.nest.roomName));
+    }
+
+    private countAdjacementUnfilledExtensions(pos: RoomPosition): number {
+        return pos.findInRange<StructureExtension>(
+            FIND_MY_STRUCTURES,
+            1,
+            {
+                filter:
+                    s => s.structureType == STRUCTURE_EXTENSION && s.energy < s.energyCapacity
+            }).length;
+    }
+
+    private startFilling(): void {
+        for (let key in this.controllers) {
+            let c = this.controllers[key] as FillerController;
+            if (!c.enRoute && c.atHome && c.readyToFill) {
+                c.fill = true;
+            } else if (c.waiting) { // swap the waiters so they stay with the creep they are supposed to replace
+                c.onPathA = !c.onPathA;
+                c.standLocation = c.onPathA ? this.pathAStandLocation : this.pathBStandLocation;
+            }
+        }
     }
 
 
@@ -103,7 +120,7 @@ export class ExtensionFillOperation extends ControllerOperation {
         this.linkId = colony.resourceManager.structures.extensionLinkId;
 
         let body = BodyRepository.hauler();
-        body.maxCompleteScalingSections = 20;
+        body.maxCompleteScalingSections = 8;
         let block = colony.nest.nestMap.extensionBlock;
 
         this.pathAStandLocation = block.getStandALocation();
@@ -112,8 +129,14 @@ export class ExtensionFillOperation extends ControllerOperation {
         this.AWaitLocation = block.getWaitALocation();
         this.BWaitLocation = block.getWaitBLocation();
 
-        this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_FILLER, 250));
-        this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_FILLER, 250));
+        let dist = colony.resourceManager.structures.extensionLink.pos.getRangeTo(colony.nest.spawners[0].spawn);
+        let spawnTime = body.getBody(60 * 200).length * 3;
+        let leadTime = spawnTime + dist;
+        leadTime = leadTime * 1.1;
+
+        this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_FILLER, leadTime));
+        this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_FILLER, leadTime));
+
 
         return InitStatus.Initialized;
     }
