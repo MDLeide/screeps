@@ -21,6 +21,7 @@ export class ExtensionFillOperation extends ControllerOperation {
 
     constructor() {
         super(OPERATION_EXTENSION_FILL, []);
+        this.priority = 8;
     }
     
     public linkId: string

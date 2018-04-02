@@ -119,11 +119,7 @@ export class ResourceManager {
     public getSpawnExtensionTransferTargets(creep: Creep): (StructureSpawn | StructureExtension) {
         return this.transfers.getSpawnExtensionTransferTargets(creep);
     }
-
-    public getLinkTransferTarget(): StructureLink {
-        return this.transfers.getLinkTransferTarget();
-    }
-
+    
     public getWithdrawTarget(creep: Creep): WithdrawTarget {
         return this.withdraws.getWithdrawTarget(creep);
     }
@@ -487,37 +483,12 @@ class Structures {
 
         return structures;
     }
-
-
+    
     public constructor(resourceManager: ResourceManager) {
         this.resourceManager = resourceManager;
     }
-
-
+    
     public resourceManager: ResourceManager;
-
-
-    public getSourceContainer(source: (string | Source)): StructureContainer {
-        if (source instanceof Source) {
-            return this.getSourceContainer(source.id);
-        }
-        if (this.resourceManager.sourceAId == source)
-            return this.sourceAContainer;
-        else if (this.resourceManager.sourceBId == source)
-            return this.sourceBContainer;
-        return null;
-    }
-
-    public getSourceLink(source: (string | Source)): StructureLink {
-        if (source instanceof Source) {
-            return this.getSourceLink(source.id);
-        }
-        if (this.resourceManager.sourceAId == source)
-            return this.sourceALink;
-        else if (this.resourceManager.sourceBId == source)
-            return this.sourceBLink;
-        return null;
-    }
 
     public sourceAContainerId: string;
     public sourceAContainer: StructureContainer;
@@ -542,6 +513,49 @@ class Structures {
 
     public storageLinkId: string;
     public storageLink: StructureLink;
+
+
+    public getInputLinks(): StructureLink[] {
+        let links = [];
+        if (this.sourceALink)
+            links.push(this.sourceALink);
+        if (this.sourceBLink)
+            links.push(this.sourceBLink);
+        return links;
+    }
+
+    public getOutputLinks(): StructureLink[] {
+        let links = [];
+        if (this.controllerLink)
+            links.push(this.controllerLink);
+        if (this.extensionLink)
+            links.push(this.extensionLink);
+        if (this.storageLink)
+            links.push(this.storageLink);
+        return links;
+    }
+
+    public getSourceContainer(source: (string | Source)): StructureContainer {
+        if (source instanceof Source) {
+            return this.getSourceContainer(source.id);
+        }
+        if (this.resourceManager.sourceAId == source)
+            return this.sourceAContainer;
+        else if (this.resourceManager.sourceBId == source)
+            return this.sourceBContainer;
+        return null;
+    }
+
+    public getSourceLink(source: (string | Source)): StructureLink {
+        if (source instanceof Source) {
+            return this.getSourceLink(source.id);
+        }
+        if (this.resourceManager.sourceAId == source)
+            return this.sourceALink;
+        else if (this.resourceManager.sourceBId == source)
+            return this.sourceBLink;
+        return null;
+    }
 
 
     public save(): ResourceManagerStructureMemory {
@@ -576,34 +590,14 @@ class Transfers {
         return null;
     }
 
-    public getSpawnExtensionTransferTargets(creep: Creep): (StructureSpawn | StructureExtension) {
-        let managed = this.resourceManager.extensionsManagedDirectly;
-        let closest = creep.pos.findClosestByRange<StructureExtension | StructureSpawn>(FIND_MY_STRUCTURES,
-            {
-                filter: (struct) => {
-                    return ((!managed && struct.structureType == STRUCTURE_EXTENSION) || struct.structureType == STRUCTURE_SPAWN) && struct.energy < struct.energyCapacity;
-                }
-            });
-        return closest;
-    }
-
-    public getLinkTransferTarget(): StructureLink {
-        if (this.resourceManager.structures.extensionLink && this.resourceManager.structures.extensionLink.energy < this.resourceManager.settings.extensionLinkTransferThreshold)
-            return this.resourceManager.structures.extensionLink;
-        else if (this.resourceManager.structures.controllerLink && this.resourceManager.structures.controllerLink.energy < this.resourceManager.settings.controllerLinkTransferThreshold)
-            return this.resourceManager.structures.controllerLink;
-        else if (this.resourceManager.structures.storageLink && this.resourceManager.structures.storageLink.energy < this.resourceManager.settings.storageLinkTransferThreshold)
-            return this.resourceManager.structures.storageLink;
-        return null;
-    }
-
-
     private getTarget(creep: Creep, target: TransferPriorityTarget): TransferTarget {
         switch (target) {
             case TransferPriorityTarget.SpawnsAndExtensions:
                 return this.getSpawnExtensionTransferTargets(creep);
             case TransferPriorityTarget.Towers:
                 return this.getTowerTransferTarget(creep);
+            case TransferPriorityTarget.Links:
+                return this.getLinkTransferTarget(creep);
             case TransferPriorityTarget.Controller:
                 return this.getControllerTransferTarget(creep);
             case TransferPriorityTarget.Storage:
@@ -617,6 +611,25 @@ class Transfers {
             default:
                 return null;
         }
+    }
+
+    public getSpawnExtensionTransferTargets(creep: Creep): (StructureSpawn | StructureExtension) {
+        let managed = this.resourceManager.extensionsManagedDirectly;
+        let closest = creep.pos.findClosestByRange<StructureExtension | StructureSpawn>(FIND_MY_STRUCTURES,
+            {
+                filter: (struct) => {
+                    return ((!managed && struct.structureType == STRUCTURE_EXTENSION) || struct.structureType == STRUCTURE_SPAWN) && struct.energy < struct.energyCapacity;
+                }
+            });
+        return closest;
+    }
+
+    private getLinkTransferTarget(creep: Creep): StructureLink {
+        if (this.resourceManager.structures.storageLink && this.resourceManager.structures.storageLink.energy < this.resourceManager.settings.linkTransferThreshold)
+            return this.resourceManager.structures.storageLink;
+        if (this.resourceManager.structures.controllerLink && this.resourceManager.structures.controllerLink.energy < this.resourceManager.settings.linkTransferThreshold)
+            return this.resourceManager.structures.controllerLink;
+        return null;
     }
 
     private getTowerTransferTarget(creep: Creep): StructureTower {
@@ -760,6 +773,7 @@ class ResourceManagerSettings {
 
     public fillPriority: TransferPriorityTarget[] = [
         TransferPriorityTarget.SpawnsAndExtensions,
+        TransferPriorityTarget.Links,
         TransferPriorityTarget.Towers,
         TransferPriorityTarget.Controller,
         TransferPriorityTarget.Lab,        
@@ -771,6 +785,8 @@ class ResourceManagerSettings {
     public sourceContainerWithdrawThreshold: number = 500;
 
     public sourceContainerOverflowThreshold: number = 1600;
+
+    public linkTransferThreshold: number = 600;
 
     public controllerLinkTransferThreshold: number = 500;
     public extensionLinkTransferThreshold: number = 500;
@@ -791,11 +807,12 @@ class ResourceManagerSettings {
 }
 
 export enum TransferPriorityTarget {
-    SpawnsAndExtensions,
-    Towers,
-    Controller,
-    Storage,
-    Terminal,
-    Nuker,
-    Lab
+    SpawnsAndExtensions, //0
+    Towers, // 1
+    Controller, // 2
+    Storage, // 3
+    Terminal, // 4
+    Nuker, // 5
+    Lab, // 6
+    Links //7
 }
