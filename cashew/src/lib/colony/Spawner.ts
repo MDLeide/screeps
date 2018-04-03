@@ -44,6 +44,7 @@ export class Spawner {
             let colony = global.empire.getColonyBySpawn(this.spawnId);
             memory = {
                 colony: colony ? colony.name : undefined,
+                spawningColony: colony ? colony.name : undefined,
                 body: body.type,
                 operation: undefined,
                 birthTick: Game.time + 1,

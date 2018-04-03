@@ -44,6 +44,15 @@ export class Empire {
         }
     }
 
+    public getColonyByRoom(room: Room | string): Colony {
+        if (room instanceof Room)
+            return this.getColonyByRoom(room.name);
+        for (var i = 0; i < this.colonies.length; i++)
+            if (this.colonies[i].nest.roomName == room)
+                return this.colonies[i];
+        return null;
+    }
+
     /** Gets the Colony that a particular Spawn belongs to. */
     public getColonyBySpawn(spawn: StructureSpawn | string): Colony {
         if (spawn instanceof StructureSpawn)
@@ -119,18 +128,12 @@ export class Empire {
         let colonies: Colony[];
         if (rangeOrColonies) {
             if (typeof (rangeOrColonies) == "number") {
-                for (var i = 0; i < this.colonies.length; i++) {
-                    let path = Game.map.findRoute(requestingColony.nest.roomName, this.colonies[i].nest.roomName);
-                    if (path == -2)
-                        continue;
-                    else if (path.length <= rangeOrColonies)
-                        colonies.push(this.colonies[i]);
-                }
+                colonies = this.getSupportColonies(requestingColony, rangeOrColonies);
             } else {
                 colonies = rangeOrColonies;
             }
         } else {
-            colonies = this.colonies;
+            colonies = this.getSupportColonies(requestingColony);
         }
 
         for (var i = 0; i < colonies.length; i++) {
@@ -141,6 +144,22 @@ export class Empire {
             }
         }
         return null;
+    }
+
+    private getSupportColonies(requestingColony: Colony, range?: number): Colony[] {
+        let colonies: { colony: Colony, distance: number }[] = [];
+        for (var i = 0; i < this.colonies.length; i++) {
+            if (requestingColony.name == this.colonies[i].name)
+                continue;
+            let path = Game.map.findRoute(requestingColony.nest.roomName, this.colonies[i].nest.roomName);
+            if (path == -2)
+                continue;
+            let d = path.length;
+            if (range && d > range)
+                continue;
+            colonies.push({ colony: this.colonies[i], distance: d });
+        }
+        return colonies.sort((a, b) => a.distance - b.distance).map(p => p.colony);        
     }
 
     //## update loop

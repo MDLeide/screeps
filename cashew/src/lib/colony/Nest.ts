@@ -56,7 +56,7 @@ export class Nest {
     }
 
     /** Returns the name used if successful, otherwise null, not guaranteed to start spawning immediately */
-    public spawnCreep(body: Body, colonyName: string, priority?: number): string | null {
+    public spawnCreep(body: Body, requestingColonyName: string, spawningColonyName: string, priority?: number): string | null {
         if (!this.canSpawn(body))
             return null;
         
@@ -68,10 +68,11 @@ export class Nest {
             birthTick: undefined,
             body: body.type,
             deathTick: 0,
-            colony: colonyName,
+            colony: requestingColonyName,
+            spawningColony: spawningColonyName,
             operation: undefined
         };
-        global.events.colony.creepScheduled(colonyName, name, body.type);
+        global.events.colony.creepScheduled(requestingColonyName, name, body.type);
         return name;
     }
     

@@ -163,12 +163,13 @@ export class Colony  {
     /** Returns the Spawner used if successful, otherwise null
      * @param body Body to use for spawning.
      * @param priority An optional number indicating the priority of the spawn. Higher numbers are spawned first.
-     * @param transfer An optional Colony that the creep will be assigned to.
+     * @param transfer An optional Colony that the creep will be assigned to. If omited it will be assigned to this Colony.
      */
     public spawnCreep(body: Body, priority?: number, transfer?: Colony): string | null {
         var result = this.nest.spawnCreep(
             body,
             transfer ? transfer.name : this.name,
+            this.name,
             priority);
         return result;
     }
