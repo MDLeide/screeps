@@ -22,29 +22,6 @@ export class RoomScoutOperation extends JobOperation {
     public targetRoomName: string;
     public targetRoom: Room;
 
-    
-    protected onLoad(): void {
-        if (this.targetRoomName)
-            this.targetRoom = Game.getObjectById<Room>(this.targetRoomName);
-    }
-
-    protected onUpdate(colony: Colony): void {
-    }
-
-    protected onExecute(colony: Colony): void {
-    }
-
-    protected onCleanup(colony: Colony): void {
-    }
-
-
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
 
     public isFinished(colony: Colony): boolean {
         if (this.getFilledAssignmentCount() < 1)
@@ -61,11 +38,33 @@ export class RoomScoutOperation extends JobOperation {
     }
 
 
+    protected getJob(assignment: Assignment): Job {
+        return new ScoutJob(this.targetRoomName);
+    }
+
+
+    protected onLoad(): void {
+        if (this.targetRoomName)
+            this.targetRoom = Game.getObjectById<Room>(this.targetRoomName);
+    }
+
+    protected onUpdate(colony: Colony): void {
+    }
+
+    protected onExecute(colony: Colony): void {
+    }
+
+    protected onCleanup(colony: Colony): void {
+    }
+
+
     protected onInit(colony: Colony): InitStatus {
         return InitStatus.Initialized;
     }
 
     protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
         return StartStatus.Started;
     }
 
@@ -77,30 +76,10 @@ export class RoomScoutOperation extends JobOperation {
     }
 
     
-    protected onRelease(assignment: Assignment): void {
-    }
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-    protected getJob(assignment: Assignment): Job {
-        return new ScoutJob(this.targetRoomName);
-    }
-
-
-    protected onSave(): RoomScoutOperationMemory {
-        return {
-            type: this.type,
-            initializedStatus: this.initializedStatus,
-            startedStatus: this.startedStatus,
-            operationStatus: this.status,
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory(),
-            targetRoomName: this.targetRoomName
-        };
+    public save(): RoomScoutOperationMemory {
+        let mem = super.save() as RoomScoutOperationMemory;
+        mem.targetRoomName = this.targetRoomName;
+        return mem;
     }
 }
 

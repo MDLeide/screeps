@@ -52,28 +52,18 @@ export abstract class Operation {
             this.status == OperationStatus.AwaitingRestart ||
             this.status == OperationStatus.Started;
     }
-
-
-    public abstract canInit(colony: Colony): boolean;
-    public abstract canStart(colony: Colony): boolean;
+    
     public abstract isFinished(colony: Colony): boolean;
-
-    protected abstract onAssignment(assignment: Assignment): void;
-    protected abstract onReplacement(assignment: Assignment): void;
-    protected abstract onRelease(assignment: Assignment): void;
-
-    protected abstract onInit(colony: Colony): InitStatus;
-    protected abstract onStart(colony: Colony): StartStatus;
-    protected abstract onFinish(colony: Colony): boolean;
-    protected abstract onCancel(): void;
 
     protected abstract onLoad(): void;
     protected abstract onUpdate(colony: Colony): void;
     protected abstract onExecute(colony: Colony): void;
     protected abstract onCleanup(colony: Colony): void;
 
-    protected abstract onSave(): OperationMemory;
-
+    protected abstract onInit(colony: Colony): InitStatus;
+    protected abstract onStart(colony: Colony): StartStatus;
+    protected abstract onFinish(colony: Colony): boolean;
+    protected abstract onCancel(colony: Colony): void;
 
     public load(): void {
         this.onLoad();
@@ -94,15 +84,9 @@ export abstract class Operation {
 
 
     public init(colony: Colony): InitStatus {
-        if (this.initializedStatus == InitStatus.Initialized || this.initializedStatus == InitStatus.Failed) {
+        if (this.initializedStatus == InitStatus.Initialized || this.initializedStatus == InitStatus.Failed)
             return this.initializedStatus;
-        }            
-        if (!this.canInit(colony)) {
-            this.initializedStatus = InitStatus.TryAgain;
-            global.events.operation.initAgain(this.type);
-            return this.initializedStatus;
-        }            
-
+        
         this.initializedStatus = this.onInit(colony);
 
         if (this.initializedStatus == InitStatus.Initialized) {
@@ -125,11 +109,6 @@ export abstract class Operation {
     public start(colony: Colony): StartStatus {                
         if (this.startedStatus == StartStatus.Started || this.startedStatus == StartStatus.Failed)
             return this.startedStatus;
-        if (!this.canStart(colony)) {
-            this.startedStatus = StartStatus.TryAgain;
-            this.status = OperationStatus.AwaitingRestart;
-            return this.startedStatus;
-        }            
 
         this.startedStatus = this.onStart(colony);
 
@@ -165,8 +144,8 @@ export abstract class Operation {
         }
     }
     
-    public cancel(): void {
-        this.onCancel();
+    public cancel(colony: Colony): void {
+        this.onCancel(colony);
         for (var i = 0; i < this.assignments.length; i++) {
             if (this.assignments[i].creepName)
                 this.releaseAssignment(this.assignments[i]);
@@ -174,7 +153,6 @@ export abstract class Operation {
 
         this.status = OperationStatus.Canceled;
         global.events.operation.cancel(this.type);
-        //todo: events for cancelation
     }
 
 
@@ -203,8 +181,7 @@ export abstract class Operation {
         }            
 
         assignment.replacementName = creepName;
-        creepMemory.operation = this.type;
-        this.onReplacement(assignment);
+        creepMemory.operation = this.type;        
         global.events.operation.creepReplacementAssigned(this.type, creepName, assignment.body.type);
         return true;
     }
@@ -234,7 +211,6 @@ export abstract class Operation {
 
         assignment.creepName = creepName;
         creepMemory.operation = this.type;
-        this.onAssignment(assignment);
         global.events.operation.creepAssigned(this.type, creepName, assignment.body.type);
         return true;
     }
@@ -257,7 +233,6 @@ export abstract class Operation {
 
         let creepName = assignment.creepName;
         let bodyType = assignment.body.type;
-        this.onRelease(assignment);
         assignment.release();
         if (Memory.creeps[creepName])
             Memory.creeps[creepName].operation = undefined;
@@ -304,16 +279,7 @@ export abstract class Operation {
     public getFilledAssignmentCount(): number {
         return _.sum(this.assignments, p => p.isFilled() ? 1 : 0);
     }
-
-
-    protected getAssignmentMemory(): AssignmentMemory[] {
-        var assignmentMemory: AssignmentMemory[] = [];
-        for (var i = 0; i < this.assignments.length; i++)
-            assignmentMemory.push(this.assignments[i].save());
-        return assignmentMemory;
-    }
-
-
+    
     private cleanDeadCreeps(colony: Colony) {
         for (var i = 0; i < this.assignments.length; i++) {
             if (this.assignments[i].creepName) {
@@ -322,13 +288,15 @@ export abstract class Operation {
             }            
         }        
     }
-
-
+    
+    private getAssignmentMemory(): AssignmentMemory[] {
+        var assignmentMemory: AssignmentMemory[] = [];
+        for (var i = 0; i < this.assignments.length; i++)
+            assignmentMemory.push(this.assignments[i].save());
+        return assignmentMemory;
+    }
+    
     public save(): OperationMemory {
-        var memory = this.onSave();
-        if (memory)
-            return memory;
-
         return {
             type: this.type,
             initializedStatus: this.initializedStatus,

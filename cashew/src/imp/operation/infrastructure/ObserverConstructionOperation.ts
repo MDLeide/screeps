@@ -25,8 +25,4 @@ export class ObserverConstructionOperation extends ConstructionOperation {
     protected getStructureType(): BuildableStructureConstant {
         return STRUCTURE_OBSERVER;
     }
-
-    protected onSave(): ConstructionOperationMemory {
-        return null;
-    }
 }

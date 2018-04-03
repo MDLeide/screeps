@@ -25,20 +25,12 @@ export class DismantleOperation extends JobOperation {
 
     public targets: RoomPosition[];
 
-    protected onLoad(): void {
+
+    public isFinished(colony: Colony): boolean {
+        return !this.targets || !this.targets.length;
     }
 
 
-    protected onUpdate(colony: Colony): void {
-    }
-
-    protected onExecute(colony: Colony): void {
-    }
-
-    protected onCleanup(colony: Colony): void {
-    }
-
-    
     protected getJob(assignment: Assignment): Job {
         if (!this.targets || !this.targets.length)
             return null;
@@ -55,7 +47,7 @@ export class DismantleOperation extends JobOperation {
                     return null;
 
                 continue;
-            }                
+            }
 
             return new DismantleJob(structures[0]);
         }
@@ -64,32 +56,26 @@ export class DismantleOperation extends JobOperation {
     }
 
 
-    public canInit(colony: Colony): boolean {
-        return true;
+    protected onLoad(): void {
+    }
+    
+    protected onUpdate(colony: Colony): void {
     }
 
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
+    protected onExecute(colony: Colony): void {
     }
 
-    public isFinished(colony: Colony): boolean {
-        return !this.targets || !this.targets.length;
+    protected onCleanup(colony: Colony): void {
     }
 
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onRelease(assignment: Assignment): void {        
-    }
-
+    
     protected onInit(colony: Colony): InitStatus {
         return InitStatus.Initialized;
     }
 
     protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
         return StartStatus.Started;
     }
 
@@ -105,10 +91,6 @@ export class DismantleOperation extends JobOperation {
         let mem = super.save() as DismantleOperationMemory;
         mem.targets = this.targets;
         return mem;
-    }
-
-    public onSave(): JobOperationMemory {
-        return null;
     }
 }
 

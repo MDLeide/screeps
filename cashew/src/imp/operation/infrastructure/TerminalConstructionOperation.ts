@@ -25,8 +25,4 @@ export class TerminalConstructionOperation extends ConstructionOperation {
     protected getStructureType(): BuildableStructureConstant {
         return STRUCTURE_TERMINAL;
     }
-
-    protected onSave(): ConstructionOperationMemory {
-        return null;
-    }
 }

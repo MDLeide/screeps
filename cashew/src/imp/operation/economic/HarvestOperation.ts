@@ -26,28 +26,10 @@ export class HarvestOperation extends ControllerOperation {
     public sourceId: string;
     public containerId: string;
     public linkId: string;
-    
 
-    private updateContainers(colony: Colony): void {
-        let container = colony.resourceManager.structures.getSourceContainer(this.sourceId);
-        if (container) this.containerId = container.id;
-        let link = colony.resourceManager.structures.getSourceLink(this.sourceId)
-        if (link) this.linkId = link.id;
 
-        for (let key in this.controllers) {
-            let c = this.controllers[key];
-            if (c.type == CREEP_CONTROLLER_HARVESTER) {
-                let harvester = c as HarvesterController;
-                if (link) {
-                    harvester.link = link;
-                    harvester.linkId = link.id;
-                }
-                if (container) {
-                    harvester.container = container;
-                    harvester.containerId = container.id;
-                }
-            }
-        }  
+    public isFinished(colony: Colony): boolean {
+        return false;
     }
 
 
@@ -69,19 +51,6 @@ export class HarvestOperation extends ControllerOperation {
     }
     
 
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        return false;
-    }
-
-
     protected onInit(colony: Colony): InitStatus {
         let source = Game.getObjectById<Source>(this.sourceId);
         if (!source)
@@ -99,6 +68,8 @@ export class HarvestOperation extends ControllerOperation {
     }
 
     protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
         return StartStatus.Started;
     }
 
@@ -106,17 +77,7 @@ export class HarvestOperation extends ControllerOperation {
         return true;
     }
 
-    protected onCancel(): void {
-    }
-
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-    protected onRelease(assignment: Assignment): void {
+    protected onCancel(colony: Colony): void {
     }
 
 
@@ -125,18 +86,34 @@ export class HarvestOperation extends ControllerOperation {
     }
 
 
-    protected onSave(): HarvestOperationMemory {
-        return {
-            type: this.type,
-            initializedStatus: this.initializedStatus,
-            startedStatus: this.startedStatus,
-            operationStatus: this.status,
-            assignments: this.getAssignmentMemory(),
-            controllers: this.getControllerMemory(),
-            sourceId: this.sourceId,
-            containerId: this.containerId,
-            linkId: this.linkId
-        };
+    private updateContainers(colony: Colony): void {
+        let container = colony.resourceManager.structures.getSourceContainer(this.sourceId);
+        if (container) this.containerId = container.id;
+        let link = colony.resourceManager.structures.getSourceLink(this.sourceId)
+        if (link) this.linkId = link.id;
+
+        for (let key in this.controllers) {
+            let c = this.controllers[key];
+            if (c.type == CREEP_CONTROLLER_HARVESTER) {
+                let harvester = c as HarvesterController;
+                if (link) {
+                    harvester.link = link;
+                    harvester.linkId = link.id;
+                }
+                if (container) {
+                    harvester.container = container;
+                    harvester.containerId = container.id;
+                }
+            }
+        }
+    }
+
+    public save(): HarvestOperationMemory {
+        let mem = super.save() as HarvestOperationMemory;
+        mem.sourceId = this.sourceId;
+        mem.containerId = this.containerId;
+        mem.linkId = this.linkId;
+        return mem;
     }
 }
 

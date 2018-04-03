@@ -29,9 +29,13 @@ export class ExtensionFillOperation extends ControllerOperation {
     public pathBStandLocation: { x: number, y: number };
     public AWaitLocation: { x: number, y: number };
     public BWaitLocation: { x: number, y: number };
-
     public lastAssignedWasA: boolean;
-    
+
+    public isFinished(colony: Colony): boolean {
+        return false;
+    }
+
+
     protected onLoad(): void {
     }
 
@@ -47,7 +51,61 @@ export class ExtensionFillOperation extends ControllerOperation {
 
     protected onCleanup(colony: Colony): void {
     }
-    
+
+
+    protected onInit(colony: Colony): InitStatus {
+        this.linkId = colony.resourceManager.structures.extensionLinkId;
+
+        let body = BodyRepository.hauler();
+        body.maxCompleteScalingSections = 8;
+        let block = colony.nest.nestMap.extensionBlock;
+
+        this.pathAStandLocation = block.getStandALocation();
+        this.pathBStandLocation = block.getStandBLocation();
+
+        this.AWaitLocation = block.getWaitALocation();
+        this.BWaitLocation = block.getWaitBLocation();
+
+        let dist = colony.resourceManager.structures.extensionLink.pos.getRangeTo(colony.nest.spawners[0].spawn);
+        let spawnTime = body.getBody(60 * 200).length * 3;
+        let leadTime = spawnTime + dist;
+        leadTime = leadTime * 1.1;
+
+        this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_FILLER, leadTime));
+        this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_FILLER, leadTime));
+
+
+        return InitStatus.Initialized;
+    }
+
+    protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
+        colony.resourceManager.extensionsManagedDirectly = true;
+        return StartStatus.Started;
+    }
+
+    protected onFinish(colony: Colony): boolean {
+        colony.resourceManager.extensionsManagedDirectly = false;
+        return true;
+    }
+
+    protected onCancel(colony: Colony): void {
+        colony.resourceManager.extensionsManagedDirectly = false;
+    }
+
+
+    protected getController(assignment: Assignment): CreepController {
+        if (this.lastAssignedWasA) {
+            this.lastAssignedWasA = !this.lastAssignedWasA;
+            return new FillerController(this.pathBStandLocation, this.BWaitLocation, false, this.linkId);
+        } else {
+            this.lastAssignedWasA = !this.lastAssignedWasA;
+            return new FillerController(this.pathAStandLocation, this.AWaitLocation, true, this.linkId);
+        }
+    }
+
+
     private updateWaiting(): void {
         this.updatePathCreeps(true);
         this.updatePathCreeps(false);
@@ -103,96 +161,16 @@ export class ExtensionFillOperation extends ControllerOperation {
             }
         }
     }
-
-
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        return false;
-    }
-
-
-    protected onInit(colony: Colony): InitStatus {
-        this.linkId = colony.resourceManager.structures.extensionLinkId;
-
-        let body = BodyRepository.hauler();
-        body.maxCompleteScalingSections = 8;
-        let block = colony.nest.nestMap.extensionBlock;
-
-        this.pathAStandLocation = block.getStandALocation();
-        this.pathBStandLocation = block.getStandBLocation();
-
-        this.AWaitLocation = block.getWaitALocation();
-        this.BWaitLocation = block.getWaitBLocation();
-
-        let dist = colony.resourceManager.structures.extensionLink.pos.getRangeTo(colony.nest.spawners[0].spawn);
-        let spawnTime = body.getBody(60 * 200).length * 3;
-        let leadTime = spawnTime + dist;
-        leadTime = leadTime * 1.1;
-
-        this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_FILLER, leadTime));
-        this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_FILLER, leadTime));
-
-
-        return InitStatus.Initialized;
-    }
-
-    protected onStart(colony: Colony): StartStatus {
-        colony.resourceManager.extensionsManagedDirectly = true;
-        return StartStatus.Started;
-    }
-
-    protected onFinish(colony: Colony): boolean {
-        colony.resourceManager.extensionsManagedDirectly = false;
-        return true;
-    }
-
-    protected onCancel(): void {
-    }
-
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
-
-    protected getController(assignment: Assignment): CreepController {
-        if (this.lastAssignedWasA) {
-            this.lastAssignedWasA = !this.lastAssignedWasA;
-            return new FillerController(this.pathBStandLocation, this.BWaitLocation, false, this.linkId);
-        } else {
-            this.lastAssignedWasA = !this.lastAssignedWasA;
-            return new FillerController(this.pathAStandLocation, this.AWaitLocation, true, this.linkId);
-        } 
-    }
-
-
-    protected onSave(): ExtensionFillOperationMemory {
-        return {
-            type: this.type,
-            initializedStatus: this.initializedStatus,
-            startedStatus: this.startedStatus,
-            operationStatus: this.status,
-            assignments: this.getAssignmentMemory(),
-            controllers: this.getControllerMemory(),
-            linkId: this.linkId,
-            pathAStandLocation: this.pathAStandLocation,
-            pathBStandLocation: this.pathBStandLocation,
-            lastAssignedWasA: this.lastAssignedWasA,
-            AWaitLocation: this.AWaitLocation,
-            BWaitLocation: this.BWaitLocation
-        };
+    
+    public save(): ExtensionFillOperationMemory {
+        let mem = super.save() as ExtensionFillOperationMemory;
+        mem.linkId = this.linkId;
+        mem.pathAStandLocation = this.pathAStandLocation;
+        mem.pathBStandLocation = this.pathBStandLocation;
+        mem.AWaitLocation = this.AWaitLocation;
+        mem.BWaitLocation = this.BWaitLocation;
+        mem.lastAssignedWasA = this.lastAssignedWasA;
+        return mem;
     }
 }
 

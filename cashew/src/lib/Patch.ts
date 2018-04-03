@@ -133,10 +133,10 @@ export class Patch {
     private static updateOperationAssignments(): void {
         for (var i = 0; i < global.empire.colonies.length; i++) {
             let colony = global.empire.colonies[i];
-            colony.operations.cancelOperationByType(OPERATION_LIGHT_UPGRADE);
-            colony.operations.cancelOperationByType(OPERATION_CONTROLLER_INFRASTRUCTURE);
-            colony.operations.cancelOperationByType(OPERATION_HARVEST_INFRASTRUCTURE);
-            colony.operations.cancelOperationByType(OPERATION_NEW_SPAWN_CONSTRUCTION);
+            colony.operations.cancelOperationByType(colony, OPERATION_LIGHT_UPGRADE);
+            colony.operations.cancelOperationByType(colony, OPERATION_CONTROLLER_INFRASTRUCTURE);
+            colony.operations.cancelOperationByType(colony, OPERATION_HARVEST_INFRASTRUCTURE);
+            colony.operations.cancelOperationByType(colony, OPERATION_NEW_SPAWN_CONSTRUCTION);
         }
     }
 }

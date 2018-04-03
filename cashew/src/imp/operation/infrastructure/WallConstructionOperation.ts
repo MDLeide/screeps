@@ -24,6 +24,48 @@ export class WallConstructionOperation extends ControllerOperation {
     }
 
 
+    public isFinished(colony: Colony): boolean {
+        return false;
+    }
+
+
+    protected getController(assignment: Assignment): MasonController {
+        return new MasonController();
+    }
+
+
+    protected onLoad(): void { }
+
+    protected onUpdate(colony: Colony): void {
+        if (Game.time % 250 == 0)
+            this.checkSites(colony);
+    }
+
+    protected onExecute(colony: Colony): void {
+    }
+
+    protected onCleanup(colony: Colony): void {
+    }
+
+    
+    protected onInit(colony: Colony): InitStatus {
+        return InitStatus.Initialized;
+    }
+
+    protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
+        return StartStatus.Started;
+    }
+
+    protected onFinish(colony: Colony): boolean {        
+        return true;
+    }
+
+    protected onCancel(colony: Colony): void {
+    }
+
+
     private checkSites(colony: Colony): void {
         for (var x = 0; x < 50; x++) {
             for (var y = 0; y < 50; y++) {
@@ -46,64 +88,6 @@ export class WallConstructionOperation extends ControllerOperation {
         }
     }
 
-
-    protected onLoad(): void { }
-
-    protected onUpdate(colony: Colony): void {
-        if (Game.time % 250 == 0)
-            this.checkSites(colony);
-    }
-
-    protected onExecute(colony: Colony): void {
-    }
-
-    protected onCleanup(colony: Colony): void {
-    }
-
-
-    public canInit(colony: Colony): boolean {
-        this.checkSites(colony);
-        return true;
-    }
-    
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-    
-    public isFinished(colony: Colony): boolean {
-        return false;
-    }
-
-
-    protected onInit(colony: Colony): InitStatus {
-        return InitStatus.Initialized;
-    }
-
-    protected onStart(colony: Colony): StartStatus {
-        return StartStatus.Started;
-    }
-
-    protected onFinish(colony: Colony): boolean {        
-        return true;
-    }
-
-    protected onCancel(): void {
-    }
-    
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-
-    protected getController(assignment: Assignment): MasonController {
-        return new MasonController();
-    }
 
 
     protected onSave(): ControllerOperationMemory {

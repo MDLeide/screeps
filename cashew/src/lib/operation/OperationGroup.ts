@@ -47,10 +47,10 @@ export class OperationGroup {
         this.runners.push(new OperationRunner(operation));
     }
     
-    public cancelOperationByType(type: OperationType): void {
+    public cancelOperationByType(colony: Colony, type: OperationType): void {
         for (var i = 0; i < this.runners.length; i++)
             if (this.runners[i].operation.type == type)
-                this.runners[i].cancel();
+                this.runners[i].cancel(colony);
     }
 
     

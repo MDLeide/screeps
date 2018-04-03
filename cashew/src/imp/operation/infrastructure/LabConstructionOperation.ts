@@ -30,17 +30,10 @@ export class LabConstructionOperation extends ConstructionOperation {
         return STRUCTURE_LAB;
     }
 
-    protected onSave(): LabConstructionOperationMemory {
-        return {
-            type: this.type,
-            initializedStatus: this.initializedStatus,
-            startedStatus: this.startedStatus,
-            operationStatus: this.status,
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory(),
-            siteIds: this.siteIds,
-            rcl: this.rcl
-        };
+    public save(): LabConstructionOperationMemory {
+        let mem = super.save() as LabConstructionOperationMemory;
+        mem.rcl = this.rcl;
+        return mem;
     }
 }
 

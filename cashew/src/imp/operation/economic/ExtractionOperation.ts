@@ -16,7 +16,11 @@ export class ExtractionOperation extends ControllerOperation {
     constructor() {
         super(OPERATION_EXTRACTION, []);   
     }
-        
+
+    public isFinished(colony: Colony): boolean {
+        return false;
+    }
+
 
     protected onLoad(): void {
     }
@@ -29,22 +33,11 @@ export class ExtractionOperation extends ControllerOperation {
        
     protected onCleanup(colony: Colony): void {
     }
-    
-
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        return false;
-    }
 
 
     protected onInit(colony: Colony): InitStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return InitStatus.TryAgain;
         return InitStatus.Initialized;
     }
 
@@ -56,26 +49,10 @@ export class ExtractionOperation extends ControllerOperation {
         return true;
     }
 
-    protected onCancel(): void {
+    protected onCancel(colony: Colony): void {
     }
-
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
 
     protected getController(assignment: Assignment): CreepController {
         return new ExtractorController();
-    }
-
-
-    protected onSave(): ControllerOperationMemory {
-        return null;
     }
 }

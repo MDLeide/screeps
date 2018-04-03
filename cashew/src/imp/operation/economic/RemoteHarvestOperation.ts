@@ -36,16 +36,18 @@ export class RemoteHarvestOperation extends ControllerOperation {
     }
 
 
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
     public isFinished(colony: Colony): boolean {
         return false;
+    }
+
+
+    protected getController(assignment: Assignment): CreepController {
+        let remoteSource = this.colony.remoteMiningManager.getRemoteSourceById(this.sourceId);
+        if (assignment.controllerType == CREEP_CONTROLLER_REMOTE_HARVESTER) {
+            return new RemoteHarvesterController(this.sourceId, this.roomName, remoteSource.containerId)
+        } else {
+            return new RemoteHaulerRole(remoteSource.containerId, this.roomName);
+        }
     }
 
 
@@ -54,6 +56,8 @@ export class RemoteHarvestOperation extends ControllerOperation {
     }
 
     protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
         return StartStatus.Started;
     }
 
@@ -67,7 +71,12 @@ export class RemoteHarvestOperation extends ControllerOperation {
         return true;
     }
 
-    protected onCancel(): void {
+    protected onCancel(colony: Colony): void {
+        if (this.sourceId) {
+            let remoteSource = colony.remoteMiningManager.getRemoteSourceById(this.sourceId);
+            if (remoteSource)
+                remoteSource.beingMined = false;
+        }
     }
 
 
@@ -125,38 +134,12 @@ export class RemoteHarvestOperation extends ControllerOperation {
         }            
     }
 
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
     
-    protected getController(assignment: Assignment): CreepController {
-        let remoteSource = this.colony.remoteMiningManager.getRemoteSourceById(this.sourceId);        
-        if (assignment.controllerType == CREEP_CONTROLLER_REMOTE_HARVESTER) {
-            return new RemoteHarvesterController(this.sourceId, this.roomName, remoteSource.containerId)
-        } else {
-            return new RemoteHaulerRole(remoteSource.containerId, this.roomName);
-        }
-    }
-
-    
-    protected onSave(): RemoteHarvestOperationMemory {
-        return {
-            type: this.type,
-            initializedStatus: this.initializedStatus,
-            startedStatus: this.startedStatus,
-            operationStatus: this.status,
-            assignments: this.getAssignmentMemory(),
-            controllers: this.getControllerMemory(),
-            sourceId: this.sourceId,
-            roomName: this.roomName
-        };
+    public save(): RemoteHarvestOperationMemory {
+        let mem = super.save() as RemoteHarvestOperationMemory;
+        mem.sourceId = this.sourceId;
+        mem.roomName = this.roomName;
+        return mem;
     }
 }
 

@@ -38,8 +38,4 @@ export class StorageLinkConstructionOperation extends ConstructionOperation {
     protected getStructureType(): BuildableStructureConstant {
         return STRUCTURE_LINK;
     }
-
-    protected onSave(): ConstructionOperationMemory {
-        return null;
-    }
 }

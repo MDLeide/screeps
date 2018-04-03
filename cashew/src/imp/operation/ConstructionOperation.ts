@@ -32,10 +32,20 @@ export abstract class ConstructionOperation extends JobOperation {
     public sites: ConstructionSite[] = [];
     
 
-
     protected abstract getSiteLocations(colony: Colony): { x: number, y: number }[];
     protected abstract getStructureType(): BuildableStructureConstant;
-    protected abstract onSave(): ConstructionOperationMemory;
+
+
+    public isFinished(colony: Colony): boolean {
+        return this.initializedStatus == InitStatus.Initialized && this.sites.length == 0;
+    }
+
+
+    protected getJob(assignment: Assignment): BuilderJob {
+        if (this.siteIds.length)
+            return new BuilderJob(this.siteIds[0]);
+        return null;
+    }
 
 
     protected onLoad(): void {
@@ -56,19 +66,6 @@ export abstract class ConstructionOperation extends JobOperation {
     }
 
     protected onCleanup(colony: Colony): void {
-    }
-
-
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        return this.initializedStatus == InitStatus.Initialized && this.sites.length == 0;
     }
 
 
@@ -96,6 +93,8 @@ export abstract class ConstructionOperation extends JobOperation {
     }
 
     protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
         return StartStatus.Started;
     }
 
@@ -103,41 +102,14 @@ export abstract class ConstructionOperation extends JobOperation {
         return true;
     }
 
-    protected onCancel(): void {
-    }
-
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-
-    protected getJob(assignment: Assignment): BuilderJob {
-        if (this.siteIds.length)
-            return new BuilderJob(this.siteIds[0]);
-        return null;
+    protected onCancel(colony: Colony): void {
     }
 
 
     public save(): ConstructionOperationMemory {
-        let mem = this.onSave();
-        if (mem)
-            return mem;
-
-        return {
-            type: this.type,
-            initializedStatus: this.initializedStatus,
-            startedStatus: this.startedStatus,
-            operationStatus: this.status,
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory(),
-            siteIds: this.siteIds            
-        };
+        let mem = super.save() as ConstructionOperationMemory;
+        mem.siteIds = this.siteIds;
+        return mem;
     }
 }
 

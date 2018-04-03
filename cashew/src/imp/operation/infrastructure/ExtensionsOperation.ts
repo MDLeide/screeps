@@ -30,22 +30,17 @@ export class ExtensionConstructionOperation extends ConstructionOperation {
         return STRUCTURE_EXTENSION;
     }
 
+
     protected onFinish(colony: Colony): boolean {
         colony.nest.checkEnergyStructureOrder();
         return super.onFinish(colony);
     }
-    
-    protected onSave(): ExtensionConstructionOperationMemory {
-        return {
-            operationStatus: this.status,
-            type: this.type,
-            initializedStatus: this.initializedStatus,
-            startedStatus: this.startedStatus,            
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory(),
-            siteIds: this.siteIds,
-            rcl: this.rcl
-        };
+
+
+    public save(): ExtensionConstructionOperationMemory {
+        let mem = super.save() as ExtensionConstructionOperationMemory;
+        mem.rcl = this.rcl;
+        return mem;
     }
 }
 

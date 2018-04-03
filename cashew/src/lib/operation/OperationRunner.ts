@@ -28,9 +28,9 @@ export class OperationRunner {
     }
 
     public execute(colony: Colony): void {
-        if (this.operation.needsStart && this.operation.canStart(colony))
+        if (this.operation.needsStart)
             this.operation.start(colony);
-        if (this.operation.needsInit && this.operation.canInit(colony))
+        if (this.operation.needsInit)
             this.operation.init(colony);
         if (this.operation.needsCreepSpawnCheck)
             this.spawnCreepsForOperation(colony);
@@ -44,9 +44,9 @@ export class OperationRunner {
                 this.operation.finish(colony);
     }
 
-    public cancel(): void {
+    public cancel(colony: Colony): void {
         this.canceledThisTick = true;
-        this.operation.cancel();
+        this.operation.cancel(colony);
     }
 
 

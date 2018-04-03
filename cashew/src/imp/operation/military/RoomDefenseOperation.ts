@@ -18,6 +18,16 @@ export class RoomDefenseOperation extends ControllerOperation {
     }
 
 
+    public isFinished(colony: Colony): boolean {
+        return colony.watchtower.threatScore == 0;
+    }
+
+
+    protected getController(assignment: Assignment): CreepController {
+        return new DefenderController();
+    }
+
+
     protected onLoad(): void {
     }
 
@@ -31,24 +41,13 @@ export class RoomDefenseOperation extends ControllerOperation {
     }
 
 
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        return colony.watchtower.threatScore == 0;
-    }
-
-
     protected onInit(colony: Colony): InitStatus {
         return InitStatus.Initialized;
     }
 
     protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
         return StartStatus.Started;
     }
 
@@ -57,24 +56,5 @@ export class RoomDefenseOperation extends ControllerOperation {
     }
 
     protected onCancel(): void {
-    }
-
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
-
-    protected getController(assignment: Assignment): CreepController {
-        return new DefenderController();
-    }
-
-    protected onSave(): ControllerOperationMemory {
-        return null;
     }
 }

@@ -41,7 +41,17 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
     public siteId: string;
     public siteBuilt: boolean;
     
-    
+
+    public isFinished(colony: Colony): boolean {
+        return this.siteBuilt && this.initializedStatus == InitStatus.Initialized && (!this.site || this.site.progress >= this.site.progressTotal);
+    }
+
+
+    protected getController(assignment: Assignment): HarvestInfrastructureBuilderController {
+        return new HarvestInfrastructureBuilderController(this.sourceId, this.siteId);
+    }
+
+
     protected onLoad(): void {
         this.source = Game.getObjectById<Source>(this.sourceId);
         if (this.siteId) {
@@ -56,19 +66,6 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
     }
 
     protected onCleanup(colony: Colony): void {
-    }
-
-
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-    
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-    
-    public isFinished(colony: Colony): boolean {
-        return this.siteBuilt && this.initializedStatus == InitStatus.Initialized && (!this.site || this.site.progress >= this.site.progressTotal);
     }
 
 
@@ -103,6 +100,8 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
     }
 
     protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
         return StartStatus.Started;
     }
 
@@ -132,35 +131,14 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
 
     protected onCancel(): void {
     }
-    
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
 
 
-    protected getController(assignment: Assignment): HarvestInfrastructureBuilderController {
-        return new HarvestInfrastructureBuilderController(this.sourceId, this.siteId);
-    }
-
-
-    protected onSave(): HarvestInfrastructureOperationMemory {
-        return {            
-            type: this.type,
-            initializedStatus: this.initializedStatus,
-            startedStatus: this.startedStatus,
-            operationStatus: this.status,
-            assignments: this.getAssignmentMemory(),
-            controllers: this.getControllerMemory(),
-            sourceId: this.sourceId,
-            siteId: this.siteId,
-            siteBuilt: this.siteBuilt
-        };
+    public save(): HarvestInfrastructureOperationMemory {
+        let mem = super.save() as HarvestInfrastructureOperationMemory;
+        mem.sourceId = this.sourceId;
+        mem.siteId = this.siteId;
+        mem.siteBuilt = this.siteBuilt;
+        return mem;
     }
 }
 

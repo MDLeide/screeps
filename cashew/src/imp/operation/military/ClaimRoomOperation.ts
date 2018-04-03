@@ -12,6 +12,7 @@ export class ClaimRoomOperation extends JobOperation {
         return JobOperation.fromMemory(memory, op) as ClaimRoomOperation;
     }
 
+
     constructor(roomName: string) {
         super(OPERATION_CLAIM_ROOM, []);
         let body = BodyRepository.claimer();
@@ -20,10 +21,22 @@ export class ClaimRoomOperation extends JobOperation {
         this.roomName = roomName;
     }
 
+
     public roomName: string;
+
+
+    public isFinished(colony: Colony): boolean {
+        let room = Game.rooms[this.roomName];
+        return room && room.controller && room.controller.my;
+    }
+
 
     protected getJob(assignment: Assignment): Job {
         return new ClaimJob(this.roomName);
+    }
+
+
+    protected onLoad(): void {
     }
 
     protected onUpdate(colony: Colony): void {
@@ -34,34 +47,15 @@ export class ClaimRoomOperation extends JobOperation {
 
     protected onCleanup(colony: Colony): void {
     }
-    
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
 
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        let room = Game.rooms[this.roomName];
-        return room && room.controller && room.controller.my;
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onRelease(assignment: Assignment): void {
-    }
 
     protected onInit(colony: Colony): InitStatus {
         return InitStatus.Initialized;
     }
 
     protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
         return StartStatus.Started;
     }
 
@@ -72,12 +66,6 @@ export class ClaimRoomOperation extends JobOperation {
     protected onCancel(): void {        
     }
 
-    protected onLoad(): void {
-    }
-
-    protected onSave(): JobOperationMemory {
-        return null;
-    }
 
     public save(): ClaimRoomOperationMemory {
         let mem = super.save() as ClaimRoomOperationMemory;

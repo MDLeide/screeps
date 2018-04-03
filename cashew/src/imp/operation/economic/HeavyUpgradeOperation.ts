@@ -19,7 +19,56 @@ export class HeavyUpgradeOperation extends ControllerOperation {
     public colony: Colony;
 
 
-    private manageAssignments(colony: Colony): void {        
+    public isFinished(colony: Colony): boolean {
+        return false;
+    }
+
+    
+    protected onLoad(): void {
+        
+    }
+
+    protected onUpdate(colony: Colony): void {
+        this.colony = colony;
+        if (Game.time % 1500 == 0)
+            this.manageAssignments(colony);
+    }
+
+    protected onExecute(colony: Colony): void {
+    }
+
+    protected onCleanup(colony: Colony): void {
+    }
+
+
+    protected onInit(colony: Colony): InitStatus {
+        this.manageAssignments(colony);
+        return InitStatus.Initialized;
+    }
+
+    protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
+        return StartStatus.Started;
+    }
+
+    protected onFinish(colony: Colony): boolean {
+        return true;
+    }
+
+    protected onCancel(colony: Colony): void {
+    }
+
+
+    protected getController(assignment: Assignment): UpgraderController {
+        return new UpgraderController(
+            this.colony.resourceManager.structures.controllerContainerId,
+            this.colony.nest.room.controller.id,
+            this.colony.resourceManager.structures.controllerLinkId);
+    }
+
+
+    private manageAssignments(colony: Colony): void {
         let upgradeParts = colony.resourceManager.advisor.getUpgraderParts();
         let possiblePartsPerSpawn = Math.floor((colony.nest.room.energyCapacityAvailable - BODYPART_COST[CARRY] - BODYPART_COST[MOVE]) / BODYPART_COST[WORK]);
         possiblePartsPerSpawn = Math.min(possiblePartsPerSpawn, 30);
@@ -45,75 +94,7 @@ export class HeavyUpgradeOperation extends ControllerOperation {
 
         let newAssignments = creepsRequired - this.assignments.length;
         for (var i = 0; i < newAssignments; i++)
-            this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_UPGRADER, leadTime));        
-    }
-
-    protected onLoad(): void {
-        
-    }
-
-    protected onUpdate(colony: Colony): void {
-        this.colony = colony;
-        if (Game.time % 1500 == 0)
-            this.manageAssignments(colony);
-    }
-
-    protected onExecute(colony: Colony): void {
-    }
-
-    protected onCleanup(colony: Colony): void {
-    }
-
-
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        return false;
-    }
-
-
-    protected onInit(colony: Colony): InitStatus {
-        this.manageAssignments(colony);
-        return InitStatus.Initialized;
-    }
-
-    protected onStart(colony: Colony): StartStatus {
-        return StartStatus.Started;
-    }
-
-    protected onFinish(colony: Colony): boolean {
-        return true;
-    }
-
-    protected onCancel(): void {
-    }
-
-        
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
-    
-    protected getController(assignment: Assignment): UpgraderController {        
-        return new UpgraderController(
-            this.colony.resourceManager.structures.controllerContainerId,
-            this.colony.nest.room.controller.id,
-            this.colony.resourceManager.structures.controllerLinkId);
-    }
-
-    protected onSave(): ControllerOperationMemory {
-        return null;
+            this.assignments.push(new Assignment("", body, CREEP_CONTROLLER_UPGRADER, leadTime));
     }
 }
 

@@ -10,11 +10,14 @@ export class RemoteHarvestScoutOperation extends Operation {
         return Operation.fromMemory(memory, op);
     }
 
+
     constructor() {
         super(OPERATION_REMOTE_HARVEST_SCOUT, RemoteHarvestScoutOperation.getAssignments());        
     }
-    
+
+
     public targetRoom: string;
+
 
     private static getAssignments(): Assignment[] {
         return [
@@ -22,14 +25,6 @@ export class RemoteHarvestScoutOperation extends Operation {
         ];
     }
 
-
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
 
     public isFinished(colony: Colony): boolean {
         return !this.targetRoom && !colony.remoteMiningManager.getClosestUnscoutedRoom(colony.nest.roomName);
@@ -41,6 +36,8 @@ export class RemoteHarvestScoutOperation extends Operation {
     }
 
     protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
         return StartStatus.Started;
     }
 
@@ -83,30 +80,17 @@ export class RemoteHarvestScoutOperation extends Operation {
     }
 
 
-    protected onRelease(assignment: Assignment): void {
-    }
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-    
     private getNextTarget(colony: Colony, creep: Creep): void {        
         this.targetRoom = colony.remoteMiningManager.getClosestUnscoutedRoom(creep.room.name);        
         if (this.targetRoom)
             colony.remoteMiningManager.claimScoutJob(this.targetRoom);
     }
 
-    protected onSave(): RemoteHarvestScoutOperationMemory {
-        return {
-            operationStatus: this.status,
-            type: this.type,
-            initializedStatus: this.initializedStatus,
-            startedStatus: this.startedStatus,
-            assignments: this.getAssignmentMemory(),
-            targetRoom: this.targetRoom
-        };
+
+    public save(): RemoteHarvestScoutOperationMemory {
+        let mem = super.save() as RemoteHarvestScoutOperationMemory;
+        mem.targetRoom = this.targetRoom;
+        return mem;
     }
 }
 

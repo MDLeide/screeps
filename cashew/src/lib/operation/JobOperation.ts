@@ -14,15 +14,11 @@ export abstract class JobOperation extends Operation {
         }
         return Operation.fromMemory(memory, instance);
     }
-
-
+    
     public jobs: { [creepName: string]: Job } = {};
-
-
+    
     protected abstract getJob(assignment: Assignment): Job;
-    protected abstract onSave(): JobOperationMemory;
-
-
+    
     public load(): void {
         super.load();
         for (let key in this.jobs)
@@ -82,8 +78,7 @@ export abstract class JobOperation extends Operation {
                 job.cleanup(creep);
         }  
     }
-
-
+    
     public assignReplacement(assignment: Assignment, creepName: string): boolean {
         if (super.assignReplacement(assignment, creepName)) {
             this.jobs[assignment.creepName] = this.getJob(assignment);
@@ -110,8 +105,7 @@ export abstract class JobOperation extends Operation {
         return false;
     }
     
-
-    protected getJobMemory(): { [creepName: string]: JobMemory } {
+    private getJobMemory(): { [creepName: string]: JobMemory } {
         var mem = {};
         for (var key in this.jobs)
             if (this.jobs[key])
@@ -119,19 +113,9 @@ export abstract class JobOperation extends Operation {
         return mem;
     }
     
-
     public save(): JobOperationMemory {
-        let mem = this.onSave();
-        if (mem)
-            return mem;
-
-        return {
-            type: this.type,
-            initializedStatus: this.initializedStatus,
-            startedStatus: this.startedStatus,
-            operationStatus: this.status,
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory()
-        };
+        let mem = super.save() as JobOperationMemory;
+        mem.jobs = this.getJobMemory();
+        return mem;
     }
 }

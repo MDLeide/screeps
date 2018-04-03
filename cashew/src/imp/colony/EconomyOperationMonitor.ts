@@ -72,7 +72,7 @@ export class EconomyOperationMonitor extends ColonyMonitor {
                 OPERATION_HEAVY_UPGRADE,
                 1,
                 () => new HeavyUpgradeOperation());
-            colony.operations.cancelOperationByType(OPERATION_LIGHT_UPGRADE);
+            colony.operations.cancelOperationByType(colony, OPERATION_LIGHT_UPGRADE);
         } else if (rcl.isGreaterThanOrEqualTo(1, 2)) {
             this.ensureOperation(
                 colony,
@@ -88,7 +88,7 @@ export class EconomyOperationMonitor extends ColonyMonitor {
                 1,
                 () => new ExtensionFillOperation());
         } else {
-            colony.operations.cancelOperationByType(OPERATION_EXTENSION_FILL);
+            colony.operations.cancelOperationByType(colony, OPERATION_EXTENSION_FILL);
         }
     }
 }

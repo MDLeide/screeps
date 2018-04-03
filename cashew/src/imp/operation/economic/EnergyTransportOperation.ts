@@ -11,6 +11,7 @@ export class EnergyTransportOperation extends ControllerOperation {
         return ControllerOperation.fromMemory(memory, op);
     }
 
+
     constructor() {
         super(OPERATION_ENERGY_TRANSPORT, EnergyTransportOperation.getAssignments());
         this.priority = 8;
@@ -25,6 +26,11 @@ export class EnergyTransportOperation extends ControllerOperation {
             new Assignment("", body, CREEP_CONTROLLER_HAULER, 75),
             new Assignment("", body, CREEP_CONTROLLER_HAULER, 75)
         ];
+    }
+
+
+    public isFinished(colony: Colony): boolean {
+        return false;
     }
 
 
@@ -44,24 +50,13 @@ export class EnergyTransportOperation extends ControllerOperation {
     }
 
 
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        return false;
-    }
-
-    
     protected onInit(colony: Colony): InitStatus {
         return InitStatus.Initialized;
     }
 
     protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
         return StartStatus.Started;
     }
 
@@ -69,26 +64,10 @@ export class EnergyTransportOperation extends ControllerOperation {
         return true;
     }
 
-    protected onCancel(): void {
+    protected onCancel(colony: Colony): void {
     }
-
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
-
+    
     protected getController(assignment: Assignment): HaulerRole {
         return new HaulerRole();
-    }
-
-
-    protected onSave(): ControllerOperationMemory {
-        return null;
     }
 }

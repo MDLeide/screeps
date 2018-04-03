@@ -37,8 +37,4 @@ export class ExtensionLinkConstructionOperation extends ConstructionOperation {
         }
         return super.onFinish(colony);
     }
-
-    protected onSave(): ConstructionOperationMemory {
-        return null;
-    }
 }

@@ -64,17 +64,10 @@ export class HarvestLinkConstructionOperation extends ConstructionOperation {
     }
 
 
-    protected onSave(): HarvestLinkConstructionOperationMemory {
-        return {
-            type: this.type,
-            initializedStatus: this.initializedStatus,
-            startedStatus: this.startedStatus,
-            operationStatus: this.status,
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory(),
-            siteIds: this.siteIds,
-            sourceId: this.sourceId
-        };
+    public save(): HarvestLinkConstructionOperationMemory {
+        let mem = super.save() as HarvestLinkConstructionOperationMemory;
+        mem.sourceId = this.sourceId;
+        return mem;
     }
 }
 

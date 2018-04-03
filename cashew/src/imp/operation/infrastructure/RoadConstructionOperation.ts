@@ -23,6 +23,16 @@ export class RoadConstructionOperation extends ControllerOperation {
     }
 
 
+    public isFinished(colony: Colony): boolean {
+        return true;
+    }
+
+
+    protected getController(assignment: Assignment): MasonController {
+        return new MasonController();
+    }
+
+
     protected onLoad(): void { }
 
     protected onUpdate(colony: Colony): void {
@@ -35,24 +45,13 @@ export class RoadConstructionOperation extends ControllerOperation {
     }
 
 
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-    
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-    
-    public isFinished(colony: Colony): boolean {
-        return true;
-    }
-
-
     protected onInit(colony: Colony): InitStatus {
         return InitStatus.Initialized;
     }
 
     protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
         return StartStatus.Started;
     }
 
@@ -61,25 +60,5 @@ export class RoadConstructionOperation extends ControllerOperation {
     }
 
     protected onCancel(): void {
-    }
-    
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-
-    protected getController(assignment: Assignment): MasonController {
-        return new MasonController();
-    }
-
-
-    protected onSave(): ControllerOperationMemory {
-        return null;
-    }
+    }    
 }

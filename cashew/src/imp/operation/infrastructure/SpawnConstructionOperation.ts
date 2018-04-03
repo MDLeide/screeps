@@ -33,6 +33,11 @@ export class SpawnConstructionOperation extends ConstructionOperation {
         return [loc];
     }
 
+    protected getStructureType(): BuildableStructureConstant {
+        return STRUCTURE_SPAWN;
+    }
+
+
     private spawnExists(colony: Colony, loc: { x: number, y: number }): boolean {
         let look = colony.nest.room.lookForAt(LOOK_STRUCTURES, loc.x, loc.y);
         for (var i = 0; i < look.length; i++)
@@ -41,21 +46,11 @@ export class SpawnConstructionOperation extends ConstructionOperation {
         return false;
     }
 
-    protected getStructureType(): BuildableStructureConstant {
-        return STRUCTURE_SPAWN;
-    }
 
-    protected onSave(): SpawnConstructionOperationMemory {
-        return {
-            type: this.type,
-            initializedStatus: this.initializedStatus,
-            startedStatus: this.startedStatus,
-            operationStatus: this.status,
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory(),
-            siteIds: this.siteIds,
-            rcl: this.rcl
-        }
+    public save(): SpawnConstructionOperationMemory {
+        let mem = super.save() as SpawnConstructionOperationMemory;
+        mem.rcl = this.rcl;
+        return mem;
     }
 }
 

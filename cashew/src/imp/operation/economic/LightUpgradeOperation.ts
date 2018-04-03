@@ -28,6 +28,11 @@ export class LightUpgradeOperation extends ControllerOperation {
     }
 
 
+    public isFinished(colony: Colony): boolean {
+        return false;
+    }
+
+
     protected onLoad(): void {
     }
 
@@ -38,19 +43,6 @@ export class LightUpgradeOperation extends ControllerOperation {
     }
 
     protected onCleanup(colony: Colony): void {
-    }
-
-
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        return false;
     }
 
 
@@ -66,25 +58,11 @@ export class LightUpgradeOperation extends ControllerOperation {
         return true;
     }
 
-    protected onCancel(): void {
-    }
-    
-
-    protected onRelease(assignment: Assignment): void {
+    protected onCancel(colony: Colony): void {
     }
 
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-        
 
     protected getController(assignment: Assignment): LightUpgraderRole {
         return new LightUpgraderRole();
-    }
-
-    protected onSave(): ControllerOperationMemory {
-        return null;
     }
 }

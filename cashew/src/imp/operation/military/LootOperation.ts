@@ -28,28 +28,6 @@ export class LootOperation extends JobOperation {
     public target: WithdrawTarget;
     public targetId: string;
 
-    protected getJob(assignment: Assignment): Job {        
-        let creep = Game.creeps[assignment.creepName];
-        if (!creep)
-            return null;
-
-        if (creep.carry.energy > 0) {
-            let colony = global.empire.getColonyByCreep(creep);
-            return new TransferJob(colony.resourceManager.getTransferTarget(creep));
-        } else if (this.target) {
-            return new WithdrawJob(this.target);
-        } else {
-            return null;
-        }
-    }
-        
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
 
     public isFinished(colony: Colony): boolean {
         if (!this.target)
@@ -63,29 +41,22 @@ export class LootOperation extends JobOperation {
         }
     }
 
-    protected onAssignment(assignment: Assignment): void {
+    
+    protected getJob(assignment: Assignment): Job {
+        let creep = Game.creeps[assignment.creepName];
+        if (!creep)
+            return null;
+
+        if (creep.carry.energy > 0) {
+            let colony = global.empire.getColonyByCreep(creep);
+            return new TransferJob(colony.resourceManager.getTransferTarget(creep));
+        } else if (this.target) {
+            return new WithdrawJob(this.target);
+        } else {
+            return null;
+        }
     }
 
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
-    protected onInit(colony: Colony): InitStatus {
-        return InitStatus.Initialized;
-    }
-
-    protected onStart(colony: Colony): StartStatus {
-        return StartStatus.Started;
-    }
-
-    protected onFinish(colony: Colony): boolean {
-        return true;
-    }
-
-    protected onCancel(): void {
-    }
 
     protected onLoad(): void {
     }
@@ -99,14 +70,29 @@ export class LootOperation extends JobOperation {
     protected onCleanup(colony: Colony): void {
     }
 
+
+    protected onInit(colony: Colony): InitStatus {
+        return InitStatus.Initialized;
+    }
+
+    protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
+        return StartStatus.Started;
+    }
+
+    protected onFinish(colony: Colony): boolean {
+        return true;
+    }
+
+    protected onCancel(): void {
+    }
+
+
     public save(): JobOperationMemory {
         let mem = super.save() as LootOperationMemory;
         mem.targetId = this.targetId;
         return mem;
-    }
-
-    protected onSave(): JobOperationMemory {
-        return null;
     }
 }
 

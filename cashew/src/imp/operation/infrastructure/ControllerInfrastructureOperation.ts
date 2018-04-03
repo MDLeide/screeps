@@ -17,6 +17,7 @@ export class ControllerInfrastructureOperation extends ConstructionOperation {
         super(OPERATION_CONTROLLER_INFRASTRUCTURE, ControllerInfrastructureOperation.assignments());
     }
 
+
     private static assignments(): Assignment[] {        
         let assignment = new Assignment(undefined, BodyRepository.lightWorker());
         let supportBody = BodyRepository.lightWorker();
@@ -24,6 +25,7 @@ export class ControllerInfrastructureOperation extends ConstructionOperation {
         assignment.supportRequest = supportBody;
         return [assignment];
     }
+
 
     protected getSiteLocations(colony: Colony): { x: number, y: number }[] {
         return [colony.nest.nestMap.controllerBlock.getContainerLocation()];
@@ -44,9 +46,5 @@ export class ControllerInfrastructureOperation extends ConstructionOperation {
             }
         }
         return super.onFinish(colony);
-    }
-
-    protected onSave(): ConstructionOperationMemory {
-        return null;
     }
 }
