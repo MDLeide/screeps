@@ -138,22 +138,22 @@ export class Playback {
 
     private static stopping(): void {
         if (this.doOutput)
-            this.logMessage("Stopping operation");
+            global.events.debug.playbackStop();
     }
 
     private static pausing(): void {
         if (this.doOutput)
-            this.logMessage("Pausing operation");
+            global.events.debug.playbackPause();
     }
 
     private static starting(): void {
         if (this.doOutput)
-            this.logMessage("Resuming operation");
+            global.events.debug.playbackStart();
     }
 
     private static stepping(): void {
         if (this.doOutput)
-            this.logMessage("Stepping one tick");
+            global.events.debug.playbackStep();
     }
 
 
@@ -203,11 +203,5 @@ export class Playback {
 
     private static findFlag(): Flag | null | undefined {
         return Game.flags[Playback.FlagName];
-    }
-
-    private static logMessage(message: string, color: string = Playback.outputColor): void {
-        if (!Playback.doOutput)
-            return;
-        console.log(`<span style='color:${color}'>${message}</span>`);
     }
 }

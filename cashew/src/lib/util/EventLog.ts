@@ -1,8 +1,11 @@
 import { StringBuilder } from "./StringBuilder";
 import { NestStructureVisual } from "../visual/NestStructureVisual";
 import { NestMap } from "../map/NestMap";
+import { System } from "lib/System";
 
 export class EventLog {
+    private groupNameWidth: number = 5;
+
     constructor(colors?: Colors) {
         if (!colors)
             colors = new Colors();
@@ -12,8 +15,19 @@ export class EventLog {
         this.creep = new CreepEvents(colors, this);
         this.debug = new DebugEvents(colors, this);
         this.remoteMining = new RemoteMiningEvents(colors, this);
-    }
+        this.system = new SystemEvents(colors, this);
 
+        this.setGroupWidth([
+            this.empire,
+            this.colony,
+            this.operation,
+            this.creep,
+            this.debug,
+            this.remoteMining,
+            this.system
+        ]);        
+    }
+    
     public help(): string {
         return "mute: boolean - mutes all events</br>" +
             "messageLevel: number - verbosity level</br>" +
@@ -33,17 +47,26 @@ export class EventLog {
     public creep: CreepEvents;
     public debug: DebugEvents;
     public remoteMining: RemoteMiningEvents;
+    public system: SystemEvents;
 
     public log(msg: string, level: number, category: string): void {
-        if (this.mute)
-            return;
-        if (level < this.messageLevel)
-            return;
+        if (this.mute) return;
+        if (level < this.messageLevel) return;
+
         var sb = new StringBuilder();
+        let pad = this.groupNameWidth - category.length;
+        for (var i = 0; i < pad; i++)
+            category = category + " ";        
+
         sb.append(category, 'orange')
             .append(" ")
             .append(level.toString(), 'lightBlue');
         console.log(`[${sb.toString()}] : ${msg}`);
+    }
+
+    private setGroupWidth(groups: EventGroup[]): void {
+        for (var i = 0; i < groups.length; i++)
+            this.groupNameWidth = Math.max(this.groupNameWidth, groups[i].name.length);        
     }
 }
 
@@ -61,9 +84,10 @@ class Colors {
 
 abstract class EventGroup {
     private eventLog: EventLog;
-    constructor(colors: Colors, eventLog: EventLog) {
+    constructor(colors: Colors, eventLog: EventLog, groupName: string) {
         this.colors = colors;
         this.eventLog = eventLog;
+        this.name = groupName;
     }
 
     public mute: boolean = false;
@@ -73,29 +97,28 @@ abstract class EventGroup {
     more messages */
     public messageLevel: number = 0;
     public colors: Colors;
-
-    protected abstract getCategory(): string;
+    public name: string;
 
     protected log(msg: string, level: number): void {
         if (this.mute)
             return;
         if (level < this.messageLevel)
             return;
-        this.eventLog.log(msg, level, this.getCategory());
+        this.eventLog.log(msg, level, this.name);
     }
 }
 
 class EmpireEvents extends EventGroup {
+    constructor(colors: Colors, eventLog: EventLog) {
+        super(colors, eventLog, "Empire");
+    }
+
     public colonyEstablishedLevel: number = 10;
     public colonyFailedToEstablishLevel: number = 10;
     public colonyRemovedLevel: number = 10;
     public nestMappingFailedLevel: number = 10;
     public gclUpgradedLevel: number = 10;
     
-
-    protected getCategory(): string {
-        return "Empire";
-    }
 
     public colonyEstablished(colonyName: string): void {
         var sb = new StringBuilder();
@@ -161,16 +184,16 @@ class EmpireEvents extends EventGroup {
 }
 
 class ColonyEvents extends EventGroup {
+    constructor(colors: Colors, eventLog: EventLog) {
+        super(colors, eventLog, "Colony");
+    }
+
     public creepSpawnLevel: number = 3;
     public creepScheduledLevel: number = 3;
     public spawnErrorLevel: number = 5;    
     public rclUpgradeLevel: number = 9;
     public underAttackLevel: number = 10;
     public milestoneMetLevel: number = 9;
-
-    protected getCategory(): string {
-        return "Colony";
-    }
 
     public creepSpawning(colonyName: string, creepName: string, bodyType: string): void {
         var sb = new StringBuilder();
@@ -253,6 +276,10 @@ class ColonyEvents extends EventGroup {
 }
 
 class OperationEvents extends EventGroup {
+    constructor(colors: Colors, eventLog: EventLog) {
+        super(colors, eventLog, "Operation");
+    }
+
     public initLevel: number = 4;
     public startLevel: number = 5;
     public finishLevel: number = 7;
@@ -270,12 +297,7 @@ class OperationEvents extends EventGroup {
 
     public assignmentReleasedLevel: number = 3;
     public assignmentReleaseFailedLevel: number = 6;
-
-    protected getCategory(): string {
-        return "Operation";
-    }
-
-
+    
     public finish(operationName: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
@@ -516,13 +538,13 @@ class OperationEvents extends EventGroup {
 }
 
 class CreepEvents extends EventGroup {
-    public bornLevel: number = 2;
-    public diedLevel: number = 2;
-
-    protected getCategory(): string {
-        return "Creep";
+    constructor(colors: Colors, eventLog: EventLog) {
+        super(colors, eventLog, "Creep");
     }
 
+    public bornLevel: number = 2;
+    public diedLevel: number = 2;
+    
     public born(creepName: string, bodyType: string, roleName: string, colonyName: string): void {
 
     }
@@ -543,6 +565,10 @@ class CreepEvents extends EventGroup {
 }
 
 class RemoteMiningEvents extends EventGroup {
+    constructor(colors: Colors, eventLog: EventLog) {
+        super(colors, eventLog, "Remote Mining");
+    }
+
     public scoutFailedLevel: number = 8;
     public roomScoutedAndAddedLevel: number = 6;
     public roomScoutedAndDiscardedLevel: number = 6;
@@ -602,24 +628,53 @@ class RemoteMiningEvents extends EventGroup {
     public scoutJobReleased(colonyName: string, roomName: string): void {
 
     }
-
-    protected getCategory(): string {
-        return "Remote Mining";
-    }
 }
 
 class DebugEvents extends EventGroup {
-    protected getCategory(): string {
-        return "Debug";
+    constructor(colors: Colors, eventLog: EventLog) {
+        super(colors, eventLog, "Debug");
     }
 
     public playbackStart(): void {
-
+        let sb = new StringBuilder();
+        sb.append("Playback started", this.colors.importantPositiveVerb);
+        this.log(sb.toString(), 10);
     }
 
     public playbackStop(): void {
-
+        let sb = new StringBuilder();
+        sb.append("Playback stopped", this.colors.importantPositiveVerb);
+        this.log(sb.toString(), 10);
     }
+
+    public playbackPause(): void {
+        let sb = new StringBuilder();
+        sb.append("Playback paused", this.colors.importantPositiveVerb);
+        this.log(sb.toString(), 10);
+    }
+
+    public playbackStep(): void {
+        let sb = new StringBuilder();
+        sb.append("Playback stepping one tick", this.colors.importantPositiveVerb);
+        this.log(sb.toString(), 10);
+    }
+
 }
 
+class SystemEvents extends EventGroup {
+    constructor(colors: Colors, eventLog: EventLog) {
+        super(colors, eventLog, "System");
+    }
 
+    public patchLevel: number = 10;
+    
+    public patch(functionName: string): void {
+        let sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+        sb.append("Applying patch for ", this.colors.importantPositiveVerb);
+        sb.append(global.system.version.toString(), this.colors.name);
+        sb.append(": ");
+        sb.append(functionName, this.colors.name);
+        this.log(sb.toString(), this.patchLevel);
+    }
+}
