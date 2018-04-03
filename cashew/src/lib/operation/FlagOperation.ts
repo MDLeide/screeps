@@ -20,30 +20,32 @@ export class FlagOperationDiscovery {
         let names = Object.keys(Game.flags);
         for (var i = 0; i < names.length; i++) {
             let flag = Game.flags[names[i]];
+            if (flag.memory.remove)
+                continue;
             if (flag.memory.flagOperation)
                 this.checkFlag(flag);            
         }
     }
 
-    private static checkFlag(flag: Flag): void {
+    public static checkFlag(flag: Flag): void {
         if (!flag.memory.flagOperation)
             return;
 
         let flagOp = FlagOperationRepository.getNew(flag.memory.flagOperation.type, flag);
         let op = flagOp.getOperation();
         if (!op) {
-            flag.remove();
+            flag.memory.remove = true;
             return;
         }
 
         let colony = flagOp.getHostColony();
         if (!colony) {
-            flag.remove();
+            flag.memory.remove = true;
             return;
         }
 
         colony.operations.addOperation(op);
-        flag.remove();
+        flag.memory.remove = true;
     }
 }
 

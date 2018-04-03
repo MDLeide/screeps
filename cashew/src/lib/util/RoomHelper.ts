@@ -197,6 +197,29 @@ export class RoomHelper {
         return this.getRoomNameFromCoordinates(transform);
     }
 
+    /**
+     * Gets the distance between two rooms.
+     * @param roomA 
+     * @param roomB
+     * @param usePathing True to calculate distance using the path between rooms, false will return linear distance.
+     */
+    public static getDistanceBetweenRooms(roomA: Room | string, roomB: Room | string, usePathing: boolean = false): number {
+        if (roomA instanceof Room)
+            return this.getDistanceBetweenRooms(roomA.name, roomB, usePathing);
+        if (roomB instanceof Room)
+            return this.getDistanceBetweenRooms(roomA, roomB.name, usePathing);
+
+        if (usePathing) {
+            let path = Game.map.findRoute(roomA, roomB);
+            if (path == -2)
+                return 0;
+            else
+                return path.length;
+        } else {
+            let offset = this.getRoomOffset(roomA, roomB);
+            return Math.abs(offset.x) + Math.abs(offset.y);
+        }
+    }
 
     public static getRoomPositionOffset(origin: RoomPosition, dest: RoomPosition): { x: number, y: number } {        
         if (origin.roomName == dest.roomName)

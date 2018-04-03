@@ -5,6 +5,7 @@ import { NestMapBuilder } from "../map/NestMapBuilder";
 import { FlagOperationDiscovery } from "../operation/FlagOperation";
 import { FlagCampaignDiscovery } from "../operation/FlagCampaign";
 import { Body } from "../creep/Body";
+import { RoomHelper } from "../util/RoomHelper";
 
 export class Empire {
     constructor(colonyFinder: ColonyFinder) {
@@ -91,6 +92,34 @@ export class Empire {
         return null;
     }
 
+    /**
+     * Finds the nearest colony to a given room.
+     * @param room The room to search from.
+     * @param excludeSelf True to exclude any colony which has the search room under its control. Use this to search for the nearest Colony to another Colony.     
+     * @param range The maximum range to consider.
+     * @param predicate A delegate to execute against each eligible Colony. If the delegate returns false, that Colony will be ignored.
+     * @param ignore A list of Colonies to ignore in the search.
+     */
+    public getNearestColony(room: Room | string, excludeSelf: boolean = true, range?: number, predicate?: (colony: Colony, distance: number) => boolean, ignore?: Colony[]): Colony {
+        let distance = 5000;
+        let nearest: Colony;
+        for (var i = 0; i < this.colonies.length; i++) {
+            let colony = this.colonies[i];
+            if (ignore && _.any(ignore, p => p.name == colony.name))
+                continue;
+            if (excludeSelf && colony.nest.roomName == room)
+                continue;
+            let d = RoomHelper.getDistanceBetweenRooms(room, colony.nest.roomName, true);
+            if (d < distance && (!range || d <= range)) {
+                if (!predicate || predicate(colony, d)) {
+                    distance = d;
+                    nearest = colony;
+                }
+            }
+        }
+        return nearest;
+    }
+
     /** Transfers a creep to a new colony. */
     public transferCreep(creep: Creep | string, newColony: Colony | string): void {
         if (creep instanceof Creep)
@@ -125,9 +154,11 @@ export class Empire {
      */
     public requestSpawn(requestingColony: Colony, body: Body, eligibleColonies: Colony[]): string
     public requestSpawn(requestingColony: Colony, body: Body, rangeOrColonies?: number | Colony[]): string {
+        let range: number = undefined;
         let colonies: Colony[];
         if (rangeOrColonies) {
             if (typeof (rangeOrColonies) == "number") {
+                range = rangeOrColonies;
                 colonies = this.getSupportColonies(requestingColony, rangeOrColonies);
             } else {
                 colonies = rangeOrColonies;
@@ -143,6 +174,8 @@ export class Empire {
                     return response;
             }
         }
+        
+        global.events.colony.creepRequestFailed(requestingColony.name, body.type, range);
         return null;
     }
 
@@ -172,8 +205,7 @@ export class Empire {
     
     public update(): void {
         this.colonyFinder.createNewColonies(this);
-        FlagOperationDiscovery.findFlagOperations();
-        FlagCampaignDiscovery.findFlagCampaigns();
+        this.checkFlags();
 
         for (var i = 0; i < this.colonies.length; i++) {
             let msg = this.colonyShouldBeRemoved(this.colonies[i]);
@@ -195,6 +227,14 @@ export class Empire {
         for (var i = 0; i < this.colonies.length; i++) {
             this.colonies[i].cleanup();
         }
+    }
+
+    private checkFlags(): void {
+        FlagOperationDiscovery.findFlagOperations();
+        FlagCampaignDiscovery.findFlagCampaigns();
+        for (let name in Game.flags)
+            if (Game.flags[name].memory.remove)
+                Game.flags[name].remove();
     }
 
     public save(): EmpireMemory {

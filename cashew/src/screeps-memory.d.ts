@@ -28,5 +28,6 @@ declare global {
         playbackData?: PlaybackFlagMemory;
         flagOperation?: FlagOperationMemory;
         flagCampaign?: FlagCampaignMemory;
+        remove?: boolean;
     }    
 }

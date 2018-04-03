@@ -202,6 +202,8 @@ declare global {
         replaceAt: number;
         replacementName: string;
         onHold: boolean;
+        supportRequest: BodyMemory;
+        maxSupportRange: number;
     }
 
     interface FlagOperationMemory {

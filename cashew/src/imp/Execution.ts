@@ -34,8 +34,10 @@ export class Execute {
         GlobalExtension.extend();
         
         if (global.system.codeChange) {
+            Patch.patchMemory();
             this.setEmpire();
-            Patch.patch();
+            Patch.patchEmpire();
+            Memory.empire = global.empire.save();
         }
     }
     

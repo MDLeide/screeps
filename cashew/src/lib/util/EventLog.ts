@@ -190,6 +190,7 @@ class ColonyEvents extends EventGroup {
 
     public creepSpawnLevel: number = 3;
     public creepScheduledLevel: number = 3;
+    public creepRequestFailedLevel: number = 5;
     public spawnErrorLevel: number = 5;    
     public rclUpgradeLevel: number = 9;
     public underAttackLevel: number = 10;
@@ -215,17 +216,21 @@ class ColonyEvents extends EventGroup {
         this.log(sb.toString(), this.creepSpawnLevel);
     }
 
-    public creepScheduled(colonyName: string, creepName: string, bodyType: string): void {
+    public creepScheduled(colonyName: string, creepName: string, bodyType: string, requestingColony?: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
         sb.append(colonyName, this.colors.name);
         sb.append(" has ");
-        sb.append("scheduled spawning for a ", this.colors.positiveVerb);
+        sb.append("scheduled spawning of a ", this.colors.positiveVerb);
         sb.append("creep", this.colors.identifier);
         sb.append(" named ");
         sb.append(creepName, this.colors.name);
+        if (requestingColony && requestingColony != colonyName) {
+            sb.append(" in support of ", this.colors.positiveVerb);
+            sb.append(requestingColony, this.colors.name)
+        }
         sb.append(" with a ");
         sb.append("body", this.colors.identifier);
         sb.append(" type of ");
@@ -272,6 +277,22 @@ class ColonyEvents extends EventGroup {
         sb.append(milestoneName, this.colors.name);        
 
         this.log(sb.toString(), this.milestoneMetLevel);
+    }
+
+    public creepRequestFailed(requestingColonyName: string, bodyType: string, maxRange?: number): void {
+        var sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+
+        sb.append(requestingColonyName, this.colors.name);
+        sb.append(" requested spawn support for a ", this.colors.neutralVerb);
+        sb.append(bodyType, this.colors.name);
+        if (maxRange) {
+            sb.append("within range of ");
+            sb.append(maxRange.toString(), this.colors.information);
+        }
+        sb.append(" but the Empire could not fulfill", this.colors.negativeVerb);
+
+        this.log(sb.toString(), this.creepRequestFailedLevel);
     }
 }
 

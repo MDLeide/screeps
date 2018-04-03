@@ -19,30 +19,32 @@ export class FlagCampaignDiscovery {
         let names = Object.keys(Game.flags);
         for (var i = 0; i < names.length; i++) {
             let flag = Game.flags[names[i]];
+            if (flag.memory.remove)
+                continue;
             if (flag.memory.flagCampaign)
                 this.checkFlag(flag);
         }
     }
 
-    private static checkFlag(flag: Flag): void {
+    public static checkFlag(flag: Flag): void {
         if (!flag.memory.flagCampaign)
             return;
 
-        let flagOp = FlagCampaignRepository.getNew(flag.memory.flagCampaign.type, flag);
-        let campaign = flagOp.getCampaign();
+        let flagCampaign = FlagCampaignRepository.getNew(flag.memory.flagCampaign.type, flag);
+        let campaign = flagCampaign.getCampaign();
         if (!campaign) {
-            flag.remove();
+            flag.memory.remove = true;
             return;
         }
 
-        let colony = flagOp.getHostColony();
+        let colony = flagCampaign.getHostColony();
         if (!colony) {
-            flag.remove();
+            flag.memory.remove = true;
             return;
         }
 
         colony.campaigns.push(campaign);
-        flag.remove();
+        flag.memory.remove = true;
     }
 }
 

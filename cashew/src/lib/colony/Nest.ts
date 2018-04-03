@@ -72,7 +72,7 @@ export class Nest {
             spawningColony: spawningColonyName,
             operation: undefined
         };
-        global.events.colony.creepScheduled(requestingColonyName, name, body.type);
+        global.events.colony.creepScheduled(spawningColonyName, name, body.type, requestingColonyName);
         return name;
     }
     
@@ -144,6 +144,7 @@ export class Nest {
             }
             this.spawners[i].cleanup();
         }
+        this.spawnStats.update(this);
     }
 
     public checkEnergyStructureOrder(): void {

@@ -21,7 +21,7 @@ export class LightUpgradeOperation extends ControllerOperation {
             let a = new Assignment(undefined, BodyRepository.lightWorker());
             a.supportRequest = BodyRepository.lightWorker();
             a.supportRequest.minimumEnergy = 1500;
-            a.maxSupportRange = 4;
+            a.maxSupportRange = 6;
             assignments.push(a);
         }
         return assignments;

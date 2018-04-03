@@ -61,7 +61,6 @@
     <Folder Include="src\lib\map\base\" />
     <Folder Include="src\lib\map\blocks\" />
     <Folder Include="src\lib\map\" />
-    <Folder Include="src\lib\flags\" />
     <Folder Include="src\lib\military\" />
     <Folder Include="src\lib\monitor\" />
     <Folder Include="src\yagni\military\lib\" />
@@ -302,9 +301,6 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\monitor\MonitorManager.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\lib\flags\FlagMonitor.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\yagni\military\lib\Formation.ts">

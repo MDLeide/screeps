@@ -10,6 +10,7 @@ export class SpawnStatTracker {
 
     constructor() {
         this.currentPeriod = new SpawnStats();
+        this.currentPeriod.periodStart = Game.time;
     }
 
     public history: SpawnStats[] = [];
@@ -41,7 +42,8 @@ export class SpawnStatTracker {
             ticks += this.history[i].periodLength;
             spawnTicks += this.history[i].adjustedTicksSpentSpawning;
         }
-
+        if (spawnTicks == 0)
+            return 0;
         return spawnTicks / (ticks * 3);
     }
 

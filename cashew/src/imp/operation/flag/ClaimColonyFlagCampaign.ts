@@ -9,7 +9,8 @@ export class ClaimColonyFlagCampaign extends FlagCampaign {
     }
 
     public getHostColony(): Colony {
-        return global.empire.getColonyByName(this.flag.memory.flagCampaign.hostColony);
+        let room = this.flag.pos.roomName;
+        return global.empire.getNearestColony(room, true, undefined, (p, d) => p.getEffectiveRcl().isGreaterThanOrEqualTo(3, 0));
     }
 
     public getCampaign(): Campaign {

@@ -9,7 +9,9 @@ export class Assignment {
             Body.fromMemory(memory.body),
             memory.controllerType,
             memory.replaceAt);
-
+        if (memory.supportRequest)
+            assignment.supportRequest = Body.fromMemory(memory.supportRequest);
+        assignment.maxSupportRange = memory.maxSupportRange;
         assignment.replacementName = memory.replacementName;
         assignment.onHold = memory.onHold;
         return assignment;
@@ -67,7 +69,9 @@ export class Assignment {
             controllerType: this.controllerType,
             replacementName: this.replacementName,
             replaceAt: this.replaceAt,
-            onHold: this.onHold
+            onHold: this.onHold,
+            maxSupportRange: this.maxSupportRange,
+            supportRequest: this.supportRequest ? this.supportRequest.save() : undefined
         };
     }
 }

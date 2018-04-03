@@ -28,10 +28,12 @@ export class ColonyInfoVisual extends ComponentVisual {
         vt.append(`${rcl.toString(true)}`);
         vt.append(" | ");
         let ops = colony.operations.runners.length;
-        vt.append(ops + " operations");
+        vt.append(ops + " ops");
         let pop = colony.population.alive ? colony.population.alive.length : 0;
         vt.append(" | ");
         vt.append(pop + " creeps");
+        vt.append(" | ");
+        vt.append("%" + Math.trunc(colony.nest.spawnStats.getAverageSaturation() * 100) + " saturation");
         vt.append(" | ");
         let threat = colony.watchtower.threatScore;
         if (threat > 0)
