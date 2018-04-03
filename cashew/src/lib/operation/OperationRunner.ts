@@ -73,6 +73,12 @@ export class OperationRunner {
         if (unassignedCreep)
             return unassignedCreep;
 
+        if (assignment.supportRequest) {
+            let support = global.empire.requestSpawn(colony, assignment.supportRequest, assignment.maxSupportRange);
+            if (support)
+                return support;
+        }
+
         if (!colony.canSpawn(assignment.body))
             return null;
 

@@ -15,11 +15,7 @@ export class Assignment {
         return assignment;
     }
 
-    constructor(
-        creepName: string,
-        body: Body,
-        controllerType?: CreepControllerType,
-        replaceAt?:number) {
+    constructor(creepName: string, body: Body, controllerType?: CreepControllerType, replaceAt?:number) {
         this.creepName = creepName;
         this.body = body;
         this.controllerType = controllerType;
@@ -34,6 +30,9 @@ export class Assignment {
     public body: Body;
     public controllerType: CreepControllerType;
     public onHold: boolean;
+    /** If this value is present, it should be used to request a support spawn, before attempting a local spawn. */
+    public supportRequest: Body;
+    public maxSupportRange: number;
 
 
     /** True if there is no creep assigned. */

@@ -107,7 +107,7 @@ export class Empire {
      * @param body The body to be spawned.
      * @param range The maximum number of rooms on the path between the requesting colony and the fulfilling colony.
      */
-    public requestSpawn(requestingColony: Colony, body: Body, range: number): string
+    public requestSpawn(requestingColony: Colony, body: Body, range?: number): string
      /**
      * Tries to request spawn assistance from other colonies.
      * @param requestingColony The Colony requesting the spawn.

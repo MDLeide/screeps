@@ -155,6 +155,8 @@ export class Colony  {
     
     /** Returns true if the Colony can support the spawn request from another Colony. */
     public canSpawnSupport(body: Body): boolean {
+        if (this.getEffectiveRcl().isLessThan(5, 0))
+            return false;
         return this.nest.canSpawnSupport(body);
     }
     
