@@ -4,7 +4,8 @@ declare global {
     interface CreepMemory {
         body: string;
         operation: string;
-        colony: string;     
+        colony: string;
+        spawningColony: string;
         birthTick: number;
         deathTick: number;
         _move?: CreepMoveMemory;

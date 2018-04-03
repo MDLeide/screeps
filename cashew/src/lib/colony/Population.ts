@@ -77,8 +77,10 @@ export class Population {
                 continue;
             
             var creep = Game.creeps[key];
-            if (!creep) { 
-                if (this.colony.creepIsScheduled(key)) { // creep scheduled for spawn
+            if (!creep) {
+                let spawningColony = global.empire.getColonyByName(Memory.creeps[key].spawningColony);
+
+                if (spawningColony.creepIsScheduled(key)) { // creep scheduled for spawn
                     this.creepIsSpawning(key);
                 } else { // creep is dead
                     var name = this.creepIsDead(key);

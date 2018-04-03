@@ -2,23 +2,34 @@ import { StringBuilder } from "./util/StringBuilder";
 
 export class Patch {
     public static patch(): void {
-        
+        let shard = Game.shard.name;
+        if (shard == "screepsplus1") {
+            this.patchScreepsPlus();
+        }
     }
 
     public static patchScreepsPlus(): void {
+        this.addSpawningColony();
     }
 
     public static patchPrivate(): void {
-        this.patchSpawnStatsAndCreepColonyTracking();
+        this.addSpawnStatsMemoryToNests();
+        this.changeCreepMemoryToTrackByColony();
+        this.addSpawningColony();
     }
 
     public static patchPublic(): void {
-        this.patchSpawnStatsAndCreepColonyTracking();
-    }
-
-    public static patchSpawnStatsAndCreepColonyTracking() {
         this.addSpawnStatsMemoryToNests();
         this.changeCreepMemoryToTrackByColony();
+        this.addSpawningColony();
+    }
+
+    private static addSpawningColony(): void {
+        for (let key in Memory.creeps) {
+            let mem = Memory.creeps[key];
+            if (!mem.spawningColony)
+                mem.spawningColony = mem.colony;
+        }
     }
 
     private static addSpawnStatsMemoryToNests(): void {
