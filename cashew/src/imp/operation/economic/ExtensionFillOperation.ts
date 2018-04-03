@@ -99,6 +99,7 @@ export class ExtensionFillOperation extends ControllerOperation {
             } else if (c.waiting) { // swap the waiters so they stay with the creep they are supposed to replace
                 c.onPathA = !c.onPathA;
                 c.standLocation = c.onPathA ? this.pathAStandLocation : this.pathBStandLocation;
+                this.lastAssignedWasA = !this.lastAssignedWasA;
             }
         }
     }
