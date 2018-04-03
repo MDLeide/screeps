@@ -37,6 +37,10 @@ export class StringBuilder {
         return this;
     }
 
+    public clear(): void {
+        this.str = "";
+    }
+
     public toString(): string {
         return this.str;
     }

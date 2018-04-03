@@ -12,8 +12,9 @@ import { VisualBuilder } from "../lib/visual/VisualBuilder";
 
 import { StatCollection } from "../lib/StatCollection";
 import { StandardColonyMonitorProvider } from "./colony/StandardColonyMonitorProvider";
-import { System, Version } from "lib/System";
+import { System, Version, SystemBuilder } from "lib/System";
 import { Patch } from "lib/Patch";
+import { StringBuilder } from "lib/util/StringBuilder";
 
 export class SystemSettings {
     public static major: number = 0;
@@ -26,13 +27,16 @@ export class SystemSettings {
 
 export class Execute {    
     public init(): void {        
-        console.log("<span style='color:green'>Execution initializing...</span>");        
+        this.setSystem();
+        this.displaySystemInfo();
         MemoryManager.checkInit();
         Register.register();
         GlobalExtension.extend();
-        this.setSystem();
-        if (global.system.codeChange)
+        
+        if (global.system.codeChange) {
+            this.setEmpire();
             Patch.patch();
+        }
     }
     
     public main(): void {
@@ -55,55 +59,40 @@ export class Execute {
         return Playback.loop();            
     }
 
+    private displaySystemInfo(): void {
+        let sb = new StringBuilder();
+        console.log();
+        sb.append(global.system.toString(), "yellow");
+        sb.append(" initializing . . .", "yellow");
+
+        console.log(sb.toString());
+        sb.clear();
+
+        sb.append("Current tick", "tan");
+        sb.append(": ", "white");
+        sb.append(Game.time.toString(), "orange");
+
+        sb.append(" | ", "white");
+
+        sb.append("Last global's age", "tan");
+        sb.append(": ", "white");
+        sb.append(global.system.getLastGlobalAge().toString(), "orange");
+
+        console.log(sb.toString());
+        sb.clear();
+
+        sb.append("Reset reason", "tan");
+        sb.append(": ", "white");
+        if (global.system.codeChange)
+            sb.append("Code Change", "orange");
+        else
+            sb.append("Other", "orange");
+        console.log(sb.toString());
+        console.log();
+    }
+
     private setSystem(): void {
-        if (!Memory.system) {
-            Memory.system = {
-                major: SystemSettings.major,
-                minor: SystemSettings.minor,
-                patch: 0,
-                lastUpdate: new Date().valueOf(),
-                debug: SystemSettings.forceDebugValue,
-                name: SystemSettings.systemName,
-                resetHistory: [],
-                codeChangeHistory: []
-            };
-        }
-
-        global.system = new System(
-            SystemSettings.systemName,
-            new Version(SystemSettings.major, SystemSettings.minor, Memory.system.patch),
-            Memory.system.lastUpdate
-        );
-
-        global.system.debug = SystemSettings.forceDebug ? SystemSettings.forceDebugValue : Memory.system.debug;
-        global.system.resetHistory = Memory.system.resetHistory;
-        global.system.resetHistory.push(Game.time);
-
-        if (global.system.version.major != Memory.system.major || global.system.version.minor != Memory.system.minor) 
-            global.system.version.patch = 0; // reset patch on major/minor update
-        
-        if (module.timestamp != global.system.lastUpdate) {
-            global.system.lastUpdate = module.timestamp;
-            global.system.codeChangeHistory.push(Game.time);
-            if (SystemSettings.automaticallyIncrementPatch)
-                global.system.version.patch++;            
-        }
-
-        if (global.system.codeChangeHistory.length > 5)
-            global.system.codeChangeHistory.splice(0, 1);
-        if (global.system.resetHistory.length > 5)
-            global.system.resetHistory.splice(0, 1);
-
-        Memory.system = {
-            major: global.system.version.major,
-            minor: global.system.version.minor,
-            patch: global.system.version.patch,
-            debug: global.system.debug,
-            name: global.system.name,
-            lastUpdate: global.system.lastUpdate,
-            resetHistory: global.system.resetHistory,
-            codeChangeHistory: global.system.codeChangeHistory
-        }
+        global.system = SystemBuilder.getSystem();
     }
 
     private setEmpire(): void {

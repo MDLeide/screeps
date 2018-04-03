@@ -157,7 +157,7 @@ export class Colony  {
     public canSpawnSupport(body: Body): boolean {
         return this.nest.canSpawnSupport(body);
     }
-
+    
     /** Returns the Spawner used if successful, otherwise null
      * @param body Body to use for spawning.
      * @param priority An optional number indicating the priority of the spawn. Higher numbers are spawned first.
@@ -170,7 +170,12 @@ export class Colony  {
             priority);
         return result;
     }
-    
+
+    /** Returns true if there is a creep with the provided name spawning or scheduled to spawn. */
+    public creepIsScheduled(creep: Creep | string): boolean {
+        return this.nest.creepIsScheduled(creep);
+    }
+
     public save(): ColonyMemory {
         return {
             name: this.name,

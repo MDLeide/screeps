@@ -74,7 +74,7 @@ export class Nest {
         global.events.colony.creepScheduled(colonyName, name, body.type);
         return name;
     }
-
+    
     public cancelSpawn(name: string): void {
         for (var i = 0; i < this.spawnQueue.length; i++) {
             let req = this.spawnQueue[i];
@@ -91,6 +91,23 @@ export class Nest {
             Memory.creeps[this.spawnQueue[i].name] = undefined;
             this.spawnQueue.splice(i--, 1);
         }
+    }
+
+    public creepIsScheduled(creep: Creep | string): boolean {
+        if (creep instanceof Creep)
+            return this.creepIsScheduled(creep.name);
+        for (var i = 0; i < this.spawners.length; i++) {
+            if (this.spawners[i].startedThisTick == creep)
+                return true;
+            let current = this.spawners[i].getCurrentlySpawning();
+            if (current && current.name == creep)
+                return true;
+        }
+
+        for (var i = 0; i < this.spawnQueue.length; i++)
+            if (this.spawnQueue[i].name == creep)
+                return true;
+        return false;
     }
 
     public load(): void {        
@@ -167,7 +184,8 @@ export class Nest {
             roomName: this.roomName,
             map: this.nestMap.save(),
             spawnEnergyStructureOrderIds: this.spawnEnergyStructureOrderIds,
-            spawnQueue: this.spawnQueue.map(p => p.save())
+            spawnQueue: this.spawnQueue.map(p => p.save()),
+            spawnStats: this.spawnStats.save()
         };
     }
 }

@@ -27,6 +27,10 @@ export class Population {
         return unassigned;
     }
 
+    public creepFromThisColony(creep: CreepMemory): boolean {
+        return creep.colony == this.colony.name;            
+    }
+
     public isAlive(creep: (Creep | string)): boolean {
         return this.listContainsCreep(creep, this.alive);
     }
@@ -74,7 +78,7 @@ export class Population {
             
             var creep = Game.creeps[key];
             if (!creep) { 
-                if (!Memory.creeps[key].birthTick) { // creep scheduled for spawn
+                if (this.colony.creepIsScheduled(key)) { // creep scheduled for spawn
                     this.creepIsSpawning(key);
                 } else { // creep is dead
                     var name = this.creepIsDead(key);
@@ -123,12 +127,5 @@ export class Population {
             this.diedRecently.push(creep);
 
         return null;
-    }
-
-    public creepFromThisColony(creep: CreepMemory) : boolean {
-        for (var i = 0; i < this.colony.nest.spawners.length; i++)
-            if (creep.colony == this.colony.name)
-                return true;
-        return false;
     }
 }
