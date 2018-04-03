@@ -140,10 +140,10 @@ export class RemoteHarvesterController extends CreepController {
 
         if (harvestResponse == ERR_NOT_IN_RANGE) {
             creep.moveTo(this.source);
-            return;
         } else if (harvestResponse == OK) {
             colony.resourceManager.ledger.registerRemoteHarvest(creep);
         }
+
         if (_.sum(creep.carry) >= creep.carryCapacity - HARVEST_POWER * creep.getActiveBodyparts(WORK)) {
             let transferResponse = creep.transfer(this.container, RESOURCE_ENERGY);
             if (transferResponse == ERR_NOT_IN_RANGE) {

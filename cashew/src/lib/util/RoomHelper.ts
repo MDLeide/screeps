@@ -106,14 +106,14 @@ export class RoomHelper {
         let ySign: string;
         let y: number;
         
-        if (isNaN(parseInt(roomName[2]))) { //W1N2
+        if (isNaN(parseInt(roomName.substring(2,3)))) { //W1N2
             ySign = roomName[2];
-            x = Number(roomName[1]) + 1;
-            y = Number(roomName.substring(3)) + 1;
+            x = parseInt(roomName.substring(1, 2)) + 1;
+            y = parseInt(roomName.substring(3)) + 1;
         } else { //W23S3
             ySign = roomName[3];
-            x = Number(roomName.substring(1, 2)) + 1; 
-            y = Number(roomName.substring(4)) + 1;
+            x = parseInt(roomName.substring(1, 3)) + 1; 
+            y = parseInt(roomName.substring(4)) + 1;
         }
 
         if (xSign == "W")
