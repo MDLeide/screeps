@@ -53,8 +53,8 @@ export class StatCollection {
 
     private static getColonyCreepsStats(colony: Colony): CreepStats {
         return {
-            alive: colony.population.alive.length,
-            spawning: colony.population.spawning.length
+            alive: colony.population.alive ? colony.population.alive.length : 0,
+            spawning: colony.population.spawning ? colony.population.spawning.length : 0
         };
     }
 

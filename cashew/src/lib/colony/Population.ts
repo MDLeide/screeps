@@ -13,11 +13,11 @@ export class Population {
         this.updatePopulation();
     }
 
-    public alive: string[];
-    public spawning: string[];
-    public bornThisTick: string[];
-    public diedRecently: string[];
-    public diedLastTick: string[];
+    public alive: string[] = [];
+    public spawning: string[] = [];
+    public bornThisTick: string[] = [];
+    public diedRecently: string[] = [];
+    public diedLastTick: string[] = [];
 
     public notAssignedToOperation(): string[] {
         var unassigned: string[] = [];
