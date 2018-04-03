@@ -8,20 +8,54 @@ export class Patch {
         }
     }
 
-    public static patchScreepsPlus(): void {
-        this.addSpawningColony();
+
+    private static patchScreepsPlus(): void {
+        this.doPatch([
+            
+        ]);
     }
 
-    public static patchPrivate(): void {
-        this.addSpawnStatsMemoryToNests();
-        this.changeCreepMemoryToTrackByColony();
-        this.addSpawningColony();
+    private static patchPrivate(): void {
+        this.doPatch([
+            this.addSpawnStatsMemoryToNests,
+            this.changeCreepMemoryToTrackByColony,
+            this.addSpawningColony,
+            this.updateOperationAssignments
+        ]);
     }
 
-    public static patchPublic(): void {
-        this.addSpawnStatsMemoryToNests();
-        this.changeCreepMemoryToTrackByColony();
-        this.addSpawningColony();
+    private static patchPublic(): void {
+        this.doPatch([
+            this.addSpawnStatsMemoryToNests,
+            this.changeCreepMemoryToTrackByColony,
+            this.addSpawningColony,
+            this.updateOperationAssignments
+        ]);
+    }
+
+    private static doPatch(functions: Function[]): void {
+        for (var i = 0; i < functions.length; i++) {
+            global.events.system.patch(functions[i].name);
+            functions[i]();
+        }
+    }
+
+    //private static doPatch(functions: { func: ()=>void, name: string  }[]): void {
+    //    for (var i = 0; i < functions.length; i++) {
+    //        global.events.system.patch(functions[i].name);
+    //        functions[i].func();
+    //    }
+    //}
+
+
+    private static updateOperationAssignments(): void {
+        for (var i = 0; i < global.empire.colonies.length; i++) {
+            let colony = global.empire.colonies[i];
+            colony.operations.cancelOperationByType(OPERATION_LIGHT_UPGRADE);
+            colony.operations.cancelOperationByType(OPERATION_CONTROLLER_INFRASTRUCTURE);
+            colony.operations.cancelOperationByType(OPERATION_HARVEST_INFRASTRUCTURE);
+            colony.operations.cancelOperationByType(OPERATION_NEW_SPAWN_CONSTRUCTION);
+        }
     }
 
     private static addSpawningColony(): void {

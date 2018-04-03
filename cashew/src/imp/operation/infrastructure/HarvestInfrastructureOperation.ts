@@ -23,10 +23,15 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
     }
 
     private static getAssignments(): Assignment[]{
-        return [
-            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER),
-            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER)
-        ];
+        let assignments = [];
+        for (var i = 0; i < 2; i++) {
+            let a = new Assignment(undefined, BodyRepository.lightWorker(), CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER);
+            let supportBody = BodyRepository.lightWorker();
+            supportBody.minimumEnergy = 1500;
+            a.supportRequest = supportBody;
+            assignments.push(a);
+        }
+        return assignments;
     }
     
 

@@ -16,10 +16,15 @@ export class LightUpgradeOperation extends ControllerOperation {
     }
 
     private static getAssignments(): Assignment[] {
-        return [
-            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_LIGHT_UPGRADER),
-            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_LIGHT_UPGRADER)
-        ]
+        let assignments = [];
+        for (var i = 0; i < 3; i++) {
+            let a = new Assignment(undefined, BodyRepository.lightWorker());
+            a.supportRequest = BodyRepository.lightWorker();
+            a.supportRequest.minimumEnergy = 1500;
+            a.maxSupportRange = 4;
+            assignments.push(a);
+        }
+        return assignments;
     }
 
 

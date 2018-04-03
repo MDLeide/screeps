@@ -88,6 +88,21 @@ export class NewSpawnConstructionOperation extends JobOperation {
     }
 
     protected onFinish(colony: Colony): boolean {
+        // transfer the remaining creeps to the new colony
+        if (this.roomName) {
+            let c = global.empire.getColonyByRoom(this.roomName);
+            if (c) {
+                for (var i = 0; i < this.assignments.length; i++) {
+                    let name = this.assignments[i].creepName;
+                    if (name)
+                        global.empire.transferCreep(name, c);
+                    name = this.assignments[i].replacementName;
+                    if (name)
+                        global.empire.transferCreep(name, c);
+                }
+            }
+        }
+        
         return true;
     }
 

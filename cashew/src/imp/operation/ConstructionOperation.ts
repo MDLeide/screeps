@@ -11,16 +11,20 @@ export abstract class ConstructionOperation extends JobOperation {
         return JobOperation.fromMemory(memory, instance);
     }
 
-    constructor(type: OperationType, creepCount: number) {
-        super(type, ConstructionOperation.getAssignments(creepCount));
+    constructor(type: OperationType, creeps: number | Assignment[]) {
+        super(type, ConstructionOperation.getAssignments(creeps));
     }
 
 
-    private static getAssignments(count: number): Assignment[] {
-        let assignments = [];
-        for (var i = 0; i < count; i++) 
-            assignments.push(new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_BUILDER));
-        return assignments;
+    private static getAssignments(creeps: number | Assignment[]): Assignment[] {
+        if (typeof (creeps) == "number") {
+            let assignments = [];
+            for (var i = 0; i < creeps; i++)
+                assignments.push(new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_BUILDER));
+            return assignments;
+        } else {
+            return creeps;
+        }        
     }
 
 
