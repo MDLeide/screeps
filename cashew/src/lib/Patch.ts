@@ -1,24 +1,30 @@
 export class Patch {
-    private static patches: {
-        [major: number]: {
-            [minor: number]: {
-                [patch: number]: () => void;
+    public static patch(): void {
+    }
+
+    private static addSpawnStatsMemoryToNests(): void {
+        for (let key in Memory.empire.colonies) {
+            let c = Memory.empire.colonies[key];
+            c.nest.spawnStats = {
+                currentPeriod: {
+                    adjustedTicksSpentSpawning: 0,
+                    periodStart: Game.time
+                },
+                history: []
             }
         }
     }
 
-    public static patch(): void {
-        this.registration();
-        let patch = this.patches[global.system.version.major][global.system.version.minor][global.system.version.patch];
-        if (patch)
-            patch();
-    }
-
-    private static registration(): void {
-
-    }
-
-    private static register(majorVersion: number, minorVersion: number, patchVersion: number, patch: () => void): void {
-        this.patches[majorVersion][minorVersion][patchVersion] = patch;
+    private static changeCreepMemoryToTrackByColony(): void {
+        for (let key in Memory.creeps) {
+            let mem = Memory.creeps as any;
+            if (mem.homeSpawnId) {
+                let colony = global.empire.getColonyBySpawn(mem.homeSpawnId);
+                mem.colony = colony.name;
+                mem.homeSpawnId = undefined;
+            }
+        }
     }
 }
+
+

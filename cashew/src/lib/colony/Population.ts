@@ -100,7 +100,6 @@ export class Population {
         this.diedRecently = [];
     }
    
-
     private creepIsAlive(creep: string): void {
         this.alive.push(creep);
     }
@@ -127,11 +126,9 @@ export class Population {
     }
 
     public creepFromThisColony(creep: CreepMemory) : boolean {
-        for (var i = 0; i < this.colony.nest.spawners.length; i++) {
-            if (creep.homeSpawnId == this.colony.nest.spawners[i].spawn.id) {
+        for (var i = 0; i < this.colony.nest.spawners.length; i++)
+            if (creep.colony == this.colony.name)
                 return true;
-            }
-        }
         return false;
     }
 }

@@ -30,10 +30,6 @@ export class RoomDetails {
         return RoomHelper.isSourceKeeperRoom(this.name);
     }
 
-    public getDistanceToNearestKnownNeightbor(): number {
-
-    }
-
     public getDistanceToNearestColony(): number {
         let dist = 1000;
         for (var i = 0; i < global.empire.colonies.length; i++) {

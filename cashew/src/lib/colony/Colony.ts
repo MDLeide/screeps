@@ -89,7 +89,7 @@ export class Colony  {
     }
 
     public update(): void {
-        this.nest.update();
+        this.nest.update(this);
         this.resourceManager.update();
         this.population.update();        
         this.watchtower.update(this);
@@ -104,7 +104,7 @@ export class Colony  {
     }
 
     public execute(): void {
-        this.nest.execute();
+        this.nest.execute(this);
         this.resourceManager.execute();
         this.watchtower.execute(this);
         this.monitorManager.execute(this);
@@ -119,7 +119,7 @@ export class Colony  {
     }
 
     public cleanup(): void {
-        this.nest.cleanup();
+        this.nest.cleanup(this);
         this.resourceManager.cleanup();
         this.watchtower.cleanup(this);
 
@@ -153,9 +153,21 @@ export class Colony  {
         return this.nest.canSpawn(body)
     }
     
-    /** Returns the Spawner used if successful, otherwise null */
-    public spawnCreep(body: Body, priority?: number): string | null {
-        var result = this.nest.spawnCreep(body, priority);
+    /** Returns true if the Colony can support the spawn request from another Colony. */
+    public canSpawnSupport(body: Body): boolean {
+        return this.nest.canSpawnSupport(body);
+    }
+
+    /** Returns the Spawner used if successful, otherwise null
+     * @param body Body to use for spawning.
+     * @param priority An optional number indicating the priority of the spawn. Higher numbers are spawned first.
+     * @param transfer An optional Colony that the creep will be assigned to.
+     */
+    public spawnCreep(body: Body, priority?: number, transfer?: Colony): string | null {
+        var result = this.nest.spawnCreep(
+            body,
+            transfer ? transfer.name : this.name,
+            priority);
         return result;
     }
     

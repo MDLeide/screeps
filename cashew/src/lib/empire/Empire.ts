@@ -4,6 +4,7 @@ import { Nest } from "../colony/Nest";
 import { NestMapBuilder } from "../map/NestMapBuilder";
 import { FlagOperationDiscovery } from "../operation/FlagOperation";
 import { FlagCampaignDiscovery } from "../operation/FlagCampaign";
+import { Body } from "../creep/Body";
 
 export class Empire {
     constructor(colonyFinder: ColonyFinder) {
@@ -44,10 +45,13 @@ export class Empire {
     }
 
     /** Gets the Colony that a particular Spawn belongs to. */
-    public getColonyBySpawn(spawn: StructureSpawn): Colony {
+    public getColonyBySpawn(spawn: StructureSpawn | string): Colony {
+        if (spawn instanceof StructureSpawn)
+            return this.getColonyBySpawn(spawn.id);
+
         for (var i = 0; i < this.colonies.length; i++)
             for (var j = 0; j < this.colonies[i].nest.spawners.length; j++)
-                if (this.colonies[i].nest.spawners[j].spawnId == spawn.id)
+                if (this.colonies[i].nest.spawners[j].spawnId == spawn)
                     return this.colonies[i];
         return null;
     }
@@ -78,6 +82,66 @@ export class Empire {
         return null;
     }
 
+    /** Transfers a creep to a new colony. */
+    public transferCreep(creep: Creep | string, newColony: Colony | string): void {
+        if (creep instanceof Creep)
+            return this.transferCreep(creep.name, newColony);
+        if (newColony instanceof Colony)
+            return this.transferCreep(creep, newColony.name);
+        let c = this.getColonyByName(newColony);
+        if (!c) return;
+        let mem = Memory.creeps[creep];
+        if (!mem) return;
+        mem.colony = newColony;
+    }
+
+     /**
+     * Tries to request spawn assistance from other colonies.
+     * @param requestingColony The Colony requesting the spawn.
+     * @param body The body to be spawned.
+     */
+    public requestSpawn(requestingColony: Colony, body: Body): string
+     /**
+     * Tries to request spawn assistance from other colonies.
+     * @param requestingColony The Colony requesting the spawn.
+     * @param body The body to be spawned.
+     * @param range The maximum number of rooms on the path between the requesting colony and the fulfilling colony.
+     */
+    public requestSpawn(requestingColony: Colony, body: Body, range: number): string
+     /**
+     * Tries to request spawn assistance from other colonies.
+     * @param requestingColony The Colony requesting the spawn.
+     * @param body The body to be spawned.
+     * @param eligibleColonies Colonies to check for the spawn assistance.
+     */
+    public requestSpawn(requestingColony: Colony, body: Body, eligibleColonies: Colony[]): string
+    public requestSpawn(requestingColony: Colony, body: Body, rangeOrColonies?: number | Colony[]): string {
+        let colonies: Colony[];
+        if (rangeOrColonies) {
+            if (typeof (rangeOrColonies) == "number") {
+                for (var i = 0; i < this.colonies.length; i++) {
+                    let path = Game.map.findRoute(requestingColony.nest.roomName, this.colonies[i].nest.roomName);
+                    if (path == -2)
+                        continue;
+                    else if (path.length <= rangeOrColonies)
+                        colonies.push(this.colonies[i]);
+                }
+            } else {
+                colonies = rangeOrColonies;
+            }
+        } else {
+            colonies = this.colonies;
+        }
+
+        for (var i = 0; i < colonies.length; i++) {
+            if (colonies[i].canSpawnSupport(body)) {
+                let response = colonies[i].spawnCreep(body, undefined, requestingColony);
+                if (response)
+                    return response;
+            }
+        }
+        return null;
+    }
 
     //## update loop
 

@@ -114,6 +114,9 @@
     <TypeScriptCompile Include="src\imp\military\RoomDefenseUnitController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\colony\SpawnStats.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\empire\RoomDetails.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

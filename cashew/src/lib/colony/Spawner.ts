@@ -1,4 +1,5 @@
 import { Body } from "../creep/Body";
+import { Colony } from "lib/colony/Colony";
 
 export class Spawner {
     private _updated: boolean;
@@ -37,12 +38,12 @@ export class Spawner {
         let finalBody = body.getBody(this.spawn.room.energyAvailable);
         let memory = Memory.creeps[name];
         if (memory) {
-            memory.homeSpawnId = this.spawn.id;
             memory.birthTick = Game.time + 1;
         } else {
             global.events.colony.spawnError(this.spawn.name, body.type, "Memory does not exist - spawning anyway and recreating.");
+            let colony = global.empire.getColonyBySpawn(this.spawnId);
             memory = {
-                homeSpawnId: this.spawn.id,
+                colony: colony ? colony.name : undefined,
                 body: body.type,
                 operation: undefined,
                 birthTick: Game.time + 1,

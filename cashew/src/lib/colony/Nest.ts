@@ -5,6 +5,7 @@ import { Spawner } from "./Spawner";
 import { Body } from "../creep/Body";
 import { SpawnRequest } from "./SpawnRequest";
 import { CreepNamer } from "./CreepNamer";
+import { SpawnStatTracker } from "./SpawnStats";
 
 
 export class Nest {
@@ -14,7 +15,8 @@ export class Nest {
         nest.spawnQueue = [];
         if (memory.spawnQueue)
             for (var i = 0; i < memory.spawnQueue.length; i++)
-                nest.spawnQueue.push(SpawnRequest.fromMemory(memory.spawnQueue[i]));        
+                nest.spawnQueue.push(SpawnRequest.fromMemory(memory.spawnQueue[i]));
+        nest.spawnStats = SpawnStatTracker.fromMemory(memory.spawnStats);
         return nest;
     }
 
@@ -27,9 +29,9 @@ export class Nest {
         let spawns = this.room.find(FIND_MY_STRUCTURES, {
             filter: (struct) => struct.structureType == STRUCTURE_SPAWN
         });
-        for (var i = 0; i < spawns.length; i++) {
+        for (var i = 0; i < spawns.length; i++)
             this.spawners.push(new Spawner(spawns[i].id));
-        }
+        this.spawnStats = new SpawnStatTracker();
     }
 
     public spawners: Spawner[];
@@ -39,14 +41,22 @@ export class Nest {
     public roomName: string;    
     public room: Room;
     public spawnQueue: SpawnRequest[] = [];
+    public spawnStats: SpawnStatTracker;
 
 
     public canSpawn(body: Body): boolean {
         return this.spawners.length > 0 && this.room.energyCapacityAvailable >= body.minimumEnergy;
     }
 
+    /** Returns true if the Nest can support the spawn request from another Colony. */
+    public canSpawnSupport(body: Body): boolean {
+        if (!this.canSpawn(body))
+            return false;
+        return this.spawnStats.getAverageSaturation() < .8;            
+    }
+
     /** Returns the name used if successful, otherwise null, not guaranteed to start spawning immediately */
-    public spawnCreep(body: Body, priority?: number): string | null {
+    public spawnCreep(body: Body, colonyName: string, priority?: number): string | null {
         if (!this.canSpawn(body))
             return null;
         
@@ -58,10 +68,10 @@ export class Nest {
             birthTick: undefined,
             body: body.type,
             deathTick: 0,
-            homeSpawnId: this.spawners[0].spawnId,
+            colony: colonyName,
             operation: undefined
         };
-        global.events.colony.creepScheduled("Colony " + this.roomName, name, body.type);
+        global.events.colony.creepScheduled(colonyName, name, body.type);
         return name;
     }
 
@@ -93,24 +103,24 @@ export class Nest {
             this.spawnEnergyStructureOrder.push(Game.getObjectById<(StructureExtension | StructureSpawn)>(this.spawnEnergyStructureOrderIds[i]));        
     }
 
-    public update(): void {
+    public update(colony: Colony): void {
         this.checkEnergyStructureOrder();
         for (var i = 0; i < this.spawners.length; i++)
             this.spawners[i].update();        
     }
 
-    public execute(): void {
+    public execute(colony: Colony): void {
         for (var i = 0; i < this.spawners.length; i++)
             this.spawners[i].execute();        
     }
 
-    public cleanup(): void {
+    public cleanup(colony: Colony): void {
         for (var i = 0; i < this.spawners.length; i++) {            
             // we'll do the spawning in cleanup, so we can be fairly certain everything has had a chance to request
             if (this.spawnQueue.length) {
                 if (this.spawners[i].canSpawn(this.spawnQueue[0].body)) {
                     let result = this.spawners[i].spawnCreep(this.spawnQueue[0].body, this.spawnEnergyStructureOrder, this.spawnQueue[0].name);
-                    global.events.colony.creepSpawning("Colony " + this.roomName, this.spawnQueue[0].name, this.spawnQueue[0].body.type);
+                    global.events.colony.creepSpawning(colony.name, this.spawnQueue[0].name, this.spawnQueue[0].body.type);
                     this.spawnQueue.splice(0, 1);
                 }
             }

@@ -120,6 +120,7 @@ declare global {
         map: NestMapMemory;
         spawnEnergyStructureOrderIds: string[];
         spawnQueue: SpawnRequestMemory[];
+        spawnStats: SpawnStatTrackerMemory;
     }
 
     interface SpawnRequestMemory {
@@ -152,6 +153,16 @@ declare global {
         threatScore: number;
         attackTargetId: string;
         healTargetName: string;
+    }
+
+    interface SpawnStatTrackerMemory {
+        currentPeriod: SpawnStatMemory;
+        history: SpawnStatMemory[];
+    }
+
+    interface SpawnStatMemory {
+        periodStart: number;
+        adjustedTicksSpentSpawning: number;
     }
     
     /**  END MANAGEMENT UNITS **/
