@@ -63,14 +63,14 @@ export class Execute {
                 patch: 0,
                 lastUpdate: new Date().valueOf(),
                 debug: SystemSettings.forceDebugValue,
-                name: SystemSettings.name,
+                name: SystemSettings.systemName,
                 resetHistory: [],
                 codeChangeHistory: []
             };
         }
 
         global.system = new System(
-            SystemSettings.name,
+            SystemSettings.systemName,
             new Version(SystemSettings.major, SystemSettings.minor, Memory.system.patch),
             Memory.system.lastUpdate
         );

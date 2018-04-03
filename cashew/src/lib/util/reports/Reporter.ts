@@ -31,7 +31,7 @@ export class Reporter {
 
     public colonyOperations(colony: (string | Colony)): string {
         if (!(colony instanceof Colony))
-            return this.colonyOperations(this.empire.getColonyByName(colony))        
+            return this.colonyOperations(global.empire.getColonyByName(colony))        
         if (!colony)
             return "Report Error: No Colony Provided";
 
