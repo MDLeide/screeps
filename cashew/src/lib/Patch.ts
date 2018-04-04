@@ -36,7 +36,7 @@ export class Patch {
 
     private static patchScreepsPlusMemory(): void {
         this.doPatch([
-
+            this.patchStandardColonyMonitorMemory
         ]);
 
     }
@@ -52,6 +52,7 @@ export class Patch {
 
     private static patchPrivateMemory(): void {
         this.doPatch([
+            this.patchStandardColonyMonitorMemory
         ]);
     }
 
@@ -66,6 +67,7 @@ export class Patch {
 
     private static patchPublicMemory(): void {
         this.doPatch([
+            this.patchStandardColonyMonitorMemory
         ]);
     }
 
@@ -76,6 +78,18 @@ export class Patch {
 
     //
     // PATCHES
+    //
+
+    private static patchStandardColonyMonitorMemory(): void {
+        for (let key in Memory.empire.colonies) {
+            let c = Memory.empire.colonies[key];
+            if (c.monitorManager.provider as any == "Standard")
+                c.monitorManager.provider = MONITOR_PROVIDER_COLONY_STANDARD;
+        }
+    }
+
+    //
+    // ARCHIVE
     //
 
     private static addSpawningColony(): void {

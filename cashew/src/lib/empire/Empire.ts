@@ -7,22 +7,29 @@ import { FlagCampaignDiscovery } from "../operation/FlagCampaign";
 import { Body } from "../creep/Body";
 import { RoomHelper } from "../util/RoomHelper";
 import { Exchange } from "./Exchange";
+import { TypedMonitorManager } from "../monitor/MonitorManager";
 
 export class Empire {
-    constructor(colonyFinder: ColonyFinder) {
+    public static fromMemory(memory: EmpireMemory, colonyFinder: ColonyFinder): Empire {
+        let empire = new this(colonyFinder, TypedMonitorManager.fromMemory(memory.monitorManager));
+        for (let key in memory.colonies)
+            empire.colonies.push(Colony.fromMemory(memory.colonies[key]));
+        empire.exchange = Exchange.fromMemory(memory.exchange);
+        return empire;
+    }
+
+    constructor(colonyFinder: ColonyFinder, monitorManager: TypedMonitorManager<Empire>) {
         this.colonyFinder = colonyFinder;
-
+        this.monitorManager = monitorManager;
         this.colonies = [];
-        for (var key in Memory.empire.colonies)
-            this.colonies.push(Colony.fromMemory(Memory.empire.colonies[key]));
-
-        this.exchange = Exchange.fromMemory(Memory.empire.exchange);
+        this.exchange = new Exchange();
     }
 
 
     public colonies: Colony[];
     public colonyFinder: ColonyFinder;
     public exchange: Exchange;
+    public monitorManager: TypedMonitorManager<Empire>;
 
 
     /** Adds a colony to the empire and memory. */
@@ -203,9 +210,9 @@ export class Empire {
     //## update loop
 
     public load(): void {
-        for (var i = 0; i < this.colonies.length; i++) {
+        for (var i = 0; i < this.colonies.length; i++)
             this.colonies[i].load();
-        }
+        this.monitorManager.load();
     }
     
     public update(): void {
@@ -216,22 +223,23 @@ export class Empire {
             let msg = this.colonyShouldBeRemoved(this.colonies[i]);
             if (msg)
                 this.removeColony(this.colonies[i--], msg);
-        }            
+        }
 
+        this.monitorManager.update(this);
         for (var i = 0; i < this.colonies.length; i++) 
             this.colonies[i].update();
     }
 
-    public execute(): void {        
-        for (var i = 0; i < this.colonies.length; i++) {
+    public execute(): void {
+        this.monitorManager.execute(this);
+        for (var i = 0; i < this.colonies.length; i++)
             this.colonies[i].execute();
-        }
     }
 
     public cleanup(): void {
-        for (var i = 0; i < this.colonies.length; i++) {
+        this.monitorManager.cleanup(this);
+        for (var i = 0; i < this.colonies.length; i++)
             this.colonies[i].cleanup();
-        }
     }
 
     private checkFlags(): void {
@@ -240,15 +248,6 @@ export class Empire {
         for (let name in Game.flags)
             if (Game.flags[name].memory.remove)
                 Game.flags[name].remove();
-    }
-
-    public save(): EmpireMemory {
-        var colonies: { [name: string]: ColonyMemory } = {};
-        for (var i = 0; i < this.colonies.length; i++)
-            colonies[this.colonies[i].name] = this.colonies[i].save();
-        return {
-            colonies: colonies
-        };
     }
 
     //## end update loop
@@ -261,5 +260,20 @@ export class Empire {
         if (!colony.nest.room.controller.my)
             return "Nest room no longer owned.";
         return undefined;
+    }
+
+    private getColonyMemory(): { [name: string]: ColonyMemory } {
+        var colonies: { [name: string]: ColonyMemory } = {};
+        for (var i = 0; i < this.colonies.length; i++)
+            colonies[this.colonies[i].name] = this.colonies[i].save();
+        return colonies;
+    }
+
+    public save(): EmpireMemory {        
+        return {
+            colonies: this.getColonyMemory(),
+            exchange: this.exchange.save(),
+            monitorManager: this.monitorManager.save()
+        };
     }
 }

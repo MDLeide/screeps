@@ -2,8 +2,11 @@ declare const MONITOR_COLONY_DEFENSE: "ColonyDefense";
 declare const MONITOR_ECONOMY_OPERATION: "EconomyOperation";
 declare const MONITOR_INFRASTRUCTURE_OPERATION: "InfrastructureOperation";
 declare const MONITOR_REMOTE_MINING_OPERATION: "RemoteMiningOperation";
+declare const MONITOR_COLONY_RESOURCES: "ColonyResources";
+declare const MONITOR_EXCHANGE: "Exchange";
 
-declare const MONITOR_PROVIDER_STANDARD: "Standard";
+declare const MONITOR_PROVIDER_COLONY_STANDARD: "ColonyStandard";
+declare const MONITOR_PROVIDER_EMPIRE_STANDARD: "EmpireStandard";
 
 declare const CAMPAIGN_CLAIM_COLONY: "ClaimColony";
 
@@ -104,8 +107,11 @@ type MONITOR_COLONY_DEFENSE = "ColonyDefense";
 type MONITOR_ECONOMY_OPERATION = "EconomyOperation";
 type MONITOR_INFRASTRUCTURE_OPERATION = "InfrastructureOperation";
 type MONITOR_REMOTE_MINING_OPERATION = "RemoteMiningOperation";
+type MONITOR_COLONY_RESOURCES = "ColonyResources";
+type MONITOR_EXCHANGE = "Exchange";
 
-type MONITOR_PROVIDER_STANDARD = "Standard";
+type MONITOR_PROVIDER_COLONY_STANDARD = "ColonyStandard";
+type MONITOR_PROVIDER_EMPIRE_STANDARD = "EmpireStandard";
 
 type CAMPAIGN_CLAIM_COLONY = "ClaimColony";
 
@@ -206,10 +212,13 @@ type MonitorType =
     MONITOR_COLONY_DEFENSE |
     MONITOR_ECONOMY_OPERATION |
     MONITOR_INFRASTRUCTURE_OPERATION |
-    MONITOR_REMOTE_MINING_OPERATION;
+    MONITOR_REMOTE_MINING_OPERATION |
+    MONITOR_COLONY_RESOURCES |
+    MONITOR_EXCHANGE;
 
 type MonitorProviderType =
-    MONITOR_PROVIDER_STANDARD;
+    MONITOR_PROVIDER_COLONY_STANDARD |
+    MONITOR_PROVIDER_EMPIRE_STANDARD;
 
 type CampaignType =
     CAMPAIGN_CLAIM_COLONY;

@@ -5,16 +5,37 @@ import { InfrastructureOperationMonitor } from "../colony/InfrastructureOperatio
 import { RemoteMiningOperationMonitor } from "../colony/RemoteMiningOperationMonitor";
 import { MonitorProviderRepository } from "lib/monitor/MonitorProvider";
 import { StandardColonyMonitorProvider } from "../colony/StandardColonyMonitorProvider";
+import { StandardEmpireMonitorProvider } from "../empire/StandardEmpireMonitorProvider";
+import { ExchangeMonitor } from "../empire/ExchangeMonitor";
+import { ColonyResourcesMonitor } from "../colony/ColonyResourcesMonitor";
 
 //import { ColonyMonitorRepository } from "../../lib/colony/ColonyMonitor";
 
 export class MonitorRegistration {
     public static register(): void {        
-        this.registerMonitors();
         this.registerProviders();
+        this.registerEmpireMonitors();
+        this.registerColonyMonitors();        
     }
 
-    private static registerMonitors(): void {
+    private static registerProviders(): void {
+        MonitorProviderRepository.register(
+            MONITOR_PROVIDER_COLONY_STANDARD,
+            () => new StandardColonyMonitorProvider());
+
+        MonitorProviderRepository.register(
+            MONITOR_PROVIDER_EMPIRE_STANDARD,
+            () => new StandardEmpireMonitorProvider());
+    }
+
+    private static registerEmpireMonitors(): void {
+        MonitorRepository.register(
+            MONITOR_EXCHANGE,
+            (mem: MonitorMemory) => ExchangeMonitor.fromMemory(mem),
+            () => new ExchangeMonitor());
+    }
+
+    private static registerColonyMonitors(): void {
         MonitorRepository.register(
             MONITOR_COLONY_DEFENSE,
             (mem: ColonyDefenseMonitorMemory) => ColonyDefenseMonitor.fromMemory(mem),
@@ -34,11 +55,10 @@ export class MonitorRegistration {
             MONITOR_REMOTE_MINING_OPERATION,
             (mem: MonitorMemory) => RemoteMiningOperationMonitor.fromMemory(mem),
             () => new RemoteMiningOperationMonitor());
-    }
 
-    private static registerProviders(): void {
-        MonitorProviderRepository.register(
-            MONITOR_PROVIDER_STANDARD,
-            () => new StandardColonyMonitorProvider());
-    }
+        MonitorRepository.register(
+            MONITOR_COLONY_RESOURCES,
+            (mem: MonitorMemory) => ColonyResourcesMonitor.fromMemory(mem),
+            () => new ColonyResourcesMonitor());
+    }    
 }

@@ -15,26 +15,13 @@ declare global {
         codeChangeHistory: number[];
     }
 
-    /** FLAGS */
-    
-    interface PlaybackFlagMemory {
-        pauseOnException: boolean;
-
-        doOutput: boolean;
-        outputColor: string;
-
-        playbackState: string;
-        lastPlaybackState: string;
-    }
-
-    /** END FLAGS */
-
 
     /** MANAGEMENT UNITS **/
 
     interface EmpireMemory {
         colonies: { [colonyName: string]: ColonyMemory };
         exchange: ExchangeMemory;
+        monitorManager: MonitorManagerMemory;
     }
 
     interface ColonyMemory {        
@@ -60,6 +47,9 @@ declare global {
 
 
     /** MONITORS **/
+
+    interface EmpireMonitorMemory extends MonitorMemory {
+    }
 
     interface ColonyMonitorMemory extends MonitorMemory {
     }
@@ -363,6 +353,16 @@ declare global {
         drawEnergyStats;
         drawDetailedPopulation: boolean;
         drawDetailOperations: boolean;
+    }
+
+    interface PlaybackFlagMemory {
+        pauseOnException: boolean;
+
+        doOutput: boolean;
+        outputColor: string;
+
+        playbackState: string;
+        lastPlaybackState: string;
     }
 
     /** END MISC **/    

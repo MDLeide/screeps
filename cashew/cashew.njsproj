@@ -45,6 +45,7 @@
     <Folder Include="src\imp\creep\military\" />
     <Folder Include="src\imp\map\" />
     <Folder Include="src\imp\military\" />
+    <Folder Include="src\imp\empire\" />
     <Folder Include="src\yagni\military\imp\formation\" />
     <Folder Include="src\yagni\military\imp\tactics\" />
     <Folder Include="src\yagni\military\imp\" />
@@ -94,6 +95,9 @@
     <TypeScriptCompile Include="src\global.d.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\colony\ColonyResourcesMonitor.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\ClaimJob.ts" />
     <TypeScriptCompile Include="src\imp\creep\DismantleJob.ts">
       <SubType>Code</SubType>
@@ -102,6 +106,12 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\WithdrawJob.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\empire\ExchangeMonitor.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\empire\StandardEmpireMonitorProvider.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\military\MoveToUnitJob.ts">
@@ -114,6 +124,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\SpawnStats.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\empire\EmpireMonitor.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\empire\Exchange.ts">

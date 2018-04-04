@@ -2,8 +2,11 @@ global.MONITOR_COLONY_DEFENSE = "ColonyDefense";
 global.MONITOR_ECONOMY_OPERATION = "EconomyOperation";
 global.MONITOR_INFRASTRUCTURE_OPERATION = "InfrastructureOperation";
 global.MONITOR_REMOTE_MINING_OPERATION = "RemoteMiningOperation";
+global.MONITOR_COLONY_RESOURCES = "ColonyResources";
+global.MONITOR_EXCHANGE = "Exchange";
 
-global.MONITOR_PROVIDER_STANDARD = "Standard";
+global.MONITOR_PROVIDER_COLONY_STANDARD = "ColonyStandard";
+global.MONITOR_PROVIDER_EMPIRE_STANDARD = "EmpireStandard";
 
 global.CAMPAIGN_CLAIM_COLONY = "ClaimColony";
 
@@ -46,8 +49,8 @@ global.FLAG_OPERATION_DISMANTLE = "Dismantle";
 global.FLAG_OPERATION_LOOT = "Loot";
 
 global.UNIT_CONTROLLER_RALLY = "Rally";
-global.UNIT_CONTROLLER_MOVETO = "MoveTo";
-global.UNIT_CONTROLLER_ROOMDEFENSE = "RoomDefense";
+global.UNIT_CONTROLLER_MOVE_TO = "MoveTo";
+global.UNIT_CONTROLLER_ROOM_DEFENSE = "RoomDefense";
 
 global.CREEP_CONTROLLER_HARVESTER = "Harvester";
 global.CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "HarvestInfrastructureBuilder";

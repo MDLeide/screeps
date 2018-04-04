@@ -15,6 +15,8 @@ import { StandardColonyMonitorProvider } from "./colony/StandardColonyMonitorPro
 import { System, Version, SystemBuilder } from "lib/System";
 import { Patch } from "lib/Patch";
 import { StringBuilder } from "lib/util/StringBuilder";
+import { MonitorManager, TypedMonitorManager } from "lib/monitor/MonitorManager";
+import { StandardEmpireMonitorProvider } from "./empire/StandardEmpireMonitorProvider";
 
 export class SystemSettings {
     public static major: number = 0;
@@ -99,8 +101,10 @@ export class Execute {
 
     private setEmpire(): void {
         let colonyFinder = new ColonyFinder(StandardNestMapBuilder.getBuilder(), new StandardColonyMonitorProvider());
-        let empire = new Empire(colonyFinder);
-        global.empire = empire;
+        if (Memory.empire)
+            global.empire = Empire.fromMemory(Memory.empire, colonyFinder);
+        else
+            global.empire = new Empire(colonyFinder, new TypedMonitorManager<Empire>(new StandardEmpireMonitorProvider());
     }
 
     private run(): void {

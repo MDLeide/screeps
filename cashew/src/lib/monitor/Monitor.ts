@@ -97,7 +97,7 @@ export class MonitorRepository {
         this.newDelegates[monitorType] = newDelegate;
     }
 
-    public static load(memory: ColonyMonitorMemory): Monitor {
+    public static load(memory: MonitorMemory): Monitor {
         return this.loadDelegates[memory.type](memory);
     }
 

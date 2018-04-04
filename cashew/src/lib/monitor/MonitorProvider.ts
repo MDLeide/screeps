@@ -31,7 +31,7 @@ export abstract class MonitorProviderBase implements IMonitorProvider {
 
     public abstract updateMonitors(manager: MonitorManager): void;
 
-    protected ensureMonitor(type: MonitorType, count: number, manager: MonitorManager): void {
+    protected ensureMonitor(type: MonitorType, manager: MonitorManager, count: number = 1): void {
         let c = 0;
         for (var i = 0; i < manager.monitors.length; i++)
             if (manager.monitors[i].type == type)
