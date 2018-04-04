@@ -20,7 +20,6 @@ export class EnergyTransportOperation extends ControllerOperation {
 
     private static getAssignments(): Assignment[] {
         let body = BodyRepository.hauler();
-        body.waitForFullEnergy = true;
         return [
             
             new Assignment("", body, CREEP_CONTROLLER_HAULER, 75),
@@ -39,8 +38,10 @@ export class EnergyTransportOperation extends ControllerOperation {
 
     protected onUpdate(colony: Colony): void {
         let energy = 300;
-        for (var i = 0; i < this.assignments.length; i++)
+        for (var i = 0; i < this.assignments.length; i++) {
             this.assignments[i].body.minimumEnergy = energy;
+            this.assignments[i].body.waitForFullEnergy = false;
+        }
     }
 
     protected onExecute(colony: Colony): void {

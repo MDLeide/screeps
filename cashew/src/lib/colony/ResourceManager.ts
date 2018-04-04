@@ -739,9 +739,11 @@ class Withdraws {
         }
         
         let container: StructureContainer = null;
-        let distance: number = 100;
+        let distance: number = 1000000;
 
         if (overflow.length) {
+            container = overflow[0];
+            distance = creep.pos.getRangeTo(overflow[0]);
             for (var i = 0; i < overflow.length; i++) {
                 var d = creep.pos.getRangeTo(overflow[i]);
                 if (d < distance) {
@@ -749,7 +751,9 @@ class Withdraws {
                     container = overflow[i];
                 }
             }
-        } else {
+        } else if (containers.length) {
+            container = containers[0];
+            distance = creep.pos.getRangeTo(containers[0]);
             for (var i = 0; i < containers.length; i++) {
                 var d = creep.pos.getRangeTo(containers[i]);
                 if (d < distance) {
@@ -758,7 +762,7 @@ class Withdraws {
                 }
             }
         }
-
+        
         return container;
     }
 

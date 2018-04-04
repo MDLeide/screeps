@@ -24,6 +24,10 @@ export class RoomHelper {
         return (coords.x - 1) % 10 == 0 || (coords.y - 1) % 10 == 0;
     }
 
+    public static isValidRoomName(roomName: string): boolean {
+        return /^[WE]\d+[SN]\d+$/.test(roomName);
+    }
+
     /**
      * @param roomName
      * @param direction 0 - North, 1 - NorthEast, 2 - East,... 7 - NorthWest

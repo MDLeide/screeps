@@ -8,6 +8,8 @@ export class Patch {
             this.patchScreepsPlusMemory();
         else if (shard == "DESKTOP-4J3SHMB")
             this.patchPrivateMemory();
+        else
+            this.patchPublicMemory();
     }
 
     /** Call to execute any patches that rely on Empire. */
@@ -17,6 +19,8 @@ export class Patch {
             this.patchScreepsPlus();
         else if (shard == "DESKTOP-4J3SHMB")
             this.patchPrivate();
+        else
+            this.patchPublic();
     }
 
     private static doPatch(functions: Function[]): void {
@@ -62,15 +66,11 @@ export class Patch {
 
     private static patchPublicMemory(): void {
         this.doPatch([
-            this.addSpawnStatsMemoryToNests,
-            this.changeCreepMemoryToTrackByColony,
-            this.addSpawningColony
         ]);
     }
 
     private static patchPublic(): void {
-        this.doPatch([
-            this.updateOperationAssignments
+        this.doPatch([            
         ]);
     }
 

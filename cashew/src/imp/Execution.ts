@@ -32,7 +32,8 @@ export class Execute {
         MemoryManager.checkInit();
         Register.register();
         GlobalExtension.extend();
-        
+        VisualBuilder.build();
+
         if (global.system.codeChange) {
             Patch.patchMemory();
             this.setEmpire();
@@ -49,8 +50,7 @@ export class Execute {
         this.setEmpire();
         
         if (global.empire.colonies.length) Playback.placeFlag(global.empire.colonies[0].nest.roomName); //debug
-
-        VisualBuilder.build();
+                
         this.run();
         global.visuals.draw();
         StatCollection.updateStats();

@@ -95,13 +95,26 @@ export class ExtensionFillOperation extends ControllerOperation {
     }
 
 
-    protected getController(assignment: Assignment): CreepController {
-        if (this.lastAssignedWasA) {
-            this.lastAssignedWasA = !this.lastAssignedWasA;
+    protected getController(assignment: Assignment): CreepController {        
+        if (this.countActive(true) < 1)
+            return new FillerController(this.pathAStandLocation, this.AWaitLocation, true, this.linkId);
+        
+        if (this.countActive(false) < 1)
+            return new FillerController(this.pathBStandLocation, this.BWaitLocation, false, this.linkId);
+
+        let waitingA = this.countWaiting(true);
+        let waitingB = this.countWaiting(false);
+
+        if (waitingA < waitingB) {
+            return new FillerController(this.pathAStandLocation, this.AWaitLocation, true, this.linkId);
+        } else if (waitingB < waitingA) {
             return new FillerController(this.pathBStandLocation, this.BWaitLocation, false, this.linkId);
         } else {
-            this.lastAssignedWasA = !this.lastAssignedWasA;
-            return new FillerController(this.pathAStandLocation, this.AWaitLocation, true, this.linkId);
+            if (this.findOldestActive) {
+                return new FillerController(this.pathAStandLocation, this.AWaitLocation, true, this.linkId);
+            } else {
+                return new FillerController(this.pathBStandLocation, this.BWaitLocation, false, this.linkId);
+            }
         }
     }
 
@@ -161,7 +174,43 @@ export class ExtensionFillOperation extends ControllerOperation {
             }
         }
     }
-    
+
+    /** Gets the number of creeps that are waiting and assigned to the provided path. */
+    private countWaiting(pathA: boolean): number {
+        let count = 0;
+        for (let key in this.controllers) {
+            let c = this.controllers[key] as FillerController;
+            if (c.waiting && c.onPathA == pathA)
+                count++;
+        }
+        return count;
+    }
+
+    private countActive(pathA: boolean): number {
+        let count = 0;
+        for (let key in this.controllers) {
+            let c = this.controllers[key] as FillerController;
+            if (!c.waiting && c.onPathA == pathA)
+                count++;
+        }
+        return count;
+    }
+
+    /** Finds the oldest active creep. Returns true if he is on PathA, otherwise, on PathB */
+    private findOldestActive(): boolean {
+        let pathA: boolean;
+        let ticksLeft: number = 1500;
+        for (let key in this.controllers) {
+            let c = this.controllers[key] as FillerController;
+            let creep = Game.creeps[key];
+            if (creep && !c.waiting && creep.ticksToLive < ticksLeft) {
+                ticksLeft = creep.ticksToLive;
+                pathA = c.onPathA;
+            }
+        }
+        return pathA;
+    }
+
     public save(): ExtensionFillOperationMemory {
         let mem = super.save() as ExtensionFillOperationMemory;
         mem.linkId = this.linkId;

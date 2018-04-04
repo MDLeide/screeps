@@ -48,8 +48,10 @@ export class StructureArtist {
         return p;
     }
 
-    public drawStructure(structure: string, x: number, y: number, energyLevel?: number, mineralLevel?: number): void {
-        
+    public drawStructure(structure: string, x: number, y: number, room?: string, energyLevel?: number, mineralLevel?: number): void {
+        let prev = this.room;
+        if (room)
+            this.room = room;
         switch (structure) {
             case "extension":
                 this.drawExtension(x, y, energyLevel);
@@ -99,6 +101,7 @@ export class StructureArtist {
             default:
                 throw Error(`Structure ${structure} not recognized.`);
         }
+        this.room = prev;
     }
 
 

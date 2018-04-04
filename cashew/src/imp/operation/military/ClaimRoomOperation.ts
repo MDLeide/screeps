@@ -60,6 +60,19 @@ export class ClaimRoomOperation extends JobOperation {
     }
 
     protected onFinish(colony: Colony): boolean {
+        let room = Game.rooms[this.roomName];
+        if (room) {
+            let structures = room.find<Structure>(FIND_STRUCTURES, {
+                filter: p => {
+                    if (p instanceof OwnedStructure)
+                        return !p.my;
+                    else
+                        return true;
+                }
+            });
+            for (var i = 0; i < structures.length; i++)
+                structures[i].destroy();            
+        }
         return true;
     }
 

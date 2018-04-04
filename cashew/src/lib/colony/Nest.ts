@@ -89,7 +89,7 @@ export class Nest {
 
     public clearSpawnQueue(): void {
         for (var i = 0; i < this.spawnQueue.length; i++) {
-            Memory.creeps[this.spawnQueue[i].name] = undefined;
+            //Memory.creeps[this.spawnQueue[i].name] = undefined;
             this.spawnQueue.splice(i--, 1);
         }
     }

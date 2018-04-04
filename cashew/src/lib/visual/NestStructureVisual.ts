@@ -19,15 +19,15 @@ export class NestStructureVisual extends ComponentVisual {
                 for (var y = 0; y < 50; y++) {
                     let struct = nestMap.map.structures.getAt(x, y);
                     if (struct)
-                        this.drawStructure(x, y, struct);
+                        this.drawStructure(x, y, struct, colony.nest.roomName);
                     if (nestMap.map.ramparts.getAt(x, y))
-                        this.drawStructure(x, y, STRUCTURE_RAMPART);
+                        this.drawStructure(x, y, STRUCTURE_RAMPART, colony.nest.roomName);
                 }
             }
         }
     }
 
-    private drawStructure(x: number, y: number, structure: StructureConstant): void {
-        this.structureArtist.drawStructure(structure, x, y);
+    private drawStructure(x: number, y: number, structure: StructureConstant, room: string): void {
+        this.structureArtist.drawStructure(structure, x, y, room);
     }
 }

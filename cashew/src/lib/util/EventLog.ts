@@ -2,6 +2,7 @@ import { StringBuilder } from "./StringBuilder";
 import { NestStructureVisual } from "../visual/NestStructureVisual";
 import { NestMap } from "../map/NestMap";
 import { System } from "lib/System";
+import { LinkGenerator } from "./LinkGenerator";
 
 export class EventLog {
     private groupNameWidth: number = 5;
@@ -39,7 +40,9 @@ export class EventLog {
     A message's level must be greater than
     this number to be printed. Lower number means
     more messages */
-    public messageLevel: number = 0;    
+    public messageLevel: number = 0;
+    /** If true, rooms will be converted to HTML links in the console output. */
+    public linkRooms: boolean = true;
 
     public empire: EmpireEvents;
     public colony: ColonyEvents;
@@ -106,6 +109,22 @@ abstract class EventGroup {
             return;
         this.eventLog.log(msg, level, this.name);
     }
+
+    protected room(roomName: string): string {
+        if (this.eventLog.linkRooms)
+            return LinkGenerator.linkRoom(roomName);
+        else
+            return roomName;
+    }
+
+    protected colony(colonyName: string): string {
+        if (!this.eventLog.linkRooms)
+            return colonyName;
+        let colony = global.empire.getColonyByName(colonyName);
+        if (!colony)
+            return colonyName;
+        return LinkGenerator.linkRoom(colony.nest.roomName, colonyName);            
+    }    
 }
 
 class EmpireEvents extends EventGroup {
@@ -125,7 +144,7 @@ class EmpireEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(colonyName, this.colors.name);
+        sb.append(this.colony(colonyName), this.colors.name);
         sb.append(" has been established", this.colors.importantPositiveVerb);
 
         this.log(sb.toString(), this.colonyEstablishedLevel);
@@ -136,7 +155,7 @@ class EmpireEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony at room ", this.colors.identifier);
-        sb.append(roomName, this.colors.name);
+        sb.append(this.room(roomName), this.colors.name);
         sb.append(" has failed to establish", this.colors.importantNegativeVerb);
         sb.append(" : ");
         sb.append(msg, this.colors.information);
@@ -201,7 +220,7 @@ class ColonyEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(colonyName, this.colors.name);
+        sb.append(this.colony(colonyName), this.colors.name);
         sb.append(" is ");
         sb.append("spawning", this.colors.positiveVerb);
         sb.append(" a ");
@@ -221,7 +240,7 @@ class ColonyEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(colonyName, this.colors.name);
+        sb.append(this.colony(colonyName), this.colors.name);
         sb.append(" has ");
         sb.append("scheduled spawning of a ", this.colors.positiveVerb);
         sb.append("creep", this.colors.identifier);
@@ -229,7 +248,7 @@ class ColonyEvents extends EventGroup {
         sb.append(creepName, this.colors.name);
         if (requestingColony && requestingColony != colonyName) {
             sb.append(" in support of ", this.colors.positiveVerb);
-            sb.append(requestingColony, this.colors.name)
+            sb.append(this.colony(requestingColony), this.colors.name)
         }
         sb.append(" with a ");
         sb.append("body", this.colors.identifier);
@@ -271,7 +290,7 @@ class ColonyEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(colonyName, this.colors.name);
+        sb.append(this.colony(colonyName), this.colors.name);
         sb.append(" has met the ", this.colors.importantPositiveVerb);
         sb.append("milestone ", this.colors.identifier);        
         sb.append(milestoneName, this.colors.name);        
@@ -283,7 +302,7 @@ class ColonyEvents extends EventGroup {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
-        sb.append(requestingColonyName, this.colors.name);
+        sb.append(this.colony(requestingColonyName), this.colors.name);
         sb.append(" requested spawn support for a ", this.colors.neutralVerb);
         sb.append(bodyType, this.colors.name);
         if (maxRange) {
@@ -579,7 +598,7 @@ class CreepEvents extends EventGroup {
             .append(" died ", this.colors.neutralVerb)
             .append(" in ")
             .append("colony ", this.colors.identifier)
-            .append(colonyName, this.colors.name);
+            .append(this.colony(colonyName), this.colors.name);
 
         this.log(sb.toString(), this.diedLevel);
     }    
@@ -601,7 +620,7 @@ class RemoteMiningEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(colonyName, this.colors.name);
+        sb.append(this.colony(colonyName), this.colors.name);
         sb.append(" failed to scout ", this.colors.negativeVerb);
         sb.append("room ", this.colors.identifier);
         sb.append(roomName);
@@ -616,7 +635,7 @@ class RemoteMiningEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(colonyName, this.colors.name);
+        sb.append(this.colony(colonyName), this.colors.name);
         sb.append(" scouted ", this.colors.neutralVerb);
         sb.append("and added ", this.colors.positiveVerb);
         sb.append("room ", this.colors.identifier);
@@ -632,7 +651,7 @@ class RemoteMiningEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(colonyName, this.colors.name);
+        sb.append(this.colony(colonyName), this.colors.name);
         sb.append(" scouted and discarded ", this.colors.neutralVerb);
         sb.append("room ", this.colors.identifier);
         sb.append(roomName);
