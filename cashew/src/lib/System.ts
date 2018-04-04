@@ -3,7 +3,6 @@ import { SystemSettings } from "imp/Execution";
 
 export class SystemBuilder {
     public static getSystem(): System {
-        this.checkMemory();
         let system = this.buildSystem();
         this.checkVersion(system);
         this.updateResets(system);
@@ -11,20 +10,6 @@ export class SystemBuilder {
         return system;
     }
 
-    private static checkMemory(): void {
-        if (!Memory.system) {
-            Memory.system = {
-                major: SystemSettings.major,
-                minor: SystemSettings.minor,
-                patch: 0,
-                lastUpdate: new Date().valueOf(),
-                debug: SystemSettings.forceDebugValue,
-                name: SystemSettings.systemName,
-                resetHistory: [],
-                codeChangeHistory: []
-            };
-        }
-    }
 
     private static buildSystem(): System {
         let system = new System(
