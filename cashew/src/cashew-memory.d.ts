@@ -34,6 +34,7 @@ declare global {
 
     interface EmpireMemory {
         colonies: { [colonyName: string]: ColonyMemory };
+        exchange: ExchangeMemory;
     }
 
     interface ColonyMemory {        
@@ -47,7 +48,20 @@ declare global {
         campaigns: CampaignMemory[];
     }
 
-    interface ColonyMonitorMemory extends MonitorMemory {        
+    interface NestMemory {
+        roomName: string;
+        map: NestMapMemory;
+        spawnEnergyStructureOrderIds: string[];
+        spawnQueue: SpawnRequestMemory[];
+        spawnStats: SpawnStatTrackerMemory;
+    }
+
+    /**  END MANAGEMENT UNITS **/
+
+
+    /** MONITORS **/
+
+    interface ColonyMonitorMemory extends MonitorMemory {
     }
 
     interface MonitorMemory {
@@ -60,6 +74,11 @@ declare global {
         monitors: MonitorMemory[];
         provider: MonitorProviderType;
     }
+        
+    /** END MONITORS **/
+
+
+    /** COMPONENTS */
 
     interface ResourceManagerMemory {
         settings: ResourceManagerSettingsMemory;
@@ -67,7 +86,7 @@ declare global {
         ledger: ResourceManagerLedgerMemory;
         sourceAId: string;
         sourceBId: string;
-        extensionsManagedDirectly: boolean;             
+        extensionsManagedDirectly: boolean;
     }
 
     interface ResourceManagerSettingsMemory {
@@ -82,7 +101,7 @@ declare global {
         controllerContainerId: string;
         storageLinkId: string;
         extensionLinkId: string;
-        controllerLinkId: string;   
+        controllerLinkId: string;
     }
 
     interface ResourceManagerLedgerMemory {
@@ -115,14 +134,6 @@ declare global {
         netEnergy: number;
     }
 
-    interface NestMemory {
-        roomName: string;
-        map: NestMapMemory;
-        spawnEnergyStructureOrderIds: string[];
-        spawnQueue: SpawnRequestMemory[];
-        spawnStats: SpawnStatTrackerMemory;
-    }
-
     interface SpawnRequestMemory {
         name: string;
         priority: number;
@@ -144,7 +155,7 @@ declare global {
 
     interface RemoteSourceMemory {
         sourceId: string;
-        containerId: string;        
+        containerId: string;
         beingMined: boolean;
         profit: number;
     }
@@ -164,8 +175,31 @@ declare global {
         periodStart: number;
         adjustedTicksSpentSpawning: number;
     }
-    
-    /**  END MANAGEMENT UNITS **/
+
+    interface ExchangeMemory {
+        supplyOrders: { [orderId: string]: OrderMemory };
+        demandOrders: { [orderId: string]: OrderMemory };
+    }
+
+    interface OrderMemory {
+        id: string;
+        type: number;
+        colony: string;
+        resource: ResourceConstant;
+        quantity: number;
+        tickCreated: number;
+        canceled: boolean;
+
+        reservedQuantity: number;
+        unreservedQuantity: number;
+        filledQuantity: number;
+        unfilledQuantity: number;
+
+        reservedBy: { [orderId: string]: number };
+        filledBy: { [orderId: string]: number };
+    }
+
+    /** END COMPONENTS */
 
 
     /** OPERATIONS **/
@@ -275,6 +309,7 @@ declare global {
     
     /** END MAPS **/
 
+
     /** CREEP CONTROLLERS **/
 
     interface CreepControllerMemory {
@@ -304,6 +339,9 @@ declare global {
 
     /** END CREEP CONTROLLERS **/
 
+
+    /** MISC **/
+
     interface BodyMemory {
         type: BodyType,
         minimumEnergy: number,
@@ -326,4 +364,6 @@ declare global {
         drawDetailedPopulation: boolean;
         drawDetailOperations: boolean;
     }
+
+    /** END MISC **/    
 }

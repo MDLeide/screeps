@@ -6,19 +6,24 @@ import { FlagOperationDiscovery } from "../operation/FlagOperation";
 import { FlagCampaignDiscovery } from "../operation/FlagCampaign";
 import { Body } from "../creep/Body";
 import { RoomHelper } from "../util/RoomHelper";
+import { Exchange } from "./Exchange";
 
 export class Empire {
     constructor(colonyFinder: ColonyFinder) {
+        this.colonyFinder = colonyFinder;
+
         this.colonies = [];
         for (var key in Memory.empire.colonies)
             this.colonies.push(Colony.fromMemory(Memory.empire.colonies[key]));
-        this.colonyFinder = colonyFinder;
+
+        this.exchange = Exchange.fromMemory(Memory.empire.exchange);
     }
 
 
     public colonies: Colony[];
     public colonyFinder: ColonyFinder;
-    
+    public exchange: Exchange;
+
 
     /** Adds a colony to the empire and memory. */
     public addColony(colony: Colony): void {
