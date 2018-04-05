@@ -1,5 +1,5 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation } from "../../../lib/operation/Operation";
+import { Operation, OperationStatus, InitStatus, StartStatus } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { MapBlock } from "../../../lib/map/base/MapBlock";
 import { HarvestBlock } from "../../../lib/map/blocks/HarvestBlock";
@@ -23,10 +23,15 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
     }
 
     private static getAssignments(): Assignment[]{
-        return [
-            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER),
-            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER)
-        ];
+        let assignments = [];
+        for (var i = 0; i < 2; i++) {
+            let a = new Assignment(undefined, BodyRepository.lightWorker(), CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER);
+            let supportBody = BodyRepository.lightWorker();
+            supportBody.minimumEnergy = 1500;
+            a.supportRequest = supportBody;
+            assignments.push(a);
+        }
+        return assignments;
     }
     
 
@@ -36,7 +41,17 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
     public siteId: string;
     public siteBuilt: boolean;
     
-    
+
+    public isFinished(colony: Colony): boolean {
+        return this.siteBuilt && this.initializedStatus == InitStatus.Initialized && (!this.site || this.site.progress >= this.site.progressTotal);
+    }
+
+
+    protected getController(assignment: Assignment): HarvestInfrastructureBuilderController {
+        return new HarvestInfrastructureBuilderController(this.sourceId, this.siteId);
+    }
+
+
     protected onLoad(): void {
         this.source = Game.getObjectById<Source>(this.sourceId);
         if (this.siteId) {
@@ -54,20 +69,7 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
     }
 
 
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-    
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-    
-    public isFinished(colony: Colony): boolean {
-        return this.siteBuilt && this.initialized && (!this.site || this.site.progress >= this.site.progressTotal);
-    }
-
-
-    protected onInit(colony: Colony): boolean {
+    protected onInit(colony: Colony): InitStatus {
         let harvestBlock: HarvestBlock;
         for (var i = 0; i < colony.nest.nestMap.harvestBlocks.length; i++) {
             var block = colony.nest.nestMap.harvestBlocks[i];
@@ -79,23 +81,28 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
         }
         let containerLocation = harvestBlock.getContainerLocation();
 
-        if (!this.siteBuilt) {
-            this.source.room.createConstructionSite(containerLocation.x, containerLocation.y, STRUCTURE_CONTAINER);
-            this.siteBuilt = true;
-            return false;
+        if (this.initializedStatus == InitStatus.Uninitialized || this.initializedStatus == InitStatus.TryAgain) {
+            if (this.source.room.createConstructionSite(containerLocation.x, containerLocation.y, STRUCTURE_CONTAINER) == OK) {
+                this.siteBuilt = true;
+                return InitStatus.Partial;                
+            }
+            else
+                return InitStatus.TryAgain;
         } else {
             let site = this.source.room.lookForAt(LOOK_CONSTRUCTION_SITES, containerLocation.x, containerLocation.y);
             if (site.length) {
                 this.site = site[0];
                 this.siteId = this.site.id;
-                return true;
+                return InitStatus.Initialized;
             }
-            return false;
+            return InitStatus.TryAgain;
         }
     }
 
-    protected onStart(colony: Colony): boolean {
-        return true;
+    protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
+        return StartStatus.Started;
     }
 
     protected onFinish(colony: Colony): boolean {
@@ -124,39 +131,18 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
 
     protected onCancel(): void {
     }
-    
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
 
 
-    protected getController(assignment: Assignment): HarvestInfrastructureBuilderController {
-        return new HarvestInfrastructureBuilderController(this.sourceId, this.siteId);
-    }
-
-
-    protected onSave(): HarvestInfrastructureOperationMemory {
-        return {            
-            type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
-            assignments: this.getAssignmentMemory(),
-            controllers: this.getControllerMemory(),
-            sourceId: this.sourceId,
-            siteId: this.siteId,
-            siteBuilt: this.siteBuilt
-        };
+    public save(): HarvestInfrastructureOperationMemory {
+        let mem = super.save() as HarvestInfrastructureOperationMemory;
+        mem.sourceId = this.sourceId;
+        mem.siteId = this.siteId;
+        mem.siteBuilt = this.siteBuilt;
+        return mem;
     }
 }
 
-interface HarvestInfrastructureOperationMemory extends ControllerOperationMemory {
+export interface HarvestInfrastructureOperationMemory extends ControllerOperationMemory {
     sourceId: string;
     siteId: string;
     siteBuilt: boolean;

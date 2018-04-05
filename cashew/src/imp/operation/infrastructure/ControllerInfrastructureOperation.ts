@@ -14,9 +14,18 @@ export class ControllerInfrastructureOperation extends ConstructionOperation {
 
 
     constructor() {
-        super(OPERATION_CONTROLLER_INFRASTRUCTURE, 1);
+        super(OPERATION_CONTROLLER_INFRASTRUCTURE, ControllerInfrastructureOperation.assignments());
     }
-    
+
+
+    private static assignments(): Assignment[] {        
+        let assignment = new Assignment(undefined, BodyRepository.lightWorker());
+        let supportBody = BodyRepository.lightWorker();
+        supportBody.minimumEnergy = 1500;
+        assignment.supportRequest = supportBody;
+        return [assignment];
+    }
+
 
     protected getSiteLocations(colony: Colony): { x: number, y: number }[] {
         return [colony.nest.nestMap.controllerBlock.getContainerLocation()];
@@ -37,9 +46,5 @@ export class ControllerInfrastructureOperation extends ConstructionOperation {
             }
         }
         return super.onFinish(colony);
-    }
-
-    protected onSave(): ConstructionOperationMemory {
-        return null;
     }
 }

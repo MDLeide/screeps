@@ -15,7 +15,7 @@ export abstract class Job extends Role {
     public complete: boolean;
 
     public update(creep: Creep): void {
-        if (this.isCompleted())
+        if (this.isCompleted(creep))
             this.complete = true;
         if (this.complete)
             return;
@@ -43,5 +43,5 @@ export abstract class Job extends Role {
         };
     }
 
-    protected abstract isCompleted(): boolean;
+    protected abstract isCompleted(creep: Creep): boolean;
 }

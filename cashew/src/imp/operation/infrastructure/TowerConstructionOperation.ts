@@ -27,22 +27,15 @@ export class TowerConstructionOperation extends ConstructionOperation {
     protected getStructureType(): BuildableStructureConstant {
         return STRUCTURE_TOWER;
     }
-    
-    protected onSave(): TowerConstructionOperationMemory {
-        return {
-            type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory(),
-            siteIds: this.siteIds,
-            sitesBuilt: this.sitesBuilt,
-            rcl: this.rcl
-        };
+
+
+    public save(): TowerConstructionOperationMemory {
+        let mem = super.save() as TowerConstructionOperationMemory;
+        mem.rcl = this.rcl;
+        return mem;
     }
 }
 
-interface TowerConstructionOperationMemory extends ConstructionOperationMemory {
+export interface TowerConstructionOperationMemory extends ConstructionOperationMemory {
     rcl: number;
 }

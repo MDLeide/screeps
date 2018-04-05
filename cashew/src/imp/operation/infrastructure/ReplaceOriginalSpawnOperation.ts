@@ -16,9 +16,10 @@ export class ReplaceOriginalSpawnOperation extends ConstructionOperation {
     constructor() {
         super(OPERATION_REPLACE_ORIGINAL_SPAWN, 1);        
     }
-        
+
+
     protected getSiteLocations(colony: Colony): { x: number, y: number }[] {
-        console.log("enter");
+        console.log("enter getSiteLocations for replaceSpawn op");
         let missing: boolean = false;
 
         let orphan: StructureSpawn;
@@ -48,19 +49,20 @@ export class ReplaceOriginalSpawnOperation extends ConstructionOperation {
 
         return [];
     }
-
-    protected lookForSpawn(room: Room, x: number, y: number) {
-        let look = room.lookForAt(LOOK_STRUCTURES, x, y);
-        for (var i = 0; i < look.length; i++)
-            if (look[i].structureType == STRUCTURE_SPAWN)
-                return true;        
-        return false;
-    }
-
+    
     protected getStructureType(): BuildableStructureConstant {
         return STRUCTURE_SPAWN;
     }
 
+
+    private lookForSpawn(room: Room, x: number, y: number) {
+        let look = room.lookForAt(LOOK_STRUCTURES, x, y);
+        for (var i = 0; i < look.length; i++)
+            if (look[i].structureType == STRUCTURE_SPAWN)
+                return true;
+        return false;
+    }
+    
     private positionsMatch(spawn: StructureSpawn, location: { x: number, y: number }): boolean {
         return spawn.pos.x == location.x && spawn.pos.y == location.y;
     }
@@ -73,12 +75,6 @@ export class ReplaceOriginalSpawnOperation extends ConstructionOperation {
             }                 
         }
         return false;
-    }
-
-
-
-    protected onSave(): ConstructionOperationMemory {
-        return null;
     }
 }
 

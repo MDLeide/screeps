@@ -1,5 +1,5 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation } from "../../../lib/operation/Operation";
+import { Operation, StartStatus, InitStatus  } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { CreepController } from "../../../lib/creep/CreepController";
@@ -18,15 +18,13 @@ export class RoomDefenseOperation extends ControllerOperation {
     }
 
 
-    private checkAssignments(colony: Colony): void {
-        if (colony.watchtower.threatScore > 1000 && this.assignments.length < 3)
-            this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
+    public isFinished(colony: Colony): boolean {
+        return colony.watchtower.threatScore == 0;
+    }
 
-        if (colony.watchtower.threatScore > 3000 && this.assignments.length < 4)
-            this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
 
-        if (colony.watchtower.threatScore > 5000 && this.assignments.length < 5)
-            this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
+    protected getController(assignment: Assignment): CreepController {
+        return new DefenderController();
     }
 
 
@@ -43,27 +41,14 @@ export class RoomDefenseOperation extends ControllerOperation {
     }
 
 
-    public canInit(colony: Colony): boolean {
-        return true;
+    protected onInit(colony: Colony): InitStatus {
+        return InitStatus.Initialized;
     }
 
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        return colony.watchtower.threatScore == 0;
-    }
-
-
-    protected onInit(colony: Colony): boolean {
-        this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
-        this.assignments.push(new Assignment("", BodyRepository.defender(), CREEP_CONTROLLER_DEFENDER, 200));
-        return true;
-    }
-
-    protected onStart(colony: Colony): boolean {
-        return true;
+    protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
+        return StartStatus.Started;
     }
 
     protected onFinish(colony: Colony): boolean {
@@ -71,24 +56,5 @@ export class RoomDefenseOperation extends ControllerOperation {
     }
 
     protected onCancel(): void {
-    }
-
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
-
-    protected getController(assignment: Assignment): CreepController {
-        return new DefenderController();
-    }
-
-    protected onSave(): ControllerOperationMemory {
-        return null;
     }
 }

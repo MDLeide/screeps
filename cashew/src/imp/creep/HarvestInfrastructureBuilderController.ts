@@ -44,8 +44,8 @@ export class HarvestInfrastructureBuilderController extends CreepController {
             var spawn = source.room.find<StructureSpawn>(FIND_MY_STRUCTURES, {
                 filter: (spawn) => { return spawn.structureType == STRUCTURE_SPAWN }
             })[0];
-
-            if (spawn.energy < spawn.energyCapacity) {
+            
+            if (spawn && spawn.energy < spawn.energyCapacity) {
                 let response = creep.transfer(spawn, RESOURCE_ENERGY);
                 if (response == ERR_NOT_IN_RANGE)
                     creep.moveTo(spawn);

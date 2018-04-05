@@ -9,21 +9,21 @@ export class Assignment {
             Body.fromMemory(memory.body),
             memory.controllerType,
             memory.replaceAt);
-
+        if (memory.supportRequest)
+            assignment.supportRequest = Body.fromMemory(memory.supportRequest);
+        assignment.maxSupportRange = memory.maxSupportRange;
         assignment.replacementName = memory.replacementName;
+        assignment.onHold = memory.onHold;
         return assignment;
     }
 
-    constructor(
-        creepName: string,
-        body: Body,
-        controllerType?: CreepControllerType,
-        replaceAt?:number) {
+    constructor(creepName: string, body: Body, controllerType?: CreepControllerType, replaceAt?:number) {
         this.creepName = creepName;
         this.body = body;
         this.controllerType = controllerType;
         this.replaceAt = replaceAt;
     }
+
 
     public creepName: string;
     public replacementName: string;
@@ -31,6 +31,10 @@ export class Assignment {
     public replaceAt: number;
     public body: Body;
     public controllerType: CreepControllerType;
+    public onHold: boolean;
+    /** If this value is present, it should be used to request a support spawn, before attempting a local spawn. */
+    public supportRequest: Body;
+    public maxSupportRange: number;
 
 
     /** True if there is no creep assigned. */
@@ -64,7 +68,10 @@ export class Assignment {
             body: this.body.save(),
             controllerType: this.controllerType,
             replacementName: this.replacementName,
-            replaceAt: this.replaceAt
+            replaceAt: this.replaceAt,
+            onHold: this.onHold,
+            maxSupportRange: this.maxSupportRange,
+            supportRequest: this.supportRequest ? this.supportRequest.save() : undefined
         };
     }
 }

@@ -1,16 +1,15 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation } from "../../../lib/operation/Operation";
+import { Operation, InitStatus, StartStatus } from "../../../lib/operation/Operation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../creep/BodyRepository";
 
 export class RemoteHarvestScoutOperation extends Operation {
-    public static fromMemory(memory: RemoteHarvestScountOperationMemory): Operation {
+    public static fromMemory(memory: RemoteHarvestScoutOperationMemory): Operation {
         var op = new this();
         op.targetRoom = memory.targetRoom;
-        op.nextRoom = memory.nextRoom;
-        op.moveTarget = memory.moveTarget;
         return Operation.fromMemory(memory, op);
     }
+
 
     constructor() {
         super(OPERATION_REMOTE_HARVEST_SCOUT, RemoteHarvestScoutOperation.getAssignments());        
@@ -18,8 +17,6 @@ export class RemoteHarvestScoutOperation extends Operation {
 
 
     public targetRoom: string;
-    public nextRoom: string;
-    public moveTarget: { x: number, y: number };
 
 
     private static getAssignments(): Assignment[] {
@@ -29,25 +26,19 @@ export class RemoteHarvestScoutOperation extends Operation {
     }
 
 
-    public canInit(colony: Colony): boolean {
-        return true;
-    }
-
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
     public isFinished(colony: Colony): boolean {
         return !this.targetRoom && !colony.remoteMiningManager.getClosestUnscoutedRoom(colony.nest.roomName);
     }
 
     
-    protected onInit(colony: Colony): boolean {
-        return true;
+    protected onInit(colony: Colony): InitStatus {
+        return InitStatus.Initialized;
     }
 
-    protected onStart(colony: Colony): boolean {
-        return true;
+    protected onStart(colony: Colony): StartStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return StartStatus.TryAgain;
+        return StartStatus.Started;
     }
 
     protected onFinish(colony: Colony): boolean {
@@ -71,9 +62,8 @@ export class RemoteHarvestScoutOperation extends Operation {
         if (!creep)
             return;
 
-        if (!this.targetRoom) {
-            this.getNextTarget(colony, creep);
-        }
+        if (!this.targetRoom)
+            this.getNextTarget(colony, creep);        
 
         if (this.targetRoom && creep.room.name == this.targetRoom) {
             colony.remoteMiningManager.scoutRoom(this.targetRoom);
@@ -81,20 +71,8 @@ export class RemoteHarvestScoutOperation extends Operation {
         }
 
         if (this.targetRoom) {
-            if (!this.nextRoom || this.nextRoom == creep.room.name) {
-                let route = Game.map.findRoute(creep.room, this.targetRoom);
-                if (route == -2) {
-                    this.targetRoom = "";
-                } else {
-                    if (route.length) {
-                        this.nextRoom = route[0].room;
-                        let exit = creep.pos.findClosestByRange(route[0].exit);
-                        this.moveTarget = { x: exit.x, y: exit.y };
-                    }
-                }
-            }
-
-            creep.moveTo(this.moveTarget.x, this.moveTarget.y);
+            let pos = new RoomPosition(25, 25, this.targetRoom);
+            creep.moveTo(pos);
         }        
     }
 
@@ -102,40 +80,20 @@ export class RemoteHarvestScoutOperation extends Operation {
     }
 
 
-    protected onRelease(assignment: Assignment): void {
-    }
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-
     private getNextTarget(colony: Colony, creep: Creep): void {        
-        this.targetRoom = colony.remoteMiningManager.getClosestUnscoutedRoom(creep.room.name);
-        this.nextRoom = "";
-        this.moveTarget = undefined;
+        this.targetRoom = colony.remoteMiningManager.getClosestUnscoutedRoom(creep.room.name);        
         if (this.targetRoom)
             colony.remoteMiningManager.claimScoutJob(this.targetRoom);
     }
 
-    protected onSave(): RemoteHarvestScountOperationMemory {
-        return {
-            type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
-            assignments: this.getAssignmentMemory(),
-            targetRoom: this.targetRoom,
-            nextRoom: this.nextRoom,
-            moveTarget: this.moveTarget
-        };
+
+    public save(): RemoteHarvestScoutOperationMemory {
+        let mem = super.save() as RemoteHarvestScoutOperationMemory;
+        mem.targetRoom = this.targetRoom;
+        return mem;
     }
 }
 
-export interface RemoteHarvestScountOperationMemory extends OperationMemory {
+export interface RemoteHarvestScoutOperationMemory extends OperationMemory {
     targetRoom: string;
-    nextRoom: string;
-    moveTarget: { x: number, y: number };
 }

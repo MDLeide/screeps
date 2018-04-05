@@ -24,8 +24,4 @@ export class StorageConstructionOperation extends ConstructionOperation {
     protected getStructureType(): BuildableStructureConstant {
         return STRUCTURE_STORAGE;
     }
-
-    protected onSave(): ConstructionOperationMemory {
-        return null;
-    }
 }

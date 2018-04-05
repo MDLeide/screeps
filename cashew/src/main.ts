@@ -1,14 +1,10 @@
-//import { } from "./imp/GlobalConstants";
+import setup from "./lib/Stats";
+setup();
+
 import { GlobalConstants } from "./imp/GlobalConstants";
 GlobalConstants.extend();
-
-
 import { ErrorMapper } from "util/ErrorMapper";
 import { Execute } from "imp/Execution";
-
-
-
-
 var execute = new Execute();
 execute.init();
 
@@ -16,5 +12,7 @@ execute.init();
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
     //(`Current game tick is ${Game.time}`);
-  execute.main();
+    global.stats.reset();
+    execute.main();
+    //global.stats.commit();
 });

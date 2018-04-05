@@ -1,5 +1,5 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation } from "../../../lib/operation/Operation";
+import { Operation, InitStatus, StartStatus } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { CreepController } from "../../../lib/creep/CreepController";
@@ -16,7 +16,11 @@ export class ExtractionOperation extends ControllerOperation {
     constructor() {
         super(OPERATION_EXTRACTION, []);   
     }
-        
+
+    public isFinished(colony: Colony): boolean {
+        return false;
+    }
+
 
     protected onLoad(): void {
     }
@@ -29,53 +33,26 @@ export class ExtractionOperation extends ControllerOperation {
        
     protected onCleanup(colony: Colony): void {
     }
-    
 
-    public canInit(colony: Colony): boolean {
-        return true;
+
+    protected onInit(colony: Colony): InitStatus {
+        if (this.getFilledAssignmentCount() < 1)
+            return InitStatus.TryAgain;
+        return InitStatus.Initialized;
     }
 
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        return false;
-    }
-
-
-    protected onInit(colony: Colony): boolean {
-        return true;
-    }
-
-    protected onStart(colony: Colony): boolean {
-        return true;
+    protected onStart(colony: Colony): StartStatus {
+        return StartStatus.Started;
     }
 
     protected onFinish(colony: Colony): boolean {
         return true;
     }
 
-    protected onCancel(): void {
+    protected onCancel(colony: Colony): void {
     }
-
-
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-
-    protected onRelease(assignment: Assignment): void {
-    }
-
 
     protected getController(assignment: Assignment): CreepController {
         return new ExtractorController();
-    }
-
-
-    protected onSave(): ControllerOperationMemory {
-        return null;
     }
 }

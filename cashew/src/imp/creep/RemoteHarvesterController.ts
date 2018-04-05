@@ -7,7 +7,7 @@ export class RemoteHarvesterController extends CreepController {
         controller.siteId = memory.siteId;
 
         controller.repaired = memory.repaired;
-        controller.created = memory.created;
+        controller.siteCreated = memory.siteCreated;
         return CreepController.fromMemory(memory, controller);
     }
 
@@ -22,6 +22,7 @@ export class RemoteHarvesterController extends CreepController {
     public site: ConstructionSite;
     public container: StructureContainer;
     public source: Source;
+    public room: Room;
 
     public roomName: string;
 
@@ -29,51 +30,49 @@ export class RemoteHarvesterController extends CreepController {
     public siteId: string;
     public containerId: string;
 
-    public created: boolean;    
-    public repaired: boolean;
+    public siteCreated: boolean;
 
+    public repaired: boolean;
 
     protected onLoad(): void {
         if (this.containerId)
             this.container = Game.getObjectById<StructureContainer>(this.containerId);
+        if (!this.container)
+            this.containerId = undefined;
 
         if (this.siteId)
             this.site = Game.getObjectById<ConstructionSite>(this.siteId);
+
+        if (this.roomName)
+            this.room = Game.rooms[this.roomName];
 
         this.source = Game.getObjectById<Source>(this.sourceId);
     }
 
     protected onUpdate(creep: Creep): void {
-        if (this.created && !this.siteId && creep.room.name == this.roomName) {
-            let sites = this.source.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 2);
-            if (sites.length) {
-                this.siteId = sites[0].id;
-                this.site = sites[0];
-            }        
-        }
-
-        if (this.created && this.siteId && !this.container) {
-            let containers = this.source.pos.findInRange(FIND_STRUCTURES, 2);
-            
-            for (var i = 0; i < containers.length; i++) {
-                if (containers[i].structureType == STRUCTURE_CONTAINER) {
-                    this.containerId = containers[i].id;
-                    this.container = containers[i] as StructureContainer;
-
-                    let colony = global.empire.getColonyByCreep(creep);
-                    let remoteSource = colony.remoteMiningManager.getRemoteSourceById(this.sourceId);
-                    if (remoteSource)
-                        remoteSource.containerId = this.containerId;
-                }                    
-            }            
-        }
-
         if (this.container) {
-            if (this.container.hits >= this.container.hitsMax - 10)
+            if (this.repaired)
+                return;
+            else if (this.container && this.container.hits == this.container.hitsMax)
                 this.repaired = true;
+            return;
+        }
+
+        if (this.room) {
+            if (!this.container)
+                this.findContainer(creep);
+            if (this.container)
+                return;
+
+            if (this.siteCreated && !this.siteId) { // site newly created
+                this.findSite();
+                return;
+            }
+
+            this.createSite(creep);
         }
     }
-
+    
     protected onExecute(creep: Creep): void {
         if (this.roomName == creep.room.name) {
             if (this.repaired) {
@@ -83,21 +82,23 @@ export class RemoteHarvesterController extends CreepController {
             } else if (this.site) {
                 this.build(creep);
             } else {
-                let path = PathFinder.search(creep.pos, { pos: this.source.pos, range: 1 });
-                creep.room.createConstructionSite(path.path[path.path.length - 2], STRUCTURE_CONTAINER);
-                this.created = true;
                 creep.moveTo(this.source);
             }
         } else {
             let target = new RoomPosition(25, 25, this.roomName);
             creep.moveTo(target);
-        }
-        
+        }        
     }
 
     protected onCleanup(creep: Creep): void { }
 
+
     private build(creep: Creep): void {
+        if (creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3).length) {
+            creep.moveTo(this.site);
+            return;
+        }
+
         let colony = global.empire.getColonyByCreep(creep);
 
         if (creep.carry.energy >= 25) {
@@ -132,27 +133,56 @@ export class RemoteHarvesterController extends CreepController {
                 colony.resourceManager.ledger.registerRemoteHarvest(creep);
         }
     }
-
-    private moving(creep: Creep): void {        
-        creep.moveTo(this.source);
-    }
-
+    
     private harvest(creep: Creep): void {
         let colony = global.empire.getColonyByCreep(creep);
         let harvestResponse = creep.harvest(this.source);
 
         if (harvestResponse == ERR_NOT_IN_RANGE) {
             creep.moveTo(this.source);
-            return;
         } else if (harvestResponse == OK) {
             colony.resourceManager.ledger.registerRemoteHarvest(creep);
         }
 
-        let transferResponse = creep.transfer(this.container, RESOURCE_ENERGY);
-        if (transferResponse == ERR_NOT_IN_RANGE) {
-            creep.moveTo(this.container);
+        if (_.sum(creep.carry) >= creep.carryCapacity - HARVEST_POWER * creep.getActiveBodyparts(WORK)) {
+            let transferResponse = creep.transfer(this.container, RESOURCE_ENERGY);
+            if (transferResponse == ERR_NOT_IN_RANGE) {
+                creep.moveTo(this.container);
+            }
         }
     }
+
+
+    private findContainer(creep: Creep): void {
+        let containers = this.source.pos.findInRange(FIND_STRUCTURES, 2);
+
+        for (var i = 0; i < containers.length; i++) {
+            if (containers[i].structureType == STRUCTURE_CONTAINER) {
+                this.containerId = containers[i].id;
+                this.container = containers[i] as StructureContainer;
+
+                let colony = global.empire.getColonyByCreep(creep);
+                let remoteSource = colony.remoteMiningManager.getRemoteSourceById(this.sourceId);
+                if (remoteSource)
+                    remoteSource.containerId = this.containerId;
+            }
+        }
+    }
+
+    private findSite(): void {
+        let sites = this.source.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 2);
+        if (sites.length) {
+            this.siteId = sites[0].id;
+            this.site = sites[0];
+        }
+    }
+
+    private createSite(creep: Creep): void {
+        let path = PathFinder.search(creep.pos, { pos: this.source.pos, range: 1 });        
+        this.room.createConstructionSite(path.path[path.path.length - 2], STRUCTURE_CONTAINER);
+        this.siteCreated = true;
+    }
+
 
     protected onSave(): RemoteHarvesterControllerMemory {
         return {
@@ -161,7 +191,7 @@ export class RemoteHarvesterController extends CreepController {
             sourceId: this.sourceId,
             siteId: this.siteId,
             roomName: this.roomName,
-            created: this.created,
+            siteCreated: this.siteCreated,
             repaired: this.repaired
         };
     }
@@ -174,6 +204,6 @@ export interface RemoteHarvesterControllerMemory extends CreepControllerMemory {
     siteId: string;
 
     roomName: string;
-    created: boolean;
+    siteCreated: boolean;
     repaired: boolean;
 }

@@ -25,17 +25,4 @@ export class ExtractorConstructionOperation extends ConstructionOperation {
     protected getStructureType(): BuildableStructureConstant {
         return STRUCTURE_EXTRACTOR;
     }
-
-    protected onSave(): ConstructionOperationMemory {
-        return {
-            type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory(),
-            siteIds: this.siteIds,
-            sitesBuilt: this.sitesBuilt
-        };
-    }
 }

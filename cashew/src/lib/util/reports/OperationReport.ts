@@ -1,6 +1,7 @@
-import { Operation } from "../../operation/Operation";
+import { Operation, OperationStatus } from "../../operation/Operation";
 import { StringBuilder } from "../StringBuilder";
 
+/** Provides methods for printing a single operation to the console. */
 export class OperationReport {
     constructor(public operation: Operation) {
     }
@@ -10,10 +11,10 @@ export class OperationReport {
     }
 
     public getHtml(): string {
-        var str = `<table style='width:100%'> <tr> <td>${this.getTitle(this.operation)}</td> </tr> <tr> <td>${this.getSubTitle(this.operation)}</td> </tr>`;
+        var str = `<table style='width:100%'><tr><td>${this.getTitle(this.operation)}</td></tr><tr><td>  ${this.getSubTitle(this.operation)}</td></tr>`;
         var assignments = this.getAssignments(this.operation);
         for (var i = 0; i < assignments.length; i++)
-            str += `<tr><td>${assignments[i]}</td></tr>`;
+            str += `<tr><td>    ${assignments[i]}</td></tr>`;
         str += "</table>";
         return str;
     }
@@ -23,16 +24,29 @@ export class OperationReport {
         sb.append("Operation ");
         sb.append(operation.type, "lightBlue");
         sb.append(" is ");
-        if (operation.finished)
-            sb.append("Finished", "orange");
-        else if (operation.started)
+        if (operation.status == OperationStatus.New) {
+            sb.append("New", "green");
+        } else if (operation.status == OperationStatus.AwaitingReinit) {
+            sb.append("Awaiting Reinit", "yellow");
+        } else if (operation.status == OperationStatus.FailedInit) {
+            sb.append("Failed Init", "red");
+        } else if (operation.status == OperationStatus.Initialized) {
+            sb.append("Initialized", "green");
+        } else if (operation.status == OperationStatus.AwaitingRestart) {
+            sb.append("Awaiting Restart", "yellow");
+        } else if (operation.status == OperationStatus.FailedStart) {
+            sb.append("Failed Start", "red");
+        } else if (operation.status == OperationStatus.Started) {
             sb.append("Started", "green");
-        else if (operation.initialized)
-            sb.append("Initialized", "yellow");
-        else
-            sb.append(" New ", "red");
+        } else if (operation.status == OperationStatus.Complete) {
+            sb.append("Complete", "green");
+        } else if (operation.status == OperationStatus.Canceled) {
+            sb.append("Canceled", "yellow");
+        } else if (operation.status == OperationStatus.FailedOther) {
+            sb.append("Failed (other)", "red");
+        }
         
-        return sb.getString();
+        return sb.toString();
     }
 
     private getSubTitle(operation: Operation): string {
@@ -47,7 +61,7 @@ export class OperationReport {
         sb.append("/");
         sb.append(total.toString(), "green");
         sb.append(" assignments filled");
-        return sb.getString();
+        return sb.toString();
     }
 
     private getAssignments(operation: Operation): string[] {
@@ -67,7 +81,7 @@ export class OperationReport {
                 sb.append(" filled by ");
                 sb.append(assignment.creepName, "green");
             }
-            strings.push(sb.getString());
+            strings.push(sb.toString());
         }
 
         return strings;

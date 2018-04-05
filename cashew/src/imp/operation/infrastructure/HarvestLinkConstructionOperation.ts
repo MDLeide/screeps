@@ -64,21 +64,13 @@ export class HarvestLinkConstructionOperation extends ConstructionOperation {
     }
 
 
-    protected onSave(): HarvestLinkConstructionOperationMemory {
-        return {
-            type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory(),
-            siteIds: this.siteIds,
-            sitesBuilt: this.sitesBuilt,
-            sourceId: this.sourceId
-        };
+    public save(): HarvestLinkConstructionOperationMemory {
+        let mem = super.save() as HarvestLinkConstructionOperationMemory;
+        mem.sourceId = this.sourceId;
+        return mem;
     }
 }
 
-interface HarvestLinkConstructionOperationMemory extends ConstructionOperationMemory {
+export interface HarvestLinkConstructionOperationMemory extends ConstructionOperationMemory {
     sourceId: string;
 }

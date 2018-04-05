@@ -1,5 +1,5 @@
 import { Colony } from "../../../lib/colony/Colony";
-import { Operation } from "../../../lib/operation/Operation";
+import { Operation, InitStatus, StartStatus } from "../../../lib/operation/Operation";
 import { ControllerOperation } from "../../../lib/operation/ControllerOperation";
 import { Assignment } from "../../../lib/operation/Assignment";
 import { BodyRepository } from "../../creep/BodyRepository";
@@ -16,9 +16,20 @@ export class LightUpgradeOperation extends ControllerOperation {
     }
 
     private static getAssignments(): Assignment[] {
-        return [
-            new Assignment("", BodyRepository.lightWorker(), CREEP_CONTROLLER_LIGHT_UPGRADER)
-        ]
+        let assignments = [];
+        for (var i = 0; i < 3; i++) {
+            let a = new Assignment(undefined, BodyRepository.lightWorker());
+            a.supportRequest = BodyRepository.lightWorker();
+            a.supportRequest.minimumEnergy = 1500;
+            a.maxSupportRange = 6;
+            assignments.push(a);
+        }
+        return assignments;
+    }
+
+
+    public isFinished(colony: Colony): boolean {
+        return false;
     }
 
 
@@ -35,50 +46,23 @@ export class LightUpgradeOperation extends ControllerOperation {
     }
 
 
-    public canInit(colony: Colony): boolean {
-        return true;
+    protected onInit(colony: Colony): InitStatus {
+        return InitStatus.Initialized;
     }
 
-    public canStart(colony: Colony): boolean {
-        return this.getFilledAssignmentCount() >= 1;
-    }
-
-    public isFinished(colony: Colony): boolean {
-        return false;
-    }
-
-
-    protected onInit(colony: Colony): boolean {
-        return true;
-    }
-
-    protected onStart(colony: Colony): boolean {
-        return true;
+    protected onStart(colony: Colony): StartStatus {
+        return StartStatus.Started;
     }
 
     protected onFinish(colony: Colony): boolean {
         return true;
     }
 
-    protected onCancel(): void {
-    }
-    
-
-    protected onRelease(assignment: Assignment): void {
+    protected onCancel(colony: Colony): void {
     }
 
-    protected onReplacement(assignment: Assignment): void {
-    }
-
-    protected onAssignment(assignment: Assignment): void {
-    }
-        
 
     protected getController(assignment: Assignment): LightUpgraderRole {
         return new LightUpgraderRole();
-    }
-
-    protected onSave(): ControllerOperationMemory {
-        return null;
     }
 }

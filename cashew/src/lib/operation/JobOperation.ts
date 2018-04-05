@@ -14,14 +14,11 @@ export abstract class JobOperation extends Operation {
         }
         return Operation.fromMemory(memory, instance);
     }
-
-
+    
     public jobs: { [creepName: string]: Job } = {};
-
-
+    
     protected abstract getJob(assignment: Assignment): Job;
-    protected abstract onSave(): JobOperationMemory;
-
+    
     public load(): void {
         super.load();
         for (let key in this.jobs)
@@ -32,31 +29,28 @@ export abstract class JobOperation extends Operation {
         super.update(colony);
 
         for (var i = 0; i < this.assignments.length; i++) {
-            if (!this.assignments[i].creepName)
-                continue;
-
-            let creep = Game.creeps[this.assignments[i].creepName];
-
-            if (creep && !creep.spawning) {
-                let job = this.jobs[creep.name];
+            if (!this.jobs[this.assignments[i].creepName]) {
+                let job = this.getJob(this.assignments[i]);
                 if (job)
-                    job.update(creep);
-
-
-                if (job && job.complete) {
-                    this.jobs[creep.name] = this.getJob(this.assignments[i]);
-                    if (this.jobs[creep.name])
-                        this.jobs[creep.name].update(creep);
-                }
+                    this.jobs[this.assignments[i].creepName] = job;
             }
+        }
 
-            if (this.assignments[i].replacementName) {
-                creep = Game.creeps[this.assignments[i].replacementName];
-                if (creep && !creep.spawning) {
-                    let job = this.jobs[creep.name];
-                    if (job)
-                        job.update(creep);
-                }
+        for (let name in this.jobs) {
+            let creep = Game.creeps[name];
+            if (!creep || creep.spawning) continue;
+
+            let job = this.jobs[name];
+            if (!job) continue;
+
+            job.update(creep);
+            if (job.complete) {
+                let assignment = this.findAssignment(name);
+                if (!assignment) continue;
+
+                this.jobs[name] = this.getJob(assignment);
+                if (this.jobs[name])
+                    this.jobs[name].update(creep);
             }
         }
     }
@@ -64,53 +58,27 @@ export abstract class JobOperation extends Operation {
     public execute(colony: Colony): void {
         super.execute(colony);
 
-        for (var i = 0; i < this.assignments.length; i++) {
-            if (!this.assignments[i].creepName)
-                continue;
-
-            var creep = Game.creeps[this.assignments[i].creepName];
-            if (creep && !creep.spawning) {
-                let controller = this.jobs[creep.name];
-                if (controller)
-                    controller.execute(creep);
-            }
-
-            if (this.assignments[i].replacementName) {
-                creep = Game.creeps[this.assignments[i].replacementName];
-                if (creep && !creep.spawning) {
-                    let job = this.jobs[creep.name];
-                    if (job)
-                        job.execute(creep);
-                }
-            }
-        }
-        
-    }
-
-    public cleanup(colony: Colony): void {        
-        for (var i = 0; i < this.assignments.length; i++) {
-            if (!this.assignments[i].creepName)
-                continue;
-
-            var creep = Game.creeps[this.assignments[i].creepName];
-            if (creep && !creep.spawning) {
-                let controller = this.jobs[creep.name];
-                if (controller)
-                    controller.cleanup(creep);                
-            }
-
-            if (this.assignments[i].replacementName) {
-                creep = Game.creeps[this.assignments[i].replacementName];
-                if (creep && !creep.spawning) {
-                    let job = this.jobs[creep.name];
-                    if (job)
-                        job.cleanup(creep);
-                }
-            }
+        for (let name in this.jobs) {
+            let creep = Game.creeps[name];
+            if (!creep || creep.spawning) continue;
+            let job = this.jobs[name];
+            if (job)
+                job.execute(creep);
         }        
     }
 
+    public cleanup(colony: Colony): void {        
+        super.cleanup(colony);
 
+        for (let name in this.jobs) {
+            let creep = Game.creeps[name];
+            if (!creep || creep.spawning) continue;
+            let job = this.jobs[name];
+            if (job)
+                job.cleanup(creep);
+        }  
+    }
+    
     public assignReplacement(assignment: Assignment, creepName: string): boolean {
         if (super.assignReplacement(assignment, creepName)) {
             this.jobs[assignment.creepName] = this.getJob(assignment);
@@ -137,8 +105,7 @@ export abstract class JobOperation extends Operation {
         return false;
     }
     
-
-    protected getJobMemory(): { [creepName: string]: JobMemory } {
+    private getJobMemory(): { [creepName: string]: JobMemory } {
         var mem = {};
         for (var key in this.jobs)
             if (this.jobs[key])
@@ -146,20 +113,9 @@ export abstract class JobOperation extends Operation {
         return mem;
     }
     
-
     public save(): JobOperationMemory {
-        let mem = this.onSave();
-        if (mem)
-            return mem;
-
-        return {
-            type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory()
-        };
+        let mem = super.save() as JobOperationMemory;
+        mem.jobs = this.getJobMemory();
+        return mem;
     }
-
 }

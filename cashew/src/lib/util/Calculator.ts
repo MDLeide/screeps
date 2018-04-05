@@ -43,4 +43,41 @@ export class Calculator {
             profit: energyPerLifetime - totalLifetimeCost
         };
     }
+
+    public static estimateTransitTime(
+        body: BodyPartConstant[],
+        origin: RoomPosition | { pos: RoomPosition },
+        destination: RoomPosition | { pos: RoomPosition },
+        ignoreCarry: boolean = false,
+        range: number = 0): number {
+        
+        if (!(origin instanceof RoomPosition))
+            return this.estimateTransitTime(body, origin.pos, destination, ignoreCarry, range);
+        if (!(destination instanceof RoomPosition))
+            return this.estimateTransitTime(body, origin, destination.pos, ignoreCarry, range);
+
+        let path = PathFinder.search(origin, { pos: destination, range: range });
+        if (path.incomplete)
+            return -1;
+
+        let move = _.sum(body, p => p == MOVE ? 1 : 0);
+        let other = body.length - move;
+        if (ignoreCarry)
+            other -= _.sum(body, p => p == CARRY ? 1 : 0);
+
+        return Math.ceil((other * path.cost) / (move * 2));
+    }
+
+    public static estimateTransitTimeFromCost(
+        body: BodyPartConstant[],
+        cost: number,
+        ignoreCarry: boolean = false) {
+
+        let move = _.sum(body, p => p == MOVE ? 1 : 0);
+        let other = body.length - move;
+        if (ignoreCarry)
+            other -= _.sum(body, p => p == CARRY ? 1 : 0);
+
+        return Math.ceil((other * cost) / (move * 2));
+    }
 }

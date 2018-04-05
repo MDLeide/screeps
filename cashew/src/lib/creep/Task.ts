@@ -19,9 +19,6 @@ export abstract class Task {
     public finished: boolean;
 
     public save(): TaskMemory {
-        let mem = this.onSave();
-        if (mem)
-            return mem;
         return {
             type: this.type,
             complete: this.complete,
@@ -49,10 +46,7 @@ export abstract class Task {
     public abstract update(creep: Creep): void;
     public abstract execute(creep: Creep): void;
     public abstract cleanup(creep: Creep): void;
-    protected abstract onSave(): TaskMemory;
-
-
-
+    
     public static loadTask(memory: TaskMemory): Task {
         switch (memory.type) {
             case TASK_ATTACK:
@@ -73,7 +67,16 @@ export abstract class Task {
                 return Upgrade.fromMemory(memory as TargetedTaskMemory);
             case TASK_WITHDRAW:
                 return Withdraw.fromMemory(memory as TargetedTaskMemory);
-                
+            case TASK_RESERVE:
+                return Reserve.fromMemory(memory as TargetedTaskMemory);
+            case TASK_CLAIM:
+                return Claim.fromMemory(memory as TargetedTaskMemory);
+            case TASK_HARVEST:
+                return Harvest.fromMemory(memory as TargetedTaskMemory);
+            case TASK_PICKUP_ENERGY:
+                return PickupEnergy.fromMemory(memory as TargetedTaskMemory);
+            case TASK_DISMANTLE:
+                return Dismantle.fromMemory(memory as TargetedTaskMemory);
             default:
                 throw new Error(`Task name ${memory.type} not recognized`)
         }
@@ -87,12 +90,12 @@ export abstract class Task {
         return new MoveTo(target, range);
     }
 
-    public static Transfer(target: TransferTarget): Transfer {
-        return new Transfer(target);
+    public static Transfer(target: TransferTarget, resource: ResourceConstant = RESOURCE_ENERGY, quantity?: number): Transfer {
+        return new Transfer(target, resource, quantity);
     }
 
-    public static Withdraw(target: WithdrawTarget): Withdraw {
-        return new Withdraw(target);
+    public static Withdraw(target: WithdrawTarget, resource: ResourceConstant = RESOURCE_ENERGY, quantity?: number): Withdraw {
+        return new Withdraw(target, resource, quantity);
     }
 
     public static Build(target: ConstructionSite): Build {
@@ -114,12 +117,26 @@ export abstract class Task {
     public static Reserve(target: StructureController): Reserve {
         return new Reserve(target);
     }
+
+    public static Claim(target: StructureController): Claim {
+        return new Claim(target);
+    }
+
+    public static Harvest(target: Source): Harvest {
+        return new Harvest(target);
+    }
+
+    public static PickupEnergy(target: Resource<RESOURCE_ENERGY>): PickupEnergy {
+        return new PickupEnergy(target);
+    }
+
+    public static Dismantle(target: Structure): Dismantle {
+        return new Dismantle(target);
+    }
 }
 
 export abstract class TargetedTask<T extends { id: string }> extends Task {
-    public static fromMemory<TTarget extends { id: string }> (
-        memory: TargetedTaskMemory,
-        instance: TargetedTask<TTarget>): Task {
+    public static fromMemory<TTarget extends { id: string }> (memory: TargetedTaskMemory, instance: TargetedTask<TTarget>): Task {
         
         instance.target = Game.getObjectById<TTarget>(memory.targetId);
 
@@ -133,15 +150,10 @@ export abstract class TargetedTask<T extends { id: string }> extends Task {
 
     public target: T;
 
-    protected onSave(): TargetedTaskMemory {
-        return {
-            type: this.type,
-            complete: this.complete,
-            incomplete: this.incomplete,
-            error: this.error,
-            finished: this.finished,
-            targetId: this.target ? this.target.id : undefined
-        };
+    public save(): TargetedTaskMemory {
+        let mem = super.save() as TargetedTaskMemory;
+        mem.targetId = this.target ? this.target.id : undefined;
+        return mem;
     }
 }
 
@@ -162,10 +174,6 @@ export class Idle extends Task {
     }
 
     public cleanup(creep: Creep): void {
-    }
-
-    protected onSave(): MoveToMemory {
-        return null;
     }
 }
 
@@ -217,18 +225,13 @@ export class MoveTo extends Task {
 
     }
 
-    protected onSave(): MoveToMemory {
-        return {
-            type: this.type,
-            complete: this.complete,
-            incomplete: this.incomplete,
-            error: this.error,
-            finished: this.finished,
-            x: this.target.x,
-            y: this.target.y,
-            room: this.target.roomName,
-            range: this.range
-        };
+    public save(): MoveToMemory {
+        let mem = super.save() as MoveToMemory;
+        mem.range = this.range;
+        mem.x = this.target.x;
+        mem.y = this.target.y;
+        mem.room = this.target.roomName;
+        return mem;
     }
 }
 
@@ -240,22 +243,29 @@ export interface MoveToMemory extends TaskMemory {
 }
 
 export class Transfer extends TargetedTask<TransferTarget> {
-    public static fromMemory(memory: TargetedTaskMemory): Transfer {
+    public static fromMemory(memory: TransferTaskMemory): Transfer {
         var target = Game.getObjectById<TransferTarget>(memory.targetId);
         var transfer = new this(target);
+        transfer.resource = memory.resource ? memory.resource : RESOURCE_ENERGY;
+        transfer.quantity = memory.quantity;
         return TargetedTask.fromMemory(memory, transfer) as Transfer;
     }
 
-    constructor(target: TransferTarget) {
+    constructor(target: TransferTarget, resource: ResourceConstant = RESOURCE_ENERGY, quantity?: number) {
         super(TASK_TRANSFER, target);
+        this.quantity = quantity;
+        this.resource = resource;
     }
+
+    public resource: ResourceConstant;
+    public quantity: number;
 
     public update(creep: Creep): void {
         // completes in execute loop
     }
 
     public execute(creep: Creep): void {
-        var response = creep.transfer(this.target, RESOURCE_ENERGY);
+        var response = creep.transfer(this.target, this.resource, this.quantity);
         if (response == OK)
             this.onComplete();
         else if (response == ERR_NOT_IN_RANGE)
@@ -278,18 +288,37 @@ export class Transfer extends TargetedTask<TransferTarget> {
 
     public cleanup(creep: Creep): void {
 
+    }
+
+    public save(): TargetedTaskMemory {
+        let mem = super.save() as TransferTaskMemory;
+        mem.resource = this.resource;
+        mem.quantity = this.quantity;
+        return mem;
     }
 }
 
+export interface TransferTaskMemory extends TargetedTaskMemory {
+    resource: ResourceConstant;
+    quantity: number;
+}
+
 export class Withdraw extends TargetedTask<WithdrawTarget> {
-    public static fromMemory(memory: TargetedTaskMemory): Withdraw {
+    public static fromMemory(memory: WithdrawTaskMemory): Withdraw {
         var target = Game.getObjectById<WithdrawTarget>(memory.targetId);
         var withdraw = new this(target);
+        withdraw.resource = memory.resource ? memory.resource : RESOURCE_ENERGY;
+        withdraw.quantity = memory.quantity;
         return TargetedTask.fromMemory(memory, withdraw) as Withdraw;
     }
 
-    constructor(target: WithdrawTarget) {
+    public resource: ResourceConstant;
+    public quantity: number;
+
+    constructor(target: WithdrawTarget, resource: ResourceConstant = RESOURCE_ENERGY, quantity?: number) {
         super(TASK_WITHDRAW, target);
+        this.resource = resource;
+        this.quantity = quantity;
     }
 
     public update(creep: Creep): void {
@@ -297,7 +326,7 @@ export class Withdraw extends TargetedTask<WithdrawTarget> {
     }
 
     public execute(creep: Creep): void {
-        var response = creep.withdraw(this.target, RESOURCE_ENERGY);
+        var response = creep.withdraw(this.target, this.resource, this.quantity);
         if (response == OK)
             this.onComplete();
         else if (response == ERR_NOT_IN_RANGE)
@@ -320,6 +349,18 @@ export class Withdraw extends TargetedTask<WithdrawTarget> {
 
     public cleanup(creep: Creep): void {
     }
+
+    public save(): WithdrawTaskMemory {
+        let mem = super.save() as WithdrawTaskMemory;
+        mem.resource = this.resource;
+        mem.quantity = this.quantity;
+        return mem;
+    }
+}
+
+export interface WithdrawTaskMemory extends TargetedTaskMemory {
+    resource: ResourceConstant;
+    quantity: number;
 }
 
 export class Build extends TargetedTask<ConstructionSite> {
@@ -476,10 +517,10 @@ export class Attack extends TargetedTask<(Structure | Creep )> {
 }
 
 export class Reserve extends TargetedTask<StructureController> {
-    public static fromMemory(memory: TargetedTaskMemory): Attack {
+    public static fromMemory(memory: TargetedTaskMemory): Reserve {
         let target = Game.getObjectById<StructureController>(memory.targetId);
         let reserve = new this(target);
-        return TargetedTask.fromMemory(memory, reserve) as Attack;
+        return TargetedTask.fromMemory(memory, reserve) as Reserve;
     }
 
     constructor(target: StructureController) {
@@ -495,6 +536,133 @@ export class Reserve extends TargetedTask<StructureController> {
             return;
         else if (response == ERR_NOT_IN_RANGE)
             creep.moveTo(this.target);
+        else
+            this.onError();
+    }
+
+    public cleanup(creep: Creep): void {
+    }
+}
+
+export class Claim extends TargetedTask<StructureController> {
+    public static fromMemory(memory: TargetedTaskMemory): Claim {
+        let target = Game.getObjectById<StructureController>(memory.targetId);
+        let claim = new this(target);
+        return TargetedTask.fromMemory(memory, claim) as Claim;
+    }
+
+    constructor(target: StructureController) {
+        super(TASK_CLAIM, target);
+    }
+
+    public update(creep: Creep): void {
+    }
+
+    public execute(creep: Creep): void {
+        let response = creep.claimController(this.target);
+        if (response == OK)
+            this.onComplete();
+        else if (response == ERR_NOT_IN_RANGE)
+            creep.moveTo(this.target);
+        else
+            this.onError();
+    }
+
+    public cleanup(creep: Creep): void {
+    }
+}
+
+export class Harvest extends TargetedTask<Source> {
+    public static fromMemory(memory: TargetedTaskMemory): Harvest {
+        let target = Game.getObjectById<Source>(memory.targetId);
+        let harvest = new this(target);
+        return TargetedTask.fromMemory(memory, harvest) as Harvest;
+    }
+
+    constructor(target: Source) {
+        super(TASK_HARVEST, target);
+    }
+
+    public update(creep: Creep): void {
+        if (_.sum(creep.carry) == creep.carryCapacity || this.target.energy == 0)
+            this.onComplete();
+    }
+
+    public execute(creep: Creep): void {
+        let response = creep.harvest(this.target);
+        if (response == ERR_NOT_IN_RANGE)
+            creep.moveTo(this.target);
+    }
+
+    public cleanup(creep: Creep): void {
+    }
+}
+
+export class PickupEnergy extends TargetedTask<Resource<RESOURCE_ENERGY>> {
+    public static fromMemory(memory: TargetedTaskMemory): PickupEnergy {
+        let target = Game.getObjectById<Resource<RESOURCE_ENERGY>>(memory.targetId);
+        let pickup = new this(target);
+        return TargetedTask.fromMemory(memory, pickup) as PickupEnergy;
+    }
+
+    constructor(target: Resource<RESOURCE_ENERGY>) {
+        super(TASK_PICKUP_ENERGY, target);
+    }
+
+    public update(creep: Creep): void {
+    }
+
+    public execute(creep: Creep): void {
+        let response = creep.pickup(this.target);
+        if (response == OK)
+            this.onComplete();
+        else if (response == ERR_NOT_IN_RANGE)
+            creep.moveTo(this.target);
+        else if (response == ERR_NOT_OWNER)
+            this.onError();
+        else if (response == ERR_BUSY)
+            this.onError();
+        else if (response == ERR_INVALID_TARGET)
+            this.onError();
+        else if (response == ERR_FULL)
+            this.onIncomplete();
+        else
+            this.onError();
+    }
+
+    public cleanup(creep: Creep): void {        
+    }
+}
+
+export class Dismantle extends TargetedTask<Structure> {
+    public static fromMemory(memory: TargetedTaskMemory): Dismantle {
+        let target = Game.getObjectById<Structure>(memory.targetId);
+        let dismantle = new this(target);
+        return TargetedTask.fromMemory(memory, dismantle) as Dismantle;
+    }
+
+    constructor(target: Structure) {
+        super(TASK_DISMANTLE, target);
+    }
+
+    public update(creep: Creep): void {
+    }
+
+    public execute(creep: Creep): void {
+        if (!this.target)
+            this.onComplete();
+
+        let response = creep.dismantle(this.target);
+        if (response == OK)
+            return;
+        else if (response == ERR_NOT_IN_RANGE)
+            creep.moveTo(this.target);
+        else if (response == ERR_NOT_OWNER)
+            this.onError();
+        else if (response == ERR_BUSY)
+            this.onError();
+        else if (response == ERR_INVALID_TARGET)
+            this.onError();
         else
             this.onError();
     }

@@ -13,11 +13,11 @@ export class Population {
         this.updatePopulation();
     }
 
-    public alive: string[];
-    public spawning: string[];
-    public bornThisTick: string[];
-    public diedRecently: string[];
-    public diedLastTick: string[];
+    public alive: string[] = [];
+    public spawning: string[] = [];
+    public bornThisTick: string[] = [];
+    public diedRecently: string[] = [];
+    public diedLastTick: string[] = [];
 
     public notAssignedToOperation(): string[] {
         var unassigned: string[] = [];
@@ -25,6 +25,10 @@ export class Population {
             if (!Memory.creeps[this.alive[i]].operation || Memory.creeps[this.alive[i]].operation == "")
                 unassigned.push(this.alive[i]);
         return unassigned;
+    }
+
+    public creepFromThisColony(creep: CreepMemory): boolean {
+        return creep.colony == this.colony.name;            
     }
 
     public isAlive(creep: (Creep | string)): boolean {
@@ -73,10 +77,17 @@ export class Population {
                 continue;
             
             var creep = Game.creeps[key];
-            if (!creep) { // creep is dead
-                var name = this.creepIsDead(key);
-                if (name)
-                    Memory.creeps[key] = undefined;
+            if (!creep) {
+                let spawningColony = global.empire.getColonyByName(Memory.creeps[key].spawningColony);
+
+                if (spawningColony.creepIsScheduled(key)) { // creep scheduled for spawn
+                    this.creepIsSpawning(key);
+                } else { // creep is dead
+                    var name = this.creepIsDead(key);
+                    if (name)
+                        delete Memory.creeps[key];
+                }
+                
             } else {
                 if (creep.spawning) {
                     this.creepIsSpawning(key);
@@ -95,7 +106,6 @@ export class Population {
         this.diedRecently = [];
     }
    
-
     private creepIsAlive(creep: string): void {
         this.alive.push(creep);
     }
@@ -119,14 +129,5 @@ export class Population {
             this.diedRecently.push(creep);
 
         return null;
-    }
-
-    public creepFromThisColony(creep: CreepMemory) {
-        for (var i = 0; i < this.colony.nest.spawners.length; i++) {
-            if (creep.homeSpawnId == this.colony.nest.spawners[i].spawn.id) {
-                return true;
-            }
-        }
-        return false;
     }
 }

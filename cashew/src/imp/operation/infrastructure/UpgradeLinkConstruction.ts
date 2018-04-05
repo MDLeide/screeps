@@ -38,8 +38,4 @@ export class UpgradeLinkConstructionOperation extends ConstructionOperation {
         }
         return super.onFinish(colony);
     }
-
-    protected onSave(): ConstructionOperationMemory {
-        return null;
-    }
 }

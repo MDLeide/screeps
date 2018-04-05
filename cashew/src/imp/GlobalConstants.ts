@@ -1,12 +1,16 @@
-global.TASK_IDLE = "Idle";
-global.TASK_MOVE_TO = "MoveTo";
-global.TASK_TRANSFER = "Transfer";
-global.TASK_WITHDRAW = "Withdraw";
-global.TASK_BUILD = "Build";
-global.TASK_UPGRADE = "Upgrade";
-global.TASK_REPAIR = "Repair";
-global.TASK_ATTACK = "Attack";
-global.TASK_RESERVE = "Reserve";
+global.MONITOR_COLONY_DEFENSE = "ColonyDefense";
+global.MONITOR_ECONOMY_OPERATION = "EconomyOperation";
+global.MONITOR_INFRASTRUCTURE_OPERATION = "InfrastructureOperation";
+global.MONITOR_REMOTE_MINING_OPERATION = "RemoteMiningOperation";
+global.MONITOR_COLONY_RESOURCES = "ColonyResources";
+global.MONITOR_EXCHANGE = "Exchange";
+
+global.MONITOR_PROVIDER_COLONY_STANDARD = "ColonyStandard";
+global.MONITOR_PROVIDER_EMPIRE_STANDARD = "EmpireStandard";
+
+global.CAMPAIGN_CLAIM_COLONY = "ClaimColony";
+
+global.FLAG_CAMPAIGN_CLAIM_COLONY = "ClaimColony";
 
 global.OPERATION_LIGHT_UPGRADE = "LightUpgrade";
 global.OPERATION_HEAVY_UPGRADE = "HeavyUpgrade";
@@ -31,17 +35,22 @@ global.OPERATION_TERMINAL_CONSTRUCTION = "TerminalConstruction";
 global.OPERATION_OBSERVER_CONSTRUCTION = "ObserverConstruction";
 global.OPERATION_STORAGE_LINK_CONSTRUCTION = "StorageLinkConstruction";
 global.OPERATION_WALL_CONSTRUCTION = "WallConstruction";
-global.OPERATION_ROAD_CONSTRUCTION = "RoadConstructiom";
+global.OPERATION_ROAD_CONSTRUCTION = "RoadConstruction";
 global.OPERATION_SPAWN_CONSTRUCTION = "SpawnConstruction";
 global.OPERATION_REPLACE_ORIGINAL_SPAWN = "ReplaceOriginalSpawn";
+global.OPERATION_ROOM_SCOUT = "RoomScout";
+global.OPERATION_NEW_SPAWN_CONSTRUCTION = "NewSpawnConstruction";
+global.OPERATION_RESERVATION = "Reservation";
+global.OPERATION_DISMANTLE = "Dismantle";
+global.OPERATION_LOOT = "Loot";
+global.OPERATION_CLAIM_ROOM = "ClaimRoom";
 
-global.PROGRESS_STANDARD = "Standard";
+global.FLAG_OPERATION_DISMANTLE = "Dismantle";
+global.FLAG_OPERATION_LOOT = "Loot";
 
-global.PLAN_INFRASTRUCTURE = "Infrastructure";
-global.PLAN_ECONOMY = "Economy";
-global.PLAN_REMOTE_MINING = "RemoteMining";
-global.PLAN_ROAD = "Road";
-global.PLAN_DEFENSE = "Defense";
+global.UNIT_CONTROLLER_RALLY = "Rally";
+global.UNIT_CONTROLLER_MOVE_TO = "MoveTo";
+global.UNIT_CONTROLLER_ROOM_DEFENSE = "RoomDefense";
 
 global.CREEP_CONTROLLER_HARVESTER = "Harvester";
 global.CREEP_CONTROLLER_HARVEST_INFRASTRUCTURE_BUILDER = "HarvestInfrastructureBuilder";
@@ -57,6 +66,28 @@ global.CREEP_CONTROLLER_CHEMIST = "Chemist";
 global.CREEP_CONTROLLER_MASON = "Mason";
 global.CREEP_CONTROLLER_REPAIR = "Repair";
 global.CREEP_CONTROLLER_DEFENDER = "Defender";
+global.CREEP_CONTROLLER_CLAIM = "Claim";
+global.CREEP_CONTROLLER_SCOUT = "Scout";
+global.CREEP_CONTROLLER_RESERVE = "Reserve";
+global.CREEP_CONTROLLER_WARRIOR = "Warrior";
+global.CREEP_CONTROLLER_DISMANTLER = "Dismantler";
+global.CREEP_CONTROLLER_WITHDRAW = "Withdraw";
+global.CREEP_CONTROLLER_TRANSFER = "Transfer";
+global.CREEP_CONTROLLER_HARVEST_BUILDER = "HarvestBuilder";
+
+global.TASK_IDLE = "Idle";
+global.TASK_MOVE_TO = "MoveTo";
+global.TASK_TRANSFER = "Transfer";
+global.TASK_WITHDRAW = "Withdraw";
+global.TASK_BUILD = "Build";
+global.TASK_UPGRADE = "Upgrade";
+global.TASK_REPAIR = "Repair";
+global.TASK_ATTACK = "Attack";
+global.TASK_RESERVE = "Reserve";
+global.TASK_CLAIM = "Claim";
+global.TASK_HARVEST = "Harvest";
+global.TASK_PICKUP_ENERGY = "PickupEnergy";
+global.TASK_DISMANTLE = "Dismantle";
 
 global.BODY_LIGHT_WORKER = "LightWorker";
 global.BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -65,6 +96,12 @@ global.BODY_HAULER = "Hauler";
 global.BODY_WARRIOR = "Warrior";
 global.BODY_SCOUT = "Scout";
 global.BODY_DEFENDER = "Defender";
+global.BODY_CLAIMER = "Claimer";
+global.BODY_RANGER = "Ranger";
+global.BODY_HEALER = "Healer";
+global.BODY_HOPLITE = "Hoplite";
+global.BODY_SHIELD = "Shield";
+global.BODY_DISMANTLER = "Dismantler";
 
 
 export class GlobalConstants {

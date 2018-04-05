@@ -7,7 +7,7 @@ import { BodyRepository } from "../../creep/BodyRepository";
 import { ConstructionOperation, ConstructionOperationMemory } from "../ConstructionOperation";
 
 export class ExtensionConstructionOperation extends ConstructionOperation {
-    public static fromMemory(memory: ExtensionsOperationMemory): ExtensionConstructionOperation {
+    public static fromMemory(memory: ExtensionConstructionOperationMemory): ExtensionConstructionOperation {
         let op = new this(memory.rcl);
         return ConstructionOperation.fromMemory(memory, op) as ExtensionConstructionOperation;
     }
@@ -30,26 +30,20 @@ export class ExtensionConstructionOperation extends ConstructionOperation {
         return STRUCTURE_EXTENSION;
     }
 
+
     protected onFinish(colony: Colony): boolean {
-        colony.nest.checkFillOrder();
+        colony.nest.checkEnergyStructureOrder();
         return super.onFinish(colony);
     }
-    
-    protected onSave(): ExtensionsOperationMemory {
-        return {            
-            type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory(),
-            siteIds: this.siteIds,
-            sitesBuilt: this.sitesBuilt,
-            rcl: this.rcl
-        };
+
+
+    public save(): ExtensionConstructionOperationMemory {
+        let mem = super.save() as ExtensionConstructionOperationMemory;
+        mem.rcl = this.rcl;
+        return mem;
     }
 }
 
-interface ExtensionsOperationMemory extends ConstructionOperationMemory {
+export interface ExtensionConstructionOperationMemory extends ConstructionOperationMemory {
     rcl: number;
 }

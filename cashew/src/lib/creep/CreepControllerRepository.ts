@@ -6,7 +6,10 @@ export class CreepControllerRepository {
     }
 
     public static load(memory: CreepControllerMemory): CreepController {
-        return this.delegates[memory.type](memory);
+        let delegate = this.delegates[memory.type];
+        if (!delegate)
+            throw new Error(`Creep Controller Type ${memory.type} has not been registered.`);
+        return delegate(memory);
     }
 
     private static delegates: { [controllerType: string]: (memory: any) => CreepController } = {};

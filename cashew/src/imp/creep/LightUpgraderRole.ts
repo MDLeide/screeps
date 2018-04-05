@@ -16,40 +16,32 @@ export class LightUpgraderRole extends Role {
     protected getNextTask(creep: Creep): Task {
         let colony = global.empire.getColonyByCreep(creep);
 
-        if (!this.currentTask ||
-            this.currentTask.type == TASK_TRANSFER ||
-            this.currentTask.type == TASK_UPGRADE) {
-            
+        if (creep.carry.energy == 0) {            
             let withdrawTarget = colony.resourceManager.getWithdrawTarget(creep);
             if (withdrawTarget)
                 return Task.Withdraw(withdrawTarget);
-
         } else if (creep.carry.energy > 0) {
-            //if (this.supplySpawn) {
             let spawnTarget = colony.resourceManager.getSpawnExtensionTransferTargets(creep);
             if (spawnTarget)
                 return Task.Transfer(spawnTarget);
-            //}
 
             let upgradeTarget = colony.nest.room.controller;
             return Task.Upgrade(upgradeTarget);
         }
-        // if no withdraw targets, or withdraw finished
-        // and we have no energy for some reason
         return null; 
     }
 
     protected isIdle(creep: Creep): Task {
         let colony = global.empire.getColonyByCreep(creep);
         if (creep.carry.energy > 0) {
-            //if (this.supplySpawn) {
+            if (colony.nest.room.controller.ticksToDowngrade <= 2000)
+                return Task.Upgrade(colony.nest.room.controller);            
+
             let spawnTarget = colony.resourceManager.getSpawnExtensionTransferTargets(creep);
             if (spawnTarget)
                 return Task.Transfer(spawnTarget);
-            //}
 
-            let upgradeTarget = colony.nest.room.controller;
-            return Task.Upgrade(upgradeTarget);
+            return Task.Upgrade(colony.nest.room.controller);
         } else {
             let withdrawTarget = colony.resourceManager.getWithdrawTarget(creep);
             if (withdrawTarget)

@@ -1,42 +1,74 @@
 import { Execute } from "./imp/Execution"; // silly hack that i don't understand - this isn't actually used
+import { MonitorStatus } from "lib/monitor/Monitor";
+import { FlagOperation } from "lib/operation/FlagOperation";
 
 declare global {
-    /** FLAGS */
-
-    interface ColonyFlagMemory {
-        name: string;        
-        progress: ProgressType;
-        operationPlans: PlanType[];
+    interface SystemMemory {
+        name: string;
+        major: number;
+        minor: number;
+        patch: number;
+        /** Milliseconds since epoch. */
+        lastUpdate: number;
+        debug: boolean;
+        resetHistory: number[];
+        codeChangeHistory: number[];
     }
-
-    interface PlaybackFlagMemory {
-        pauseOnException: boolean;
-
-        doOutput: boolean;
-        outputColor: string;
-
-        playbackState: string;
-        lastPlaybackState: string;
-    }
-
-    /** END FLAGS */
 
 
     /** MANAGEMENT UNITS **/
 
     interface EmpireMemory {
         colonies: { [colonyName: string]: ColonyMemory };
+        exchange: ExchangeMemory;
+        monitorManager: MonitorManagerMemory;
     }
 
     interface ColonyMemory {        
         name: string;
-        nest: NestMemory;
-        progress: ColonyProgressMemory;
+        nest: NestMemory;        
         resourceManager: ResourceManagerMemory;
-        operationPlans: OperationPlanMemory[];
         remoteMiningManager: RemoteMiningManagerMemory;
         watchtower: WatchtowerMemory;
+        monitorManager: MonitorManagerMemory;
+        operations: OperationGroupMemory;
+        campaigns: CampaignMemory[];
     }
+
+    interface NestMemory {
+        roomName: string;
+        map: NestMapMemory;
+        spawnEnergyStructureOrderIds: string[];
+        spawnQueue: SpawnRequestMemory[];
+        spawnStats: SpawnStatTrackerMemory;
+    }
+
+    /**  END MANAGEMENT UNITS **/
+
+
+    /** MONITORS **/
+
+    interface EmpireMonitorMemory extends MonitorMemory {
+    }
+
+    interface ColonyMonitorMemory extends MonitorMemory {
+    }
+
+    interface MonitorMemory {
+        type: MonitorType;
+        status: MonitorStatus;
+        sleepingFor: number;
+    }
+
+    interface MonitorManagerMemory {
+        monitors: MonitorMemory[];
+        provider: MonitorProviderType;
+    }
+        
+    /** END MONITORS **/
+
+
+    /** COMPONENTS */
 
     interface ResourceManagerMemory {
         settings: ResourceManagerSettingsMemory;
@@ -44,7 +76,7 @@ declare global {
         ledger: ResourceManagerLedgerMemory;
         sourceAId: string;
         sourceBId: string;
-        extensionsManagedDirectly: boolean;             
+        extensionsManagedDirectly: boolean;
     }
 
     interface ResourceManagerSettingsMemory {
@@ -59,7 +91,8 @@ declare global {
         controllerContainerId: string;
         storageLinkId: string;
         extensionLinkId: string;
-        controllerLinkId: string;   
+        controllerLinkId: string;
+        storageContainerIds: string[];
     }
 
     interface ResourceManagerLedgerMemory {
@@ -92,27 +125,11 @@ declare global {
         netEnergy: number;
     }
 
-    interface ColonyPlanMemory {
-        type: PlanType;
-        description: string;
-        milestoneIndex: number;
-        operationGroup: OperationGroupMemory;
-    }
-
-    interface ColonyProgressMemory {
-        type: ProgressType;
-        milestoneIndex: number;
-    }
-
-    interface OperationPlanMemory {
-        type: PlanType;
-        operationGroup: OperationGroupMemory;
-    }
-
-    interface NestMemory {
-        roomName: string;
-        map: NestMapMemory;
-        fillOrderIds: string[];
+    interface SpawnRequestMemory {
+        name: string;
+        priority: number;
+        body: BodyMemory;
+        tickCreated: number;
     }
 
     interface RemoteMiningManagerMemory {
@@ -124,11 +141,12 @@ declare global {
         scouted: boolean;
         beingScouted: boolean;
         remoteSources: RemoteSourceMemory[];
+        beingReserved: boolean;
     }
 
     interface RemoteSourceMemory {
         sourceId: string;
-        containerId: string;        
+        containerId: string;
         beingMined: boolean;
         profit: number;
     }
@@ -138,17 +156,58 @@ declare global {
         attackTargetId: string;
         healTargetName: string;
     }
-    
-    /**  END MANAGEMENT UNITS **/
+
+    interface SpawnStatTrackerMemory {
+        currentPeriod: SpawnStatMemory;
+        history: SpawnStatMemory[];
+    }
+
+    interface SpawnStatMemory {
+        periodStart: number;
+        adjustedTicksSpentSpawning: number;
+    }
+
+    interface ExchangeMemory {
+        supplyOrders: { [orderId: string]: OrderMemory };
+        demandOrders: { [orderId: string]: OrderMemory };
+        transactions: { [transactionId: string]: TransactionMemory };
+    }
+
+    interface TransactionMemory {
+        supplyOrderId: string;
+        demandOrderId: string;
+        quantity: number;
+        complete: boolean;
+    }
+
+    interface OrderMemory {
+        id: string;
+        type: number;
+        colony: string;
+        resource: ResourceConstant;
+        quantity: number;
+        tickCreated: number;
+        canceled: boolean;
+
+        reservedQuantity: number;
+        unreservedQuantity: number;
+        filledQuantity: number;
+        unfilledQuantity: number;
+
+        reservedBy: { [orderId: string]: number };
+        filledBy: { [orderId: string]: number };
+    }
+
+    /** END COMPONENTS */
 
 
     /** OPERATIONS **/
 
     interface OperationMemory {
         type: OperationType;
-        initialized: boolean;
-        started: boolean;
-        finished: boolean;
+        initializedStatus: number;
+        startedStatus: number;
+        operationStatus: number;
         assignments: AssignmentMemory[];        
     }
 
@@ -164,15 +223,50 @@ declare global {
         operations: OperationMemory[];
     }
 
+    interface CampaignMemory {
+        operations: OperationMemory[];
+        type: CampaignType;
+    }
+
     interface AssignmentMemory {
         creepName: string;
         body: BodyMemory;
         controllerType: CreepControllerType;
         replaceAt: number;
         replacementName: string;
+        onHold: boolean;
+        supportRequest: BodyMemory;
+        maxSupportRange: number;
+    }
+
+    interface FlagOperationMemory {
+        type: FlagOperationType;
+        hostColony: string;
+    }
+
+    interface FlagCampaignMemory {
+        type: FlagCampaignType;
+        hostColony: string;
     }
 
     /** END OPERATIONS **/
+
+
+    /** MILITARY **/
+
+    interface UnitMemory {
+        memberNames: string[];
+    }
+
+    interface UnitControllerMemory {
+        type: UnitControllerType;
+    }
+
+    interface UnitJobMemory extends UnitControllerMemory {
+        complete: boolean;
+    }
+
+    /** END MILITARY **/
 
 
     /** MAPS **/
@@ -214,6 +308,7 @@ declare global {
     
     /** END MAPS **/
 
+
     /** CREEP CONTROLLERS **/
 
     interface CreepControllerMemory {
@@ -243,17 +338,21 @@ declare global {
 
     /** END CREEP CONTROLLERS **/
 
+
+    /** MISC **/
+
     interface BodyMemory {
         type: BodyType,
         minimumEnergy: number,
         constantParts: BodyPartConstant[],
         scalingParts: BodyPartConstant[],
         maxCompleteScaling: number,
-        completeScalingPartsOnly: boolean
+        completeScalingPartsOnly: boolean,
+        waitForFullEnergy: boolean
     }
 
     interface VisualsMemory {
-        colony: ColonyVisualMemory;
+        [name: string]: boolean;
     }
 
     interface ColonyVisualMemory {
@@ -264,4 +363,16 @@ declare global {
         drawDetailedPopulation: boolean;
         drawDetailOperations: boolean;
     }
+
+    interface PlaybackFlagMemory {
+        pauseOnException: boolean;
+
+        doOutput: boolean;
+        outputColor: string;
+
+        playbackState: string;
+        lastPlaybackState: string;
+    }
+
+    /** END MISC **/    
 }

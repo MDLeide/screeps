@@ -53,6 +53,7 @@ export class Playback {
         room.createFlag(25, 10, Playback.FlagName, COLOR_GREEN, COLOR_GREEN);
     }
 
+
     public static update(): void {
         this._flag = this.findFlag();
         if (!this.flag) {
@@ -60,8 +61,8 @@ export class Playback {
             return;
         }
 
-        this.checkMemory();
-        this.updateState();
+        this.checkMemory();        
+        this.playbackState = this.getCurrentState();
 
         if (this.flag.secondaryColor == COLOR_WHITE) {
             MemoryManager.initialize();
@@ -86,7 +87,11 @@ export class Playback {
         if (this.playbackState == this.State_Running || this.playbackState == this.State_Step) {
             this.printTick(Settings.DefaultTickDisplayInterval);
         }
+
+        this.lastPlaybackState = this.playbackState;
     }
+
+
 
     public static init(): boolean {
         if (!this.flag)
@@ -101,11 +106,10 @@ export class Playback {
         return this.playbackState == this.State_Running || this.playbackState == this.State_Step;
     }
 
+
     public static stop(): void {
         if (!this.flag)
-            return;
-
-        this.lastPlaybackState = this.playbackState;
+            return;        
         this.flag.setColor(COLOR_RED);
         this.playbackState = this.State_Stopped;
     }
@@ -113,17 +117,13 @@ export class Playback {
     public static pause(): void {
         if (!this.flag)
             return;
-
-        this.lastPlaybackState = this.playbackState;
         this.flag.setColor(COLOR_YELLOW);
         this.playbackState = this.State_Paused;
     }
 
-    public static run(): void {
+    public static start(): void {
         if (!this.flag)
             return;
-
-        this.lastPlaybackState = this.playbackState;
         this.flag.setColor(COLOR_GREEN);
         this.playbackState = this.State_Running;
     }
@@ -131,8 +131,6 @@ export class Playback {
     public static step(): void {
         if (!this.flag)
             return;
-
-        this.lastPlaybackState = this.playbackState;
         this.flag.setColor(COLOR_GREY);
         this.playbackState = this.State_Step;
     }
@@ -140,32 +138,28 @@ export class Playback {
 
     private static stopping(): void {
         if (this.doOutput)
-            this.logMessage("Stopping operation");
+            global.events.debug.playbackStop();
     }
 
     private static pausing(): void {
         if (this.doOutput)
-            this.logMessage("Pausing operation");
+            global.events.debug.playbackPause();
     }
 
     private static starting(): void {
         if (this.doOutput)
-            this.logMessage("Resuming operation");
+            global.events.debug.playbackStart();
     }
 
     private static stepping(): void {
         if (this.doOutput)
-            this.logMessage("Stepping one tick");
+            global.events.debug.playbackStep();
     }
 
-    private static updateState(): void {
-        this.lastPlaybackState = this.playbackState;
-        this.playbackState = this.getCurrentState();
-    }
 
     private static printTick(interval: number): void {
         if (interval > 0) {
-            if (Game.time % interval == 0) {
+            if (interval == 1 || Game.time % interval == 0) {
                 var message = `Current game tick is ${Game.time}`;
                 var color = "lightBlue";
                 console.log(`<span style='color:${color}'>${message}</span>`);
@@ -209,11 +203,5 @@ export class Playback {
 
     private static findFlag(): Flag | null | undefined {
         return Game.flags[Playback.FlagName];
-    }
-
-    private static logMessage(message: string, color: string = Playback.outputColor): void {
-        if (!Playback.doOutput)
-            return;
-        console.log(`<span style='color:${color}'>${message}</span>`);
     }
 }

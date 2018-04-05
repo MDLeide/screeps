@@ -30,21 +30,13 @@ export class LabConstructionOperation extends ConstructionOperation {
         return STRUCTURE_LAB;
     }
 
-    protected onSave(): LabConstructionOperationMemory {
-        return {
-            type: this.type,
-            initialized: this.initialized,
-            started: this.started,
-            finished: this.finished,
-            assignments: this.getAssignmentMemory(),
-            jobs: this.getJobMemory(),
-            siteIds: this.siteIds,
-            sitesBuilt: this.sitesBuilt,
-            rcl: this.rcl
-        };
+    public save(): LabConstructionOperationMemory {
+        let mem = super.save() as LabConstructionOperationMemory;
+        mem.rcl = this.rcl;
+        return mem;
     }
 }
 
-interface LabConstructionOperationMemory extends ConstructionOperationMemory {
+export interface LabConstructionOperationMemory extends ConstructionOperationMemory {
     rcl: number;
 }

@@ -1,5 +1,5 @@
 import { Body } from "../creep/Body";
-import { CreepNamer } from "./CreepNamer";
+import { Colony } from "lib/colony/Colony";
 
 export class Spawner {
     private _updated: boolean;
@@ -20,31 +20,42 @@ export class Spawner {
     }
 
     public canSpawn(body: Body): boolean {        
-        return (!this.spawn.spawning && !this.startedThisTick && this.spawn.room.energyAvailable >= body.minimumEnergy);
+        return !this.spawn.spawning
+            && !this.startedThisTick
+            && this.spawn.room.energyAvailable >= body.minimumEnergy
+            && (!body.waitForFullEnergy
+                || this.spawn.room.energyAvailable == this.spawn.room.energyCapacityAvailable
+                || this.spawn.room.energyAvailable >= body.maximumEnergy);
     }
     
-    public spawnCreep(body: Body, fillOrder: (StructureExtension | StructureSpawn)[]): string | null {
-        if (!this._updated || this._cleanedup) {
-            throw new Error("Only call spawner.spawnCreep() during the execute phase.");
-        }
-
-        if (!this.canSpawn(body)) {
-            return null;
-        }
+    public spawnCreep(body: Body, fillOrder: (StructureExtension | StructureSpawn)[], name: string): string | null {
+        if (!this._updated || this._cleanedup)
+            throw new Error("Only call spawner.spawnCreep() during the execute phase.");        
         
-        let finalBody = body.getBody(this.spawn.room.energyAvailable);        
-        var name = CreepNamer.getCreepName(body, this);
+        if (!this.canSpawn(body))
+            return null;        
+        
+        let finalBody = body.getBody(this.spawn.room.energyAvailable);
+        let memory = Memory.creeps[name];
+        if (memory) {
+            memory.birthTick = Game.time + 1;
+        } else {
+            global.events.colony.spawnError(this.spawn.name, body.type, "Memory does not exist - spawning anyway and recreating.");
+            let colony = global.empire.getColonyBySpawn(this.spawnId);
+            memory = {
+                colony: colony ? colony.name : undefined,
+                spawningColony: colony ? colony.name : undefined,
+                body: body.type,
+                operation: undefined,
+                birthTick: Game.time + 1,
+                deathTick: 0
+            };
+        }
         var result = this.spawn.spawnCreep(
             finalBody,
             name,
             {
-                memory: {
-                    homeSpawnId: this.spawn.id,
-                    body: body.type,
-                    operation: "",
-                    birthTick: Game.time + 1,
-                    deathTick: 0
-                },
+                memory: memory,
                 energyStructures: fillOrder
             });
 

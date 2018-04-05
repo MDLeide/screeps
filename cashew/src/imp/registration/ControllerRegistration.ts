@@ -15,10 +15,25 @@ import { MasonController, MasonControllerMemory } from "../creep/MasonController
 import { BuilderJob, BuildJobMemory } from "../creep/BuilderJob";
 
 import { DefenderController } from "../creep/DefenderController";
+import { ScoutJob, ScoutJobMemory } from "../creep/ScoutJob";
+import { ReserveJob, ReserveJobMemory } from "../creep/ReserveJob";
+import { DismantleJob } from "../creep/DismantleJob";
+import { WithdrawJob } from "../creep/WithdrawJob";
+import { TransferJob } from "../creep/TransferJob";
+import { ClaimJob, ClaimJobMemory } from "../creep/ClaimJob";
+import { HarvestBuilderJob, HarvestBuilderJobMemory } from "../creep/HarvestBuilderJob";
 
 
 export class ControllerRegistration {
     public static register(): void {
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_SCOUT,
+            (mem: ScoutJobMemory) => ScoutJob.fromMemory(mem));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_RESERVE,
+            (mem: ReserveJobMemory) => ReserveJob.fromMemory(mem));
+
         CreepControllerRepository.register(
             CREEP_CONTROLLER_HARVESTER,
             (mem: HarvesterControllerMemory) => HarvesterController.fromMemory(mem));
@@ -70,5 +85,25 @@ export class ControllerRegistration {
         CreepControllerRepository.register(
             CREEP_CONTROLLER_DEFENDER,
             (mem: CreepControllerMemory) => DefenderController.fromMemory(mem));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_DISMANTLER,
+            (mem: CreepControllerMemory) => DismantleJob.fromMemory(mem as JobMemory));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_WITHDRAW,
+            (mem: CreepControllerMemory) => WithdrawJob.fromMemory(mem as JobMemory));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_TRANSFER,
+            (mem: CreepControllerMemory) => TransferJob.fromMemory(mem as JobMemory));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_CLAIM,
+            (mem: CreepControllerMemory) => ClaimJob.fromMemory(mem as ClaimJobMemory));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_HARVEST_BUILDER,
+            (mem: CreepControllerMemory) => HarvestBuilderJob.fromMemory(mem as HarvestBuilderJobMemory));
     }
 }
