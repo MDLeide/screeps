@@ -12,7 +12,7 @@ export class ResourceManager {
         manager.ledger = Ledger.fromMemory(memory.ledger, manager);
 
         manager.extensionsManagedDirectly = memory.extensionsManagedDirectly;
-
+        manager.setTargetsAndThresholds();
         return manager;
     }
 
@@ -25,6 +25,7 @@ export class ResourceManager {
         this.structures = new Structures(this);
         this.ledger = new Ledger(this);
         this.advisor = new Advisor(this);
+        this.setTargetsAndThresholds();
     }
 
 
@@ -70,8 +71,19 @@ export class ResourceManager {
         this.ledger.cleanup();
     }
 
+    public getResourceCount(resource: ResourceConstant): number {
+        let count = 0;
+        if (this.colony.nest.room.storage && this.colony.nest.room.storage.store[resource])
+            count += this.colony.nest.room.storage.store[resource];
+        if (this.colony.nest.room.terminal && this.colony.nest.room.terminal.store[resource])
+            count += this.colony.nest.room.storage.store[resource];
+        for (var i = 0; i < this.structures.storageContainers.length; i++)
+            if (this.structures.storageContainers[i].store[resource])
+                count += this.structures.storageContainers[i].store[resource];
+        return count;
+    }
 
-    public getResourceCount(): { [resource: string]: number } {
+    public getAllResourcesCount(): { [resource: string]: number } {
         let resources: { [resource: string]: number } = {};
         if (this.colony.nest.room.storage)
             this.sumStore(resources, this.colony.nest.room.storage);
@@ -83,6 +95,34 @@ export class ResourceManager {
             this.sumStore(resources, this.structures.storageContainers[i]);
 
         return resources;
+    }
+
+    public getSurplus(resource: ResourceConstant): number {
+        let threshold = this.settings.supplyThresholds[resource];
+        if (!threshold) threshold = 0;
+        let count = this.getResourceCount(resource);
+        let outgoing = global.empire.exchange.getColonySupplyOrder(this.colony, resource);
+        if (outgoing) count -= outgoing.unfilledQuantity;
+        if (count > threshold) {
+            let target = this.settings.supplyTargets[resource];
+            if (!target) target = 0;
+            return count - target;
+        }
+        return 0;
+    }
+
+    public getDemand(resource: ResourceConstant): number {
+        let threshold = this.settings.demandThresholds[resource];
+        if (!threshold) return 0;
+        let count = this.getResourceCount(resource);
+        let incoming = global.empire.exchange.getColonyDemandOrder(this.colony, resource);
+        if (incoming) count += incoming.unfilledQuantity;
+        if (count < threshold) {
+            let target = this.settings.demandTargets[resource];
+            if (!target) return 0;
+            return target - count;
+        }
+        return 0;
     }
 
     /** Gets the target to use when dropping off energy for a demand order. */
@@ -164,6 +204,25 @@ export class ResourceManager {
             return;
         this.structures.storageContainerIds.push(container.id);
         this.structures.storageContainers.push(container);
+    }
+
+    private setTargetsAndThresholds(): void {
+        this.settings.demandThresholds = {};
+        this.settings.demandTargets = {};
+        this.settings.supplyThresholds = {};
+        this.settings.supplyTargets = {};
+
+        if (this.colony.nest.room.storage) {
+            this.settings.demandThresholds[RESOURCE_ENERGY] = 50000;
+            this.settings.demandTargets[RESOURCE_ENERGY] = 100000;
+        } else {
+            let total = this.structures.storageContainers.length * 2000;
+            this.settings.demandThresholds[RESOURCE_ENERGY] = total * .6;
+            this.settings.demandTargets[RESOURCE_ENERGY] = total * .9;
+        }
+
+        this.settings.supplyThresholds[RESOURCE_ENERGY] = 200000;
+        this.settings.supplyTargets[RESOURCE_ENERGY] = 125000;
     }
 
     private sumStore(resourceCount: { [resource: string]: number }, structure: { store: StoreDefinition }): { [resource: string]: number } {
@@ -501,7 +560,7 @@ class Structures {
         structures.controllerLinkId = memory.controllerLinkId;
         structures.extensionLinkId = memory.extensionLinkId;
         structures.storageLinkId = memory.storageLinkId;
-        structures.storageContainerIds = memory.storageContainerIds[];
+        structures.storageContainerIds = memory.storageContainerIds;
 
         return structures;
     }
@@ -607,15 +666,15 @@ class Structures {
 
     public save(): ResourceManagerStructureMemory {
         return {
-            controllerLinkId: this.controllerLink ? this.controllerLink.id : undefined,
-            extensionLinkId: this.extensionLink ? this.extensionLink.id : undefined,
-            storageLinkId: this.storageLink ? this.storageLink.id : undefined,
-            controllerContainerId: this.controllerContainer ? this.controllerContainer.id : undefined,
-            sourceAContainerId: this.sourceAContainer ? this.sourceAContainer.id : undefined,
-            sourceALinkId: this.sourceALink ? this.sourceALink.id : undefined,
-            sourceBContainerId: this.sourceBContainer ? this.sourceBContainer.id : undefined,
-            sourceBLinkId: this.sourceBLink ? this.sourceBLink.id : undefined,
-            storageContainerIds: this.getStorageContainerIds()
+            controllerLinkId: this.controllerLinkId,
+            extensionLinkId: this.extensionLinkId,
+            storageLinkId: this.storageLinkId,
+            controllerContainerId: this.controllerContainerId,
+            sourceAContainerId: this.sourceAContainerId,
+            sourceALinkId: this.sourceALinkId,
+            sourceBContainerId: this.sourceBContainerId,
+            sourceBLinkId: this.sourceBLinkId,
+            storageContainerIds: this.storageContainerIds
         };        
     }
 }
@@ -833,6 +892,11 @@ class ResourceManagerSettings {
         TransferPriorityTarget.Storage,
         TransferPriorityTarget.Terminal
     ];
+
+    public demandThresholds: { [resource: string]: number } = {};
+    public demandTargets: { [resource: string]: number } = {};
+    public supplyThresholds: { [resource: string]: number } = {};    
+    public supplyTargets: { [resource: string]: number } = {};
 
     // WITHDRAWS
 

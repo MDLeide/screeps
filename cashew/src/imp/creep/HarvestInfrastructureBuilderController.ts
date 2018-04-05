@@ -50,6 +50,7 @@ export class HarvestInfrastructureBuilderController extends CreepController {
                 if (response == ERR_NOT_IN_RANGE)
                     creep.moveTo(spawn);
             } else {
+                if (!this.siteId) return;
                 let site = Game.getObjectById<ConstructionSite>(this.siteId);
                 let response = creep.build(site);
                 if (response == ERR_NOT_IN_RANGE)

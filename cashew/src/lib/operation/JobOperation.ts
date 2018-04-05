@@ -9,6 +9,7 @@ An operation that uses Controllers to manage creeps.
 */
 export abstract class JobOperation extends Operation {
     public static fromMemory(memory: JobOperationMemory, instance: JobOperation): Operation {
+        instance.jobs = {};
         for (let key in memory.jobs) {
             instance.jobs[key] = CreepControllerRepository.load(memory.jobs[key]) as Job;
         }

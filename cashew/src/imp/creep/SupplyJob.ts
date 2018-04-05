@@ -1,85 +1,80 @@
 import { Task } from "lib/creep/Task";
 import { Job } from "lib/creep/Job";
-import { Order } from "lib/empire/Exchange";
+import { Order, Transaction } from "lib/empire/Exchange";
 
 export class SupplyJob extends Job {
     public static fromMemory(memory: SupplyJobMemory): SupplyJob {
-        let job = new this(
-            global.empire.exchange.supplyOrders[memory.supplyOrderId],
-            global.empire.exchange.demandOrders[memory.demandOrderId],
-            memory.quantity);
+        let job = Object.create(SupplyJob.prototype) as SupplyJob;
+        job.transactionId = memory.transactionId;
+        job.quantity = memory.quantity;
         job.deliver = memory.deliver;
         job.preWithdrawQuantity = memory.preWithdrawQuantity;
         job.preTransferQuantity = memory.preTransferQuantity;
+        job.withdraw = memory.withdraw;
+        job.complete = memory.complete;
         return Job.fromMemory(memory, job) as SupplyJob;
     }
 
-    constructor(supplyOrder: Order, demandOrder: Order, quantity: number) {
+    constructor(transaction: Transaction, quantity: number) {
         super(CREEP_CONTROLLER_SUPPLY);
-        this.supplyOrder = supplyOrder;
-        this.supplyOrderId = supplyOrder.id;
-        this.demandOrder = demandOrder;
-        this.demandOrderId = demandOrder.id;
+        this.transaction = transaction;
         this.quantity = quantity;
     }
 
-    public supplyOrderId: string;
-    public supplyOrder: Order;
-    public demandOrderId: string;
-    public demandOrder: Order;
+    public transaction: Transaction;
+    public transactionId: string;
     public quantity: number;
     public deliver: boolean;
     public preWithdrawQuantity: number;
     public preTransferQuantity: number;
+    public withdraw: boolean;
+    public complete: boolean;
 
     protected isCompleted(creep: Creep): boolean {
-        if (!this.demandOrder || !this.supplyOrder)
-            return true;
-
-        if (this.preTransferQuantity) {
-            let transfered = this.preTransferQuantity - creep.carry[this.supplyOrder.resource];
-            let demandColony = global.empire.getColonyByName(this.demandOrder.colony);
-            demandColony.registerDropOff(this.demandOrder.id, this.supplyOrder.id, transfered);
-            this.preTransferQuantity = 0;
-        }
-
-        return this.deliver && creep.carry[this.supplyOrder.resource] == 0;
+        if (!this.transaction) return true;
+        return this.complete;
     }
 
     protected getNextTask(creep: Creep): Task {
-        if (!this.demandOrder || !this.supplyOrder)
+        if (!this.transaction)
             return null;
 
-        let carry = creep.carry[this.supplyOrder.resource];
-        if (this.preWithdrawQuantity) {
+        let carry = creep.carry[this.transaction.resource];
+        if (!carry) carry = 0;
+        if (this.withdraw) {
             let withdrew = carry - this.preWithdrawQuantity;
-            let supplyColony = global.empire.getColonyByName(this.supplyOrder.colony);
-            supplyColony.registerPickUp(this.supplyOrderId, this.demandOrderId, withdrew);
+            let supplyColony = global.empire.getColonyByName(this.transaction.supplyOrder.colony);
+            supplyColony.registerPickUp(this.transaction.resource, withdrew);
+            this.transaction.pickUp(withdrew);
             this.preWithdrawQuantity = 0;
+            this.withdraw = false;
         }
 
         if (this.preTransferQuantity) {
             let transfered = this.preTransferQuantity - carry;
-            let demandColony = global.empire.getColonyByName(this.demandOrder.colony);
-            demandColony.registerDropOff(this.demandOrder.id, this.supplyOrder.id, transfered);
+            let demandColony = global.empire.getColonyByName(this.transaction.demandOrder.colony);
+            demandColony.registerDelivery(this.transaction.resource, transfered);
+            this.transaction.deliver(transfered);
             this.preTransferQuantity = 0;
+            this.complete = true;
         }
 
         if (!this.deliver && _.sum(creep.carry) < creep.carryCapacity && carry < this.quantity) {
-            let supplyColony = global.empire.getColonyByName(this.supplyOrder.colony);
+            let supplyColony = global.empire.getColonyByName(this.transaction.supplyOrder.colony);
             if (!supplyColony) return null;
-            let withdrawTarget = supplyColony.resourceManager.getPickupTarget(this.supplyOrder.resource);
+            let withdrawTarget = supplyColony.resourceManager.getPickupTarget(this.transaction.resource);
             if (!withdrawTarget) return null;
             this.preWithdrawQuantity = carry;
-            return Task.Withdraw(withdrawTarget, this.supplyOrder.resource, this.quantity - carry);
+            this.withdraw = true;
+            return Task.Withdraw(withdrawTarget, this.transaction.resource, this.quantity - carry);
         } else {
             this.deliver = true;
-            let colony = global.empire.getColonyByName(this.demandOrder.colony);
+            let colony = global.empire.getColonyByName(this.transaction.demandOrder.colony);
             if (!colony) return null;
-            let target = colony.resourceManager.getDropoffTarget(this.demandOrder.resource);
+            let target = colony.resourceManager.getDropoffTarget(this.transaction.resource);
             if (!target) return null;
-            this.preTransferQuantity = creep.carry[this.demandOrder.resource];
-            return Task.Transfer(target, this.demandOrder.resource);
+            this.preTransferQuantity = creep.carry[this.transaction.resource];
+            return Task.Transfer(target, this.transaction.resource);
         }         
     }
     
@@ -97,30 +92,29 @@ export class SupplyJob extends Job {
     }
 
     protected onLoad(): void {
-        if (this.demandOrderId)
-            this.demandOrder = global.empire.exchange.demandOrders[this.demandOrderId];
-        if (this.supplyOrderId)
-            this.supplyOrder = global.empire.exchange.supplyOrders[this.supplyOrderId];
+        this.transaction = global.empire.exchange.transactions[this.transactionId];
         super.onLoad();
     }
 
     public save(): SupplyJobMemory {
         let mem = super.save() as SupplyJobMemory;
-        mem.supplyOrderId = this.supplyOrderId;
-        mem.demandOrderId = this.demandOrderId;
+        mem.transactionId = this.transaction ? this.transaction.id : undefined;
         mem.quantity = this.quantity;
         mem.deliver = this.deliver;
         mem.preWithdrawQuantity = this.preWithdrawQuantity;
         mem.preTransferQuantity = this.preTransferQuantity;
+        mem.withdraw = this.withdraw;
+        mem.complete = this.complete;
         return mem;
     }
 }
 
 export interface SupplyJobMemory extends JobMemory {
-    supplyOrderId: string;
-    demandOrderId: string;
+    transactionId: string;
     quantity: number;
     deliver: boolean;
     preWithdrawQuantity: number;
     preTransferQuantity: number;
+    withdraw: boolean;
+    complete: boolean;
 }

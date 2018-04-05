@@ -14,8 +14,9 @@ export class OperationRunner {
 
 
     public load(): void {
-        if (!this.operation.finished)
+        if (!this.operation.finished) {
             this.operation.load();
+        }
     }
 
     public update(colony: Colony): void {

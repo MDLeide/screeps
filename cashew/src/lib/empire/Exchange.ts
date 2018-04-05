@@ -1,4 +1,5 @@
 import { Colony } from "../colony/Colony";
+import { LinkGenerator } from "../util/LinkGenerator";
 
 export class Exchange {
     public static fromMemory(memory: ExchangeMemory): Exchange {
@@ -28,6 +29,7 @@ export class Exchange {
         let id = this.generateId(OrderType.Supply, colony, resource);
         let order = new Order(id, OrderType.Supply, colony.name, resource, quantity, Game.time);
         this.supplyOrders[id] = order;
+        global.events.exchange.orderCreated(order);
         return order;
     }
 
@@ -43,6 +45,7 @@ export class Exchange {
         let id = this.generateId(OrderType.Demand, colony, resource);
         let order = new Order(id, OrderType.Demand, colony.name, resource, quantity, Game.time);
         this.demandOrders[id] = order;
+        global.events.exchange.orderCreated(order);
         return order;
     }
 
@@ -88,14 +91,14 @@ export class Exchange {
 
     public getColonySupplyOrder(colony: Colony, resource: ResourceConstant): Order {
         for (let key in this.supplyOrders)
-            if (this.supplyOrders[key].colony == colony.name && this.supplyOrders[key].resource == resource)
+            if (this.supplyOrders[key].colony == colony.name && this.supplyOrders[key].resource == resource && !this.supplyOrders[key].canceled)
                 return this.supplyOrders[key];
         return null;
     }
 
     public getColonyDemandOrder(colony: Colony, resource: ResourceConstant): Order {
         for (let key in this.demandOrders)
-            if (this.demandOrders[key].colony == colony.name && this.demandOrders[key].resource == resource)
+            if (this.demandOrders[key].colony == colony.name && this.demandOrders[key].resource == resource && !this.demandOrders[key].canceled)
                 return this.demandOrders[key];
         return null;
     }
@@ -104,10 +107,10 @@ export class Exchange {
     public getColonyBalance(colony: Colony): { [resource: string]: number } {
         let balance = {};
         for (let key in this.supplyOrders)
-            if (this.supplyOrders[key].colony == colony.name)
+            if (this.supplyOrders[key].colony == colony.name && !this.supplyOrders[key].canceled)
                 balance[this.supplyOrders[key].resource] = -this.supplyOrders[key].unfilledQuantity;
         for (let key in this.demandOrders)
-            if (this.demandOrders[key].colony = colony.name)
+            if (this.demandOrders[key].colony == colony.name && !this.demandOrders[key].canceled)
                 balance[this.demandOrders[key].resource] = this.demandOrders[key].unfilledQuantity;
         return balance;
     }
@@ -132,74 +135,22 @@ export class Exchange {
 
         let transaction = new Transaction(supplyOrder, demandOrder, quantity);
         this.transactions[transaction.id] = transaction;
+        global.events.exchange.transactionCreated(transaction);
         return transaction;
     }
 
     public clearCompleted(): void {
         for (let key in this.supplyOrders)
-            if (this.supplyOrders[key].unfilledQuantity == 0)
+            if (this.supplyOrders[key].unfilledQuantity == 0 || this.supplyOrders[key].canceled)
                 this.supplyOrders[key] = undefined;
         for (let key in this.demandOrders)
-            if (this.demandOrders[key].unfilledQuantity == 0)
+            if (this.demandOrders[key].unfilledQuantity == 0 || this.demandOrders[key].canceled)
                 this.demandOrders[key] = undefined;
         for (let key in this.transactions)
             if (this.transactions[key].complete)
                 this.transactions[key] = undefined;
     }
     
-    ///**
-    // * Reserves quantity on a supply and demand order.
-    // * @param supplyId Order id of the supplying order.
-    // * @param demandId Order id of the demanding order.
-    // * @param quantity Optional quantity to reserve. If omited, the maximum possible quantity will be reserved.
-    // */
-    //public reserveOrder(supplyId: string, demandId: string, quantity?: number): void {
-    //    let supply = this.supplyOrders[supplyId];
-    //    if (!supply) throw Error("Supply order does not exist.");
-    //    if (supply.unreservedQuantity <= 0) throw Error("Supply order already fully reserved.");
-
-    //    let demand = this.demandOrders[demandId];
-    //    if (!demand) throw Error("Demand order does not exist.");
-    //    if (demand.unreservedQuantity <= 0) throw Error("Demand order already fully reserved.");
-
-    //    if (quantity) {
-    //        if (quantity > supply.unreservedQuantity) throw Error("Quantity in excess of supply's unreserved quantity.");
-    //        if (quantity > demand.unreservedQuantity) throw Error("Quantity in excess of demand's unreserved quantity.");
-    //    } else {
-    //        quantity = Math.min(supply.unreservedQuantity, demand.unreservedQuantity);
-    //    }
-        
-    //    supply.reserve(demandId, quantity);
-    //    demand.reserve(supplyId, quantity);
-    //}
-
-    //public cancelReservation(supplyId: string, demandId: string): void {
-    //    let supply = this.supplyOrders[supplyId];
-    //    if (!supply) throw Error("Supply order does not exist.");
-    //    let demand = this.demandOrders[demandId];
-    //    if (!demand) throw Error("Demand order does not exist.");
-    //    if (!supply.reservedBy[demandId] || !demand.reservedBy[supplyId]) throw Error("Reservation does not exist.");
-    //    if (supply.filledBy[demandId] || demand.filledBy[supplyId]) throw Error("Reservation already filled.");
-    //    supply.cancelReservation(demandId);
-    //    demand.cancelReservation(supplyId);
-    //}
-
-    ///**
-    // * Fills quantity on an order.
-    // * @param orderId Id of the order being filled.
-    // * @param otherOrderId Id of the order doing the filling.
-    // * @param quantity Optional quantity to fill. If omited, the maximum possible quantity will be filled.
-    // */
-    //public fillOrder(orderId: string, otherOrderId: string, quantity?: number): void {
-    //    let order = this.supplyOrders[orderId];
-    //    if (!order) order = this.demandOrders[orderId];
-    //    if (!order) throw Error("Order does not exist.");
-    //    if (quantity && quantity > order.unfilledQuantity) throw new Error("Quantity exceeds order's unfilled quantity.");
-    //    if (order.unfilledQuantity <= 0) throw new Error("Order already completely filled.");
-    //    if (!quantity) quantity = order.unfilledQuantity;
-    //    order.fill(otherOrderId, quantity);
-    //}
-
     protected generateId(type: OrderType, colony: Colony, resource: ResourceConstant): string {
         let count = 0;
         let id = `${(type == OrderType.Supply) ? "S" : "D"}-${resource}-${colony.name}-${count}`;
@@ -216,8 +167,7 @@ export class Exchange {
         }
         return id;
     }
-
-
+    
     private getOrderMemory(orders: { [orderId: string]: Order }): { [orderId: string]: OrderMemory } {
         let mem = {};
         for (let key in orders)
@@ -244,10 +194,10 @@ export class Exchange {
 
 export class Transaction {
     public static fromMemory(memory: TransactionMemory, exchange: Exchange): Transaction {
-        let t = new this(
-            exchange.supplyOrders[memory.supplyOrderId],
-            exchange.demandOrders[memory.demandOrderId],
-            memory.quantity);
+        let t = Object.create(Transaction.prototype) as Transaction;
+        t.supplyOrder = exchange.supplyOrders[memory.supplyOrderId];
+        t.demandOrder = exchange.demandOrders[memory.demandOrderId];
+        t.quantity = memory.quantity;
         t.complete = memory.complete;
         return t;
     }
@@ -276,17 +226,28 @@ export class Transaction {
 
     public pickUp(quantity: number): void {
         this.supplyOrder.fill(this.demandOrder.id, quantity);
+        global.events.exchange.transactionPickup(this, quantity);
     }
 
     public deliver(quantity: number): void {
         this.demandOrder.fill(this.supplyOrder.id, quantity);
-        if (this.delivered == this.quantity) this.complete = true;
+        global.events.exchange.transactionDeliver(this, quantity);
+        if (this.delivered == this.quantity) {
+            this.complete = true;
+            global.events.exchange.transactionComplete(this);
+        }
     }
 
     public cancelRemaining(): void {
         this.demandOrder.cancelReservation(this.supplyOrder.id);
         this.supplyOrder.cancelReservation(this.demandOrder.id);
         this.complete = true;
+    }
+
+    public toString(): string {
+        let sColony = global.empire.getColonyByName(this.supplyOrder.colony);
+        let dColony = global.empire.getColonyByName(this.demandOrder.colony);
+        return `Transaction | ${this.quantity} of ${this.resource} | ${LinkGenerator.linkRoom(sColony.nest.room, sColony.name)} => ${LinkGenerator.linkRoom(dColony.nest.room, dColony.name)} | ${this.pickedUp}p/${this.delivered}d `;
     }
 
     public save(): TransactionMemory {
@@ -307,8 +268,8 @@ export class Order {
         order.unreservedQuantity = memory.unreservedQuantity;
         order.filledQuantity = memory.filledQuantity;
         order.unfilledQuantity = memory.unfilledQuantity;
-        order.reservedBy = memory.reservedBy;
-        order.filledBy = memory.filledBy;
+        order.reservedBy = memory.reservedBy ? memory.reservedBy : {};
+        order.filledBy = memory.filledBy ? memory.filledBy : {};
         return order;
     }
 
@@ -333,13 +294,13 @@ export class Order {
     public tickCreated: number;
     public canceled: boolean;
 
-    public reservedQuantity: number;
-    public unreservedQuantity: number;
-    public filledQuantity: number;
-    public unfilledQuantity: number;
+    public reservedQuantity: number = 0;
+    public unreservedQuantity: number = 0;
+    public filledQuantity: number = 0;
+    public unfilledQuantity: number = 0;
 
-    public reservedBy: { [orderId: string]: number };
-    public filledBy: { [orderId: string]: number };
+    public reservedBy: { [orderId: string]: number } = {};
+    public filledBy: { [orderId: string]: number } = {};
 
     /**
      * Reserves a portion of this order for fulfillment.
@@ -371,11 +332,13 @@ export class Order {
             this.filledBy[id] += quantity;
         else
             this.filledBy[id] = quantity;
+
+        if (this.unfilledQuantity == 0)
+            global.events.exchange.orderComplete(this);
     }
 
-    public adjustQuantity(newQuantity: number): void {
-        if (newQuantity < this.reservedQuantity) throw Error("Invalid quantity change. Cannot reduce total quantity below reserved quantity.");
-        this.quantity = newQuantity;
+    public adjustQuantity(newQuantity: number): void {        
+        this.quantity = Math.max(newQuantity, this.reservedQuantity);
         this.unreservedQuantity = this.quantity - this.reservedQuantity;
         this.unfilledQuantity = this.quantity - this.filledQuantity;
     }
@@ -398,6 +361,12 @@ export class Order {
         this.filledQuantity -= this.filledBy[id];
         this.unfilledQuantity += this.filledBy[id];
         this.filledBy[id] = undefined;
+    }
+
+    public toString(): string {
+        let type = this.type == OrderType.Supply ? "Supply" : "Demand";
+        let col = global.empire.getColonyByName(this.colony);
+        return `${type} Order for ${this.resource} | ${LinkGenerator.linkRoom(col.nest.room, col.name)} | ${this.quantity}t/${this.reservedQuantity}r/${this.filledQuantity}f`;
     }
 
     public save(): OrderMemory {

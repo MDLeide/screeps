@@ -59,7 +59,7 @@ export abstract class Monitor {
 
     public tickSleeping(): void {
         if (this.mySleepingFor)
-            this.mySleepingFor--;
+            this.mySleepingFor--;        
     }
 
     public abstract load(): void;

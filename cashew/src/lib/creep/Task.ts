@@ -13,10 +13,27 @@ export abstract class Task {
 
     public type: TaskType;
 
+    /** True if the task completed successfuly. */
     public complete: boolean;
+    /** True if the task could not finish. */
     public incomplete: boolean;
+    /** True if an error occured. */
     public error: boolean;
+    /** True if the task is no longer running, for any reason. */
     public finished: boolean;
+
+    public toString(): string {
+        let status = "";
+        if (this.complete)
+            status = "finished (complete)";
+        else if (this.incomplete)
+            status = "finished (incomplete)";
+        else if (this.error)
+            status = "finished (error)";
+        else
+            status = "running";
+        return `Task ${this.type}: ${status}`;
+    }
 
     public save(): TaskMemory {
         return {
@@ -27,7 +44,7 @@ export abstract class Task {
             finished: this.finished
         };
     }
-
+    
     protected onComplete(): void {
         this.complete = true;
         this.finished = true;
@@ -62,11 +79,11 @@ export abstract class Task {
             case TASK_RESERVE:
                 return Reserve.fromMemory(memory as TargetedTaskMemory);
             case TASK_TRANSFER:
-                return Transfer.fromMemory(memory as TargetedTaskMemory);                       
+                return Transfer.fromMemory(memory as TransferTaskMemory);                       
             case TASK_UPGRADE:
                 return Upgrade.fromMemory(memory as TargetedTaskMemory);
             case TASK_WITHDRAW:
-                return Withdraw.fromMemory(memory as TargetedTaskMemory);
+                return Withdraw.fromMemory(memory as WithdrawTaskMemory);
             case TASK_RESERVE:
                 return Reserve.fromMemory(memory as TargetedTaskMemory);
             case TASK_CLAIM:

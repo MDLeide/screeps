@@ -22,6 +22,7 @@ import { WithdrawJob } from "../creep/WithdrawJob";
 import { TransferJob } from "../creep/TransferJob";
 import { ClaimJob, ClaimJobMemory } from "../creep/ClaimJob";
 import { HarvestBuilderJob, HarvestBuilderJobMemory } from "../creep/HarvestBuilderJob";
+import { SupplyJob, SupplyJobMemory } from "../creep/SupplyJob";
 
 
 export class ControllerRegistration {
@@ -105,5 +106,9 @@ export class ControllerRegistration {
         CreepControllerRepository.register(
             CREEP_CONTROLLER_HARVEST_BUILDER,
             (mem: CreepControllerMemory) => HarvestBuilderJob.fromMemory(mem as HarvestBuilderJobMemory));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_SUPPLY,
+            (mem: CreepControllerMemory) => SupplyJob.fromMemory(mem as SupplyJobMemory));
     }
 }

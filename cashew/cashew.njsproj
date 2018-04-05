@@ -162,6 +162,9 @@
     <TypeScriptCompile Include="src\lib\util\LinkGenerator.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\util\reports\ExchangeReport.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\visual\SpawnQueueVisual.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

@@ -4,20 +4,32 @@ export class StringBuilder {
     public defaultColor: string = "grey";
     public useHtmlBreak: boolean = true;
 
-    public append(str: string, color: string = this.defaultColor): StringBuilder {
+    public append(str: string | { toString(): string }, color: string = this.defaultColor): StringBuilder {
+        if (typeof (str) != "string")
+            return this.append(str.toString());
         this.str += `<font color='${color}'>${str}</font>`;
         return this;
     }
     
-    public appendLine(str?: string, color: string = this.defaultColor): StringBuilder {
+    public appendLine(str?: string | {toString(): string}, color: string = this.defaultColor): StringBuilder {
         if (str)
-            this.str += `<font color='${color}'>${str}</font>`;
+            this.str += `<font color='${color}'>${str}</font>`;            
 
         if (this.useHtmlBreak)
             this.str += "</br>";
         else
             this.str += "\n";
 
+        return this;
+    }
+
+    /** Trims any whitespace or breaks from the front and back of the string. */
+    public trim(): StringBuilder {
+        this.str = this.str.trim();
+        while (this.str.endsWith("</br>"))
+            this.str = this.str.slice(0, this.str.length - 5).trim();
+        while (this.str.startsWith("</br>"))
+            this.str = this.str.slice(5).trim();
         return this;
     }
 

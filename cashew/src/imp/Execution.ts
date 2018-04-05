@@ -27,43 +27,6 @@ export class SystemSettings {
     public static automaticallyIncrementPatch: boolean = true;
 }
 
-export abstract class Foo {
-    public static fromMemory(memory: FooMemory, instance: Foo): Foo {
-        instance.quantity = memory.quantity;
-        return instance;
-    }
-
-    public quantity: number;
-
-    public save(): FooMemory {
-        return {
-            quantity: this.quantity
-        };
-    }
-}
-
-export interface FooMemory {
-    quantity: number;
-}
-
-export class Bar extends Foo {
-    public static fromMemory(memory: BarMemory): Bar {
-        let bar = new this();
-        bar.type = memory.type;
-        return Foo.fromMemory(memory, bar) as Bar;
-    }
-
-    public type: string;
-
-    public save(): BarMemory {
-        let mem = super.save() as BarMemory;
-        mem.type = this.type;
-        return mem;
-    }
-}
-
-
-
 export class Execute {    
     public init(): void {        
         this.setSystem();
@@ -76,17 +39,18 @@ export class Execute {
         if (global.system.codeChange) {
             Patch.patchMemory();
             this.setEmpire();
-            Patch.patchEmpire();
+            global.empire.load();
+            Patch.patchEmpire();            
             Memory.empire = global.empire.save();
         }
     }
     
     public main(): void {
+        this.setEmpire();
+
         if (global.system.debug)
             if (!this.debug())
                 return;
-
-        this.setEmpire();
         
         if (global.empire.colonies.length) Playback.placeFlag(global.empire.colonies[0].nest.roomName); //debug
                 
@@ -141,7 +105,7 @@ export class Execute {
         if (Memory.empire)
             global.empire = Empire.fromMemory(Memory.empire, colonyFinder);
         else
-            global.empire = new Empire(colonyFinder, new TypedMonitorManager<Empire>(new StandardEmpireMonitorProvider());
+            global.empire = new Empire(colonyFinder, new TypedMonitorManager<Empire>(new StandardEmpireMonitorProvider()));
     }
 
     private run(): void {

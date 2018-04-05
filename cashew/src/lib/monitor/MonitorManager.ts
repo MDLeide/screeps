@@ -42,9 +42,12 @@ export class MonitorManager {
     }
 
     public cleanup(context: any): void {
-        for (var i = 0; i < this.monitors.length; i++)
+        for (var i = 0; i < this.monitors.length; i++) {
             if (this.monitors[i].status == MonitorStatus.Running)
                 this.monitors[i].cleanup(context);
+            else if (this.monitors[i].status == MonitorStatus.Sleeping && this.monitors[i].sleepingFor <= 0)
+                this.monitors[i].start();
+        }
     }
 
     protected getMonitorMemory(): MonitorMemory[] {
@@ -98,9 +101,12 @@ export class TypedMonitorManager<T> extends MonitorManager {
     }
 
     public cleanup(context: T): void {
-        for (var i = 0; i < this.monitors.length; i++)
+        for (var i = 0; i < this.monitors.length; i++) {
             if (this.monitors[i].status == MonitorStatus.Running)
                 this.monitors[i].cleanup(context);
+            else if (this.monitors[i].status == MonitorStatus.Sleeping && this.monitors[i].sleepingFor <= 0)
+                this.monitors[i].start();            
+        }
     }
 
     protected getMonitorMemory(): MonitorMemory[] {

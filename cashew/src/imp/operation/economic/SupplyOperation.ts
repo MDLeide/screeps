@@ -9,7 +9,8 @@ import { BodyRepository } from "../../creep/BodyRepository";
 
 export class SupplyOperation extends JobOperation {
     public static fromMemory(memory: SupplyOperationMemory): SupplyOperation {
-        let op = new this(global.empire.exchange.transactions[memory.transactionId]);
+        let op = Object.create(SupplyOperation.prototype) as SupplyOperation;        
+        op.transactionId = memory.transactionId;
         op.quantity = memory.quantity;
         op.quantityAssigned = memory.quantityAssigned;
         return JobOperation.fromMemory(memory, op) as SupplyOperation;
@@ -17,12 +18,10 @@ export class SupplyOperation extends JobOperation {
 
     constructor(transaction: Transaction) {
         super(OPERATION_SUPPLY, []);
+
         this.transaction = transaction;
         this.transactionId = transaction.id;
-        
-        this.quantity = transaction.demandOrder.reservedBy[transaction.supplyOrder.id];
-        if (transaction.demandOrder.filledBy[transaction.supplyOrder.id])
-            this.quantity -= transaction.demandOrder.filledBy[transaction.supplyOrder.id];
+        this.quantity = transaction.quantity;
     }
 
     public transaction: Transaction;
@@ -30,7 +29,7 @@ export class SupplyOperation extends JobOperation {
     public get demandOrder(): Order { return this.transaction.demandOrder; }
     public get supplyOrder(): Order { return this.transaction.supplyOrder; }
     public quantity: number;
-    public quantityAssigned: number;
+    public quantityAssigned: number = 0;
 
     protected getJob(assignment: Assignment): Job {
         if (this.quantityAssigned == this.quantity) return null;
@@ -38,7 +37,7 @@ export class SupplyOperation extends JobOperation {
         if (!creep) return null;
         let assign = Math.min(this.quantity - this.quantityAssigned, creep.carryCapacity);
         this.quantityAssigned += assign;
-        return new SupplyJob(this.supplyOrder, this.demandOrder, assign);
+        return new SupplyJob(this.transaction, assign);
     }
 
 
@@ -69,6 +68,7 @@ export class SupplyOperation extends JobOperation {
 
 
     protected onLoad(): void {
+        this.transaction = global.empire.exchange.transactions[this.transactionId];
     }
 
     protected onUpdate(colony: Colony): void {
@@ -84,6 +84,7 @@ export class SupplyOperation extends JobOperation {
     protected onInit(colony: Colony): InitStatus {
         let parts = this.quantity / 50;
         let creeps = Math.ceil((parts * 2 * 50) / (colony.nest.room.energyCapacityAvailable * .8));
+        creeps = Math.min(creeps, 5);
         for (var i = 0; i < creeps; i++)
             this.assignments.push(new Assignment(undefined, BodyRepository.hauler()));
         

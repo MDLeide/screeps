@@ -29,6 +29,7 @@ import { WallConstructionOperation } from "../operation/infrastructure/WallConst
 import { RoadConstructionOperation } from "../operation/infrastructure/RoadConstructionOperation";
 import { SpawnConstructionOperation, SpawnConstructionOperationMemory } from "../operation/infrastructure/SpawnConstructionOperation";
 import { ReplaceOriginalSpawnOperation } from "../operation/infrastructure/ReplaceOriginalSpawnOperation"
+import { NewSpawnConstructionOperation } from "../operation/infrastructure/NewSpawnConstructionOperation";
 
 // military
 import { RoomDefenseOperation } from "../operation/military/RoomDefenseOperation"; 
@@ -36,12 +37,14 @@ import { ReservationOperation, ReservationOperationMemory } from "../operation/m
 import { RoomScoutOperation, RoomScoutOperationMemory } from "../operation/military/RoomScoutOperation";
 import { DismantleOperation } from "../operation/military/DismantleOperation";
 import { LootOperation } from "../operation/military/LootOperation";
+import { ClaimRoomOperation } from "../operation/military/ClaimRoomOperation";
 
 // flags
 import { DismantleFlagOperation } from "../operation/flag/DismantleFlagOperation";
 import { LootFlagOperation } from "../operation/flag/LootFlagOperation";
-import { ClaimRoomOperation } from "../operation/military/ClaimRoomOperation";
-import { NewSpawnConstructionOperation } from "../operation/infrastructure/NewSpawnConstructionOperation";
+import { SupplyOperation } from "../operation/economic/SupplyOperation";
+
+
 
 
 export class OperationRegistration {
@@ -52,15 +55,7 @@ export class OperationRegistration {
         this.registerFlagOps();
     }
 
-    static registerInfrastructure(): void {
-        OperationRepository.register(
-            OPERATION_RESERVATION,
-            (memory: any) => ReservationOperation.fromMemory(memory));
-
-        OperationRepository.register(
-            OPERATION_ROOM_SCOUT,
-            (memory: any) => RoomScoutOperation.fromMemory(memory));
-
+    static registerEconomy(): void {
         OperationRepository.register(
             OPERATION_LIGHT_UPGRADE,
             (memory: any) => LightUpgradeOperation.fromMemory(memory));
@@ -92,9 +87,13 @@ export class OperationRegistration {
         OperationRepository.register(
             OPERATION_EXTENSION_FILL,
             (memory: any) => ExtensionFillOperation.fromMemory(memory));
-    }
 
-    static registerEconomy(): void {
+        OperationRepository.register(
+            OPERATION_SUPPLY,
+            (memory: any) => SupplyOperation.fromMemory(memory));
+    }
+        
+    static registerInfrastructure(): void {
         OperationRepository.register(
             OPERATION_STORAGE_CONSTRUCTION,
             (memory: any) => StorageConstructionOperation.fromMemory(memory));
@@ -169,6 +168,14 @@ export class OperationRegistration {
     }
 
     static registerMilitary(): void {
+        OperationRepository.register(
+            OPERATION_ROOM_SCOUT,
+            (memory: any) => RoomScoutOperation.fromMemory(memory));
+
+        OperationRepository.register(
+            OPERATION_RESERVATION,
+            (memory: any) => ReservationOperation.fromMemory(memory));
+
         OperationRepository.register(
             OPERATION_ROOM_DEFENSE,
             (memory: any) => RoomDefenseOperation.fromMemory(memory));

@@ -45,6 +45,7 @@ declare interface global {
     OPERATION_DISMANTLE: string;
     OPERATION_LOOT: string;
     OPERATION_CLAIM_ROOM: string;
+    OPERATION_SUPPLY: string;
 
     FLAG_OPERATION_DISMANTLE: string;
     FLAG_OPERATION_LOOT: string;
@@ -75,6 +76,7 @@ declare interface global {
     CREEP_CONTROLLER_WITHDRAW: string;
     CREEP_CONTROLLER_TRANSFER: string;
     CREEP_CONTROLLER_HARVEST_BUILDER: string;
+    CREEP_CONTROLLER_SUPPLY: string;
 
     TASK_IDLE: string;
     TASK_MOVE_TO: string;

@@ -5,6 +5,7 @@ import { OperationReport } from "./OperationReport";
 import { Operation } from "../../operation/Operation";
 import { StringBuilder } from "../StringBuilder";
 import { ColonyOperationReport } from "./ColonyOperationReport";
+import { ExchangeReport } from "./ExchangeReport";
 
 export class Reporter {
     constructor() { }
@@ -13,6 +14,12 @@ export class Reporter {
         let help = "allOperations() [ops] </br>";
         help += "colonyOperations(colonyName)</br>";
         return help;
+    }
+
+    public ex(): string { return this.exchange(); }
+
+    public exchange(): string {
+        return ExchangeReport.getHtml(global.empire.exchange);
     }
 
     public ops(): string { return this.allOperations(); }

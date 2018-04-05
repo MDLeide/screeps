@@ -3,7 +3,7 @@ import { NestStructureVisual } from "../visual/NestStructureVisual";
 import { NestMap } from "../map/NestMap";
 import { System } from "lib/System";
 import { LinkGenerator } from "./LinkGenerator";
-import { Order, Transaction } from "../empire/Exchange";
+import { Order, Transaction, OrderType } from "../empire/Exchange";
 
 export class EventLog {
     private groupNameWidth: number = 5;
@@ -18,6 +18,7 @@ export class EventLog {
         this.debug = new DebugEvents(colors, this);
         this.remoteMining = new RemoteMiningEvents(colors, this);
         this.system = new SystemEvents(colors, this);
+        this.exchange = new ExchangeEvents(colors, this);
 
         this.setGroupWidth([
             this.empire,
@@ -26,7 +27,8 @@ export class EventLog {
             this.creep,
             this.debug,
             this.remoteMining,
-            this.system
+            this.system,
+            this.exchange
         ]);        
     }
     
@@ -41,7 +43,7 @@ export class EventLog {
     A message's level must be greater than
     this number to be printed. Lower number means
     more messages */
-    public messageLevel: number = 0;
+    public messageLevel: number = 4;
     /** If true, rooms will be converted to HTML links in the console output. */
     public linkRooms: boolean = true;
 
@@ -52,6 +54,7 @@ export class EventLog {
     public debug: DebugEvents;
     public remoteMining: RemoteMiningEvents;
     public system: SystemEvents;
+    public exchange: ExchangeEvents;
 
     public log(msg: string, level: number, category: string): void {
         if (this.mute) return;
@@ -118,14 +121,20 @@ abstract class EventGroup {
             return roomName;
     }
 
-    protected colony(colonyName: string): string {
+    protected linkColony(colonyName: string): string {
         if (!this.eventLog.linkRooms)
             return colonyName;
         let colony = global.empire.getColonyByName(colonyName);
         if (!colony)
             return colonyName;
         return LinkGenerator.linkRoom(colony.nest.roomName, colonyName);            
-    }    
+    }
+
+    protected getStringBuilder(): StringBuilder {
+        let sb = new StringBuilder();
+        sb.defaultColor = this.colors.default;
+        return sb;
+    }
 }
 
 class EmpireEvents extends EventGroup {
@@ -145,7 +154,7 @@ class EmpireEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(this.colony(colonyName), this.colors.name);
+        sb.append(this.linkColony(colonyName), this.colors.name);
         sb.append(" has been established", this.colors.importantPositiveVerb);
 
         this.log(sb.toString(), this.colonyEstablishedLevel);
@@ -208,12 +217,94 @@ class ExchangeEvents extends EventGroup {
         super(colors, eventLog, "exchange");
     }
 
-    public orderCreated(order: Order): void {
+    public orderCreatedLevel: number = 7;
+    public orderCompleteLevel: number = 7;
+    public transactionCreatedLevel: number = 6;
+    public transactionCompleteLevel: number = 6;
+    public transactionPickupLevel: number = 5;
+    public transactionDeliverLevel: number = 4;
 
+    public orderCreated(order: Order): void {
+        let sb = this.getStringBuilder();
+        sb.append("Colony ", this.colors.identifier);
+        sb.append(this.linkColony(order.colony), this.colors.name);
+        sb.append(" created a ", this.colors.positiveVerb);
+        let type = order.type == OrderType.Demand ? "demand order" : "supply order";
+        sb.append(type, this.colors.identifier);
+        sb.append(" for ");
+        sb.append(order.quantity.toString(), this.colors.name);
+        sb.append(" units of ");
+        sb.append(order.resource, this.colors.name);
+        this.log(sb.toString(), this.orderCompleteLevel);
+    }
+
+    public orderComplete(order: Order): void {
+        let sb = this.getStringBuilder();
+        sb.append("Colony ", this.colors.identifier);
+        sb.append(this.linkColony(order.colony), this.colors.name);
+        sb.append("'s ", this.colors.name);
+        let type = order.type == OrderType.Demand ? "demand order" : "supply order";
+        sb.append(type, this.colors.identifier);
+        sb.append(" for ");
+        sb.append(order.quantity, this.colors.name);
+        sb.append(" units of ");
+        sb.append(order.resource, this.colors.name);
+        sb.append(" has been completed", this.colors.positiveVerb);
+        this.log(sb.toString(), this.orderCompleteLevel);
     }
 
     public transactionCreated(transaction: Transaction): void {
+        let sb = this.getStringBuilder();
+        sb.append("A ");
+        sb.append("transaction", this.colors.identifier);
+        sb.append(" has been created: ", this.colors.neutralVerb);
+        sb.append(transaction.quantity, this.colors.name);
+        sb.append(" ");
+        sb.append(transaction.resource, this.colors.name);
+        sb.append(" from ", this.colors.neutralVerb);
+        sb.append(this.linkColony(transaction.supplyOrder.colony), this.colors.name);
+        sb.append(" => ", this.colors.neutralVerb);
+        sb.append(this.linkColony(transaction.demandOrder.colony), this.colors.name);
+        this.log(sb.toString(), this.transactionCreatedLevel);
+    }
 
+    public transactionComplete(transaction: Transaction): void {
+        let sb = this.getStringBuilder();
+        sb.append("A ");
+        sb.append("transaction", this.colors.identifier);
+        sb.append(" has completed: ", this.colors.positiveVerb);
+        sb.append(transaction.quantity, this.colors.name);
+        sb.append(" ");
+        sb.append(transaction.resource, this.colors.name);
+        sb.append(" from ", this.colors.neutralVerb);
+        sb.append(this.linkColony(transaction.supplyOrder.colony), this.colors.name);
+        sb.append(" => ", this.colors.neutralVerb);
+        sb.append(this.linkColony(transaction.demandOrder.colony), this.colors.name);
+        this.log(sb.toString(), this.transactionCreatedLevel);
+    }
+
+    public transactionPickup(transaction: Transaction, quantity: number): void {
+        let sb = this.getStringBuilder();
+        sb.append("Transaction", this.colors.identifier);
+        sb.append(" picked up ", this.colors.neutralVerb);
+        sb.append(quantity, this.colors.name);
+        sb.append(" ");
+        sb.append(transaction.resource, this.colors.name);
+        sb.append(" from ", this.colors.neutralVerb);
+        sb.append(this.linkColony(transaction.supplyOrder.colony), this.colors.name);
+        this.log(sb.toString(), this.transactionCreatedLevel);
+    }
+
+    public transactionDeliver(transaction: Transaction, quantity: number): void {
+        let sb = this.getStringBuilder();
+        sb.append("Transaction", this.colors.identifier);
+        sb.append(" delivered ", this.colors.positiveVerb);
+        sb.append(quantity, this.colors.name);
+        sb.append(" ");
+        sb.append(transaction.resource, this.colors.name);
+        sb.append(" to ", this.colors.neutralVerb);
+        sb.append(this.linkColony(transaction.demandOrder.colony), this.colors.name);
+        this.log(sb.toString(), this.transactionCreatedLevel);
     }
 }
 
@@ -235,7 +326,7 @@ class ColonyEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(this.colony(colonyName), this.colors.name);
+        sb.append(this.linkColony(colonyName), this.colors.name);
         sb.append(" is ");
         sb.append("spawning", this.colors.positiveVerb);
         sb.append(" a ");
@@ -255,7 +346,7 @@ class ColonyEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(this.colony(colonyName), this.colors.name);
+        sb.append(this.linkColony(colonyName), this.colors.name);
         sb.append(" has ");
         sb.append("scheduled spawning of a ", this.colors.positiveVerb);
         sb.append("creep", this.colors.identifier);
@@ -263,7 +354,7 @@ class ColonyEvents extends EventGroup {
         sb.append(creepName, this.colors.name);
         if (requestingColony && requestingColony != colonyName) {
             sb.append(" in support of ", this.colors.positiveVerb);
-            sb.append(this.colony(requestingColony), this.colors.name)
+            sb.append(this.linkColony(requestingColony), this.colors.name)
         }
         sb.append(" with a ");
         sb.append("body", this.colors.identifier);
@@ -305,7 +396,7 @@ class ColonyEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(this.colony(colonyName), this.colors.name);
+        sb.append(this.linkColony(colonyName), this.colors.name);
         sb.append(" has met the ", this.colors.importantPositiveVerb);
         sb.append("milestone ", this.colors.identifier);        
         sb.append(milestoneName, this.colors.name);        
@@ -317,7 +408,7 @@ class ColonyEvents extends EventGroup {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
-        sb.append(this.colony(requestingColonyName), this.colors.name);
+        sb.append(this.linkColony(requestingColonyName), this.colors.name);
         sb.append(" requested spawn support for a ", this.colors.neutralVerb);
         sb.append(bodyType, this.colors.name);
         if (maxRange) {
@@ -613,7 +704,7 @@ class CreepEvents extends EventGroup {
             .append(" died ", this.colors.neutralVerb)
             .append(" in ")
             .append("colony ", this.colors.identifier)
-            .append(this.colony(colonyName), this.colors.name);
+            .append(this.linkColony(colonyName), this.colors.name);
 
         this.log(sb.toString(), this.diedLevel);
     }    
@@ -635,7 +726,7 @@ class RemoteMiningEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(this.colony(colonyName), this.colors.name);
+        sb.append(this.linkColony(colonyName), this.colors.name);
         sb.append(" failed to scout ", this.colors.negativeVerb);
         sb.append("room ", this.colors.identifier);
         sb.append(roomName);
@@ -650,7 +741,7 @@ class RemoteMiningEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(this.colony(colonyName), this.colors.name);
+        sb.append(this.linkColony(colonyName), this.colors.name);
         sb.append(" scouted ", this.colors.neutralVerb);
         sb.append("and added ", this.colors.positiveVerb);
         sb.append("room ", this.colors.identifier);
@@ -666,7 +757,7 @@ class RemoteMiningEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Colony ", this.colors.identifier);
-        sb.append(this.colony(colonyName), this.colors.name);
+        sb.append(this.linkColony(colonyName), this.colors.name);
         sb.append(" scouted and discarded ", this.colors.neutralVerb);
         sb.append("room ", this.colors.identifier);
         sb.append(roomName);

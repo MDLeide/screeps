@@ -53,8 +53,6 @@ export class Patch {
 
     private static patchPrivateMemory(): void {
         this.doPatch([
-            this.patchStandardColonyMonitorMemory,
-            this.patchResourceManagerMemory
         ]);
     }
 

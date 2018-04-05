@@ -44,6 +44,7 @@ declare const OPERATION_RESERVATION: "Reservation";
 declare const OPERATION_DISMANTLE: "Dismantle";
 declare const OPERATION_LOOT: "Loot";
 declare const OPERATION_CLAIM_ROOM: "ClaimRoom";
+declare const OPERATION_SUPPLY: "Supply";
 
 declare const FLAG_OPERATION_DISMANTLE: "Dismantle";
 declare const FLAG_OPERATION_LOOT: "Loot";
@@ -74,6 +75,7 @@ declare const CREEP_CONTROLLER_DISMANTLER: "Dismantler";
 declare const CREEP_CONTROLLER_WITHDRAW: "Withdraw";
 declare const CREEP_CONTROLLER_TRANSFER: "Transfer";
 declare const CREEP_CONTROLLER_HARVEST_BUILDER: "HarvestBuilder";
+declare const CREEP_CONTROLLER_SUPPLY: "Supply";
 
 declare const TASK_IDLE: "Idle";
 declare const TASK_MOVE_TO: "MoveTo";
@@ -149,6 +151,7 @@ type OPERATION_RESERVATION = "Reservation";
 type OPERATION_DISMANTLE = "Dismantle";
 type OPERATION_LOOT = "Loot";
 type OPERATION_CLAIM_ROOM = "ClaimRoom";
+type OPERATION_SUPPLY = "Supply";
 
 type FLAG_OPERATION_DISMANTLE = "Dismantle";
 type FLAG_OPERATION_LOOT = "Loot";
@@ -179,6 +182,7 @@ type CREEP_CONTROLLER_DISMANTLER = "Dismantler";
 type CREEP_CONTROLLER_WITHDRAW = "Withdraw";
 type CREEP_CONTROLLER_TRANSFER = "Transfer";
 type CREEP_CONTROLLER_HARVEST_BUILDER = "HarvestBuilder";
+type CREEP_CONTROLLER_SUPPLY = "Supply";
 
 type TASK_IDLE = "Idle";
 type TASK_MOVE_TO = "MoveTo";
@@ -258,7 +262,8 @@ type OperationType =
     OPERATION_RESERVATION |
     OPERATION_DISMANTLE |
     OPERATION_LOOT |
-    OPERATION_CLAIM_ROOM;
+    OPERATION_CLAIM_ROOM |
+    OPERATION_SUPPLY;
 
 type FlagOperationType =
     FLAG_OPERATION_DISMANTLE |
@@ -291,7 +296,8 @@ type CreepControllerType =
     CREEP_CONTROLLER_DISMANTLER |
     CREEP_CONTROLLER_WITHDRAW |
     CREEP_CONTROLLER_TRANSFER |
-    CREEP_CONTROLLER_HARVEST_BUILDER;
+    CREEP_CONTROLLER_HARVEST_BUILDER |
+    CREEP_CONTROLLER_SUPPLY;
 
 type TaskType =
     TASK_IDLE |

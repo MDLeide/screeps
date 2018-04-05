@@ -18,7 +18,7 @@ export class ExchangeMonitor extends EmpireMonitor {
     }
 
     public update(context: Empire): void {
-        this.sleep(250);
+        this.sleep(50);
         context.exchange.clearCompleted();
         for (let key in context.exchange.supplyOrders) {            
             let sOrder = context.exchange.supplyOrders[key];

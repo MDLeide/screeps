@@ -44,6 +44,7 @@ global.OPERATION_RESERVATION = "Reservation";
 global.OPERATION_DISMANTLE = "Dismantle";
 global.OPERATION_LOOT = "Loot";
 global.OPERATION_CLAIM_ROOM = "ClaimRoom";
+global.OPERATION_SUPPLY = "Supply";
 
 global.FLAG_OPERATION_DISMANTLE = "Dismantle";
 global.FLAG_OPERATION_LOOT = "Loot";
@@ -74,6 +75,7 @@ global.CREEP_CONTROLLER_DISMANTLER = "Dismantler";
 global.CREEP_CONTROLLER_WITHDRAW = "Withdraw";
 global.CREEP_CONTROLLER_TRANSFER = "Transfer";
 global.CREEP_CONTROLLER_HARVEST_BUILDER = "HarvestBuilder";
+global.CREEP_CONTROLLER_SUPPLY = "Supply";
 
 global.TASK_IDLE = "Idle";
 global.TASK_MOVE_TO = "MoveTo";

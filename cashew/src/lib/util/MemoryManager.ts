@@ -30,6 +30,8 @@ export class MemoryManager {
 
         if (!memory.colonies) memory.colonies = {};
         if (!memory.exchange) memory.exchange = this.getExchangeMemory();
+        if (!memory.monitorManager) memory.monitorManager = this.getEmpireMonitorManagerMemory();
+
         return memory;
     }
 
@@ -54,7 +56,8 @@ export class MemoryManager {
     private static getEmpireMemory(): EmpireMemory {
         return {
             colonies: {},
-            exchange: this.getExchangeMemory()
+            exchange: this.getExchangeMemory(),
+            monitorManager: this.getEmpireMonitorManagerMemory()
         };
     }
 
@@ -65,7 +68,15 @@ export class MemoryManager {
     private static getExchangeMemory(): ExchangeMemory {
         return {
             demandOrders: {},
-            supplyOrders: {}
+            supplyOrders: {},
+            transactions: {}
+        };
+    }
+
+    private static getEmpireMonitorManagerMemory(): MonitorManagerMemory {
+        return {
+            monitors: [],
+            provider: MONITOR_PROVIDER_EMPIRE_STANDARD
         };
     }
 }
