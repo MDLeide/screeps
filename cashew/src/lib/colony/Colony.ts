@@ -60,7 +60,6 @@ export class Colony  {
     public towerController: TowerController;
     public towers: StructureTower[] = [];
     public linkManager: LinkManager;
-
     
     /** Should be called once, after initial object contruction. Do not need to call when loading from memory. */
     public initialize(): void {
@@ -135,6 +134,21 @@ export class Colony  {
             this.towerController.cleanup(this, this.towers[i]);
     }
 
+    public registerDropOff(demandOrderId: string, supplyOrderId: string, quantity: number): void {
+        let order = global.empire.exchange.demandOrders[demandOrderId];
+        if (!order) return;
+        if (order.resource == RESOURCE_ENERGY)
+            this.resourceManager.ledger.registerEmpireIncoming(quantity);
+        global.empire.exchange.fillOrder(demandOrderId, supplyOrderId, quantity);
+    }
+
+    public registerPickUp(supplyOrderId: string, demandOrderId: string, quantity: number): void {
+        let order = global.empire.exchange.supplyOrders[supplyOrderId];
+        if (!order) return;
+        if (order.resource == RESOURCE_ENERGY)
+            this.resourceManager.ledger.registerEmpireOutgoing(quantity);
+        global.empire.exchange.fillOrder(supplyOrderId, demandOrderId, quantity);
+    }
 
     public getEffectiveRcl(forceRecalculation: boolean = false): EffectiveRcl {
         if (forceRecalculation || !this.effectiveRcl)

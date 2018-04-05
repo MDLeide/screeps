@@ -27,6 +27,43 @@ export class SystemSettings {
     public static automaticallyIncrementPatch: boolean = true;
 }
 
+export abstract class Foo {
+    public static fromMemory(memory: FooMemory, instance: Foo): Foo {
+        instance.quantity = memory.quantity;
+        return instance;
+    }
+
+    public quantity: number;
+
+    public save(): FooMemory {
+        return {
+            quantity: this.quantity
+        };
+    }
+}
+
+export interface FooMemory {
+    quantity: number;
+}
+
+export class Bar extends Foo {
+    public static fromMemory(memory: BarMemory): Bar {
+        let bar = new this();
+        bar.type = memory.type;
+        return Foo.fromMemory(memory, bar) as Bar;
+    }
+
+    public type: string;
+
+    public save(): BarMemory {
+        let mem = super.save() as BarMemory;
+        mem.type = this.type;
+        return mem;
+    }
+}
+
+
+
 export class Execute {    
     public init(): void {        
         this.setSystem();

@@ -55,31 +55,7 @@ export class ResourceManager {
 
 
     public load(): void {
-        if (this.structures.sourceAContainerId)
-            this.structures.sourceAContainer = Game.getObjectById<StructureContainer>(this.structures.sourceAContainerId);
-
-        if (this.structures.sourceALinkId)
-            this.structures.sourceALink = Game.getObjectById<StructureLink>(this.structures.sourceALinkId);
-
-        if (this.structures.sourceBContainerId)
-            this.structures.sourceBContainer = Game.getObjectById<StructureContainer>(this.structures.sourceBContainerId);
-
-        if (this.structures.sourceBLinkId)
-            this.structures.sourceBLink = Game.getObjectById<StructureLink>(this.structures.sourceBLinkId);
-
-
-        if (this.structures.controllerContainerId)
-            this.structures.controllerContainer = Game.getObjectById<StructureContainer>(this.structures.controllerContainerId);
-
-
-        if (this.structures.controllerLinkId)
-            this.structures.controllerLink = Game.getObjectById<StructureLink>(this.structures.controllerLinkId);
-
-        if (this.structures.extensionLinkId)
-            this.structures.extensionLink = Game.getObjectById<StructureLink>(this.structures.extensionLinkId);
-
-        if (this.structures.storageLinkId)
-            this.structures.storageLink = Game.getObjectById<StructureLink>(this.structures.storageLinkId);
+        this.structures.load();
     }
 
     public update(): void {
@@ -95,6 +71,31 @@ export class ResourceManager {
     }
 
 
+    public getResourceCount(): { [resource: string]: number } {
+        let resources: { [resource: string]: number } = {};
+        if (this.colony.nest.room.storage)
+            this.sumStore(resources, this.colony.nest.room.storage);
+
+        if (this.colony.nest.room.terminal)
+            this.sumStore(resources, this.colony.nest.room.terminal);
+
+        for (var i = 0; i < this.structures.storageContainers.length; i++)
+            this.sumStore(resources, this.structures.storageContainers[i]);
+
+        return resources;
+    }
+
+    /** Gets the target to use when dropping off energy for a demand order. */
+    public getDropoffTarget(resource: ResourceConstant): TransferTarget {
+        return this.colony.nest.room.storage;
+    }
+
+    /** Gets the target to use when picking up energy for a supply order. */
+    public getPickupTarget(resource: ResourceConstant): WithdrawTarget {
+        return this.colony.nest.room.storage;
+    }
+
+    /** Finds dropped energy. */
     public getEnergyPickupTarget(creep: Creep): Resource<RESOURCE_ENERGY> {
         let look = this.colony.nest.room.find(FIND_DROPPED_RESOURCES, { filter: (r) => r.resourceType == RESOURCE_ENERGY && r.amount > 75 });
 
@@ -112,18 +113,22 @@ export class ResourceManager {
         return resource;
     }
 
+    /** Gets the highest priority target that requires energy. */
     public getTransferTarget(creep: Creep): TransferTarget {
         return this.transfers.getTransferTarget(creep);
     }
 
+    /** Gets a Spawn or Extension that requires energy. */
     public getSpawnExtensionTransferTargets(creep: Creep): (StructureSpawn | StructureExtension) {
         return this.transfers.getSpawnExtensionTransferTargets(creep);
     }
-    
+
+    /** Gets the currently prefered energy provider. */
     public getWithdrawTarget(creep: Creep): WithdrawTarget {
         return this.withdraws.getWithdrawTarget(creep);
     }
-    
+
+
     public setSourceContainer(sourceId: string, container: (string | StructureContainer)): void {
         if (container instanceof StructureContainer) {
             if (this.sourceAId == sourceId) {
@@ -151,7 +156,26 @@ export class ResourceManager {
             this.setSourceLink(sourceId, Game.getObjectById<StructureLink>(link));
         }
     }
-    
+
+    public addStorageContainer(container: string | StructureContainer): void {
+        if (typeof (container) == "string")
+            return this.addStorageContainer(Game.getObjectById<StructureContainer>(container));
+        if (!container)
+            return;
+        this.structures.storageContainerIds.push(container.id);
+        this.structures.storageContainers.push(container);
+    }
+
+    private sumStore(resourceCount: { [resource: string]: number }, structure: { store: StoreDefinition }): { [resource: string]: number } {
+        for (let key in structure.store) {
+            if (resourceCount[key])
+                resourceCount[key] += structure.store[key];
+            else
+                resourceCount[key] = structure.store[key];
+        }
+        return resourceCount;
+    }
+
     public save(): ResourceManagerMemory {
         return {
             settings: this.settings.save(),
@@ -469,17 +493,15 @@ class Structures {
     public static fromMemory(memory: ResourceManagerStructureMemory, resourceManager: ResourceManager): Structures {
         let structures = new this(resourceManager);
 
-        structures.sourceALinkId = memory.sourceALinkId;
         structures.sourceAContainerId = memory.sourceAContainerId;
-
-        structures.sourceBLinkId = memory.sourceBLinkId;
+        structures.sourceALinkId = memory.sourceALinkId;        
         structures.sourceBContainerId = memory.sourceBContainerId;
-
+        structures.sourceBLinkId = memory.sourceBLinkId;        
         structures.controllerContainerId = memory.controllerContainerId;
-
+        structures.controllerLinkId = memory.controllerLinkId;
         structures.extensionLinkId = memory.extensionLinkId;
         structures.storageLinkId = memory.storageLinkId;
-        structures.controllerLinkId = memory.controllerLinkId;
+        structures.storageContainerIds = memory.storageContainerIds[];
 
         return structures;
     }
@@ -491,29 +513,51 @@ class Structures {
     public resourceManager: ResourceManager;
 
     public sourceAContainerId: string;
-    public sourceAContainer: StructureContainer;
-
     public sourceALinkId: string;
-    public sourceALink: StructureLink;
-
     public sourceBContainerId: string;
-    public sourceBContainer: StructureContainer;
-
     public sourceBLinkId: string;
-    public sourceBLink: StructureLink;
-    
     public controllerContainerId: string;
-    public controllerContainer: StructureContainer;
-
     public controllerLinkId: string;
-    public controllerLink: StructureLink;
-
     public extensionLinkId: string;
-    public extensionLink: StructureLink;
-
     public storageLinkId: string;
-    public storageLink: StructureLink;
+    public storageContainerIds: string[] = [];
 
+    public sourceAContainer: StructureContainer;
+    public sourceALink: StructureLink;
+    public sourceBContainer: StructureContainer;
+    public sourceBLink: StructureLink;    
+    public controllerContainer: StructureContainer;
+    public controllerLink: StructureLink;    
+    public extensionLink: StructureLink;    
+    public storageLink: StructureLink;
+    public storageContainers: StructureContainer[] = [];
+
+    public load(): void {
+        if (this.sourceAContainerId)
+            this.sourceAContainer = Game.getObjectById<StructureContainer>(this.sourceAContainerId);
+        if (this.sourceALinkId)
+            this.sourceALink = Game.getObjectById<StructureLink>(this.sourceALinkId);
+        if (this.sourceBContainerId)
+            this.sourceBContainer = Game.getObjectById<StructureContainer>(this.sourceBContainerId);
+        if (this.sourceBLinkId)
+            this.sourceBLink = Game.getObjectById<StructureLink>(this.sourceBLinkId);
+        
+        if (this.controllerContainerId)
+            this.controllerContainer = Game.getObjectById<StructureContainer>(this.controllerContainerId);        
+        if (this.controllerLinkId)
+            this.controllerLink = Game.getObjectById<StructureLink>(this.controllerLinkId);
+
+        if (this.extensionLinkId)
+            this.extensionLink = Game.getObjectById<StructureLink>(this.extensionLinkId);
+
+        if (this.storageLinkId)
+            this.storageLink = Game.getObjectById<StructureLink>(this.storageLinkId);
+        for (var i = 0; i < this.storageContainerIds.length; i++) {
+            let container = Game.getObjectById<StructureContainer>(this.storageContainerIds[i]);
+            if (container)
+                this.storageContainers.push(container);
+        }            
+    }
 
     public getInputLinks(): StructureLink[] {
         let links = [];
@@ -557,17 +601,21 @@ class Structures {
         return null;
     }
 
+    private getStorageContainerIds(): string[] {
+        return this.storageContainers.map(p => p.id);
+    }
 
     public save(): ResourceManagerStructureMemory {
-        return {            
-            controllerLinkId: this.controllerLinkId,
-            extensionLinkId: this.extensionLinkId,
-            storageLinkId: this.storageLinkId,
-            controllerContainerId: this.controllerContainerId,
-            sourceAContainerId: this.sourceAContainerId,
-            sourceALinkId: this.sourceALinkId,
-            sourceBContainerId: this.sourceBContainerId,
-            sourceBLinkId: this.sourceBLinkId
+        return {
+            controllerLinkId: this.controllerLink ? this.controllerLink.id : undefined,
+            extensionLinkId: this.extensionLink ? this.extensionLink.id : undefined,
+            storageLinkId: this.storageLink ? this.storageLink.id : undefined,
+            controllerContainerId: this.controllerContainer ? this.controllerContainer.id : undefined,
+            sourceAContainerId: this.sourceAContainer ? this.sourceAContainer.id : undefined,
+            sourceALinkId: this.sourceALink ? this.sourceALink.id : undefined,
+            sourceBContainerId: this.sourceBContainer ? this.sourceBContainer.id : undefined,
+            sourceBLinkId: this.sourceBLink ? this.sourceBLink.id : undefined,
+            storageContainerIds: this.getStorageContainerIds()
         };        
     }
 }
@@ -696,7 +744,8 @@ class Withdraws {
         if (container)
             return container;
 
-        if (this.resourceManager.colony.nest.room.storage && this.resourceManager.colony.nest.room.storage.store.energy > this.resourceManager.settings.storageWithdrawThreshold)
+        if (this.resourceManager.colony.nest.room.storage &&
+            this.resourceManager.colony.nest.room.storage.store.energy > this.resourceManager.settings.storageWithdrawThreshold)
             return this.resourceManager.colony.nest.room.storage;
 
         return null;
@@ -785,24 +834,32 @@ class ResourceManagerSettings {
         TransferPriorityTarget.Terminal
     ];
 
-    public storageWithdrawThreshold: number = 100;
-    public sourceContainerWithdrawThreshold: number = 500;
+    // WITHDRAWS
 
+    /** Minimum amount of energy required to withdraw from storage. */
+    public storageWithdrawThreshold: number = 100;
+    /** Minimum amount of energy required to withdraw from source container. */
+    public sourceContainerWithdrawThreshold: number = 500;
+    /** Amount of energy required for a source container to be considered overflowing. */
     public sourceContainerOverflowThreshold: number = 1600;
 
+    // TRANSFERS
+
+    /** Minimum amount of energy required for a link to execute a transfer. */
     public linkTransferThreshold: number = 600;
-
-    public controllerLinkTransferThreshold: number = 500;
-    public extensionLinkTransferThreshold: number = 500;
-    public storageLinkTransferThreshold: number = 500;
-
+    /** Maximum amount of energy allowed in controller container before disallowing transfers. */
     public controllerContainerMaxEnergy: number = 1800;
+    /** Maximum amount of energy allowed in storage before disallowing transfers. */
     public storageMaxEnergy: number = 1000000;
+    /** Maximum amount of energy allowed in a lab before disallowing transfers. */
     public labMaxEnergy: number = 2000;
+    /** Maximum amount of energy allowed in a tower before disallowing transfers. */
     public towerMaxEnergy: number = 1000;
+    /** Maximum amount of energy allowed in the terminal before disallowing transfers. */
     public terminalMaxEnergy: number = 200000;
+    /** Maximum amount of energy allowed in the nuker before disallowing transfers. */
     public nukerMaxEnergy: number = 200000;
-
+    
     public save(): ResourceManagerSettingsMemory {
         return {
             transferPriority: this.fillPriority

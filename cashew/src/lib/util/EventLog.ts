@@ -3,6 +3,7 @@ import { NestStructureVisual } from "../visual/NestStructureVisual";
 import { NestMap } from "../map/NestMap";
 import { System } from "lib/System";
 import { LinkGenerator } from "./LinkGenerator";
+import { Order, Transaction } from "../empire/Exchange";
 
 export class EventLog {
     private groupNameWidth: number = 5;
@@ -199,6 +200,20 @@ class EmpireEvents extends EventGroup {
         }
 
         this.log(sb.toString(), this.colonyRemovedLevel);
+    }
+}
+
+class ExchangeEvents extends EventGroup {
+    constructor(colors: Colors, eventLog: EventLog) {
+        super(colors, eventLog, "exchange");
+    }
+
+    public orderCreated(order: Order): void {
+
+    }
+
+    public transactionCreated(transaction: Transaction): void {
+
     }
 }
 

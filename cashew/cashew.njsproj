@@ -102,6 +102,9 @@
     <TypeScriptCompile Include="src\imp\creep\DismantleJob.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\SupplyJob.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\TransferJob.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -121,6 +124,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\military\RoomDefenseUnitController.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\operation\economic\SupplyOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\SpawnStats.ts">

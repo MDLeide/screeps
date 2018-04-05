@@ -19,9 +19,6 @@ export abstract class Task {
     public finished: boolean;
 
     public save(): TaskMemory {
-        let mem = this.onSave();
-        if (mem)
-            return mem;
         return {
             type: this.type,
             complete: this.complete,
@@ -49,7 +46,6 @@ export abstract class Task {
     public abstract update(creep: Creep): void;
     public abstract execute(creep: Creep): void;
     public abstract cleanup(creep: Creep): void;
-    protected abstract onSave(): TaskMemory;
     
     public static loadTask(memory: TaskMemory): Task {
         switch (memory.type) {
@@ -94,12 +90,12 @@ export abstract class Task {
         return new MoveTo(target, range);
     }
 
-    public static Transfer(target: TransferTarget): Transfer {
-        return new Transfer(target);
+    public static Transfer(target: TransferTarget, resource: ResourceConstant = RESOURCE_ENERGY, quantity?: number): Transfer {
+        return new Transfer(target, resource, quantity);
     }
 
-    public static Withdraw(target: WithdrawTarget): Withdraw {
-        return new Withdraw(target);
+    public static Withdraw(target: WithdrawTarget, resource: ResourceConstant = RESOURCE_ENERGY, quantity?: number): Withdraw {
+        return new Withdraw(target, resource, quantity);
     }
 
     public static Build(target: ConstructionSite): Build {
@@ -140,9 +136,7 @@ export abstract class Task {
 }
 
 export abstract class TargetedTask<T extends { id: string }> extends Task {
-    public static fromMemory<TTarget extends { id: string }> (
-        memory: TargetedTaskMemory,
-        instance: TargetedTask<TTarget>): Task {
+    public static fromMemory<TTarget extends { id: string }> (memory: TargetedTaskMemory, instance: TargetedTask<TTarget>): Task {
         
         instance.target = Game.getObjectById<TTarget>(memory.targetId);
 
@@ -156,15 +150,10 @@ export abstract class TargetedTask<T extends { id: string }> extends Task {
 
     public target: T;
 
-    protected onSave(): TargetedTaskMemory {
-        return {
-            type: this.type,
-            complete: this.complete,
-            incomplete: this.incomplete,
-            error: this.error,
-            finished: this.finished,
-            targetId: this.target ? this.target.id : undefined
-        };
+    public save(): TargetedTaskMemory {
+        let mem = super.save() as TargetedTaskMemory;
+        mem.targetId = this.target ? this.target.id : undefined;
+        return mem;
     }
 }
 
@@ -185,10 +174,6 @@ export class Idle extends Task {
     }
 
     public cleanup(creep: Creep): void {
-    }
-
-    protected onSave(): MoveToMemory {
-        return null;
     }
 }
 
@@ -240,18 +225,13 @@ export class MoveTo extends Task {
 
     }
 
-    protected onSave(): MoveToMemory {
-        return {
-            type: this.type,
-            complete: this.complete,
-            incomplete: this.incomplete,
-            error: this.error,
-            finished: this.finished,
-            x: this.target.x,
-            y: this.target.y,
-            room: this.target.roomName,
-            range: this.range
-        };
+    public save(): MoveToMemory {
+        let mem = super.save() as MoveToMemory;
+        mem.range = this.range;
+        mem.x = this.target.x;
+        mem.y = this.target.y;
+        mem.room = this.target.roomName;
+        return mem;
     }
 }
 
@@ -263,22 +243,29 @@ export interface MoveToMemory extends TaskMemory {
 }
 
 export class Transfer extends TargetedTask<TransferTarget> {
-    public static fromMemory(memory: TargetedTaskMemory): Transfer {
+    public static fromMemory(memory: TransferTaskMemory): Transfer {
         var target = Game.getObjectById<TransferTarget>(memory.targetId);
         var transfer = new this(target);
+        transfer.resource = memory.resource ? memory.resource : RESOURCE_ENERGY;
+        transfer.quantity = memory.quantity;
         return TargetedTask.fromMemory(memory, transfer) as Transfer;
     }
 
-    constructor(target: TransferTarget) {
+    constructor(target: TransferTarget, resource: ResourceConstant = RESOURCE_ENERGY, quantity?: number) {
         super(TASK_TRANSFER, target);
+        this.quantity = quantity;
+        this.resource = resource;
     }
+
+    public resource: ResourceConstant;
+    public quantity: number;
 
     public update(creep: Creep): void {
         // completes in execute loop
     }
 
     public execute(creep: Creep): void {
-        var response = creep.transfer(this.target, RESOURCE_ENERGY);
+        var response = creep.transfer(this.target, this.resource, this.quantity);
         if (response == OK)
             this.onComplete();
         else if (response == ERR_NOT_IN_RANGE)
@@ -301,18 +288,37 @@ export class Transfer extends TargetedTask<TransferTarget> {
 
     public cleanup(creep: Creep): void {
 
+    }
+
+    public save(): TargetedTaskMemory {
+        let mem = super.save() as TransferTaskMemory;
+        mem.resource = this.resource;
+        mem.quantity = this.quantity;
+        return mem;
     }
 }
 
+export interface TransferTaskMemory extends TargetedTaskMemory {
+    resource: ResourceConstant;
+    quantity: number;
+}
+
 export class Withdraw extends TargetedTask<WithdrawTarget> {
-    public static fromMemory(memory: TargetedTaskMemory): Withdraw {
+    public static fromMemory(memory: WithdrawTaskMemory): Withdraw {
         var target = Game.getObjectById<WithdrawTarget>(memory.targetId);
         var withdraw = new this(target);
+        withdraw.resource = memory.resource ? memory.resource : RESOURCE_ENERGY;
+        withdraw.quantity = memory.quantity;
         return TargetedTask.fromMemory(memory, withdraw) as Withdraw;
     }
 
-    constructor(target: WithdrawTarget) {
+    public resource: ResourceConstant;
+    public quantity: number;
+
+    constructor(target: WithdrawTarget, resource: ResourceConstant = RESOURCE_ENERGY, quantity?: number) {
         super(TASK_WITHDRAW, target);
+        this.resource = resource;
+        this.quantity = quantity;
     }
 
     public update(creep: Creep): void {
@@ -320,7 +326,7 @@ export class Withdraw extends TargetedTask<WithdrawTarget> {
     }
 
     public execute(creep: Creep): void {
-        var response = creep.withdraw(this.target, RESOURCE_ENERGY);
+        var response = creep.withdraw(this.target, this.resource, this.quantity);
         if (response == OK)
             this.onComplete();
         else if (response == ERR_NOT_IN_RANGE)
@@ -343,6 +349,18 @@ export class Withdraw extends TargetedTask<WithdrawTarget> {
 
     public cleanup(creep: Creep): void {
     }
+
+    public save(): WithdrawTaskMemory {
+        let mem = super.save() as WithdrawTaskMemory;
+        mem.resource = this.resource;
+        mem.quantity = this.quantity;
+        return mem;
+    }
+}
+
+export interface WithdrawTaskMemory extends TargetedTaskMemory {
+    resource: ResourceConstant;
+    quantity: number;
 }
 
 export class Build extends TargetedTask<ConstructionSite> {

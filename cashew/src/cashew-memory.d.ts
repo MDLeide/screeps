@@ -92,6 +92,7 @@ declare global {
         storageLinkId: string;
         extensionLinkId: string;
         controllerLinkId: string;
+        storageContainerIds: string[];
     }
 
     interface ResourceManagerLedgerMemory {
@@ -169,6 +170,14 @@ declare global {
     interface ExchangeMemory {
         supplyOrders: { [orderId: string]: OrderMemory };
         demandOrders: { [orderId: string]: OrderMemory };
+        transactions: { [transactionId: string]: TransactionMemory };
+    }
+
+    interface TransactionMemory {
+        supplyOrderId: string;
+        demandOrderId: string;
+        quantity: number;
+        complete: boolean;
     }
 
     interface OrderMemory {

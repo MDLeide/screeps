@@ -7,12 +7,15 @@ export class Exchange {
             ex.demandOrders[key] = Order.fromMemory(memory.demandOrders[key]);
         for (let key in memory.supplyOrders)
             ex.supplyOrders[key] = Order.fromMemory(memory.supplyOrders[key]);
+        for (let key in memory.transactions)
+            ex.transactions[key] = Transaction.fromMemory(memory.transactions[key], ex);
         return ex;
     }
 
     public supplyOrders: { [orderId: string]: Order } = {};
     public demandOrders: { [orderId: string]: Order } = {};
-    
+    public transactions: { [transactionId: string]: Transaction } = {};
+
     /**
      * Creates a supply order and registers it with the exchange.
      * @param colony Colony supplying the resources.
@@ -21,6 +24,7 @@ export class Exchange {
      */
     public createSupplyOrder(colony: Colony, resource: ResourceConstant, quantity: number): Order {
         if (this.getColonySupplyOrder(colony, resource)) throw new Error("Supply order already exists for this colony and resource.");
+        if (this.getColonyDemandOrder(colony, resource)) throw new Error("Cannot create supply order when outstanding demand order for same colony and resource exists.");
         let id = this.generateId(OrderType.Supply, colony, resource);
         let order = new Order(id, OrderType.Supply, colony.name, resource, quantity, Game.time);
         this.supplyOrders[id] = order;
@@ -35,6 +39,7 @@ export class Exchange {
      */
     public createDemandOrder(colony: Colony, resource: ResourceConstant, quantity: number): Order {
         if (this.getColonyDemandOrder(colony, resource)) throw new Error("Demand order already exists for this colony and resource.");
+        if (this.getColonySupplyOrder(colony, resource)) throw new Error("Cannot create demand order when outstanding supply order for same colony and resource exists.");
         let id = this.generateId(OrderType.Demand, colony, resource);
         let order = new Order(id, OrderType.Demand, colony.name, resource, quantity, Game.time);
         this.demandOrders[id] = order;
@@ -95,68 +100,105 @@ export class Exchange {
         return null;
     }
 
+    /** Gets a tally of all unfilled orders. Demand is positive, supply is negative. */
+    public getColonyBalance(colony: Colony): { [resource: string]: number } {
+        let balance = {};
+        for (let key in this.supplyOrders)
+            if (this.supplyOrders[key].colony == colony.name)
+                balance[this.supplyOrders[key].resource] = -this.supplyOrders[key].unfilledQuantity;
+        for (let key in this.demandOrders)
+            if (this.demandOrders[key].colony = colony.name)
+                balance[this.demandOrders[key].resource] = this.demandOrders[key].unfilledQuantity;
+        return balance;
+    }
+
     /**
-     * Reserves quantity on a supply and demand order.
-     * @param supplyId Order id of the supplying order.
-     * @param demandId Order id of the demanding order.
-     * @param quantity Optional quantity to reserve. If omited, the maximum possible quantity will be reserved.
+     * Creates a transaction, which reserves the quantity on each order, and provides a convenient
+     * way to work with the relationship between two orders.
+     * @param supplyId
+     * @param demandOrder
+     * @param quantity
      */
-    public reserveOrder(supplyId: string, demandId: string, quantity?: number): void {
-        let supply = this.supplyOrders[supplyId];
-        if (!supply) throw Error("Supply order does not exist.");
-        if (supply.unreservedQuantity <= 0) throw Error("Supply order already fully reserved.");
+    public createTransaction(supplyOrder: Order | string, demandOrder: Order | string, quantity?: number): Transaction {
+        if (typeof (supplyOrder) == "string")
+            return this.createTransaction(this.supplyOrders[supplyOrder], demandOrder, quantity);
+        if (typeof (demandOrder) == "string")
+            return this.createTransaction(supplyOrder, this.demandOrders[demandOrder], quantity);
 
-        let demand = this.demandOrders[demandId];
-        if (!demand) throw Error("Demand order does not exist.");
-        if (demand.unreservedQuantity <= 0) throw Error("Demand order already fully reserved.");
+        if (supplyOrder.type != OrderType.Supply) throw Error("Order passed as supply order is not of the correct type (demand instead of supply).");
+        if (demandOrder.type != OrderType.Demand) throw Error("Order passed as demand order is not of the correct type (supply instead of demand).");
 
-        if (quantity) {
-            if (quantity > supply.unreservedQuantity) throw Error("Quantity in excess of supply's unreserved quantity.");
-            if (quantity > demand.unreservedQuantity) throw Error("Quantity in excess of demand's unreserved quantity.");
-        } else {
-            quantity = Math.min(supply.unreservedQuantity, demand.unreservedQuantity);
-        }
+        if (!quantity) quantity = Math.min(supplyOrder.unreservedQuantity, demandOrder.unreservedQuantity);
+
+        let transaction = new Transaction(supplyOrder, demandOrder, quantity);
+        this.transactions[transaction.id] = transaction;
+        return transaction;
+    }
+
+    public clearCompleted(): void {
+        for (let key in this.supplyOrders)
+            if (this.supplyOrders[key].unfilledQuantity == 0)
+                this.supplyOrders[key] = undefined;
+        for (let key in this.demandOrders)
+            if (this.demandOrders[key].unfilledQuantity == 0)
+                this.demandOrders[key] = undefined;
+        for (let key in this.transactions)
+            if (this.transactions[key].complete)
+                this.transactions[key] = undefined;
+    }
+    
+    ///**
+    // * Reserves quantity on a supply and demand order.
+    // * @param supplyId Order id of the supplying order.
+    // * @param demandId Order id of the demanding order.
+    // * @param quantity Optional quantity to reserve. If omited, the maximum possible quantity will be reserved.
+    // */
+    //public reserveOrder(supplyId: string, demandId: string, quantity?: number): void {
+    //    let supply = this.supplyOrders[supplyId];
+    //    if (!supply) throw Error("Supply order does not exist.");
+    //    if (supply.unreservedQuantity <= 0) throw Error("Supply order already fully reserved.");
+
+    //    let demand = this.demandOrders[demandId];
+    //    if (!demand) throw Error("Demand order does not exist.");
+    //    if (demand.unreservedQuantity <= 0) throw Error("Demand order already fully reserved.");
+
+    //    if (quantity) {
+    //        if (quantity > supply.unreservedQuantity) throw Error("Quantity in excess of supply's unreserved quantity.");
+    //        if (quantity > demand.unreservedQuantity) throw Error("Quantity in excess of demand's unreserved quantity.");
+    //    } else {
+    //        quantity = Math.min(supply.unreservedQuantity, demand.unreservedQuantity);
+    //    }
         
-        supply.reserve(demandId, quantity);
-        demand.reserve(supplyId, quantity);
-    }
+    //    supply.reserve(demandId, quantity);
+    //    demand.reserve(supplyId, quantity);
+    //}
 
-    public cancelReservation(supplyId: string, demandId: string): void {
-        let supply = this.supplyOrders[supplyId];
-        if (!supply) throw Error("Supply order does not exist.");
-        let demand = this.demandOrders[demandId];
-        if (!demand) throw Error("Demand order does not exist.");
-        if (!supply.reservedBy[demandId] || !demand.reservedBy[supplyId]) throw Error("Reservation does not exist.");
-        if (supply.filledBy[demandId] || demand.filledBy[supplyId]) throw Error("Reservation already filled.");
-        supply.cancelReservation(demandId);
-        demand.cancelReservation(supplyId);
-    }
+    //public cancelReservation(supplyId: string, demandId: string): void {
+    //    let supply = this.supplyOrders[supplyId];
+    //    if (!supply) throw Error("Supply order does not exist.");
+    //    let demand = this.demandOrders[demandId];
+    //    if (!demand) throw Error("Demand order does not exist.");
+    //    if (!supply.reservedBy[demandId] || !demand.reservedBy[supplyId]) throw Error("Reservation does not exist.");
+    //    if (supply.filledBy[demandId] || demand.filledBy[supplyId]) throw Error("Reservation already filled.");
+    //    supply.cancelReservation(demandId);
+    //    demand.cancelReservation(supplyId);
+    //}
 
-    /**
-     * Fills quantity on a supply and demand order.
-     * @param supplyId Order id of the supplying order.
-     * @param demandId Order id of the demanding order.
-     * @param quantity Optional quantity to fill. If omited, the maximum possible quantity will be filled.
-     */
-    public fillOrder(supplyId: string, demandId: string, quantity?: number): void {
-        let supply = this.supplyOrders[supplyId];
-        if (!supply) throw Error("Supply order does not exist.");
-        if (supply.unfilledQuantity <= 0) throw Error("Supply order already fully filled.");
-
-        let demand = this.demandOrders[demandId];
-        if (!demand) throw Error("Demand order does not exist.");
-        if (demand.unfilledQuantity <= 0) throw Error("Demand order already fully filled.");
-
-        if (quantity) {
-            if (quantity > supply.unfilledQuantity) throw Error("Quantity in excess of supply's unfilled quantity.");
-            if (quantity > demand.unfilledQuantity) throw Error("Quantity in excess of demand's unfilled quantity.");
-        } else {
-            quantity = Math.min(supply.unfilledQuantity, demand.unfilledQuantity);
-        }
-
-        supply.fill(demandId, quantity);
-        demand.fill(supplyId, quantity);
-    }
+    ///**
+    // * Fills quantity on an order.
+    // * @param orderId Id of the order being filled.
+    // * @param otherOrderId Id of the order doing the filling.
+    // * @param quantity Optional quantity to fill. If omited, the maximum possible quantity will be filled.
+    // */
+    //public fillOrder(orderId: string, otherOrderId: string, quantity?: number): void {
+    //    let order = this.supplyOrders[orderId];
+    //    if (!order) order = this.demandOrders[orderId];
+    //    if (!order) throw Error("Order does not exist.");
+    //    if (quantity && quantity > order.unfilledQuantity) throw new Error("Quantity exceeds order's unfilled quantity.");
+    //    if (order.unfilledQuantity <= 0) throw new Error("Order already completely filled.");
+    //    if (!quantity) quantity = order.unfilledQuantity;
+    //    order.fill(otherOrderId, quantity);
+    //}
 
     protected generateId(type: OrderType, colony: Colony, resource: ResourceConstant): string {
         let count = 0;
@@ -175,17 +217,84 @@ export class Exchange {
         return id;
     }
 
+
     private getOrderMemory(orders: { [orderId: string]: Order }): { [orderId: string]: OrderMemory } {
         let mem = {};
         for (let key in orders)
-            mem[key] = orders[key].save();
+            if (orders[key])
+                mem[key] = orders[key].save();
+        return mem;
+    }
+
+    private getTransactionMemory(): { [transactionId: string]: TransactionMemory } {
+        let mem = {};
+        for (let key in this.transactions)
+            mem[key] = this.transactions[key].save();
         return mem;
     }
 
     public save(): ExchangeMemory {
         return {
             supplyOrders: this.getOrderMemory(this.supplyOrders),
-            demandOrders: this.getOrderMemory(this.demandOrders)
+            demandOrders: this.getOrderMemory(this.demandOrders),
+            transactions: this.getTransactionMemory()
+        };
+    }
+}
+
+export class Transaction {
+    public static fromMemory(memory: TransactionMemory, exchange: Exchange): Transaction {
+        let t = new this(
+            exchange.supplyOrders[memory.supplyOrderId],
+            exchange.demandOrders[memory.demandOrderId],
+            memory.quantity);
+        t.complete = memory.complete;
+        return t;
+    }
+
+    constructor(supplyOrder: Order, demandOrder: Order, quantity: number) {
+        if (supplyOrder.unreservedQuantity < quantity) throw Error("Not enough remaining quantity.");
+        if (demandOrder.unreservedQuantity < quantity) throw Error("Not enough remaining quantity.");
+        if (supplyOrder.resource != demandOrder.resource) throw Error("Order resource types do not match.");
+
+        this.supplyOrder = supplyOrder;
+        this.demandOrder = demandOrder;
+        this.quantity = quantity;
+        this.supplyOrder.reserve(this.demandOrder.id, quantity);
+        this.demandOrder.reserve(this.supplyOrder.id, quantity);
+    }
+
+    public supplyOrder: Order;
+    public demandOrder: Order;
+    public quantity: number;
+    public complete: boolean;
+    public get pickedUp(): number { return this.supplyOrder.filledBy[this.demandOrder.id]; }
+    public get delivered(): number { return this.demandOrder.filledBy[this.supplyOrder.id]; }
+    public get inTransit(): number { return this.pickedUp - this.delivered; }
+    public get resource(): ResourceConstant { return this.supplyOrder.resource; }    
+    public get id(): string { return this.supplyOrder.id + "--" + this.demandOrder.id; }
+
+    public pickUp(quantity: number): void {
+        this.supplyOrder.fill(this.demandOrder.id, quantity);
+    }
+
+    public deliver(quantity: number): void {
+        this.demandOrder.fill(this.supplyOrder.id, quantity);
+        if (this.delivered == this.quantity) this.complete = true;
+    }
+
+    public cancelRemaining(): void {
+        this.demandOrder.cancelReservation(this.supplyOrder.id);
+        this.supplyOrder.cancelReservation(this.demandOrder.id);
+        this.complete = true;
+    }
+
+    public save(): TransactionMemory {
+        return {
+            supplyOrderId: this.supplyOrder ? this.supplyOrder.id : undefined,
+            demandOrderId: this.demandOrder ? this.demandOrder.id : undefined,
+            quantity: this.quantity,
+            complete: this.complete
         };
     }
 }
@@ -247,10 +356,21 @@ export class Order {
 
     public fill(id: string, quantity: number): void {
         if (quantity > this.unfilledQuantity) throw Error("Cannot fill more than total quantity.");
-        if (this.filledBy[id]) throw Error("Order already registered to fill.");
+        if (!this.reservedBy[id]) {
+            throw Error("Must reserve quantity before filling.");
+        } else {
+            let filled = this.filledBy[id];
+            if (!filled) filled = 0;
+            if (quantity > this.reservedBy[id] - filled) throw Error("Insufficient reserved quantity remaining.");
+        }
+             
+        
         this.filledQuantity += quantity;
         this.unfilledQuantity -= quantity;
-        this.filledBy[id] = quantity;
+        if (this.filledBy[id])
+            this.filledBy[id] += quantity;
+        else
+            this.filledBy[id] = quantity;
     }
 
     public adjustQuantity(newQuantity: number): void {
@@ -260,11 +380,17 @@ export class Order {
         this.unfilledQuantity = this.quantity - this.filledQuantity;
     }
 
+    /**
+     * Cancels any remaining reservation on this order, does not cancel quantity already filled.
+     * @param id
+     */
     public cancelReservation(id: string): void {
         if (!this.reservedBy[id]) throw Error("Order does not have a reservation.");
-        this.reservedQuantity -= this.reservedBy[id];
-        this.unreservedQuantity += this.reservedBy[id];
-        this.reservedBy[id] = undefined;
+        let filled = this.filledBy[id];
+        if (!filled) filled = 0;
+        this.reservedQuantity -= (this.reservedBy[id] - filled);
+        this.unreservedQuantity += (this.reservedBy[id] - filled);
+        this.reservedBy[id] = filled;
     }
 
     public cancelFulfillment(id: string): void {
