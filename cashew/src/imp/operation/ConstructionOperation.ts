@@ -71,6 +71,7 @@ export abstract class ConstructionOperation extends JobOperation {
 
     protected onInit(colony: Colony): InitStatus {
         let locations = this.getSiteLocations(colony);
+        if (!locations) return InitStatus.Failed;
         let type = this.getStructureType();
 
         this.siteIds = [];

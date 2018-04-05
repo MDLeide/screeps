@@ -297,8 +297,12 @@ export class NestMapBuilder {
                 if (x < 0 || y < 0 || x >= block.width || y >= block.height) { // logic for handling block borders
                     if (!this.isWalkable(map, x + block.offset.x, y + block.offset.y))
                         return false;
-                } else if (this.needsWalkable(x, y, block)) {
-                    if (!this.isWalkable(map, x + block.offset.x, y + block.offset.y))
+                } else {
+                    if (this.needsWalkable(x, y, block) &&
+                        !this.isWalkable(map, x + block.offset.x, y + block.offset.y))
+                        return false;
+                    if (this.needsBuildable(x, y, block) &&
+                        !this.isBuildable(map, x + block.offset.x, y + block.offset.y))
                         return false;
                 }
             }
@@ -323,9 +327,22 @@ export class NestMapBuilder {
         return true;
     }
 
-    private needsWalkable(x: number, y: number, block: MapBlock): boolean{
+    private isBuildable(map: Map, x: number, y: number): boolean {
+        if (x < 2 || x > 47 || y < 2 || y > 47)
+            return false;
+        return this.isWalkable(map, x, y);
+    }
+
+    private needsWalkable(x: number, y: number, block: MapBlock): boolean {
         if (block.getRoadAt(x, y))
             return true;
+        let struct = block.getStructureAt(x, y);
+        if (struct == null || struct == undefined || struct == STRUCTURE_EXTRACTOR)
+            return false;
+        return true;
+    }
+
+    private needsBuildable(x: number, y: number, block: MapBlock): boolean {
         let struct = block.getStructureAt(x, y);
         if (struct == null || struct == undefined || struct == STRUCTURE_EXTRACTOR)
             return false;

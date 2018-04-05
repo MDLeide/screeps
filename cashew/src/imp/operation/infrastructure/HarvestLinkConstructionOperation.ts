@@ -53,8 +53,10 @@ export class HarvestLinkConstructionOperation extends ConstructionOperation {
             if (sourceLook.length) {
                 if (sourceLook[0].id == this.sourceId) {
                     let location = colony.nest.nestMap.harvestBlocks[i].getLinkLocation();
+                    console.log(`${location.x}, ${location.y}`);
                     if (this.structureExists(colony.nest.room, location, STRUCTURE_LINK))
                         return [];
+                    console.log(`${location.x}, ${location.y}`);
                     return [location];
                 }
             }
