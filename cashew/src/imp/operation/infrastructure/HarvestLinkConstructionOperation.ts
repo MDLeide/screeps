@@ -52,7 +52,10 @@ export class HarvestLinkConstructionOperation extends ConstructionOperation {
             let sourceLook = colony.nest.room.lookForAt(LOOK_SOURCES, sourceLocation.x, sourceLocation.y);
             if (sourceLook.length) {
                 if (sourceLook[0].id == this.sourceId) {
-                    return [colony.nest.nestMap.harvestBlocks[i].getLinkLocation()];                    
+                    let location = colony.nest.nestMap.harvestBlocks[i].getLinkLocation();
+                    if (this.structureExists(colony.nest.room, location, STRUCTURE_LINK))
+                        return [];
+                    return [location];
                 }
             }
         }

@@ -106,6 +106,15 @@ export abstract class ConstructionOperation extends JobOperation {
     }
 
 
+    protected structureExists(room: Room, location: { x: number, y: number }, type: StructureConstant): boolean {
+        let look = room.lookForAt(LOOK_STRUCTURES, location.x, location.y);
+        for (var i = 0; i < look.length; i++)
+            if (look[i].structureType == type)
+                return true;
+        return false;
+    }
+
+
     public save(): ConstructionOperationMemory {
         let mem = super.save() as ConstructionOperationMemory;
         mem.siteIds = this.siteIds;

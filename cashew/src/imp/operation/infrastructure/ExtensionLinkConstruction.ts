@@ -19,7 +19,10 @@ export class ExtensionLinkConstructionOperation extends ConstructionOperation {
 
 
     protected getSiteLocations(colony: Colony): { x: number, y: number }[] {
-        return [colony.nest.nestMap.extensionBlock.getLinkLocation()];
+        let location = colony.nest.nestMap.extensionBlock.getLinkLocation();
+        if (this.structureExists(colony.nest.room, location, STRUCTURE_LINK))
+            return [];
+        return [location];
     }
 
     protected getStructureType(): BuildableStructureConstant {

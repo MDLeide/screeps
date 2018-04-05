@@ -28,7 +28,10 @@ export class ControllerInfrastructureOperation extends ConstructionOperation {
 
 
     protected getSiteLocations(colony: Colony): { x: number, y: number }[] {
-        return [colony.nest.nestMap.controllerBlock.getContainerLocation()];
+        let location = colony.nest.nestMap.controllerBlock.getContainerLocation();
+        if (this.structureExists(colony.nest.room, location, STRUCTURE_CONTAINER))
+            return [];
+        return [location];
     }
 
     protected getStructureType(): BuildableStructureConstant {

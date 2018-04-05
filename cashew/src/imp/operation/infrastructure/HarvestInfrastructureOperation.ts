@@ -81,6 +81,14 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
         }
         let containerLocation = harvestBlock.getContainerLocation();
 
+        let look = colony.nest.room.lookForAt(LOOK_STRUCTURES, containerLocation.x, containerLocation.y);
+        for (var i = 0; i < look.length; i++) {
+            if (look[i].structureType == STRUCTURE_CONTAINER) {
+                this.siteBuilt = true;
+                return InitStatus.Initialized;
+            }
+        }
+
         if (this.initializedStatus == InitStatus.Uninitialized || this.initializedStatus == InitStatus.TryAgain) {
             if (this.source.room.createConstructionSite(containerLocation.x, containerLocation.y, STRUCTURE_CONTAINER) == OK) {
                 this.siteBuilt = true;

@@ -19,7 +19,10 @@ export class UpgradeLinkConstructionOperation extends ConstructionOperation {
     
 
     protected getSiteLocations(colony: Colony): { x: number, y: number }[] {
-        return [colony.nest.nestMap.controllerBlock.getLinkLocation()];
+        let loc = colony.nest.nestMap.controllerBlock.getLinkLocation();
+        if (this.structureExists(colony.nest.room, loc, STRUCTURE_LINK))
+            return [];
+        return [loc];
     }
 
     protected getStructureType(): BuildableStructureConstant {
