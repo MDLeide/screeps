@@ -52,7 +52,13 @@ export abstract class Operation {
             this.status == OperationStatus.AwaitingRestart ||
             this.status == OperationStatus.Started;
     }
-    
+    /**
+     * Can be used to provide additional information to the base
+     * Operation class, for use in logging, under certain failure
+     * conditions.
+     */
+    protected message: string;
+
     public abstract isFinished(colony: Colony): boolean;
 
     protected abstract onLoad(): void;
@@ -91,16 +97,16 @@ export abstract class Operation {
 
         if (this.initializedStatus == InitStatus.Initialized) {
             this.status = OperationStatus.Initialized;
-            global.events.operation.init(this.type);
+            global.events.operation.init(this.type, colony.name);
         } else if (this.initializedStatus == InitStatus.TryAgain) {
             this.status = OperationStatus.AwaitingReinit;
-            global.events.operation.initAgain(this.type);
+            global.events.operation.initAgain(this.type, colony.name, this.message);
         } else if (this.initializedStatus == InitStatus.Partial) {
             this.status = OperationStatus.AwaitingReinit;
-            global.events.operation.initPartial(this.type);
+            global.events.operation.initPartial(this.type, colony.name);
         } else if (this.initializedStatus == InitStatus.Failed) {
             this.status = OperationStatus.FailedInit;
-            global.events.operation.initFailed(this.type);
+            global.events.operation.initFailed(this.type, colony.name, this.message);
         }
 
         return this.initializedStatus;
@@ -114,16 +120,16 @@ export abstract class Operation {
 
         if (this.startedStatus == StartStatus.Started) {
             this.status = OperationStatus.Started;
-            global.events.operation.start(this.type);
+            global.events.operation.start(this.type, colony.name);
         } else if (this.startedStatus == StartStatus.TryAgain) {
             this.status = OperationStatus.AwaitingRestart;
-            global.events.operation.startAgain(this.type);            
+            global.events.operation.startAgain(this.type, colony.name);            
         } else if (this.startedStatus == StartStatus.Partial) {
             this.status = OperationStatus.AwaitingRestart;
-            global.events.operation.startPartial(this.type);
+            global.events.operation.startPartial(this.type, colony.name);
         } else if (this.startedStatus == StartStatus.Failed) {
             this.status = OperationStatus.FailedStart;
-            global.events.operation.startFailed(this.type);
+            global.events.operation.startFailed(this.type, colony.name);
         }
 
         return this.startedStatus;
@@ -136,11 +142,11 @@ export abstract class Operation {
                     this.releaseAssignment(this.assignments[i]);
             }
             this.status = OperationStatus.Complete;
-            global.events.operation.finish(this.type);
+            global.events.operation.finish(this.type, colony.name);
         }
         else {
             this.status = OperationStatus.FailedOther;
-            global.events.operation.failedToFinish(this.type);
+            global.events.operation.failedToFinish(this.type, colony.name);
         }
     }
     
@@ -152,7 +158,7 @@ export abstract class Operation {
         }
 
         this.status = OperationStatus.Canceled;
-        global.events.operation.cancel(this.type);
+        global.events.operation.cancel(this.type, colony.name);
     }
 
 

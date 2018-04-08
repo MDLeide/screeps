@@ -71,20 +71,35 @@ export abstract class ConstructionOperation extends JobOperation {
 
     protected onInit(colony: Colony): InitStatus {
         let locations = this.getSiteLocations(colony);
-        if (!locations) return InitStatus.Failed;
+        if (!locations || !locations.length) {
+            this.message = "No construction site locations provided.";
+            return InitStatus.Failed;
+        }
+
         let type = this.getStructureType();
 
         this.siteIds = [];
         this.sites = [];
 
         if (this.initializedStatus == InitStatus.Partial) {
+            let failedLocations = [];
             for (var i = 0; i < locations.length; i++) {
                 let siteLook = colony.nest.room.lookForAt(LOOK_CONSTRUCTION_SITES, locations[i].x, locations[i].y);
                 if (siteLook.length) {
                     this.siteIds.push(siteLook[0].id);
                     this.sites.push(siteLook[0]);
+                } else {
+                    failedLocations.push(locations[i]);
                 }
             }
+            if (failedLocations.length) {
+                this.message = `Failed to find construction sites for ${failedLocations.length} location(s)`;
+                for (var i = 0; i < failedLocations.length; i++) {
+                    this.message += ` {${failedLocations[i].x},${failedLocations[i].y}}`;
+                }
+                return InitStatus.Failed;
+            }           
+
             return InitStatus.Initialized;
         } else {
             for (var i = 0; i < locations.length; i++)

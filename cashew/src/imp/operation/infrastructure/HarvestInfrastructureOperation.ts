@@ -79,6 +79,7 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
                 break;
             }
         }
+
         let containerLocation = harvestBlock.getContainerLocation();
 
         let look = colony.nest.room.lookForAt(LOOK_STRUCTURES, containerLocation.x, containerLocation.y);
@@ -92,10 +93,12 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
         if (this.initializedStatus == InitStatus.Uninitialized || this.initializedStatus == InitStatus.TryAgain) {
             if (this.source.room.createConstructionSite(containerLocation.x, containerLocation.y, STRUCTURE_CONTAINER) == OK) {
                 this.siteBuilt = true;
-                return InitStatus.Partial;                
+                return InitStatus.Partial;
             }
-            else
+            else {
+                this.message = "Failed to create construction site at location " + `{${containerLocation.x},${containerLocation.y}}`;
                 return InitStatus.TryAgain;
+            }
         } else {
             let site = this.source.room.lookForAt(LOOK_CONSTRUCTION_SITES, containerLocation.x, containerLocation.y);
             if (site.length) {
@@ -103,6 +106,7 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
                 this.siteId = this.site.id;
                 return InitStatus.Initialized;
             }
+            this.message = "Failed to find construction site at location " + `{${containerLocation.x},${containerLocation.y}}`;
             return InitStatus.TryAgain;
         }
     }

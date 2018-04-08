@@ -444,24 +444,26 @@ class OperationEvents extends EventGroup {
     public assignmentReleasedLevel: number = 3;
     public assignmentReleaseFailedLevel: number = 6;
     
-    public finish(operationName: string): void {
+    public finish(operationName: string, colonyName: string, msg?: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(` (${colonyName})`, this.colors.name);
         sb.append(" has ");
         sb.append("finished", this.colors.positiveVerb);
 
         this.log(sb.toString(), this.finishLevel);
     }
 
-    public cancel(operationName: string): void {
+    public cancel(operationName: string, colonyName: string, msg?: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(` (${colonyName})`, this.colors.name);
         sb.append(" has ");
         sb.append("been canceled", this.colors.neutralVerb);
 
@@ -469,109 +471,127 @@ class OperationEvents extends EventGroup {
     }
 
 
-    public init(operationName: string): void {
+    public init(operationName: string, colonyName: string, msg?: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(` (${colonyName})`, this.colors.name);
         sb.append(" has ");
         sb.append("initialized", this.colors.positiveVerb);
 
         this.log(sb.toString(), this.initLevel);
     }
 
-    public initAgain(operationName: string): void {
+    public initAgain(operationName: string, colonyName: string, msg?: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(` (${colonyName})`, this.colors.name);
         sb.append(" has ");
         sb.append("requested another initializion", this.colors.neutralVerb);
+        if (msg) {
+            sb.append(": ");
+            sb.append(msg, this.colors.information);
+        }
 
         this.log(sb.toString(), this.initLevel);
     }
 
-    public initPartial(operationName: string): void {
+    public initPartial(operationName: string, colonyName: string, msg?: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(` (${colonyName})`, this.colors.name);
         sb.append(" has ");
         sb.append("partially initialized", this.colors.neutralVerb);
 
         this.log(sb.toString(), this.initLevel);
     }
 
-    public initFailed(operationName: string): void {
+    public initFailed(operationName: string, colonyName: string, msg?: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(` (${colonyName})`, this.colors.name);
         sb.append(" has ");
         sb.append("failed to initialize", this.colors.negativeVerb);
+        if (msg) {
+            sb.append(": ");
+            sb.append(msg, this.colors.information);
+        }
+
 
         this.log(sb.toString(), this.failedInitLevel);
     }
 
 
-    public start(operationName: string): void {
+    public start(operationName: string, colonyName: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(` (${colonyName})`, this.colors.name);
         sb.append(" has ");
         sb.append("started", this.colors.positiveVerb);
 
         this.log(sb.toString(), this.startLevel);
     }
 
-    public startAgain(operationName: string): void {
+    public startAgain(operationName: string, colonyName: string, msg?: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(` (${colonyName})`, this.colors.name);
         sb.append(" has ");
         sb.append("requested to start again", this.colors.neutralVerb);
 
         this.log(sb.toString(), this.startLevel);
     }
 
-    public startPartial(operationName: string): void {
+    public startPartial(operationName: string, colonyName: string, msg?: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(` (${colonyName})`, this.colors.name);
         sb.append(" has ");
         sb.append("partially started", this.colors.neutralVerb);
 
         this.log(sb.toString(), this.startLevel);
     }
 
-    public startFailed(operationName: string): void {
+    public startFailed(operationName: string, colonyName: string, msg?: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(` (${colonyName})`, this.colors.name);
         sb.append(" has ");
         sb.append("failed to start", this.colors.negativeVerb);
 
         this.log(sb.toString(), this.failedStartLevel);
     }
 
-    public failedToFinish(operationName: string): void {
+    public failedToFinish(operationName: string, colonyName: string, msg?: string): void {
         var sb = new StringBuilder();
         sb.defaultColor = this.colors.default;
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
+        sb.append(` (${colonyName})`, this.colors.name);
         sb.append(" has ");
         sb.append("failed to finish", this.colors.negativeVerb);
 
@@ -585,7 +605,7 @@ class OperationEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Creep ", this.colors.identifier);
-        sb.append(creepName, this.colors.name);
+        sb.append(creepName, this.colors.name);        
         sb.append(" with ");
         sb.append("body ", this.colors.identifier);
         sb.append(bodyType, this.colors.name);
@@ -601,7 +621,7 @@ class OperationEvents extends EventGroup {
         sb.defaultColor = this.colors.default;
 
         sb.append("Creep ", this.colors.identifier);
-        sb.append(creepName, this.colors.name);
+        sb.append(creepName, this.colors.name);        
         sb.append(" with ");
         sb.append("body ", this.colors.identifier);
         sb.append(bodyType, this.colors.name);
