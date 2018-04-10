@@ -115,7 +115,59 @@ export class MilitaryCalculator {
             return [];
     }
 
+    public static Room = class {
+        public static getCreepThreatProfiles(room: Room): { [creepName: string]: ThreatProfile } {
+            let threat = {};
+            let hostiles = room.find<FIND_HOSTILE_CREEPS>(FIND_HOSTILE_CREEPS);
+            for (var i = 0; i < hostiles.length; i++)
+                threat[hostiles[i].name] = MilitaryCalculator.ThreatEvaluator.getThreatProfileOfCreep(hostiles[i]);
+            return threat;
+        }
+
+        public static getCreepThreatScores(room: Room): { [creepName: string]: number } {
+            let threat = {};
+            let hostiles = room.find<FIND_HOSTILE_CREEPS>(FIND_HOSTILE_CREEPS);
+            for (var i = 0; i < hostiles.length; i++)
+                threat[hostiles[i].name] = MilitaryCalculator.ThreatEvaluator.getThreatScoreOfCreep(hostiles[i]);
+            return threat;
+        }
+
+        public static getThreatScore(room: Room): number {
+            let threat = 0;
+            let hostiles = room.find<FIND_HOSTILE_CREEPS>(FIND_HOSTILE_CREEPS);
+            for (var i = 0; i < hostiles.length; i++)
+                threat += MilitaryCalculator.ThreatEvaluator.getThreatScoreOfCreep(hostiles[i]);
+            return threat;
+        }
+
+        public static getThreatProfile(room: Room): ThreatProfile {
+            let threat: ThreatProfile = {
+                attack: 0,
+                dismantle: 0,
+                heal: 0,
+                rangedDamage: 0
+            };
+            let hostiles = room.find<FIND_HOSTILE_CREEPS>(FIND_HOSTILE_CREEPS);
+            for (var i = 0; i < hostiles.length; i++) {
+                let profile = MilitaryCalculator.ThreatEvaluator.getThreatProfileOfCreep(hostiles[i]);
+                threat.attack += profile.attack;
+                threat.dismantle += profile.dismantle;
+                threat.heal += profile.heal;
+                threat.rangedDamage += profile.rangedDamage;
+            }
+
+            return threat;
+        }
+    }
+
     public static ThreatEvaluator = class {
+        // ATTACK: 30
+        // RANGED ATTACK: 10
+        // HEAL POWER: 12
+        // DISMANTLE: 50
+        // 50-PART ATTACK/MOVE: 750
+        // 50-PART RANGED/MOVE: 250
+
         public static scoreThreatProfile(profile: ThreatProfile): number {
             return profile.attack + profile.heal + profile.rangedDamage + profile.dismantle;
         }

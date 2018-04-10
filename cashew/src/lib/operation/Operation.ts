@@ -285,7 +285,14 @@ export abstract class Operation {
     public getFilledAssignmentCount(): number {
         return _.sum(this.assignments, p => p.isFilled() ? 1 : 0);
     }
-    
+
+    protected clearAssignments(): void {
+        for (var i = 0; i < this.assignments.length; i++)
+            if (!this.assignments[i].isOpen())
+                this.releaseAssignment(this.assignments[i]);        
+        this.assignments = [];
+    }
+
     private cleanDeadCreeps(colony: Colony) {
         for (var i = 0; i < this.assignments.length; i++) {
             if (this.assignments[i].creepName) {

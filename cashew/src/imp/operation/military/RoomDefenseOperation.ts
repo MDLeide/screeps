@@ -4,7 +4,7 @@ import { ControllerOperation } from "../../../lib/operation/ControllerOperation"
 import { Assignment } from "../../../lib/operation/Assignment";
 import { CreepController } from "../../../lib/creep/CreepController";
 import { BodyRepository } from "../../creep/BodyRepository";
-import { DefenderController } from "../../creep/DefenderController";
+import { DefenderController } from "../../creep/military/DefenderController";
 
 export class RoomDefenseOperation extends ControllerOperation {
     public static fromMemory(memory: ControllerOperationMemory): Operation {

@@ -450,7 +450,7 @@ class OperationEvents extends EventGroup {
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
-        sb.append(` (${colonyName})`, this.colors.name);
+        sb.append(` (${this.linkColony(colonyName)})`, this.colors.name);
         sb.append(" has ");
         sb.append("finished", this.colors.positiveVerb);
 
@@ -463,7 +463,7 @@ class OperationEvents extends EventGroup {
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
-        sb.append(` (${colonyName})`, this.colors.name);
+        sb.append(` (${this.linkColony(colonyName)})`, this.colors.name);
         sb.append(" has ");
         sb.append("been canceled", this.colors.neutralVerb);
 
@@ -477,7 +477,7 @@ class OperationEvents extends EventGroup {
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
-        sb.append(` (${colonyName})`, this.colors.name);
+        sb.append(` (${this.linkColony(colonyName)})`, this.colors.name);
         sb.append(" has ");
         sb.append("initialized", this.colors.positiveVerb);
 
@@ -490,7 +490,7 @@ class OperationEvents extends EventGroup {
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
-        sb.append(` (${colonyName})`, this.colors.name);
+        sb.append(` (${this.linkColony(colonyName)})`, this.colors.name);
         sb.append(" has ");
         sb.append("requested another initializion", this.colors.neutralVerb);
         if (msg) {
@@ -507,7 +507,7 @@ class OperationEvents extends EventGroup {
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
-        sb.append(` (${colonyName})`, this.colors.name);
+        sb.append(` (${this.linkColony(colonyName)})`, this.colors.name);
         sb.append(" has ");
         sb.append("partially initialized", this.colors.neutralVerb);
 
@@ -520,7 +520,7 @@ class OperationEvents extends EventGroup {
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
-        sb.append(` (${colonyName})`, this.colors.name);
+        sb.append(` (${this.linkColony(colonyName)})`, this.colors.name);
         sb.append(" has ");
         sb.append("failed to initialize", this.colors.negativeVerb);
         if (msg) {
@@ -539,7 +539,7 @@ class OperationEvents extends EventGroup {
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
-        sb.append(` (${colonyName})`, this.colors.name);
+        sb.append(` (${this.linkColony(colonyName)})`, this.colors.name);
         sb.append(" has ");
         sb.append("started", this.colors.positiveVerb);
 
@@ -552,7 +552,7 @@ class OperationEvents extends EventGroup {
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
-        sb.append(` (${colonyName})`, this.colors.name);
+        sb.append(` (${this.linkColony(colonyName)})`, this.colors.name);
         sb.append(" has ");
         sb.append("requested to start again", this.colors.neutralVerb);
 
@@ -565,7 +565,7 @@ class OperationEvents extends EventGroup {
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
-        sb.append(` (${colonyName})`, this.colors.name);
+        sb.append(` (${this.linkColony(colonyName)})`, this.colors.name);
         sb.append(" has ");
         sb.append("partially started", this.colors.neutralVerb);
 
@@ -578,7 +578,7 @@ class OperationEvents extends EventGroup {
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
-        sb.append(` (${colonyName})`, this.colors.name);
+        sb.append(` (${this.linkColony(colonyName)})`, this.colors.name);
         sb.append(" has ");
         sb.append("failed to start", this.colors.negativeVerb);
 
@@ -591,7 +591,7 @@ class OperationEvents extends EventGroup {
 
         sb.append("Operation ", this.colors.identifier);
         sb.append(operationName, this.colors.name);
-        sb.append(` (${colonyName})`, this.colors.name);
+        sb.append(` (${this.linkColony(colonyName)})`, this.colors.name);
         sb.append(" has ");
         sb.append("failed to finish", this.colors.negativeVerb);
 

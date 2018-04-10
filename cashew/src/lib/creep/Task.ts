@@ -94,6 +94,8 @@ export abstract class Task {
                 return PickupEnergy.fromMemory(memory as TargetedTaskMemory);
             case TASK_DISMANTLE:
                 return Dismantle.fromMemory(memory as TargetedTaskMemory);
+            case TASK_HEAL:
+                return Heal.fromMemory(memory as TargetedTaskMemory);
             default:
                 throw new Error(`Task name ${memory.type} not recognized`)
         }
@@ -149,6 +151,10 @@ export abstract class Task {
 
     public static Dismantle(target: Structure): Dismantle {
         return new Dismantle(target);
+    }
+
+    public static Heal(target: Creep): Heal {
+        return new Heal(target);
     }
 }
 
@@ -517,16 +523,13 @@ export class Attack extends TargetedTask<(Structure | Creep )> {
     }
 
     public update(creep: Creep): void {
+        if (!this.target)
+            return this.onComplete();
     }
 
     public execute(creep: Creep): void {
-        var response = creep.attack(this.target);
-        if (response == OK)
-            this.onComplete();
-        else if (response == ERR_NOT_IN_RANGE)
-            creep.moveTo(this.target);
-        else
-            this.onError();
+        creep.attack(this.target);
+        creep.moveTo(this.target);
     }
 
     public cleanup(creep: Creep): void {
@@ -682,6 +685,35 @@ export class Dismantle extends TargetedTask<Structure> {
             this.onError();
         else
             this.onError();
+    }
+
+    public cleanup(creep: Creep): void {
+    }
+}
+
+export class Heal extends TargetedTask<Creep> {
+    public static fromMemory(memory: TargetedTaskMemory): Heal {
+        let target = Game.getObjectById<Creep>(memory.targetId);
+        let heal = new this(target);
+        return TargetedTask.fromMemory(memory, heal) as Heal;
+    }
+
+    constructor(target: Creep) {
+        super(TASK_HEAL, target);
+    }
+
+    public update(creep: Creep): void {
+        if (!this.target || this.target.hits >= this.target.hitsMax)
+            this.onComplete();
+    }
+
+    public execute(creep: Creep): void {
+        let range = creep.pos.getRangeTo(this.target);
+        if (range <= 1)
+            creep.heal(this.target);
+        else if (range <= 3)
+            creep.rangedHeal(this.target);
+        creep.moveTo(this.target);
     }
 
     public cleanup(creep: Creep): void {

@@ -36,14 +36,12 @@ export class Patch {
 
     private static patchScreepsPlusMemory(): void {
         this.doPatch([
-            this.patchStandardColonyMonitorMemory,
-            this.patchResourceManagerMemory
+            this.resetExtensionFillOps
         ]);
 
     }
     private static patchScreepsPlus(): void {
-        this.doPatch([
-            
+        this.doPatch([            
         ]);
     }
 
@@ -57,7 +55,7 @@ export class Patch {
     }
 
     private static patchPrivate(): void {
-        this.doPatch([            
+        this.doPatch([
         ]);
     }
 
@@ -68,7 +66,8 @@ export class Patch {
     private static patchPublicMemory(): void {
         this.doPatch([
             this.patchStandardColonyMonitorMemory,
-            this.patchResourceManagerMemory
+            this.patchResourceManagerMemory,
+            this.resetExtensionFillOps
         ]);
     }
 
@@ -80,6 +79,20 @@ export class Patch {
     //
     // PATCHES
     //
+
+    private static resetExtensionFillOps(): void {
+        for (let colony in Memory.empire.colonies) {
+            for (var i = 0; i < Memory.empire.colonies[colony].operations.operations.length; i++) {
+                let op = Memory.empire.colonies[colony].operations.operations[i];
+                if (!op || !op.type || op.type == OPERATION_EXTENSION_FILL)
+                    Memory.empire.colonies[colony].operations.operations.splice(i--, 1);
+            }
+        }
+        for (let creep in Memory.creeps) {
+            if (Memory.creeps[creep].operation == OPERATION_EXTENSION_FILL)
+                Memory.creeps[creep].operation = undefined;
+        }
+    }
 
     private static patchStandardColonyMonitorMemory(): void {
         for (let key in Memory.empire.colonies) {

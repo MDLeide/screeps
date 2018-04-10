@@ -5,8 +5,10 @@ export class StringBuilder {
     public useHtmlBreak: boolean = true;
 
     public append(str: string | { toString(): string }, color: string = this.defaultColor): StringBuilder {
+        if (!str)
+            return this.append("undefined", color);
         if (typeof (str) != "string")
-            return this.append(str.toString());
+            return this.append(str.toString(), color);
         this.str += `<font color='${color}'>${str}</font>`;
         return this;
     }

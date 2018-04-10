@@ -1,5 +1,5 @@
-import { CreepController } from "../../lib/creep/CreepController";
-import { MilitaryCalculator } from "../../lib/util/MilitaryCalculator";
+import { CreepController } from "../../../lib/creep/CreepController";
+import { MilitaryCalculator } from "../../../lib/util/MilitaryCalculator";
 
 
 /**

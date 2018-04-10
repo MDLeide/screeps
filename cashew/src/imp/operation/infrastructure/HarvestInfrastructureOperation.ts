@@ -96,6 +96,15 @@ export class HarvestInfrastructureOperation extends ControllerOperation {
                 return InitStatus.Partial;
             }
             else {
+                let existingSite = this.source.room.lookForAt(LOOK_CONSTRUCTION_SITES, containerLocation.x, containerLocation.y);
+                for (var i = 0; i < existingSite.length; i++) {
+                    if (existingSite[i].structureType == STRUCTURE_CONTAINER) {
+                        this.siteBuilt = true;
+                        this.site = existingSite[i];
+                        this.siteId = this.site.id;
+                        return InitStatus.Initialized;
+                    }
+                }
                 this.message = "Failed to create construction site at location " + `{${containerLocation.x},${containerLocation.y}}`;
                 return InitStatus.TryAgain;
             }

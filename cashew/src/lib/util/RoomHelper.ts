@@ -1,3 +1,5 @@
+import { MilitaryCalculator } from "./MilitaryCalculator";
+
 export class RoomHelper {
     public static isCenterRoom(roomName: string): boolean {
         let parsed = /^[WE]([0-9]+)[NS]([0-9]+)$/.exec(roomName);

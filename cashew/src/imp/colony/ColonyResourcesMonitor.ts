@@ -20,7 +20,7 @@ export class ColonyResourcesMonitor extends ColonyMonitor {
 
     public execute(context: Colony): void {
         this.sleep(50);
-        this.handle(context, RESOURCE_ENERGY);
+        //this.handle(context, RESOURCE_ENERGY);
     }
 
     public cleanup(context: Colony): void {
@@ -31,7 +31,7 @@ export class ColonyResourcesMonitor extends ColonyMonitor {
         if (surplus) {
             let demandOrder = global.empire.exchange.getColonyDemandOrder(colony, resource);
             if (demandOrder)
-                demandOrder.adjustQuantity(0);
+                global.empire.exchange.cancelDemandOrder(demandOrder.id);
 
             let supplyOrder = global.empire.exchange.getColonySupplyOrder(colony, resource);
             if (supplyOrder)

@@ -114,8 +114,8 @@ export class BodyRepository {
     public static warrior(): Body {
         return new Body(
             BODY_WARRIOR,
-            100,
-            [ATTACK, MOVE],
+            150,
+            [ATTACK, MOVE, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH],
             [ATTACK, MOVE],
             0,
             true
@@ -136,8 +136,8 @@ export class BodyRepository {
     public static healer(): Body {
         return new Body(
             BODY_HEALER,
-            300,
-            [HEAL, MOVE],
+            350,
+            [HEAL, MOVE, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH],
             [HEAL, MOVE],
             0,
             true

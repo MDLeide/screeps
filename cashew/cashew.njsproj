@@ -46,6 +46,7 @@
     <Folder Include="src\imp\map\" />
     <Folder Include="src\imp\military\" />
     <Folder Include="src\imp\empire\" />
+    <Folder Include="src\lib\exchange\" />
     <Folder Include="src\yagni\military\imp\formation\" />
     <Folder Include="src\yagni\military\imp\tactics\" />
     <Folder Include="src\yagni\military\imp\" />
@@ -102,6 +103,12 @@
     <TypeScriptCompile Include="src\imp\creep\DismantleJob.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\military\HealTargetJob.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\creep\military\WarriorAttackTargetJob.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\SupplyJob.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -129,6 +136,9 @@
     <TypeScriptCompile Include="src\imp\operation\economic\SupplyOperation.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\imp\operation\military\RemoteDefenseOperation.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\colony\SpawnStats.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -139,6 +149,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\empire\RoomDetails.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\lib\exchange\Order.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\lib\military\IMilitaryUnit.ts">
@@ -263,7 +276,7 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\imp\creep\RemoteHaulerRole.ts" />
     <TypeScriptCompile Include="src\imp\creep\RemoteHarvesterController.ts" />
-    <TypeScriptCompile Include="src\imp\creep\DefenderController.ts" />
+    <TypeScriptCompile Include="src\imp\creep\military\DefenderController.ts" />
     <TypeScriptCompile Include="src\imp\creep\ReserveJob.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
