@@ -141,14 +141,14 @@ export class Exchange {
 
     public clearCompleted(): void {
         for (let key in this.supplyOrders)
-            if (this.supplyOrders[key].unfilledQuantity == 0 || this.supplyOrders[key].canceled)
-                this.supplyOrders[key] = undefined;
+            if (!this.supplyOrders[key] || this.supplyOrders[key].unfilledQuantity == 0 || this.supplyOrders[key].canceled)
+                delete this.supplyOrders[key];
         for (let key in this.demandOrders)
-            if (this.demandOrders[key].unfilledQuantity == 0 || this.demandOrders[key].canceled)
-                this.demandOrders[key] = undefined;
+            if (!this.demandOrders[key] || this.demandOrders[key].unfilledQuantity == 0 || this.demandOrders[key].canceled)
+                delete this.demandOrders[key];
         for (let key in this.transactions)
-            if (this.transactions[key].complete)
-                this.transactions[key] = undefined;
+            if (!this.transactions[key] || this.transactions[key].complete)
+                delete this.transactions[key];
     }
     
     protected generateId(type: OrderType, colony: Colony, resource: ResourceConstant): string {
@@ -309,10 +309,13 @@ export class Order {
      */
     public reserve(otherOrderId: string, quantity: number): void {
         if (quantity > this.unreservedQuantity) throw Error("Cannot reserve more than total quantity.");
-        if (this.reservedBy[otherOrderId]) throw Error("Reservation already exists for this order.");
+        if (this.reservedBy[otherOrderId]) {
+            this.reservedBy[otherOrderId] += quantity;
+        } else {
+            this.reservedBy[otherOrderId] = quantity;
+        }
         this.reservedQuantity += quantity;
-        this.unreservedQuantity -= quantity;
-        this.reservedBy[otherOrderId] = quantity;
+        this.unreservedQuantity -= quantity;        
     }
 
     public fill(id: string, quantity: number): void {
