@@ -14,7 +14,7 @@ import { HarvestInfrastructureBuilderController, HarvestInfrastructureBuilderCon
 import { MasonController, MasonControllerMemory } from "../creep/MasonController";
 import { BuilderJob, BuildJobMemory } from "../creep/BuilderJob";
 
-import { DefenderController } from "../creep/DefenderController";
+import { DefenderController } from "../creep/military/DefenderController";
 import { ScoutJob, ScoutJobMemory } from "../creep/ScoutJob";
 import { ReserveJob, ReserveJobMemory } from "../creep/ReserveJob";
 import { DismantleJob } from "../creep/DismantleJob";
@@ -23,6 +23,7 @@ import { TransferJob } from "../creep/TransferJob";
 import { ClaimJob, ClaimJobMemory } from "../creep/ClaimJob";
 import { HarvestBuilderJob, HarvestBuilderJobMemory } from "../creep/HarvestBuilderJob";
 import { SupplyJob, SupplyJobMemory } from "../creep/SupplyJob";
+import { WarriorAttackTargetJob, WarriorAttackTargetJobMemory } from "../creep/military/WarriorAttackTargetJob";
 
 
 export class ControllerRegistration {
@@ -110,5 +111,9 @@ export class ControllerRegistration {
         CreepControllerRepository.register(
             CREEP_CONTROLLER_SUPPLY,
             (mem: CreepControllerMemory) => SupplyJob.fromMemory(mem as SupplyJobMemory));
+
+        CreepControllerRepository.register(
+            CREEP_CONTROLLER_WARRIOR_ATTACK_TARGET,
+            (mem: CreepControllerMemory) => WarriorAttackTargetJob.fromMemory(mem as WarriorAttackTargetJobMemory));
     }
 }

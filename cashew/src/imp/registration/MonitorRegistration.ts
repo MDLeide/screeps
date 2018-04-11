@@ -2,12 +2,12 @@ import { ColonyDefenseMonitor, ColonyDefenseMonitorMemory } from "../colony/mili
 import { MonitorRepository } from "lib/monitor/Monitor";
 import { EconomyOperationMonitor } from "../colony/EconomyOperationMonitor";
 import { InfrastructureOperationMonitor } from "../colony/InfrastructureOperationMonitor";
-import { RemoteMiningOperationMonitor } from "../colony/RemoteMiningOperationMonitor";
 import { MonitorProviderRepository } from "lib/monitor/MonitorProvider";
 import { StandardColonyMonitorProvider } from "../colony/StandardColonyMonitorProvider";
 import { StandardEmpireMonitorProvider } from "../empire/StandardEmpireMonitorProvider";
 import { ExchangeMonitor } from "../empire/ExchangeMonitor";
 import { ColonyResourcesMonitor } from "../colony/ColonyResourcesMonitor";
+import { RemoteMiningMonitor } from "../empire/RemoteMiningMonitor";
 
 //import { ColonyMonitorRepository } from "../../lib/colony/ColonyMonitor";
 
@@ -33,6 +33,11 @@ export class MonitorRegistration {
             MONITOR_EXCHANGE,
             (mem: MonitorMemory) => ExchangeMonitor.fromMemory(mem),
             () => new ExchangeMonitor());
+
+        MonitorRepository.register(
+            MONITOR_REMOTE_MINING,
+            (mem: MonitorMemory) => RemoteMiningMonitor.fromMemory(mem),
+            () => new RemoteMiningMonitor());
     }
 
     private static registerColonyMonitors(): void {
@@ -50,12 +55,7 @@ export class MonitorRegistration {
             MONITOR_INFRASTRUCTURE_OPERATION,
             (mem: MonitorMemory) => InfrastructureOperationMonitor.fromMemory(mem),
             () => new InfrastructureOperationMonitor());
-
-        MonitorRepository.register(
-            MONITOR_REMOTE_MINING_OPERATION,
-            (mem: MonitorMemory) => RemoteMiningOperationMonitor.fromMemory(mem),
-            () => new RemoteMiningOperationMonitor());
-
+        
         MonitorRepository.register(
             MONITOR_COLONY_RESOURCES,
             (mem: MonitorMemory) => ColonyResourcesMonitor.fromMemory(mem),

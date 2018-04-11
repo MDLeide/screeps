@@ -8,6 +8,7 @@ import { Body } from "../creep/Body";
 import { RoomHelper } from "../util/RoomHelper";
 import { Exchange } from "./Exchange";
 import { TypedMonitorManager } from "../monitor/MonitorManager";
+import { WorldMap } from "./WorldMap";
 
 export class Empire {
     public static fromMemory(memory: EmpireMemory, colonyFinder: ColonyFinder): Empire {
@@ -15,6 +16,7 @@ export class Empire {
         for (let key in memory.colonies)
             empire.colonies.push(Colony.fromMemory(memory.colonies[key]));
         empire.exchange = Exchange.fromMemory(memory.exchange);
+        empire.map = WorldMap.fromMemory(memory.map);
         return empire;
     }
 
@@ -30,6 +32,7 @@ export class Empire {
     public colonyFinder: ColonyFinder;
     public exchange: Exchange;
     public monitorManager: TypedMonitorManager<Empire>;
+    public map: WorldMap;
 
 
     /** Adds a colony to the empire and memory. */
@@ -273,7 +276,8 @@ export class Empire {
         return {
             colonies: this.getColonyMemory(),
             exchange: this.exchange.save(),
-            monitorManager: this.monitorManager.save()
+            monitorManager: this.monitorManager.save(),
+            map: this.map.save()
         };
     }
 }

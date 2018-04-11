@@ -8,5 +8,6 @@ export class StandardEmpireMonitorProvider extends MonitorProviderBase {
 
     public updateMonitors(manager: MonitorManager): void {
         this.ensureMonitor(MONITOR_EXCHANGE, manager);
+        this.ensureMonitor(MONITOR_REMOTE_MINING, manager);
     }
 }

@@ -9,7 +9,6 @@ export class StandardColonyMonitorProvider extends MonitorProviderBase {
     public updateMonitors(manager: MonitorManager): void {
         this.ensureMonitor(MONITOR_ECONOMY_OPERATION, manager);
         this.ensureMonitor(MONITOR_INFRASTRUCTURE_OPERATION, manager);
-        this.ensureMonitor(MONITOR_REMOTE_MINING_OPERATION, manager);
         this.ensureMonitor(MONITOR_COLONY_RESOURCES, manager);
     }
 }

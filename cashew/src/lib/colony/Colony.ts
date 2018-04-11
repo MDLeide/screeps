@@ -2,7 +2,6 @@ import { Nest } from "./Nest";
 import { Population } from "./Population";
 import { Spawner } from "./Spawner";
 import { ResourceManager } from "./ResourceManager";
-import { RemoteMiningManager } from "./RemoteMiningManager";
 import { Watchtower } from "./Watchtower";
 import { TowerController } from "./TowerController";
 import { LinkManager } from "./LinkManager";
@@ -24,7 +23,6 @@ export class Colony  {
             TypedMonitorManager.fromMemory(memory.monitorManager)
         );
 
-        colony.remoteMiningManager = RemoteMiningManager.fromMemory(memory.remoteMiningManager, colony);
         colony.watchtower = Watchtower.fromMemory(memory.watchtower);
         colony.resourceManager = ResourceManager.fromMemory(memory.resourceManager, colony);
         colony.operations = OperationGroup.fromMemory(memory.operations);
@@ -50,7 +48,6 @@ export class Colony  {
     public nest: Nest;
     public population: Population;
     public resourceManager: ResourceManager;    
-    public remoteMiningManager: RemoteMiningManager;
     public watchtower: Watchtower;
 
     public monitorManager: TypedMonitorManager<Colony>;
@@ -63,8 +60,6 @@ export class Colony  {
     
     /** Should be called once, after initial object contruction. Do not need to call when loading from memory. */
     public initialize(): void {
-        this.remoteMiningManager = new RemoteMiningManager(this);
-        this.remoteMiningManager.initialize();
         this.watchtower = new Watchtower();
         this.resourceManager = new ResourceManager(this);
         this.resourceManager.initialize();
@@ -83,8 +78,6 @@ export class Colony  {
         this.operations.load();
         for (var i = 0; i < this.campaigns.length; i++)
             this.campaigns[i].load();
-
-        this.remoteMiningManager.load();        
     }
 
     public update(): void {
@@ -192,7 +185,6 @@ export class Colony  {
             name: this.name,
             nest: this.nest.save(),
             resourceManager: this.resourceManager.save(),
-            remoteMiningManager: this.remoteMiningManager.save(),
             watchtower: this.watchtower.save(),
             monitorManager: this.monitorManager.save(),
             operations: this.operations.save(),

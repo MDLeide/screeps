@@ -1,9 +1,9 @@
 global.MONITOR_COLONY_DEFENSE = "ColonyDefense";
 global.MONITOR_ECONOMY_OPERATION = "EconomyOperation";
 global.MONITOR_INFRASTRUCTURE_OPERATION = "InfrastructureOperation";
-global.MONITOR_REMOTE_MINING_OPERATION = "RemoteMiningOperation";
 global.MONITOR_COLONY_RESOURCES = "ColonyResources";
 global.MONITOR_EXCHANGE = "Exchange";
+global.MONITOR_REMOTE_MINING = "RemoteMining";
 
 global.MONITOR_PROVIDER_COLONY_STANDARD = "ColonyStandard";
 global.MONITOR_PROVIDER_EMPIRE_STANDARD = "EmpireStandard";
@@ -45,6 +45,7 @@ global.OPERATION_DISMANTLE = "Dismantle";
 global.OPERATION_LOOT = "Loot";
 global.OPERATION_CLAIM_ROOM = "ClaimRoom";
 global.OPERATION_SUPPLY = "Supply";
+global.OPERATION_MAP_SCOUT = "MapScout";
 
 global.FLAG_OPERATION_DISMANTLE = "Dismantle";
 global.FLAG_OPERATION_LOOT = "Loot";
@@ -76,6 +77,8 @@ global.CREEP_CONTROLLER_WITHDRAW = "Withdraw";
 global.CREEP_CONTROLLER_TRANSFER = "Transfer";
 global.CREEP_CONTROLLER_HARVEST_BUILDER = "HarvestBuilder";
 global.CREEP_CONTROLLER_SUPPLY = "Supply";
+global.CREEP_CONTROLLER_HEAL_TARGET = "HealTarget";
+global.CREEP_CONTROLLER_WARRIOR_ATTACK_TARGET = "WarriorAttackTarget";
 
 global.TASK_IDLE = "Idle";
 global.TASK_MOVE_TO = "MoveTo";
@@ -90,6 +93,7 @@ global.TASK_CLAIM = "Claim";
 global.TASK_HARVEST = "Harvest";
 global.TASK_PICKUP_ENERGY = "PickupEnergy";
 global.TASK_DISMANTLE = "Dismantle";
+global.TASK_HEAL = "Heal";
 
 global.BODY_LIGHT_WORKER = "LightWorker";
 global.BODY_HEAVY_HARVESTER = "HeavyHarvester";

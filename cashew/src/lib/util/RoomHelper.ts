@@ -1,16 +1,29 @@
 import { MilitaryCalculator } from "./MilitaryCalculator";
 
 export class RoomHelper {
-    public static isCenterRoom(roomName: string): boolean {
-        let parsed = /^[WE]([0-9]+)[NS]([0-9]+)$/.exec(roomName);
+    public static isValidRoomName(room: string | Room): boolean {
+        if (room instanceof Room)
+            return this.isValidRoomName(room.name);
+
+        return /^[WE]\d+[SN]\d+$/.test(room);
+    }
+
+    public static isCenterRoom(room: string | Room): boolean {
+        if (room instanceof Room)
+            return this.isCenterRoom(room.name);
+
+        let parsed = /^[WE]([0-9]+)[NS]([0-9]+)$/.exec(room);
         let xRemainder = Number(parsed[1]) % 10;
         let yRemainder = Number(parsed[2]) % 10;
 
         return xRemainder == 5 && yRemainder == 5;
     }
 
-    public static isSourceKeeperRoom(roomName: string): boolean {
-        let parsed = /^[WE]([0-9]+)[NS]([0-9]+)$/.exec(roomName);
+    public static isSourceKeeperRoom(room: string | Room): boolean {
+        if (room instanceof Room)
+            return this.isSourceKeeperRoom(room.name);
+
+        let parsed = /^[WE]([0-9]+)[NS]([0-9]+)$/.exec(room);
         let xRemainder = Number(parsed[1]) % 10;
         let yRemainder = Number(parsed[2]) % 10;
 
@@ -21,14 +34,29 @@ export class RoomHelper {
             (yRemainder == 4 || yRemainder == 5 || yRemainder == 6);
     }
 
-    public static isHighway(roomName: string): boolean {
-        let coords = this.getRoomCoordinatesFromName(roomName);
+    public static isHighway(room: string | Room): boolean {
+        if (room instanceof Room)
+            return this.isHighway(room.name);
+
+        let coords = this.getRoomCoordinatesFromName(room);
         return (coords.x - 1) % 10 == 0 || (coords.y - 1) % 10 == 0;
     }
 
-    public static isValidRoomName(roomName: string): boolean {
-        return /^[WE]\d+[SN]\d+$/.test(roomName);
+    public static getRoomType(room: string | Room): RoomType {
+        if (room instanceof Room)
+            return this.getRoomType(room.name);
+
+        if (this.isHighway(room))
+            return RoomType.Highway;
+        else if (this.isSourceKeeperRoom(room))
+            return RoomType.SourceKeeper;
+        else if (this.isCenterRoom(room))
+            return RoomType.Center;
+        else
+            return RoomType.Standard;
     }
+
+    
 
     /**
      * @param roomName
@@ -384,4 +412,11 @@ export class RoomHelper {
         y = Math.floor(y / count);
         return this.getRoomPositionFromGlobalPosition({ x: x, y: y });
     }
+}
+
+export enum RoomType {
+    Standard,
+    Highway,
+    SourceKeeper,
+    Center
 }

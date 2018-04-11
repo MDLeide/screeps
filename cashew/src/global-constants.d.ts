@@ -2,9 +2,9 @@ declare interface global {
     MONITOR_COLONY_DEFENSE: string;
     MONITOR_ECONOMY_OPERATION: string;
     MONITOR_INFRASTRUCTURE_OPERATION: string;
-    MONITOR_REMOTE_MINING_OPERATION: string;
     MONITOR_COLONY_RESOURCES: string;
     MONITOR_EXCHANGE: string;
+    MONITOR_REMOTE_MINING: string;
 
     MONITOR_PROVIDER_COLONY_STANDARD: string;
     MONITOR_PROVIDER_EMPIRE_STANDARD: string;
@@ -46,6 +46,7 @@ declare interface global {
     OPERATION_LOOT: string;
     OPERATION_CLAIM_ROOM: string;
     OPERATION_SUPPLY: string;
+    OPERATION_MAP_SCOUT: string;
 
     FLAG_OPERATION_DISMANTLE: string;
     FLAG_OPERATION_LOOT: string;
@@ -77,6 +78,8 @@ declare interface global {
     CREEP_CONTROLLER_TRANSFER: string;
     CREEP_CONTROLLER_HARVEST_BUILDER: string;
     CREEP_CONTROLLER_SUPPLY: string;
+    CREEP_CONTROLLER_HEAL_TARGET: string;
+    CREEP_CONTROLLER_WARRIOR_ATTACK_TARGET: string;
 
     TASK_IDLE: string;
     TASK_MOVE_TO: string;
@@ -91,6 +94,7 @@ declare interface global {
     TASK_HARVEST: string;
     TASK_PICKUP_ENERGY: string;
     TASK_DISMANTLE: string;
+    TASK_HEAL: string;
 
     BODY_LIGHT_WORKER: string;
     BODY_HEAVY_HARVESTER: string;

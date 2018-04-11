@@ -8,7 +8,6 @@ import { HarvestOperation, HarvestOperationMemory } from "../operation/economic/
 import { LightUpgradeOperation } from "../operation/economic/LightUpgradeOperation";
 import { EnergyTransportOperation } from "../operation/economic/EnergyTransportOperation";
 import { HeavyUpgradeOperation } from "../operation/economic/HeavyUpgradeOperation";
-import { RemoteHarvestScoutOperation, RemoteHarvestScoutOperationMemory } from "../operation/economic/RemoteHarvestScoutOperation";
 import { RemoteHarvestOperation, RemoteHarvestOperationMemory } from "../operation/economic/RemoteHarvestOperation";
 
 // infrastructure
@@ -67,11 +66,7 @@ export class OperationRegistration {
         OperationRepository.register(
             OPERATION_HARVEST,
             (memory: any) => HarvestOperation.fromMemory(memory));
-
-        OperationRepository.register(
-            OPERATION_REMOTE_HARVEST_SCOUT,
-            (memory: any) => RemoteHarvestScoutOperation.fromMemory(memory));
-
+        
         OperationRepository.register(
             OPERATION_REMOTE_HARVEST,
             (memory: any) => RemoteHarvestOperation.fromMemory(memory));

@@ -1,6 +1,8 @@
 import { Execute } from "./imp/Execution"; // silly hack that i don't understand - this isn't actually used
 import { MonitorStatus } from "lib/monitor/Monitor";
 import { FlagOperation } from "lib/operation/FlagOperation";
+import { RoomControlType } from "lib/empire/WorldMap";
+import { RoomType } from "lib/util/RoomHelper";
 
 declare global {
     interface SystemMemory {
@@ -22,13 +24,13 @@ declare global {
         colonies: { [colonyName: string]: ColonyMemory };
         exchange: ExchangeMemory;
         monitorManager: MonitorManagerMemory;
+        map: WorldMapMemory;
     }
 
     interface ColonyMemory {        
         name: string;
         nest: NestMemory;        
         resourceManager: ResourceManagerMemory;
-        remoteMiningManager: RemoteMiningManagerMemory;
         watchtower: WatchtowerMemory;
         monitorManager: MonitorManagerMemory;
         operations: OperationGroupMemory;
@@ -69,6 +71,36 @@ declare global {
 
 
     /** COMPONENTS */
+    interface WorldMapMemory {
+        rooms: { [name: string]: RoomDetailsMemory };
+    }
+
+    interface RoomDetailsMemory {
+        name: string;
+        sources: SourceDetailsMemory[];
+        minerals: MineralDetailsMemory[];
+        exits: ExitConstant[];
+        type: RoomType;
+        tickScouted: number;
+        scoutedBy: string;
+        controlType: RoomControlType;
+        owner: string;
+        reservedBy: string;
+        miningInfo: RemoteRoomMemory;
+    }
+
+    interface SourceDetailsMemory {
+        id: string;
+        x: number;
+        y: number;
+    }
+
+    interface MineralDetailsMemory {
+        type: MineralConstant;
+        id: string;
+        x: number;
+        y: number;
+    }
 
     interface ResourceManagerMemory {
         settings: ResourceManagerSettingsMemory;
@@ -131,24 +163,11 @@ declare global {
         body: BodyMemory;
         tickCreated: number;
     }
-
-    interface RemoteMiningManagerMemory {
-        rooms: RemoteRoomMemory[];
-    }
-
+    
     interface RemoteRoomMemory {
         name: string;
-        scouted: boolean;
-        beingScouted: boolean;
-        remoteSources: RemoteSourceMemory[];
-        beingReserved: boolean;
-    }
-
-    interface RemoteSourceMemory {
-        sourceId: string;
-        containerId: string;
-        beingMined: boolean;
-        profit: number;
+        owner: string;
+        sourceIds: string[];
     }
 
     interface WatchtowerMemory {

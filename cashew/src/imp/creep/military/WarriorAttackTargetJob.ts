@@ -2,10 +2,18 @@ import { Job } from "lib/creep/Job";
 import { Task } from "lib/creep/Task";
 
 export class WarriorAttackTargetJob extends Job {
+    public static fromMemory(memory: WarriorAttackTargetJobMemory): WarriorAttackTargetJob {
+        let target = Game.getObjectById<AttackableTarget>(memory.targetId);
+        let job = new this(target);
+        job.targetId = memory.targetId;
+        return Job.fromMemory(memory, job) as WarriorAttackTargetJob;
+    }
+
     constructor(target: AttackableTarget) {
-        super(CREEP_CONTROLLER_WARRIOR_ATTACK_JOB);
+        super(CREEP_CONTROLLER_WARRIOR_ATTACK_TARGET);
         this.target = target;
-        this.targetId = target.id;
+        if (target)
+            this.targetId = target.id;
     }
 
     protected isCompleted(creep: Creep): boolean {
@@ -36,4 +44,14 @@ export class WarriorAttackTargetJob extends Job {
 
     protected onCleanup(creep: Creep): void {
     }
+
+    public save(): WarriorAttackTargetJobMemory {
+        let mem = super.save() as WarriorAttackTargetJobMemory;
+        mem.targetId = this.targetId;
+        return mem;
+    }
+}
+
+export interface WarriorAttackTargetJobMemory extends JobMemory {
+    targetId: string;
 }

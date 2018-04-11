@@ -51,6 +51,7 @@ export class Patch {
 
     private static patchPrivateMemory(): void {
         this.doPatch([
+            this.cancelRemoteMining
         ]);
     }
 
@@ -79,6 +80,24 @@ export class Patch {
     //
     // PATCHES
     //
+
+    private static cancelRemoteMining(): void {
+        for (let colony in Memory.empire.colonies) {
+            for (var i = 0; i < Memory.empire.colonies[colony].operations.operations.length; i++) {
+                let op = Memory.empire.colonies[colony].operations.operations[i];
+                if (!op || !op.type || op.type == OPERATION_REMOTE_HARVEST || op.type == OPERATION_REMOTE_HARVEST_SCOUT)
+                    Memory.empire.colonies[colony].operations.operations.splice(i--, 1);
+            }
+            let mem = Memory.empire.colonies[colony] as any;
+            if (mem.remoteMiningManager)
+                delete mem.remoteMiningManager;
+        }
+        for (let creep in Memory.creeps) {
+            if (Memory.creeps[creep].operation == OPERATION_REMOTE_HARVEST || Memory.creeps[creep].operation == OPERATION_REMOTE_HARVEST_SCOUT)
+                Memory.creeps[creep].operation = undefined;
+        }
+
+    }
 
     private static resetExtensionFillOps(): void {
         for (let colony in Memory.empire.colonies) {

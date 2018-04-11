@@ -1,12 +1,23 @@
 export class Calculator {
+    /**
+     * Calculates profit for a remote source over a 1500 tick period.
+     * @param origin
+     * @param source
+     * @param reserved
+     * @param roads
+     * @param carryCapacity
+     */
     public static calculateSourceProfit(
         origin: RoomPosition,
-        source: Source,
+        source: Source | RoomPosition,
         reserved: boolean,
         roads: boolean,
         carryCapacity: number
     ): { path: PathFinderPath, profit: number } {
-        let path = PathFinder.search(origin, { pos: source.pos, range: 1 });
+        if (source instanceof Source)
+            return this.calculateSourceProfit(origin, source.pos, reserved, roads, carryCapacity);
+
+        let path = PathFinder.search(origin, { pos: source, range: 1 });
         if (path.incomplete)
             return null;
 

@@ -31,6 +31,7 @@ export class MemoryManager {
         if (!memory.colonies) memory.colonies = {};
         if (!memory.exchange) memory.exchange = this.getExchangeMemory();
         if (!memory.monitorManager) memory.monitorManager = this.getEmpireMonitorManagerMemory();
+        if (!memory.map) memory.map = { rooms: {} };
 
         return memory;
     }
@@ -57,7 +58,8 @@ export class MemoryManager {
         return {
             colonies: {},
             exchange: this.getExchangeMemory(),
-            monitorManager: this.getEmpireMonitorManagerMemory()
+            monitorManager: this.getEmpireMonitorManagerMemory(),
+            map: { rooms: {}}
         };
     }
 

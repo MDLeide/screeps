@@ -24,7 +24,7 @@ export class RemoteHarvestOperation extends ControllerOperation {
 
     public sourceId: string;    
     public roomName: string;
-    public colony: Colony;
+    public containerId: string;
 
         
     private static getAssignments(): Assignment[] {
@@ -41,12 +41,11 @@ export class RemoteHarvestOperation extends ControllerOperation {
     }
 
 
-    protected getController(assignment: Assignment): CreepController {
-        let remoteSource = this.colony.remoteMiningManager.getRemoteSourceById(this.sourceId);
+    protected getController(assignment: Assignment): CreepController {        
         if (assignment.controllerType == CREEP_CONTROLLER_REMOTE_HARVESTER) {
-            return new RemoteHarvesterController(this.sourceId, this.roomName, remoteSource.containerId)
+            return new RemoteHarvesterController(this.sourceId, this.roomName, this.containerId)
         } else {
-            return new RemoteHaulerRole(remoteSource.containerId, this.roomName);
+            return new RemoteHaulerRole(this.containerId, this.roomName);
         }
     }
 
@@ -62,21 +61,10 @@ export class RemoteHarvestOperation extends ControllerOperation {
     }
 
     protected onFinish(colony: Colony): boolean {
-        if (this.sourceId) {
-            let remoteSource = colony.remoteMiningManager.getRemoteSourceById(this.sourceId);
-            if (remoteSource)
-                remoteSource.beingMined = false;
-        }
-            
         return true;
     }
 
     protected onCancel(colony: Colony): void {
-        if (this.sourceId) {
-            let remoteSource = colony.remoteMiningManager.getRemoteSourceById(this.sourceId);
-            if (remoteSource)
-                remoteSource.beingMined = false;
-        }
     }
 
 
@@ -84,12 +72,12 @@ export class RemoteHarvestOperation extends ControllerOperation {
     }
 
     protected onUpdate(colony: Colony): void {
-        this.colony = colony;
+        this.updateContainerId();
+        if (!this.containerId)
+            return;
 
-        let remoteSource = colony.remoteMiningManager.getRemoteSourceById(this.sourceId);        
-        if (!remoteSource.containerId) return;
+        let container = Game.getObjectById<StructureContainer>(this.containerId);
 
-        let container = Game.getObjectById<StructureContainer>(remoteSource.containerId);        
         if (container && this.assignments.length < 2) {            
             this.assignments.push(new Assignment("", BodyRepository.hauler(), CREEP_CONTROLLER_REMOTE_HAULER, 150));
             this.updateAssignments(colony);
@@ -104,6 +92,25 @@ export class RemoteHarvestOperation extends ControllerOperation {
     protected onCleanup(colony: Colony): void {
     }
 
+    private updateContainerId(): void {
+        let room = Game.rooms[this.roomName];
+        if (!room) return;
+        if (!this.containerId)
+            this.containerId = this.findContainerId();
+        if (!this.containerId) return;
+        let container = Game.getObjectById<StructureContainer>(this.containerId);
+        if (!container)
+            this.containerId = this.findContainerId();
+    }
+
+    private findContainerId(): string {
+        let source = Game.getObjectById<Source>(this.sourceId);
+        if (!source) return undefined;
+        let containers = source.pos.findInRange<StructureContainer>(FIND_STRUCTURES, 2, { filter: p => p.structureType == STRUCTURE_CONTAINER });
+        if (containers.length)
+            return containers[0].id;
+        return undefined;
+    }
 
     private updateAssignments(colony: Colony): void {
         let source = Game.getObjectById<Source>(this.sourceId);
@@ -129,12 +136,12 @@ export class RemoteHarvestOperation extends ControllerOperation {
                 this.assignments[i].body.minimumEnergy = Math.min(colony.nest.room.energyCapacityAvailable, workParts * BODYPART_COST[WORK] + BODYPART_COST[MOVE] + BODYPART_COST[CARRY]);
             }                
             else if (this.assignments[i].controllerType == CREEP_CONTROLLER_REMOTE_HAULER) {
+                this.assignments[i].replaceAt = leadTime / 2;
                 this.assignments[i].body.maxCompleteScalingSections = carryParts - 1;
             }                
         }            
     }
 
-    
     public save(): RemoteHarvestOperationMemory {
         let mem = super.save() as RemoteHarvestOperationMemory;
         mem.sourceId = this.sourceId;

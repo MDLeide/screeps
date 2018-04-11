@@ -1,9 +1,9 @@
 declare const MONITOR_COLONY_DEFENSE: "ColonyDefense";
 declare const MONITOR_ECONOMY_OPERATION: "EconomyOperation";
 declare const MONITOR_INFRASTRUCTURE_OPERATION: "InfrastructureOperation";
-declare const MONITOR_REMOTE_MINING_OPERATION: "RemoteMiningOperation";
 declare const MONITOR_COLONY_RESOURCES: "ColonyResources";
 declare const MONITOR_EXCHANGE: "Exchange";
+declare const MONITOR_REMOTE_MINING: "RemoteMining";
 
 declare const MONITOR_PROVIDER_COLONY_STANDARD: "ColonyStandard";
 declare const MONITOR_PROVIDER_EMPIRE_STANDARD: "EmpireStandard";
@@ -45,6 +45,7 @@ declare const OPERATION_DISMANTLE: "Dismantle";
 declare const OPERATION_LOOT: "Loot";
 declare const OPERATION_CLAIM_ROOM: "ClaimRoom";
 declare const OPERATION_SUPPLY: "Supply";
+declare const OPERATION_MAP_SCOUT: "MapScout";
 
 declare const FLAG_OPERATION_DISMANTLE: "Dismantle";
 declare const FLAG_OPERATION_LOOT: "Loot";
@@ -76,6 +77,8 @@ declare const CREEP_CONTROLLER_WITHDRAW: "Withdraw";
 declare const CREEP_CONTROLLER_TRANSFER: "Transfer";
 declare const CREEP_CONTROLLER_HARVEST_BUILDER: "HarvestBuilder";
 declare const CREEP_CONTROLLER_SUPPLY: "Supply";
+declare const CREEP_CONTROLLER_HEAL_TARGET: "HealTarget";
+declare const CREEP_CONTROLLER_WARRIOR_ATTACK_TARGET: "WarriorAttackTarget";
 
 declare const TASK_IDLE: "Idle";
 declare const TASK_MOVE_TO: "MoveTo";
@@ -90,6 +93,7 @@ declare const TASK_CLAIM: "Claim";
 declare const TASK_HARVEST: "Harvest";
 declare const TASK_PICKUP_ENERGY: "PickupEnergy";
 declare const TASK_DISMANTLE: "Dismantle";
+declare const TASK_HEAL: "Heal";
 
 declare const BODY_LIGHT_WORKER: "LightWorker";
 declare const BODY_HEAVY_HARVESTER: "HeavyHarvester";
@@ -108,9 +112,9 @@ declare const BODY_DISMANTLER: "Dismantler";
 type MONITOR_COLONY_DEFENSE = "ColonyDefense";
 type MONITOR_ECONOMY_OPERATION = "EconomyOperation";
 type MONITOR_INFRASTRUCTURE_OPERATION = "InfrastructureOperation";
-type MONITOR_REMOTE_MINING_OPERATION = "RemoteMiningOperation";
 type MONITOR_COLONY_RESOURCES = "ColonyResources";
 type MONITOR_EXCHANGE = "Exchange";
+type MONITOR_REMOTE_MINING = "RemoteMining";
 
 type MONITOR_PROVIDER_COLONY_STANDARD = "ColonyStandard";
 type MONITOR_PROVIDER_EMPIRE_STANDARD = "EmpireStandard";
@@ -152,6 +156,7 @@ type OPERATION_DISMANTLE = "Dismantle";
 type OPERATION_LOOT = "Loot";
 type OPERATION_CLAIM_ROOM = "ClaimRoom";
 type OPERATION_SUPPLY = "Supply";
+type OPERATION_MAP_SCOUT = "MapScout";
 
 type FLAG_OPERATION_DISMANTLE = "Dismantle";
 type FLAG_OPERATION_LOOT = "Loot";
@@ -183,6 +188,8 @@ type CREEP_CONTROLLER_WITHDRAW = "Withdraw";
 type CREEP_CONTROLLER_TRANSFER = "Transfer";
 type CREEP_CONTROLLER_HARVEST_BUILDER = "HarvestBuilder";
 type CREEP_CONTROLLER_SUPPLY = "Supply";
+type CREEP_CONTROLLER_HEAL_TARGET = "HealTarget";
+type CREEP_CONTROLLER_WARRIOR_ATTACK_TARGET = "WarriorAttackTarget";
 
 type TASK_IDLE = "Idle";
 type TASK_MOVE_TO = "MoveTo";
@@ -197,6 +204,7 @@ type TASK_CLAIM = "Claim";
 type TASK_HARVEST = "Harvest";
 type TASK_PICKUP_ENERGY = "PickupEnergy";
 type TASK_DISMANTLE = "Dismantle";
+type TASK_HEAL = "Heal";
 
 type BODY_LIGHT_WORKER = "LightWorker";
 type BODY_HEAVY_HARVESTER = "HeavyHarvester";
@@ -216,9 +224,9 @@ type MonitorType =
     MONITOR_COLONY_DEFENSE |
     MONITOR_ECONOMY_OPERATION |
     MONITOR_INFRASTRUCTURE_OPERATION |
-    MONITOR_REMOTE_MINING_OPERATION |
     MONITOR_COLONY_RESOURCES |
-    MONITOR_EXCHANGE;
+    MONITOR_EXCHANGE |
+    MONITOR_REMOTE_MINING;
 
 type MonitorProviderType =
     MONITOR_PROVIDER_COLONY_STANDARD |
@@ -263,7 +271,8 @@ type OperationType =
     OPERATION_DISMANTLE |
     OPERATION_LOOT |
     OPERATION_CLAIM_ROOM |
-    OPERATION_SUPPLY;
+    OPERATION_SUPPLY |
+    OPERATION_MAP_SCOUT;
 
 type FlagOperationType =
     FLAG_OPERATION_DISMANTLE |
@@ -297,7 +306,9 @@ type CreepControllerType =
     CREEP_CONTROLLER_WITHDRAW |
     CREEP_CONTROLLER_TRANSFER |
     CREEP_CONTROLLER_HARVEST_BUILDER |
-    CREEP_CONTROLLER_SUPPLY;
+    CREEP_CONTROLLER_SUPPLY |
+    CREEP_CONTROLLER_HEAL_TARGET |
+    CREEP_CONTROLLER_WARRIOR_ATTACK_TARGET;
 
 type TaskType =
     TASK_IDLE |
@@ -312,7 +323,8 @@ type TaskType =
     TASK_CLAIM |
     TASK_HARVEST |
     TASK_PICKUP_ENERGY |
-    TASK_DISMANTLE;
+    TASK_DISMANTLE |
+    TASK_HEAL;
 
 type BodyType =
     BODY_LIGHT_WORKER |
